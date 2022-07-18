@@ -261,6 +261,8 @@ public class XEasyPdfDefaultFooter implements XEasyPdfFooter {
             text.setPosition(
                     this.param.getBeginX(), this.initYForText(document, page, text)
             ).enableChildComponent().draw(document, page);
+            // 关闭页面自动重置定位
+            page.disablePosition();
         }
         // 如果自定义组件不为空，则进行自定义组件绘制
         if (this.param.getComponent() != null) {

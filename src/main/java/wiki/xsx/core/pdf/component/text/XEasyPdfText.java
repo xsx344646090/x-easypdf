@@ -427,7 +427,7 @@ public class XEasyPdfText implements XEasyPdfComponent {
     }
 
     /**
-     * 设置文本弧度(顺时针旋转)
+     * 设置文本弧度(逆时针旋转)
      *
      * @param radians 文本弧度
      * @return 返回页面水印组件
@@ -599,6 +599,18 @@ public class XEasyPdfText implements XEasyPdfComponent {
     public XEasyPdfText setContentMode(ContentMode mode) {
         if (mode != null) {
             this.param.setContentMode(mode);
+        }
+        return this;
+    }
+
+    /**
+     * 设置渲染模式
+     * @param renderingMode 渲染模式
+     * @return 返回文本组件
+     */
+    public XEasyPdfText setRenderingMode(XEasypdfTextRenderingMode renderingMode) {
+        if (renderingMode != null) {
+            this.param.setRenderingMode(renderingMode);
         }
         return this;
     }
@@ -822,6 +834,8 @@ public class XEasyPdfText implements XEasyPdfComponent {
         contentStream.setGraphicsStateParameters(state);
         // 设置字体
         contentStream.setFont(font, this.param.getFontSize());
+        // 设置渲染模式
+        contentStream.setRenderingMode(this.param.getRenderingMode().getMode());
         // 设置字体颜色
         contentStream.setNonStrokingColor(this.param.getFontColor());
         // 设置行间距
@@ -991,7 +1005,7 @@ public class XEasyPdfText implements XEasyPdfComponent {
         // 添加高亮
         this.addHighlight(font, stream, text, beginX, beginY);
         // 添加文本
-        this.addText(stream, text, beginX, beginY);
+        this.addText(font, stream, text, beginX, beginY);
         // 添加下划线
         this.addUnderline(font, stream, text, beginX, beginY);
         // 添加删除线
@@ -1102,6 +1116,7 @@ public class XEasyPdfText implements XEasyPdfComponent {
     /**
      * 添加文本
      *
+     * @param font   pdfbox字体
      * @param stream 内容流
      * @param text   待写入文本
      * @param beginX X轴坐标
@@ -1109,6 +1124,7 @@ public class XEasyPdfText implements XEasyPdfComponent {
      */
     @SneakyThrows
     private void addText(
+            PDFont font,
             PDPageContentStream stream,
             String text,
             float beginX,
@@ -1142,13 +1158,13 @@ public class XEasyPdfText implements XEasyPdfComponent {
                     // 开启文本输入
                     stream.beginText();
                     // 设置文本弧度
-                    stream.setTextMatrix(Matrix.getRotateInstance(Math.toRadians(this.param.getRadians()), x + this.param.getFontSize() / 2, beginY + this.param.getFontSize() / 2));
+                    stream.setTextMatrix(Matrix.getRotateInstance(Math.toRadians(this.param.getRadians()), x, beginY));
                     // 文本输入
                     stream.showText(textTemp);
                     // 结束文本写入
                     stream.endText();
-                    // 重置当前行x轴坐标， x轴坐标 = x轴坐标 + 字体大小
-                    x += this.getFontSize();
+                    // 重置当前行x轴坐标， x轴坐标 = x轴坐标 + 文本宽度
+                    x = x + XEasyPdfTextUtil.getTextRealWidth(textTemp, font, this.param.getFontSize(), this.param.getCharacterSpacing());
                 }
             }
         }

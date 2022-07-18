@@ -1,6 +1,7 @@
 package wiki.xsx.core.pdf;
 
 import org.junit.Test;
+import wiki.xsx.core.pdf.component.text.XEasypdfTextRenderingMode;
 import wiki.xsx.core.pdf.handler.XEasyPdfHandler;
 
 /**
@@ -24,5 +25,23 @@ public class HelloWorld {
     @Test
     public void test() {
         XEasyPdfHandler.Document.build(XEasyPdfHandler.Page.build(XEasyPdfHandler.Text.build("Hello World"))).save("E:\\pdf\\hello-world.pdf").close();
+    }
+
+    @Test
+    public void test2() {
+        XEasyPdfHandler.Document.build(
+                XEasyPdfHandler.Page.build(
+                        XEasyPdfHandler.Text.build("FILL").setFontSize(20F).setRadians(-10D),
+                        XEasyPdfHandler.Text.build("FILL").setFontSize(20F).setRenderingMode(XEasypdfTextRenderingMode.FILL),
+                        XEasyPdfHandler.Text.build("STROKE").setFontSize(20F).setRenderingMode(XEasypdfTextRenderingMode.STROKE),
+                        XEasyPdfHandler.Text.build("FILL_STROKE").setFontSize(20F).setRenderingMode(XEasypdfTextRenderingMode.FILL_STROKE),
+                        XEasyPdfHandler.Text.build("NEITHER").setFontSize(20F).setRenderingMode(XEasypdfTextRenderingMode.NEITHER)
+                )
+        ).save("E:\\pdf\\hello-world.pdf").close();
+    }
+
+    @Test
+    public void test3() {
+        XEasyPdfHandler.Document.load("E:\\pdf\\test.pdf").analyzer().finish();
     }
 }
