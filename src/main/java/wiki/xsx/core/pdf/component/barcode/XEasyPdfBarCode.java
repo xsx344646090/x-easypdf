@@ -428,6 +428,20 @@ public class XEasyPdfBarCode implements XEasyPdfComponent {
     }
 
     /**
+     * 获取高度
+     *
+     * @param document pdf文档
+     * @param page     pdf页面
+     * @return 返回高度
+     */
+    public float getHeight(XEasyPdfDocument document, XEasyPdfPage page) {
+        if (this.param.getImageHeight() == null) {
+            this.param.init(document, page);
+        }
+        return this.param.getImageHeight();
+    }
+
+    /**
      * 获取条形码图片
      *
      * @param matrix 位矩阵

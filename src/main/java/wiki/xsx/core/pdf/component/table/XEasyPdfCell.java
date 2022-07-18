@@ -2,6 +2,7 @@ package wiki.xsx.core.pdf.component.table;
 
 import lombok.SneakyThrows;
 import wiki.xsx.core.pdf.component.XEasyPdfComponent;
+import wiki.xsx.core.pdf.component.barcode.XEasyPdfBarCode;
 import wiki.xsx.core.pdf.component.image.XEasyPdfImage;
 import wiki.xsx.core.pdf.component.line.XEasyPdfLine;
 import wiki.xsx.core.pdf.component.rect.XEasyPdfRect;
@@ -532,6 +533,11 @@ public class XEasyPdfCell implements Serializable {
                 // 写入图片
                 this.writeImage(document, page, row, (XEasyPdfImage) component);
             }
+            // 如果组件属于条形码组件，则写入条形码
+            else if (component instanceof XEasyPdfBarCode) {
+                // 写入条形码
+                this.writeBarCode(document, page, row, (XEasyPdfBarCode) component);
+            }
             // 如果组件属于线条组件，则写入线条
             else if (component instanceof XEasyPdfLine) {
                 // 写入线条
@@ -684,7 +690,23 @@ public class XEasyPdfCell implements Serializable {
         // 设置定位及绘制
         image.setPosition(
                 row.getParam().getBeginX() + this.param.getBorderWidth() / 2,
-                this.initYForImage(document, page, row, image) - this.param.getMarginTop()
+                this.initYForImage(document, page, row, image.getHeight(document, page)) - this.param.getMarginTop()
+        ).draw(document, page);
+    }
+
+    /**
+     * 写入条形码
+     *
+     * @param document pdf文档
+     * @param page     pdf页面
+     * @param row      pdf表格行
+     * @param barCode  pdf条形码
+     */
+    private void writeBarCode(XEasyPdfDocument document, XEasyPdfPage page, XEasyPdfRow row, XEasyPdfBarCode barCode) {
+        // 设置定位及绘制
+        barCode.setPosition(
+                row.getParam().getBeginX() + this.param.getBorderWidth(),
+                this.initYForImage(document, page, row, barCode.getHeight(document, page)) - this.param.getMarginTop()
         ).draw(document, page);
     }
 
@@ -842,18 +864,16 @@ public class XEasyPdfCell implements Serializable {
      * @param document pdf文档
      * @param page     pdf页面
      * @param row      pdf表格行
-     * @param image    pdf图片
+     * @param height   高度
      * @return 返回Y轴起始坐标
      */
-    private float initYForImage(XEasyPdfDocument document, XEasyPdfPage page, XEasyPdfRow row, XEasyPdfImage image) {
-        // 获取图片高度
-        float height = image.getHeight(document, page);
+    private float initYForImage(XEasyPdfDocument document, XEasyPdfPage page, XEasyPdfRow row, float height) {
         // 定义Y轴起始坐标为页面Y轴起始坐标
         float y = page.getPageY();
-        // 如果图片高度等于单元格高度-边框宽度或垂直样式为居上，则重置Y轴起始坐标为Y轴起始坐标-图片高度-边框宽度/2-行上边距
-        if (height == this.param.getHeight() - this.param.getBorderWidth() || this.param.getVerticalStyle() == XEasyPdfPositionStyle.TOP) {
+        // 如果图片高度等于单元格高度-边框宽度或垂直样式为居上，则重置Y轴起始坐标为Y轴起始坐标-图片高度-边框宽度-行上边距
+        if (this.param.getVerticalStyle() == XEasyPdfPositionStyle.TOP) {
             // 重置Y轴起始坐标为Y轴起始坐标-图片高度-边框宽度-行上边距
-            y = y - height - this.param.getBorderWidth() / 2 - row.getParam().getMarginTop();
+            y = y - height - this.param.getBorderWidth() - row.getParam().getMarginTop();
             return y;
         }
         // 如果垂直样式为居中，则重置Y轴起始坐标为Y轴起始坐标-图片高度-(单元格高度-图片高度)/2-行上边距
@@ -862,10 +882,10 @@ public class XEasyPdfCell implements Serializable {
             y = y - height - (this.param.getHeight() - height) / 2 - row.getParam().getMarginTop();
             return y;
         }
-        // 如果垂直样式为居下，则重置Y轴起始坐标为Y轴起始坐标-单元格高度+边框宽度/2-行上边距
+        // 如果垂直样式为居下，则重置Y轴起始坐标为Y轴起始坐标-单元格高度+边框宽度-行上边距
         if (this.param.getVerticalStyle() == XEasyPdfPositionStyle.BOTTOM) {
             // 重置Y轴起始坐标为Y轴起始坐标-单元格高度+边框宽度/2-行上边距
-            y = y - this.param.getHeight() + this.param.getBorderWidth() / 2 - row.getParam().getMarginTop();
+            y = y - this.param.getHeight() + this.param.getBorderWidth() - row.getParam().getMarginTop();
         }
         return y;
     }

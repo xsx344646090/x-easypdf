@@ -1,6 +1,7 @@
 package wiki.xsx.core.pdf.component;
 
 import org.junit.Test;
+import wiki.xsx.core.pdf.component.barcode.XEasyPdfBarCode;
 import wiki.xsx.core.pdf.component.layout.XEasyPdfLayoutComponent;
 import wiki.xsx.core.pdf.handler.XEasyPdfHandler;
 
@@ -35,20 +36,20 @@ public class XEasyPdfLayoutTest {
                 XEasyPdfHandler.Page.build().addComponent(
                         XEasyPdfHandler.Layout.Horizontal.build().addLayoutComponent(
                                 XEasyPdfHandler.Layout.Component.build(150F, 200F).setComponent(
-                                        XEasyPdfHandler.Text.build("LEFT").enableCenterStyle()
+                                        XEasyPdfHandler.Text.build("LEFT").enableCenterStyle().setContentMode(XEasyPdfComponent.ContentMode.APPEND)
                                 )
                         )
-                                .addLayoutComponent(
-                                        XEasyPdfHandler.Layout.Component.build(150F, 200F).setComponent(
-                                                XEasyPdfHandler.Text.build("MIDDLE").enableCenterStyle()
-                                        )
+                        .addLayoutComponent(
+                                XEasyPdfHandler.Layout.Component.build(150F, 200F).setComponent(
+                                        XEasyPdfHandler.BarCode.build(XEasyPdfBarCode.CodeType.QR_CODE, "https://www.baidu.com")
                                 )
-                                .addLayoutComponent(
-                                        XEasyPdfHandler.Layout.Component.build(150F, 200F).setComponent(
-                                                XEasyPdfHandler.Text.build("RIGHT").enableCenterStyle()
-                                        )
+                        )
+                        .addLayoutComponent(
+                                XEasyPdfHandler.Layout.Component.build(150F, 200F).setComponent(
+                                        XEasyPdfHandler.Text.build("RIGHT").enableCenterStyle().setContentMode(XEasyPdfComponent.ContentMode.APPEND)
                                 )
-//                        .setMarginLeft(20F).setMarginTop(10F).enableBorder()
+                        )
+                        .setMarginLeft(20F).setMarginTop(10F).enableBorder()
                 )
         ).save(filePath).close();
     }
