@@ -7,6 +7,7 @@ import lombok.experimental.Accessors;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import wiki.xsx.core.pdf.component.XEasyPdfComponent;
+import wiki.xsx.core.pdf.component.XEasyPdfPagingCondition;
 import wiki.xsx.core.pdf.doc.XEasyPdfDocument;
 import wiki.xsx.core.pdf.doc.XEasyPdfPage;
 import wiki.xsx.core.pdf.doc.XEasyPdfPositionStyle;
@@ -217,6 +218,10 @@ class XEasyPdfTextParam implements Serializable {
      * 渲染模式
      */
     private XEasypdfTextRenderingMode renderingMode;
+    /**
+     * 分页条件
+     */
+    private XEasyPdfPagingCondition pagingCondition;
 
     /**
      * 获取宽度

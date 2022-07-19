@@ -2,6 +2,7 @@ package wiki.xsx.core.pdf.component;
 
 import org.junit.Before;
 import org.junit.Test;
+import wiki.xsx.core.pdf.doc.XEasyPdfDocument;
 import wiki.xsx.core.pdf.doc.XEasyPdfPage;
 import wiki.xsx.core.pdf.doc.XEasyPdfPageRectangle;
 import wiki.xsx.core.pdf.doc.XEasyPdfPositionStyle;
@@ -73,7 +74,7 @@ public class XEasyPdfTextTest {
                         ).setMarginLeft(10).setMarginRight(10).setAutoIndent(4),
                         XEasyPdfHandler.Text.build("-- 摘自百度百科").setHorizontalStyle(XEasyPdfPositionStyle.RIGHT).setMarginRight(10F)
                 ).setWatermark(
-                        XEasyPdfHandler.Watermark.build("贵阳").setFontColor(new Color(51,153,255))
+                        XEasyPdfHandler.Watermark.build("贵阳").setFontColor(new Color(51, 153, 255))
                 )
         ).setVersion(1.7F).save(filePath).close();
         System.out.println("finish");
@@ -160,7 +161,7 @@ public class XEasyPdfTextTest {
                 )
         ).setFontPath(FONT_PATH).save(filePath).close();
         long end = System.currentTimeMillis();
-        System.out.println("完成，耗时： " + (end-begin));
+        System.out.println("完成，耗时： " + (end - begin));
     }
 
     @Test
@@ -180,7 +181,7 @@ public class XEasyPdfTextTest {
                 XEasyPdfHandler.Watermark.build("爽爽的贵阳")
         ).save(filePath).close();
         long end = System.currentTimeMillis();
-        System.out.println("完成，耗时： " + (end-begin));
+        System.out.println("完成，耗时： " + (end - begin));
     }
 
     @Test
@@ -265,7 +266,7 @@ public class XEasyPdfTextTest {
                 )
         ).save(filePath).close();
         long end = System.currentTimeMillis();
-        System.out.println("完成，耗时： " + (end-begin));
+        System.out.println("完成，耗时： " + (end - begin));
     }
 
     @Test
@@ -295,7 +296,7 @@ public class XEasyPdfTextTest {
                 ).setMarginLeft(200F)
         ).save(filePath).close();
         long end = System.currentTimeMillis();
-        System.out.println("完成，耗时： " + (end-begin));
+        System.out.println("完成，耗时： " + (end - begin));
     }
 
     @Test
@@ -307,7 +308,33 @@ public class XEasyPdfTextTest {
                 XEasyPdfHandler.Watermark.build("爽爽的贵阳")
         ).save(filePath).close();
         long end = System.currentTimeMillis();
-        System.out.println("完成，耗时： " + (end-begin));
+        System.out.println("完成，耗时： " + (end - begin));
+    }
+
+    @Test
+    public void testText11() {
+        long begin = System.currentTimeMillis();
+        String filePath = OUTPUT_PATH + "testText11.pdf";
+        XEasyPdfHandler.Document.build(
+                XEasyPdfHandler.Page.build(
+                        XEasyPdfHandler.Text.build("test")
+                                .setPosition(0, 12F)
+                                .setPagingCondition(new XEasyPdfPagingCondition() {
+                                    @Override
+                                    public boolean isPaging(XEasyPdfDocument document, XEasyPdfPage page, Float currentY) {
+                                        float footerHeight = 0F;
+                                        if (page.getFooter() != null) {
+                                            footerHeight = page.getFooter().getHeight(document, page);
+                                        }
+                                        return currentY < footerHeight + 13;
+                                    }
+                                })
+                )
+        ).setGlobalWatermark(
+                XEasyPdfHandler.Watermark.build("爽爽的贵阳")
+        ).save(filePath).close();
+        long end = System.currentTimeMillis();
+        System.out.println("完成，耗时： " + (end - begin));
     }
 
     @Test
@@ -329,7 +356,7 @@ public class XEasyPdfTextTest {
                 XEasyPdfHandler.Watermark.build("爽爽的贵阳")
         ).save(filePath).close();
         long end = System.currentTimeMillis();
-        System.out.println("完成，耗时： " + (end-begin));
+        System.out.println("完成，耗时： " + (end - begin));
     }
 
     @Test
@@ -340,14 +367,14 @@ public class XEasyPdfTextTest {
         for (int i = 0; i < 8; i++) {
             page.addComponent(
                     XEasyPdfHandler.Text.build("test-test-test")
-                            .setRadians(i*45D)
+                            .setRadians(i * 45D)
             );
         }
         for (int i = 0; i < 8; i++) {
             page.addComponent(
                     XEasyPdfHandler.Text.build("test-test-test")
                             .setPosition(300F, 700F)
-                            .setRadians(i*45D)
+                            .setRadians(i * 45D)
                             .enableRotateLine()
             );
         }
@@ -355,7 +382,7 @@ public class XEasyPdfTextTest {
                 XEasyPdfHandler.Watermark.build("爽爽的贵阳")
         ).save(filePath).close();
         long end = System.currentTimeMillis();
-        System.out.println("完成，耗时： " + (end-begin));
+        System.out.println("完成，耗时： " + (end - begin));
     }
 
     @Test
@@ -366,7 +393,7 @@ public class XEasyPdfTextTest {
         XEasyPdfHandler.Document.load(filePath).extractor().extractForm(data).finish().close();
         System.out.println("data = " + data);
         long end = System.currentTimeMillis();
-        System.out.println("完成，耗时： " + (end-begin));
+        System.out.println("完成，耗时： " + (end - begin));
     }
 
     @Test
@@ -381,6 +408,6 @@ public class XEasyPdfTextTest {
                 )
         ).save(filePath).close();
         long end = System.currentTimeMillis();
-        System.out.println("完成，耗时： " + (end-begin));
+        System.out.println("完成，耗时： " + (end - begin));
     }
 }

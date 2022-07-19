@@ -11,6 +11,7 @@ import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationLink;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationText;
 import org.apache.pdfbox.util.Matrix;
 import wiki.xsx.core.pdf.component.XEasyPdfComponent;
+import wiki.xsx.core.pdf.component.XEasyPdfPagingCondition;
 import wiki.xsx.core.pdf.doc.XEasyPdfDefaultFontStyle;
 import wiki.xsx.core.pdf.doc.XEasyPdfDocument;
 import wiki.xsx.core.pdf.doc.XEasyPdfPage;
@@ -605,6 +606,7 @@ public class XEasyPdfText implements XEasyPdfComponent {
 
     /**
      * 设置渲染模式
+     *
      * @param renderingMode 渲染模式
      * @return 返回文本组件
      */
@@ -612,6 +614,17 @@ public class XEasyPdfText implements XEasyPdfComponent {
         if (renderingMode != null) {
             this.param.setRenderingMode(renderingMode);
         }
+        return this;
+    }
+
+    /**
+     * 设置分页条件
+     *
+     * @param pagingCondition 分页条件
+     * @return 返回文本组件
+     */
+    public XEasyPdfText setPagingCondition(XEasyPdfPagingCondition pagingCondition) {
+        this.param.setPagingCondition(pagingCondition);
         return this;
     }
 
@@ -944,8 +957,15 @@ public class XEasyPdfText implements XEasyPdfComponent {
                 // 初始化页脚高度
                 footerHeight = page.getFooter().getHeight(document, page);
             }
+            // 定义分页标记
+            boolean pagingFlag = this.param.getBeginY() - footerHeight < this.param.getMarginBottom();
+            // 如果分页标记为否，且分页条件不为空，则重置分页标记
+            if (!pagingFlag && this.param.getPagingCondition() != null) {
+                // 重置分页标记
+                pagingFlag = this.param.getPagingCondition().isPaging(document, page, this.param.getBeginY());
+            }
             // 分页检查
-            if (this.param.getBeginY() - footerHeight < this.param.getMarginBottom()) {
+            if (pagingFlag) {
                 // 如果内容流不为空，则关闭并设置为空
                 if (stream != null) {
                     // 关闭内容流
