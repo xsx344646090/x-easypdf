@@ -14,7 +14,7 @@
 ---
 
 #### 当前版本
-> <font size=3>v2.9.6</font>
+> <font size=3>v2.9.7</font>
 
 ---
 
@@ -31,7 +31,7 @@
 #### 项目特性
 - ##### 体积轻量
 
-> <font size=3>仅包含pdfbox相关依赖（数字签名需单独添加bouncycastle依赖，条形码需单独添加zxing依赖）</font>
+> <font size=3>仅包含pdfbox相关依赖（数字签名需单独添加bouncycastle依赖，条形码需单独添加zxing依赖，svg需单独添加batik依赖）</font>
 
 - ##### 简单智能
 

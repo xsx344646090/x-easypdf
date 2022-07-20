@@ -43,6 +43,11 @@ public class XEasyPdfImage implements XEasyPdfComponent {
     private final XEasyPdfImageParam param = new XEasyPdfImageParam();
 
     /**
+     * 无参构造
+     */
+    XEasyPdfImage(){}
+
+    /**
      * 有参构造
      *
      * @param imageFile 待添加图片
@@ -561,5 +566,13 @@ public class XEasyPdfImage implements XEasyPdfComponent {
      */
     public boolean isNeedInitialize() {
         return this.param.getIsNeedInitialize();
+    }
+
+    /**
+     * 获取参数
+     * @return 返回pdf图片参数
+     */
+    XEasyPdfImageParam getParam() {
+        return this.param;
     }
 }

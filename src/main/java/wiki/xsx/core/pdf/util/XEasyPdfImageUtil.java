@@ -65,6 +65,26 @@ public class XEasyPdfImageUtil {
     }
 
     /**
+     * 读取文件
+     *
+     * @param bytes 图片数据流
+     * @return 返回图片对象
+     */
+    @SneakyThrows
+    public static BufferedImage read(byte[] bytes) {
+        // 如果图片数据流为空，则提示错误信息
+        if (bytes == null) {
+            // 提示错误信息
+            throw new IllegalArgumentException("Image can not be null");
+        }
+        // 创建输入流
+        try (InputStream inputStream = new BufferedInputStream(new ByteArrayInputStream(bytes))) {
+            // 读取图片
+            return ImageIO.read(inputStream);
+        }
+    }
+
+    /**
      * 写入文件
      *
      * @param image        图片对象
@@ -128,8 +148,6 @@ public class XEasyPdfImageUtil {
         graphics.drawImage(temp, 0, 0, null);
         // 关闭资源
         graphics.dispose();
-        // 刷新图片
-        sourceImage.flush();
         // 返回图片
         return image;
     }

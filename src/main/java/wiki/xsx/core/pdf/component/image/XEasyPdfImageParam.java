@@ -297,13 +297,8 @@ class XEasyPdfImageParam implements Serializable {
             // 页面X轴起始坐标 = （最大宽度 - 自定义宽度）/ 2
             this.beginX = this.beginX + (this.maxWidth - this.width) / 2;
         }
-        // 如果水平样式为居左，则初始化页面X轴起始坐标为居左
-        else if (this.horizontalStyle == XEasyPdfPositionStyle.LEFT) {
-            // 页面X轴起始坐标 = 左边距
-            this.beginX = this.beginX + this.marginLeft;
-        }
         // 如果水平样式为居右，则初始化页面X轴起始坐标为居右
-        else {
+        else if (this.horizontalStyle == XEasyPdfPositionStyle.RIGHT) {
             // 页面X轴起始坐标 = 最大宽度 - 自定义宽度 - 右边距
             this.beginX = this.beginX + this.maxWidth - this.width - this.marginRight;
         }

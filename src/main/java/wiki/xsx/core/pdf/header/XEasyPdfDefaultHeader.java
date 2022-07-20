@@ -40,6 +40,12 @@ public class XEasyPdfDefaultHeader implements XEasyPdfHeader {
     private final XEasyPdfHeaderParam param = new XEasyPdfHeaderParam();
 
     /**
+     * 无参构造
+     */
+    public XEasyPdfDefaultHeader() {
+    }
+
+    /**
      * 有参构造
      *
      * @param component 自定义组件
@@ -297,6 +303,11 @@ public class XEasyPdfDefaultHeader implements XEasyPdfHeader {
                 // 绘制分割线
                 xEasyPdfLine.setMarginLeft(this.param.getMarginLeft()).setMarginRight(this.param.getMarginRight()).draw(document, page);
             }
+        }
+        // 如果没有组件，则重置页面Y轴坐标
+        if (this.param.hasNotComponent()) {
+            // 重置页面Y轴坐标
+            page.setPageY(page.getHeight() - this.param.getHeight());
         }
     }
 

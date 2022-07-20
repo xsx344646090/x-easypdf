@@ -6,6 +6,7 @@ import wiki.xsx.core.pdf.component.barcode.XEasyPdfBarCode;
 import wiki.xsx.core.pdf.component.circle.XEasyPdfCircle;
 import wiki.xsx.core.pdf.component.image.XEasyPdfImage;
 import wiki.xsx.core.pdf.component.image.XEasyPdfImageType;
+import wiki.xsx.core.pdf.component.image.XEasyPdfSVGImage;
 import wiki.xsx.core.pdf.component.layout.XEasyPdfHorizontalLayout;
 import wiki.xsx.core.pdf.component.layout.XEasyPdfLayoutComponent;
 import wiki.xsx.core.pdf.component.layout.XEasyPdfVerticalLayout;
@@ -398,6 +399,20 @@ public class XEasyPdfHandler {
     }
 
     /**
+     * pdf矢量图片组件
+     */
+    public static class SVGImage {
+        /**
+         * 构建矢量图片
+         *
+         * @return 返回pdf矢量图片组件
+         */
+        public static XEasyPdfSVGImage build() {
+            return new XEasyPdfSVGImage();
+        }
+    }
+
+    /**
      * pdf条形码(一维码/二维码)组件
      */
     public static class BarCode {
@@ -589,6 +604,15 @@ public class XEasyPdfHandler {
      * pdf页眉组件
      */
     public static class Header {
+
+        /**
+         * 构建页眉
+         *
+         * @return 返回pdf页眉组件
+         */
+        public static XEasyPdfHeader build() {
+            return new XEasyPdfDefaultHeader();
+        }
 
         /**
          * 构建页眉

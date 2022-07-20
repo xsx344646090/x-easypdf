@@ -126,6 +126,14 @@ class XEasyPdfHeaderParam implements Serializable {
     }
 
     /**
+     * 没有组件
+     * @return 返回布尔值，是为true，否为false
+     */
+    boolean hasNotComponent() {
+        return this.text==null&&this.image==null&&this.component==null&&this.lineList.isEmpty();
+    }
+
+    /**
      * 初始化高度
      *
      * @param document pdf文档
