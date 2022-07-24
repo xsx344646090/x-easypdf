@@ -97,4 +97,4 @@ mvn clean install
 XEasyPdfHandler.Document.build(XEasyPdfHandler.Page.build(XEasyPdfHandler.Text.build("Hello World"))).save("E:\\pdf\\hello-world.pdf").close();
 ```
 
-更多教程，请查看[文档](https://dromara.gitee.io/x-easypdf)
+更多教程，请查看[文档](https://www.x-easypdf.cn)
