@@ -206,6 +206,16 @@ class XEasyPdfPageParam implements Serializable {
             // 初始化为文档下边距
             this.marginBottom = documentParam.getGlobalMarginBottom();
         }
+        // 如果页面背景色未初始化，则初始化为文档背景色
+        if (this.backgroundColor == null) {
+            // 初始化为文档背景色
+            this.backgroundColor = documentParam.getGlobalBackgroundColor();
+        }
+        // 如果页面背景图片未初始化，则初始化为文档背景图片
+        if (this.backgroundImage == null) {
+            // 初始化为文档背景图片
+            this.backgroundImage = documentParam.getGlobalBackgroundImage();
+        }
         // 初始化字体
         this.font = XEasyPdfFontUtil.loadFont(document, page, this.fontPath, true);
     }

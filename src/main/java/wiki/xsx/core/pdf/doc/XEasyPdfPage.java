@@ -790,11 +790,6 @@ public class XEasyPdfPage implements Serializable {
     private void setLastPageBackgroundColor(XEasyPdfDocument document) {
         // 如果当前pdf页面允许添加页面背景色，则进行页面背景色绘制
         if (this.param.getAllowBackgroundColor()) {
-            // 如果页面背景色未初始化，则设置全局页面背景色
-            if (this.param.getBackgroundColor() == null) {
-                // 设置全局页面背景色
-                this.param.setBackgroundColor(document.getGlobalBackgroundColor());
-            }
             // 如果背景颜色不为白色，则进行背景颜色设置
             if (!Color.WHITE.equals(this.param.getBackgroundColor())) {
                 // 获取pdfBox最新页面
@@ -839,11 +834,6 @@ public class XEasyPdfPage implements Serializable {
     private void drawBackgroundImage(XEasyPdfDocument document) {
         // 如果当前pdf页面允许添加页面背景图片，则进行页面背景图片绘制
         if (this.param.getAllowBackgroundImage()) {
-            // 如果页面背景图片未初始化，则设置全局页面背景图片
-            if (this.param.getBackgroundImage() == null) {
-                // 设置全局页面背景图片
-                this.param.setBackgroundImage(document.getGlobalBackgroundImage());
-            }
             // 如果页面背景图片不为空，则进行绘制
             if (this.param.getBackgroundImage() != null) {
                 // 获取页面X轴坐标
