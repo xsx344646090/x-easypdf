@@ -153,7 +153,7 @@ public class XEasyPdfBarCode implements XEasyPdfComponent {
      * @return 返回条形码组件
      */
     public XEasyPdfBarCode setMaxHeight(float height) {
-        this.param.setImageHeight((int) Math.abs(height));
+        this.param.setImageMaxHeight((int) Math.abs(height));
         return this;
     }
 
@@ -179,6 +179,17 @@ public class XEasyPdfBarCode implements XEasyPdfComponent {
      */
     public XEasyPdfBarCode setCodeType(CodeType codeType) {
         this.param.setCodeType(codeType);
+        return this;
+    }
+
+    /**
+     * 设置条形码边距
+     *
+     * @param codeMargin 条形码边距
+     * @return 返回条形码组件
+     */
+    public XEasyPdfBarCode setCodeMargin(int codeMargin) {
+        this.param.setCodeMargin(Math.abs(codeMargin));
         return this;
     }
 
@@ -514,7 +525,7 @@ public class XEasyPdfBarCode implements XEasyPdfComponent {
         // 获取图像高度
         int height = image.getHeight();
         // 定义转换图像
-        BufferedImage out = new BufferedImage(width, height + this.param.getWordsSize() + 1, BufferedImage.TYPE_4BYTE_ABGR);
+        BufferedImage out = new BufferedImage(width, height + this.param.getWordsSize(), BufferedImage.TYPE_INT_ARGB);
         // 创建图像图形
         Graphics2D graphics = out.createGraphics();
         // 设置插值
@@ -530,7 +541,7 @@ public class XEasyPdfBarCode implements XEasyPdfComponent {
         // 设置条形码背景色
         graphics.setColor(this.param.getOffColor());
         // 填充矩形
-        graphics.fillRect(0, 0, width, height + this.param.getWordsSize() + 1);
+        graphics.fillRect(0, 0, width, height + this.param.getWordsSize());
         // 设置文字颜色
         graphics.setColor(this.param.getWordsColor());
         // 设置图像

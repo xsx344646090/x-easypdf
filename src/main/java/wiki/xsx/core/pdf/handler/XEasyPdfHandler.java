@@ -1,6 +1,5 @@
 package wiki.xsx.core.pdf.handler;
 
-import lombok.SneakyThrows;
 import wiki.xsx.core.pdf.component.XEasyPdfComponent;
 import wiki.xsx.core.pdf.component.barcode.XEasyPdfBarCode;
 import wiki.xsx.core.pdf.component.circle.XEasyPdfCircle;
@@ -85,7 +84,6 @@ public class XEasyPdfHandler {
          *
          * @param sourcePath 源文件路径
          */
-        @SneakyThrows
         public static XEasyPdfDocument load(String sourcePath) {
             return new XEasyPdfDocument(sourcePath);
         }
@@ -93,11 +91,54 @@ public class XEasyPdfHandler {
         /**
          * 加载pdf
          *
+         * @param sourcePath 源文件路径
+         * @param password   密码
+         */
+        public static XEasyPdfDocument load(String sourcePath, String password) {
+            return new XEasyPdfDocument(sourcePath, password);
+        }
+
+        /**
+         * 加载pdf
+         *
+         * @param sourcePath 源文件路径
+         * @param password   密码
+         * @param keyStore   证书输入流
+         * @param alias      证书别名
+         */
+        public static XEasyPdfDocument load(String sourcePath, String password, InputStream keyStore, String alias) {
+            return new XEasyPdfDocument(sourcePath, password, keyStore, alias);
+        }
+
+        /**
+         * 加载pdf
+         *
          * @param sourceInputStream 源文件数据流
          */
-        @SneakyThrows
         public static XEasyPdfDocument load(InputStream sourceInputStream) {
             return new XEasyPdfDocument(sourceInputStream);
+        }
+
+        /**
+         * 加载pdf
+         *
+         * @param sourceInputStream 源文件数据流
+         * @param password          密码
+         */
+        public static XEasyPdfDocument load(InputStream sourceInputStream, String password) {
+            return new XEasyPdfDocument(sourceInputStream, password);
+        }
+
+        /**
+         * 加载pdf
+         *
+         * @param sourceInputStream 源文件数据流
+         * @param password          密码
+         * @param keyStore          证书输入流
+         * @param alias             证书别名
+         */
+        public static XEasyPdfDocument load(InputStream sourceInputStream, String password, InputStream keyStore, String alias) {
+            return new XEasyPdfDocument(sourceInputStream, password, keyStore, alias);
         }
     }
 

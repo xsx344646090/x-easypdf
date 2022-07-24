@@ -180,12 +180,33 @@ class XEasyPdfDocumentParam implements Serializable {
      * 初始化
      *
      * @param inputStream 输入流
+     * @param password    密码
      * @param document    pdf文档
      */
     @SneakyThrows
-    void init(InputStream inputStream, XEasyPdfDocument document) {
+    void init(InputStream inputStream, String password, XEasyPdfDocument document) {
+        this.init(inputStream, password, null, null, document);
+    }
+
+    /**
+     * 初始化
+     *
+     * @param inputStream 输入流
+     * @param password    密码
+     * @param keyStore    证书输入流
+     * @param alias       证书别名
+     * @param document    pdf文档
+     */
+    @SneakyThrows
+    void init(
+            InputStream inputStream,
+            String password,
+            InputStream keyStore,
+            String alias,
+            XEasyPdfDocument document
+    ) {
         // 初始化pdfBox源文档
-        this.source = PDDocument.load(inputStream, MemoryUsageSetting.setupMainMemoryOnly());
+        this.source = PDDocument.load(inputStream, password, keyStore, alias, MemoryUsageSetting.setupMainMemoryOnly());
         // 获取pdfBox页面树
         PDPageTree pages = this.source.getPages();
         // 遍历pdfBox页面树

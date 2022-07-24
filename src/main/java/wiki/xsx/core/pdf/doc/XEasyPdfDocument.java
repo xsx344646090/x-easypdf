@@ -83,9 +83,36 @@ public class XEasyPdfDocument implements Closeable, Serializable {
      */
     @SneakyThrows
     public XEasyPdfDocument(String filePath) {
+        this(filePath, "");
+    }
+
+    /**
+     * 有参构造
+     *
+     * @param filePath pdf文件路径
+     * @param password 密码
+     */
+    @SneakyThrows
+    public XEasyPdfDocument(String filePath, String password) {
         // 读取文件流
         try (InputStream inputStream = new BufferedInputStream(new FileInputStream(filePath))) {
-            this.param.init(inputStream, this);
+            this.param.init(inputStream, password, this);
+        }
+    }
+
+    /**
+     * 有参构造
+     *
+     * @param filePath pdf文件路径
+     * @param password 密码
+     * @param keyStore 证书输入流
+     * @param alias    证书别名
+     */
+    @SneakyThrows
+    public XEasyPdfDocument(String filePath, String password, InputStream keyStore, String alias) {
+        // 读取文件流
+        try (InputStream inputStream = new BufferedInputStream(new FileInputStream(filePath))) {
+            this.param.init(inputStream, password, keyStore, alias, this);
         }
     }
 
@@ -95,7 +122,29 @@ public class XEasyPdfDocument implements Closeable, Serializable {
      * @param inputStream 数据流
      */
     public XEasyPdfDocument(InputStream inputStream) {
-        this.param.init(inputStream, this);
+        this.param.init(inputStream, "", this);
+    }
+
+    /**
+     * 有参构造
+     *
+     * @param inputStream 数据流
+     * @param password    密码
+     */
+    public XEasyPdfDocument(InputStream inputStream, String password) {
+        this(inputStream, password, null, null);
+    }
+
+    /**
+     * 有参构造
+     *
+     * @param inputStream 数据流
+     * @param password    密码
+     * @param keyStore    证书输入流
+     * @param alias       证书别名
+     */
+    public XEasyPdfDocument(InputStream inputStream, String password, InputStream keyStore, String alias) {
+        this.param.init(inputStream, password, keyStore, alias, this);
     }
 
     /**

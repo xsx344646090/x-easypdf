@@ -267,10 +267,10 @@ class XEasyPdfTextParam implements Serializable {
             // 初始化最大宽度，最大宽度 = 页面宽度
             this.maxWidth = rectangle.getWidth();
         }
-        // 如果渲染模式未初始化，则初始化为填充
+        // 如果渲染模式未初始化，则初始化为正常
         if (this.renderingMode == null) {
-            // 初始化为填充
-            this.renderingMode = XEasypdfTextRenderingMode.FILL;
+            // 初始化为正常
+            this.renderingMode = XEasypdfTextRenderingMode.NORMAL;
         }
         // 如果内容模式未初始化，则初始化为页面内容模式
         if (this.contentMode == null) {

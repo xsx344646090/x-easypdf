@@ -40,8 +40,11 @@ public class XEasyPdfBarCodeTest {
                         XEasyPdfHandler.BarCode.build(
                                 XEasyPdfBarCode.CodeType.QR_CODE,
                                 "https://www.xsx.wiki"
-                        ).setWords("QR-CODE").enableShowWords().setWordsSize(30).setWordsColor(Color.BLUE).setWidth(120).setMarginLeft(230F).setMarginTop(50F)
-                )
+                        ).setWords("QR-CODE")
+                                .setCodeMargin(0)
+                                .enableShowWords()
+                                .setWordsSize(30).setWordsColor(Color.BLUE).setWidth(200).setHeight(200).setMaxWidth(150).setMaxHeight(150).setMarginLeft(230F).setMarginTop(50F)
+                ).setBackgroundColor(Color.GRAY)
         ).setFontPath(FONT_PATH).save(filePath).close();
         System.out.println("finish");
     }

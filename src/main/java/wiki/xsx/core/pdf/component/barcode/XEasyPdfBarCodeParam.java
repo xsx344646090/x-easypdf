@@ -53,6 +53,10 @@ class XEasyPdfBarCodeParam implements Serializable {
      */
     private XEasyPdfBarCode.CodeType codeType;
     /**
+     * 条形码边距
+     */
+    private Integer codeMargin;
+    /**
      * 条形码前景颜色
      */
     private Color onColor = Color.BLACK;
@@ -194,8 +198,6 @@ class XEasyPdfBarCodeParam implements Serializable {
                 // 重置为条形码内容
                 this.words = this.content;
             }
-            // 重置高度 -= 文字大小 - 1
-            this.imageHeight -= this.wordsSize - 1;
         }
     }
 
@@ -217,7 +219,7 @@ class XEasyPdfBarCodeParam implements Serializable {
         // 设置编码为utf-8
         this.encodeHints.put(EncodeHintType.CHARACTER_SET, StandardCharsets.UTF_8);
         // 设置边距
-        this.encodeHints.put(EncodeHintType.MARGIN, this.codeType.margin);
+        this.encodeHints.put(EncodeHintType.MARGIN, this.codeMargin==null?this.codeType.margin:this.codeMargin);
     }
 
     /**
@@ -305,12 +307,12 @@ class XEasyPdfBarCodeParam implements Serializable {
         // 如果最大宽度未初始化或小于宽度，则初始化最大宽度
         if (this.imageMaxWidth == null || this.imageMaxWidth < this.imageWidth) {
             // 初始化最大宽度为图像宽度
-            this.imageMaxWidth = this.imageWidth * 3;
+            this.imageMaxWidth = this.imageWidth;
         }
         // 如果最大高度未初始化或小于高度，则初始化最大高度
         if (this.imageMaxHeight == null || this.imageMaxHeight < this.imageHeight) {
             // 初始化最大高度为图像高度
-            this.imageMaxHeight = this.imageHeight * 3;
+            this.imageMaxHeight = this.imageHeight;
         }
     }
 

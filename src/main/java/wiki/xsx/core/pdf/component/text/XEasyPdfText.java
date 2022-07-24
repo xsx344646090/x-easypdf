@@ -849,8 +849,6 @@ public class XEasyPdfText implements XEasyPdfComponent {
         contentStream.setFont(font, this.param.getFontSize());
         // 设置渲染模式
         contentStream.setRenderingMode(this.param.getRenderingMode().getMode());
-        // 设置字体颜色
-        contentStream.setNonStrokingColor(this.param.getFontColor());
         // 设置行间距
         contentStream.setLeading(this.param.getLeading());
         // 设置文本间隔
@@ -904,6 +902,7 @@ public class XEasyPdfText implements XEasyPdfComponent {
                     this.param.getBeginY(),
                     index == totalLineIndex
             );
+            // 如果为问题追加，则重置X轴起始坐标为0
             if (this.param.getIsTextAppend()) {
                 // 重置X轴起始坐标为0
                 this.param.setBeginX(0F);
@@ -922,8 +921,6 @@ public class XEasyPdfText implements XEasyPdfComponent {
                 // 设置页面X轴坐标
                 page.setPageX(beginX + textWidth);
             }
-            // 内容流重置颜色为黑色
-            stream.setNonStrokingColor(Color.BLACK);
             // 关闭内容流
             stream.close();
             // 如果允许页面重置定位，则进行重置
@@ -1023,13 +1020,13 @@ public class XEasyPdfText implements XEasyPdfComponent {
         // 添加超链接
         this.addLink(font, page, text, beginX, beginY);
         // 添加高亮
-        this.addHighlight(font, stream, text, beginX, beginY);
+        this.addHighlight(font, page, stream, text, beginX, beginY);
         // 添加文本
-        this.addText(font, stream, text, beginX, beginY);
+        this.addText(font, page, stream, text, beginX, beginY);
         // 添加下划线
-        this.addUnderline(font, stream, text, beginX, beginY);
+        this.addUnderline(font, page, stream, text, beginX, beginY);
         // 添加删除线
-        this.addDeleteLine(font, stream, text, beginX, beginY);
+        this.addDeleteLine(font, page, stream, text, beginX, beginY);
         // 重置Y轴起始坐标，Y轴起始坐标 = Y轴起始坐标 - 字体高度 - 行间距
         this.param.setBeginY(this.param.getBeginY() - this.param.getFontHeight() - this.param.getLeading());
         return stream;
@@ -1111,6 +1108,7 @@ public class XEasyPdfText implements XEasyPdfComponent {
     @SneakyThrows
     private void addHighlight(
             PDFont font,
+            XEasyPdfPage page,
             PDPageContentStream stream,
             String text,
             float beginX,
@@ -1128,8 +1126,8 @@ public class XEasyPdfText implements XEasyPdfComponent {
             stream.setNonStrokingColor(this.param.getHighlightColor());
             // 填充矩形
             stream.fill();
-            // 重置为黑色
-            stream.setNonStrokingColor(Color.BLACK);
+            // 重置颜色
+            stream.setNonStrokingColor(page.getBackgroundColor());
         }
     }
 
@@ -1137,6 +1135,7 @@ public class XEasyPdfText implements XEasyPdfComponent {
      * 添加文本
      *
      * @param font   pdfbox字体
+     * @param page   pdf页面
      * @param stream 内容流
      * @param text   待写入文本
      * @param beginX X轴坐标
@@ -1145,11 +1144,29 @@ public class XEasyPdfText implements XEasyPdfComponent {
     @SneakyThrows
     private void addText(
             PDFont font,
+            XEasyPdfPage page,
             PDPageContentStream stream,
             String text,
             float beginX,
             float beginY
     ) {
+        // 如果渲染模式为填充，则设置字体颜色
+        if (this.param.getRenderingMode().isFill()) {
+            // 设置字体颜色
+            stream.setNonStrokingColor(this.param.getFontColor());
+        }
+        // 如果渲染模式为空心，则设置字体颜色
+        if (this.param.getRenderingMode().isStroke()) {
+            // 设置字体颜色
+            stream.setStrokingColor(this.param.getFontColor());
+        }
+        // 如果渲染模式为细体，则设置字体颜色
+        if (this.param.getRenderingMode().isLight()) {
+            // 设置字体颜色
+            stream.setStrokingColor(page.getBackgroundColor());
+            // 设置字体颜色
+            stream.setNonStrokingColor(this.param.getFontColor());
+        }
         // 如果文本弧度大于0，则进行文本旋转
         if (this.param.getRadians() > 0) {
             // 如果开启整行旋转，则整行旋转
@@ -1192,13 +1209,124 @@ public class XEasyPdfText implements XEasyPdfComponent {
         else {
             // 开启文本输入
             stream.beginText();
-            // 设置文本定位
-            stream.newLineAtOffset(beginX, beginY);
+            // 设置斜体
+            this.setItalic(stream, beginX, beginY);
             // 文本输入
             stream.showText(text);
             // 结束文本写入
             stream.endText();
         }
+        // 重置颜色为页面背景色
+        stream.setStrokingColor(page.getBackgroundColor());
+        // 重置颜色为页面背景色
+        stream.setNonStrokingColor(page.getBackgroundColor());
+    }
+
+    /**
+     * 添加文本上标与下标（预留，文本增强组件实现）
+     *
+     * @param font   pdfbox字体
+     * @param page   pdf页面
+     * @param stream 内容流
+     * @param text   待写入文本
+     * @param beginX X轴坐标
+     * @param beginY Y轴坐标
+     * @return 返回文本最大宽度
+     */
+    private float addTextSuperscriptAndSubscript(
+            PDFont font,
+            XEasyPdfPage page,
+            PDPageContentStream stream,
+            String text,
+            float beginX,
+            float beginY
+    ) {
+        // 获取上标文本宽度
+        float superscriptWidth = this.addTextSuperscript(font, page, stream, text, beginX, beginY);
+        // 获取下标文本宽度
+        float subscriptWidth = this.addTextSubscript(font, page, stream, text, beginX, beginY);
+        // 返回最大宽度
+        return Math.max(superscriptWidth, subscriptWidth);
+    }
+
+    /**
+     * 添加文本上标
+     *
+     * @param font   pdfbox字体
+     * @param page   pdf页面
+     * @param stream 内容流
+     * @param text   待写入文本
+     * @param beginX X轴坐标
+     * @param beginY Y轴坐标
+     * @return 返回文本宽度
+     */
+    @SneakyThrows
+    private float addTextSuperscript(
+            PDFont font,
+            XEasyPdfPage page,
+            PDPageContentStream stream,
+            String text,
+            float beginX,
+            float beginY
+    ) {
+        // 获取文本宽度
+        float textWidth = XEasyPdfTextUtil.getTextRealWidth(text, font, this.param.getFontSize(), this.param.getCharacterSpacing());
+        // 获取文本高度
+        float textHeight = XEasyPdfFontUtil.getFontHeight(font, this.getFontSize());
+        // 设置文本移动基线
+        stream.setTextRise(0.4F);
+        // 重置颜色为字体颜色
+        stream.setNonStrokingColor(this.param.getFontColor());
+        // 开启文本输入
+        stream.beginText();
+        // 设置文本定位
+        stream.setTextMatrix(new Matrix(0.4F, 0, 0, 0.4F, beginX + textWidth, beginY + textHeight * 0.6F));
+        // 文本输入
+        stream.showText("上标");
+        // 结束文本写入
+        stream.endText();
+        // 重置颜色为页面背景色
+        stream.setNonStrokingColor(page.getBackgroundColor());
+        // 返回X轴坐标
+        return textWidth;
+    }
+
+    /**
+     * 添加文本下标
+     *
+     * @param font   pdfbox字体
+     * @param page   pdf页面
+     * @param stream 内容流
+     * @param text   待写入文本
+     * @param beginX X轴坐标
+     * @param beginY Y轴坐标
+     * @return 返回文本宽度
+     */
+    @SneakyThrows
+    private float addTextSubscript(
+            PDFont font,
+            XEasyPdfPage page,
+            PDPageContentStream stream,
+            String text,
+            float beginX,
+            float beginY
+    ) {
+        // 获取文本宽度
+        float textWidth = XEasyPdfTextUtil.getTextRealWidth(text, font, this.param.getFontSize(), this.param.getCharacterSpacing());
+        // 重置颜色为字体颜色
+        stream.setNonStrokingColor(this.param.getFontColor());
+        // 开启文本输入
+        stream.beginText();
+        // 设置文本定位
+        stream.setTextMatrix(new Matrix(0.4F, 0, 0, 0.4F, beginX + textWidth, beginY));
+        // 文本输入
+        stream.showText("下标");
+        // 结束文本写入
+        stream.endText();
+        // 重置颜色为页面背景色
+        stream.setNonStrokingColor(page.getBackgroundColor());
+        // 返回X轴坐标
+        return textWidth;
     }
 
     /**
@@ -1213,6 +1341,7 @@ public class XEasyPdfText implements XEasyPdfComponent {
     @SneakyThrows
     private void addUnderline(
             PDFont font,
+            XEasyPdfPage page,
             PDPageContentStream stream,
             String text,
             float beginX,
@@ -1234,8 +1363,8 @@ public class XEasyPdfText implements XEasyPdfComponent {
             stream.lineTo(rectangle.getUpperRightX(), rectangle.getLowerLeftY());
             // 结束
             stream.stroke();
-            // 重置为黑色
-            stream.setStrokingColor(Color.BLACK);
+            // 重置颜色
+            stream.setStrokingColor(page.getBackgroundColor());
         }
     }
 
@@ -1251,6 +1380,7 @@ public class XEasyPdfText implements XEasyPdfComponent {
     @SneakyThrows
     private void addDeleteLine(
             PDFont font,
+            XEasyPdfPage page,
             PDPageContentStream stream,
             String text,
             float beginX,
@@ -1272,8 +1402,29 @@ public class XEasyPdfText implements XEasyPdfComponent {
             stream.lineTo(rectangle.getUpperRightX(), rectangle.getLowerLeftY());
             // 结束
             stream.stroke();
-            // 重置为黑色
-            stream.setStrokingColor(Color.BLACK);
+            // 重置颜色
+            stream.setStrokingColor(page.getBackgroundColor());
+        }
+    }
+
+    /**
+     * 设置斜体
+     *
+     * @param stream 内容流
+     * @param beginX X轴坐标
+     * @param beginY Y轴坐标
+     */
+    @SneakyThrows
+    private void setItalic(PDPageContentStream stream, float beginX, float beginY) {
+        // 如果渲染模式为斜体，则设置字体为斜体
+        if (this.param.getRenderingMode().isItalic()) {
+            // 设置斜体
+            stream.setTextMatrix(new Matrix(1, 0, 0.2F, 1, beginX, beginY));
+        }
+        // 否则设置文本定位
+        else {
+            // 设置文本定位
+            stream.newLineAtOffset(beginX, beginY);
         }
     }
 
