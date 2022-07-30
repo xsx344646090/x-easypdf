@@ -41,14 +41,6 @@ class XEasyPdfTableParam implements Serializable {
      */
     private XEasyPdfComponent.ContentMode contentMode;
     /**
-     * 是否重置上下文
-     */
-    private Boolean isResetContext;
-    /**
-     * 是否自动拆分行
-     */
-    private Boolean isAutoSplit = Boolean.TRUE;
-    /**
      * 表头
      */
     private XEasyPdfTable title;
@@ -122,6 +114,18 @@ class XEasyPdfTableParam implements Serializable {
      * 默认居上
      */
     private XEasyPdfPositionStyle verticalStyle = XEasyPdfPositionStyle.TOP;
+    /**
+     * 是否重置上下文
+     */
+    private Boolean isResetContext;
+    /**
+     * 是否自动拆分行
+     */
+    private Boolean isAutoSplit = Boolean.TRUE;
+    /**
+     * 是否自动缩放字体大小
+     */
+    private Boolean isAutoScaleFontSize = Boolean.FALSE;
 
     /**
      * 初始化

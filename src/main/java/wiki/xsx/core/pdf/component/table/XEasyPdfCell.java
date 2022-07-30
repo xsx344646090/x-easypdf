@@ -279,12 +279,12 @@ public class XEasyPdfCell implements Serializable {
      * @return 返回单元格组件
      */
     public XEasyPdfCell setHorizontalStyle(XEasyPdfPositionStyle style) {
+        // 如果样式不为空，则设置样式
         if (style != null) {
-            if (style == XEasyPdfPositionStyle.LEFT || style == XEasyPdfPositionStyle.CENTER || style == XEasyPdfPositionStyle.RIGHT) {
-                this.param.setHorizontalStyle(style);
-            } else {
-                throw new IllegalArgumentException("only set LEFT, CENTER or RIGHT style");
-            }
+            // 检查水平样式
+            XEasyPdfPositionStyle.checkHorizontalStyle(style);
+            // 设置全局水平样式
+            this.param.setHorizontalStyle(style);
         }
         return this;
     }
@@ -296,12 +296,12 @@ public class XEasyPdfCell implements Serializable {
      * @return 返回单元格组件
      */
     public XEasyPdfCell setVerticalStyle(XEasyPdfPositionStyle style) {
+        // 如果样式不为空，则设置样式
         if (style != null) {
-            if (style == XEasyPdfPositionStyle.TOP || style == XEasyPdfPositionStyle.CENTER || style == XEasyPdfPositionStyle.BOTTOM) {
-                this.param.setVerticalStyle(style);
-            } else {
-                throw new IllegalArgumentException("only set TOP, CENTER or BOTTOM style");
-            }
+            // 检查水平样式
+            XEasyPdfPositionStyle.checkVerticalStyle(style);
+            // 设置全局水平样式
+            this.param.setVerticalStyle(style);
         }
         return this;
     }
@@ -423,6 +423,16 @@ public class XEasyPdfCell implements Serializable {
      */
     public XEasyPdfCell enableResetContext() {
         this.param.setIsResetContext(Boolean.TRUE);
+        return this;
+    }
+
+    /**
+     * 开启自动缩放字体大小
+     *
+     * @return 返回单元格组件
+     */
+    public XEasyPdfCell enableAutoScaleFontSize() {
+        this.param.setIsAutoScaleFontSize(Boolean.TRUE);
         return this;
     }
 
@@ -671,6 +681,16 @@ public class XEasyPdfCell implements Serializable {
      * @param text     pdf文本
      */
     private void writeText(XEasyPdfDocument document, XEasyPdfPage page, XEasyPdfRow row, XEasyPdfText text) {
+        // 如果开启自动缩放字体大小，则自动调整字体大小
+        if (this.param.getIsAutoScaleFontSize() != null && this.param.getIsAutoScaleFontSize()) {
+            // 获取文本高度
+            float textHeight = text.getHeight(document, page);
+            // 如果文本高度大于单元格高度且文本字体大小大于1，则重置文本字体大小
+            while (textHeight > this.param.getHeight() && text.getFontSize() > 1) {
+                // 重置文本高度（重置文本字体大小）
+                textHeight = text.setFontSize(text.getFontSize() - 1).setMaxHeight(null).setSplitTextList(null).getHeight(document, page);
+            }
+        }
         // 设置定位及绘制
         text.setPosition(
                 row.getParam().getBeginX(),
@@ -841,19 +861,19 @@ public class XEasyPdfCell implements Serializable {
         // 如果垂直样式为居上，则重置Y轴起始坐标为Y轴起始坐标-字体大小-边框宽度-行上边距
         if (this.param.getVerticalStyle() == XEasyPdfPositionStyle.TOP) {
             // 重置Y轴起始坐标为Y轴起始坐标-字体大小-边框宽度-行上边距
-            y = y - this.param.getFontSize() - this.param.getBorderWidth() - row.getParam().getMarginTop();
+            y = y - text.getFontSize() - this.param.getBorderWidth() - row.getParam().getMarginTop();
             return y;
         }
         // 如果垂直样式为居中，则重置Y轴起始坐标为Y轴起始坐标-字体大小-(单元格高度-文本高度)/2-行上边距
         if (this.param.getVerticalStyle() == XEasyPdfPositionStyle.CENTER) {
             // 重置Y轴起始坐标为Y轴起始坐标-字体大小-(单元格高度-文本高度)/2-行上边距
-            y = y - this.param.getFontSize() - (this.param.getHeight() - height) / 2 - row.getParam().getMarginTop();
+            y = y - text.getFontSize() - (this.param.getHeight() - height) / 2 - row.getParam().getMarginTop();
             return y;
         }
         // 如果垂直样式为居下，则重置Y轴起始坐标为Y轴起始坐标-字体大小-单元格高度+文本高度-行上边距
         if (this.param.getVerticalStyle() == XEasyPdfPositionStyle.BOTTOM) {
             // 重置Y轴起始坐标为Y轴起始坐标-字体大小-单元格高度+文本高度-行上边距
-            y = y - this.param.getFontSize() - this.param.getHeight() + height - row.getParam().getMarginTop();
+            y = y - text.getFontSize() - this.param.getHeight() + height - row.getParam().getMarginTop();
         }
         return y;
     }

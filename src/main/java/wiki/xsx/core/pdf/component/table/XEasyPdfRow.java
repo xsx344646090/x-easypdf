@@ -298,6 +298,16 @@ public class XEasyPdfRow implements Serializable {
     }
 
     /**
+     * 开启自动缩放字体大小
+     *
+     * @return 返回表格行组件
+     */
+    public XEasyPdfRow enableAutoScaleFontSize() {
+        this.param.setIsAutoScaleFontSize(Boolean.TRUE);
+        return this;
+    }
+
+    /**
      * 添加单元格
      *
      * @param cells pdf单元格

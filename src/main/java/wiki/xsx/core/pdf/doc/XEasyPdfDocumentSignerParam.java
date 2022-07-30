@@ -63,7 +63,7 @@ class XEasyPdfDocumentSignerParam implements Serializable {
     /**
      * pdfbox签名
      */
-    private transient final PDSignature signature = new PDSignature();
+    private transient PDSignature signature = new PDSignature();
     /**
      * pdfbox签名选项
      */
@@ -108,6 +108,10 @@ class XEasyPdfDocumentSignerParam implements Serializable {
      * 签名内存大小（默认：250K）
      */
     private Integer preferredSignatureSize = 0x3e800;
+    /**
+     * 临时目录
+     */
+    private String tempDir = "";
 
     /**
      * 初始化
@@ -115,7 +119,7 @@ class XEasyPdfDocumentSignerParam implements Serializable {
      * @param pageIndex 页面索引
      */
     @SneakyThrows
-    public void init(int pageIndex) {
+    void init(int pageIndex) {
         // 如果密钥库类型未初始化，则提示错误
         if (this.keyStoreType == null) {
             throw new IllegalArgumentException("keyStore type can not be null");
@@ -159,7 +163,7 @@ class XEasyPdfDocumentSignerParam implements Serializable {
                     // 设置签名原因
                     .signatureReason(this.signature.getReason())
                     // 设置签名页面索引
-                    .page(pageIndex)
+                    .page(pageIndex + 1)
                     // 开启可视化
                     .visualSignEnabled(true)
                     // 开启签名者
@@ -168,6 +172,8 @@ class XEasyPdfDocumentSignerParam implements Serializable {
                     .buildSignature();
             // 设置可视化签名属性
             this.signatureOptions.setVisualSignature(signatureProperty);
+            // 设置页码
+            this.signatureOptions.setPage(pageIndex);
         }
         // 设置签名内存大小
         this.signatureOptions.setPreferredSignatureSize(this.preferredSignatureSize);

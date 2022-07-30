@@ -44,10 +44,6 @@ class XEasyPdfRowParam implements Serializable {
      */
     private XEasyPdfComponent.ContentMode contentMode;
     /**
-     * 是否重置上下文
-     */
-    private Boolean isResetContext;
-    /**
      * 单元格列表
      */
     private List<XEasyPdfCell> cells = new ArrayList<>(10);
@@ -122,13 +118,21 @@ class XEasyPdfRowParam implements Serializable {
      */
     private XEasyPdfPositionStyle verticalStyle;
     /**
-     * 分页标识
+     * 是否重置上下文
+     */
+    private Boolean isResetContext;
+    /**
+     * 是否分页
      */
     private Boolean isPaging;
     /**
-     * 自动拆分行
+     * 是否自动拆分行
      */
     private Boolean isAutoSplit;
+    /**
+     * 是否自动缩放字体大小
+     */
+    private Boolean isAutoScaleFontSize;
 
     /**
      * 初始化
@@ -173,9 +177,9 @@ class XEasyPdfRowParam implements Serializable {
                 // 初始化为页面内容模式
                 this.contentMode = tableParam.getContentMode();
             }
-            // 如果是否重置上下文未初始化，则初始化为页面是否重置上下文
+            // 如果是否重置上下文未初始化，则初始化为表格是否重置上下文
             if (this.isResetContext == null) {
-                // 初始化为页面是否重置上下文
+                // 初始化为表格是否重置上下文
                 this.isResetContext = tableParam.getIsResetContext();
             }
             // 如果字体路径未初始化，则初始化为表格字体路径
@@ -207,6 +211,11 @@ class XEasyPdfRowParam implements Serializable {
             if (this.verticalStyle == null) {
                 // 初始化垂直样式
                 this.verticalStyle = tableParam.getVerticalStyle();
+            }
+            // 如果是否自动缩放字体大小未初始化，则初始化为表格是否自动缩放字体大小
+            if (this.isAutoScaleFontSize == null) {
+                // 初始化为表格是否自动缩放字体大小
+                this.isAutoScaleFontSize = tableParam.getIsAutoScaleFontSize();
             }
             // 初始化自动拆分行
             this.isAutoSplit = tableParam.getIsAutoSplit();

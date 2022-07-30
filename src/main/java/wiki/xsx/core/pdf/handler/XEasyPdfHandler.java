@@ -17,6 +17,9 @@ import wiki.xsx.core.pdf.component.table.XEasyPdfCell;
 import wiki.xsx.core.pdf.component.table.XEasyPdfRow;
 import wiki.xsx.core.pdf.component.table.XEasyPdfTable;
 import wiki.xsx.core.pdf.component.text.XEasyPdfText;
+import wiki.xsx.core.pdf.component.text.XEasyPdfTextExtend;
+import wiki.xsx.core.pdf.component.text.XEasyPdfTextScript;
+import wiki.xsx.core.pdf.doc.XEasyPdfDefaultFontStyle;
 import wiki.xsx.core.pdf.doc.XEasyPdfDocument;
 import wiki.xsx.core.pdf.doc.XEasyPdfPage;
 import wiki.xsx.core.pdf.doc.XEasyPdfPageRectangle;
@@ -262,6 +265,120 @@ public class XEasyPdfHandler {
         public static String getCurrentPagePlaceholder() {
             return CURRENT_PAGE_PLACEHOLDER;
         }
+
+        /**
+         * 页面尺寸
+         */
+        public static class Rectangle {
+            /**
+             * A0
+             * <p>841 * 1189，单位：mm</p>
+             * <p>2383.937 * 3370.3938，单位：px</p>
+             */
+            public static final XEasyPdfPageRectangle A0 = XEasyPdfPageRectangle.A0;
+            /**
+             * A1
+             * <p>594 * 841，单位：mm</p>
+             * <p>1683.7795 * 2383.937，单位：px</p>
+             */
+            public static final XEasyPdfPageRectangle A1 = XEasyPdfPageRectangle.A1;
+            /**
+             * A2
+             * <p>420 * 594，单位：mm</p>
+             * <p>1190.5513 * 1683.7795，单位：px</p>
+             */
+            public static final XEasyPdfPageRectangle A2 = XEasyPdfPageRectangle.A2;
+            /**
+             * A3
+             * <p>297 * 420，单位：mm</p>
+             * <p>841.8898 * 1190.5513，单位：px</p>
+             */
+            public static final XEasyPdfPageRectangle A3 = XEasyPdfPageRectangle.A3;
+            /**
+             * A4
+             * <p>210 * 297，单位：mm</p>
+             * <p>595.27563 * 841.8898，单位：px</p>
+             */
+            public static final XEasyPdfPageRectangle A4 = XEasyPdfPageRectangle.A4;
+            /**
+             * A5
+             * <p>148 * 210，单位：mm</p>
+             * <p>419.52756 * 595.27563，单位：px</p>
+             */
+            public static final XEasyPdfPageRectangle A5 = XEasyPdfPageRectangle.A5;
+            /**
+             * A6
+             * <p>105 * 148，单位：mm</p>
+             * <p>297.63782 * 419.52756，单位：px</p>
+             */
+            public static final XEasyPdfPageRectangle A6 = XEasyPdfPageRectangle.A6;
+            /**
+             * A7
+             * <p>74 * 105，单位：mm</p>
+             * <p>209.76378 * 297.63782，单位：px</p>
+             */
+            public static final XEasyPdfPageRectangle A7 = XEasyPdfPageRectangle.A7;
+            /**
+             * A8
+             * <p>52 * 74，单位：mm</p>
+             * <p>147.40158 * 209.76378，单位：px</p>
+             */
+            public static final XEasyPdfPageRectangle A8 = XEasyPdfPageRectangle.A8;
+            /**
+             * B0
+             * <p>1030 * 1456，单位：mm</p>
+             * <p>2919.685 * 4127.244，单位：px</p>
+             */
+            public static final XEasyPdfPageRectangle B0 = XEasyPdfPageRectangle.B0;
+            /**
+             * B1
+             * <p>728 * 1030，单位：mm</p>
+             * <p>2063.622 * 2919.685，单位：px</p>
+             */
+            public static final XEasyPdfPageRectangle B1 = XEasyPdfPageRectangle.B1;
+            /**
+             * B2
+             * <p>515 * 728，单位：mm</p>
+             * <p>1459.8425 * 2063.622，单位：px</p>
+             */
+            public static final XEasyPdfPageRectangle B2 = XEasyPdfPageRectangle.B2;
+            /**
+             * B3
+             * <p>364 * 515，单位：mm</p>
+             * <p>1031.811 * 1459.8425，单位：px</p>
+             */
+            public static final XEasyPdfPageRectangle B3 = XEasyPdfPageRectangle.B3;
+            /**
+             * B4
+             * <p>257 * 364，单位：mm</p>
+             * <p>728.50397 * 1031.811，单位：px</p>
+             */
+            public static final XEasyPdfPageRectangle B4 = XEasyPdfPageRectangle.B4;
+            /**
+             * B5
+             * <p>182 * 257，单位：mm</p>
+             * <p>515.9055 * 728.50397，单位：px</p>
+             */
+            public static final XEasyPdfPageRectangle B5 = XEasyPdfPageRectangle.B5;
+            /**
+             * B6
+             * <p>128 * 182，单位：mm</p>
+             * <p>362.83466 * 515.9055，单位：px</p>
+             */
+            public static final XEasyPdfPageRectangle B6 = XEasyPdfPageRectangle.B6;
+            /**
+             * B7
+             * <p>91 * 128，单位：mm</p>
+             * <p>257.95276 * 362.83466，单位：px</p>
+             */
+            public static final XEasyPdfPageRectangle B7 = XEasyPdfPageRectangle.B7;
+            /**
+             * B8
+             * <p>64 * 91，单位：mm</p>
+             * <p>181.41733 * 257.95276，单位：px</p>
+             */
+            public static final XEasyPdfPageRectangle B8 = XEasyPdfPageRectangle.B8;
+        }
     }
 
     /**
@@ -334,6 +451,47 @@ public class XEasyPdfHandler {
          */
         public static XEasyPdfText build(float fontSize, List<String> textList) {
             return new XEasyPdfText(fontSize, textList);
+        }
+    }
+
+    /**
+     * pdf文本扩展组件
+     */
+    public static class TextExtend {
+        /**
+         * 构建文本角标
+         *
+         * @param text 待写入文本
+         * @return 返回pdf文本扩展组件
+         */
+        public static XEasyPdfTextExtend build(String text) {
+            return new XEasyPdfTextExtend(text);
+        }
+
+        /**
+         * 构建文本角标
+         *
+         * @param text 待写入文本
+         * @param scriptText 待写入角标文本
+         * @return 返回pdf文本扩展组件
+         */
+        public static XEasyPdfTextExtend build(String text, String scriptText) {
+            return new XEasyPdfTextExtend(text, scriptText);
+        }
+    }
+
+    /**
+     * pdf文本角标组件
+     */
+    public static class TextScript {
+        /**
+         * 构建文本角标
+         *
+         * @param text 待写入文本
+         * @return 返回pdf文本角标组件
+         */
+        public static XEasyPdfTextScript build(String text) {
+            return new XEasyPdfTextScript(text);
         }
     }
 
@@ -825,6 +983,24 @@ public class XEasyPdfHandler {
                 return new XEasyPdfLayoutComponent(width, height).setComponent(component);
             }
         }
+    }
+
+    /**
+     * pdf字体
+     */
+    public static class Font {
+        /**
+         * 细体
+         */
+        public static final XEasyPdfDefaultFontStyle LIGHT = XEasyPdfDefaultFontStyle.LIGHT;
+        /**
+         * 正常
+         */
+        public static final XEasyPdfDefaultFontStyle NORMAL = XEasyPdfDefaultFontStyle.NORMAL;
+        /**
+         * 粗体
+         */
+        public static final XEasyPdfDefaultFontStyle BOLD = XEasyPdfDefaultFontStyle.BOLD;
     }
 
     /**

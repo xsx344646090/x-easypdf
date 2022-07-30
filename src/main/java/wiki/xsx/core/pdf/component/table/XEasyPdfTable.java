@@ -249,6 +249,16 @@ public class XEasyPdfTable implements XEasyPdfComponent {
     }
 
     /**
+     * 开启自动缩放字体大小
+     *
+     * @return 返回表格组件
+     */
+    public XEasyPdfTable enableAutoScaleFontSize() {
+        this.param.setIsAutoScaleFontSize(Boolean.TRUE);
+        return this;
+    }
+
+    /**
      * 设置坐标
      *
      * @param beginX X轴起始坐标
