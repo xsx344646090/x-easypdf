@@ -60,8 +60,7 @@ public class XEasyPdfTest {
         for (int i = 0; i < 20; i++) {
             list.add(CompletableFuture.runAsync(new MyThread(OUTPUT_PATH + "allTest"+i+".pdf")));
         }
-        CompletableFuture<Void> future = CompletableFuture.allOf(list.toArray(new CompletableFuture[0]));
-        future.get();
+        CompletableFuture.allOf(list.toArray(new CompletableFuture[0])).join();
     }
 
     public static class MyThread implements Runnable{
