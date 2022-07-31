@@ -7,7 +7,7 @@
     <version>2.9.9</version>
     <packaging>jar</packaging>
     <name>x-easypdf</name>
-    <url>http://www.xsx.wiki</url>
+    <url>https://www.x-easypdf.cn</url>
     <description>A framework based on pdfbox</description>
 
     <properties>
