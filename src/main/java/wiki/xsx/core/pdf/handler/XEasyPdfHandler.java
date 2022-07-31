@@ -28,6 +28,7 @@ import wiki.xsx.core.pdf.footer.XEasyPdfFooter;
 import wiki.xsx.core.pdf.header.XEasyPdfDefaultHeader;
 import wiki.xsx.core.pdf.header.XEasyPdfHeader;
 import wiki.xsx.core.pdf.mark.XEasyPdfDefaultWatermark;
+import wiki.xsx.core.pdf.template.XEasyPdfTemplateFontBuilder;
 
 import java.io.File;
 import java.io.InputStream;
@@ -1001,6 +1002,24 @@ public class XEasyPdfHandler {
          * 粗体
          */
         public static final XEasyPdfDefaultFontStyle BOLD = XEasyPdfDefaultFontStyle.BOLD;
+    }
+
+    /**
+     * pdf模板
+     */
+    public static class Template {
+        /**
+         * 字体构建器
+         */
+        public static class Font {
+            /**
+             * 获取构建器
+             * @return 返回字体构建器
+             */
+            public static XEasyPdfTemplateFontBuilder builder() {
+                return new XEasyPdfTemplateFontBuilder();
+            }
+        }
     }
 
     /**
