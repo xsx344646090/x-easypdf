@@ -12,18 +12,18 @@ import wiki.xsx.core.pdf.doc.XEasyPdfDefaultFontStyle;
 import wiki.xsx.core.pdf.doc.XEasyPdfDocument;
 import wiki.xsx.core.pdf.doc.XEasyPdfPage;
 import wiki.xsx.core.pdf.doc.XEasyPdfPositionStyle;
+import wiki.xsx.core.pdf.util.XEasyPdfFontUtil;
 import wiki.xsx.core.pdf.util.XEasyPdfTextUtil;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 /**
- * pdf文本组件
+ * pdf文本角标组件
  *
  * @author xsx
- * @date 2020/3/3
+ * @date 2022/7/26
  * @since 1.8
  * <p>
  * Copyright (c) 2020-2022 xsx All Rights Reserved.
@@ -38,93 +38,39 @@ import java.util.Map;
  * </p>
  */
 @EqualsAndHashCode(callSuper = true)
-public class XEasyPdfText extends XEasyPdfTextBase {
+public class XEasyPdfTextScript extends XEasyPdfTextBase {
 
-    private static final long serialVersionUID = -4199419015054023227L;
+    private static final long serialVersionUID = 8367990811132640481L;
 
     /**
      * 文本参数
      */
-    private XEasyPdfTextParam param = new XEasyPdfTextParam();
+    private XEasyPdfTextScriptParam param = new XEasyPdfTextScriptParam();
 
     /**
      * 有参构造
      *
      * @param param 文本参数
      */
-    XEasyPdfText(XEasyPdfTextParam param) {
+    XEasyPdfTextScript(XEasyPdfTextScriptParam param) {
         this.param = param;
     }
 
     /**
      * 有参构造
      *
-     * @param text 待输入文本
+     * @param text 待写入文本
      */
-    public XEasyPdfText(String text) {
+    public XEasyPdfTextScript(String text) {
         this.param.setText(text);
-    }
-
-    /**
-     * 有参构造
-     *
-     * @param textList 待输入文本列表
-     */
-    public XEasyPdfText(List<String> textList) {
-        if (textList != null) {
-            this.param.setSplitTextList(new ArrayList<>(textList)).setSplitTemplateTextList(new ArrayList<>(textList));
-        }
-    }
-
-    /**
-     * 有参构造
-     *
-     * @param fontSize 字体大小
-     * @param text     待输入文本
-     */
-    public XEasyPdfText(float fontSize, String text) {
-        this.param.setFontSize(Math.abs(fontSize)).setText(text);
-    }
-
-    /**
-     * 有参构造
-     *
-     * @param fontSize 字体大小
-     * @param textList 待输入文本列表
-     */
-    public XEasyPdfText(float fontSize, List<String> textList) {
-        this.param.setFontSize(Math.abs(fontSize));
-        if (textList != null) {
-            this.param.setSplitTextList(new ArrayList<>(textList)).setSplitTemplateTextList(new ArrayList<>(textList));
-        }
-    }
-
-    /**
-     * 开启文本追加
-     *
-     * @return 返回文本组件
-     */
-    public XEasyPdfText enableTextAppend() {
-        this.param.setIsTextAppend(Boolean.TRUE);
-        return this;
-    }
-
-    /**
-     * 开启居中样式（水平居中，垂直居中）
-     *
-     * @return 返回文本组件
-     */
-    public XEasyPdfText enableCenterStyle() {
-        this.param.setHorizontalStyle(XEasyPdfPositionStyle.CENTER).setVerticalStyle(XEasyPdfPositionStyle.CENTER);
-        return this;
     }
 
     /**
      * 开启子组件
      *
-     * @return 返回文本组件
+     * @return 返回角标组件
      */
-    public XEasyPdfText enableChildComponent() {
+    public XEasyPdfTextScript enableChildComponent() {
         this.param.setIsChildComponent(Boolean.TRUE);
         return this;
     }
@@ -132,9 +78,9 @@ public class XEasyPdfText extends XEasyPdfTextBase {
     /**
      * 开启下划线
      *
-     * @return 返回文本组件
+     * @return 返回角标组件
      */
-    public XEasyPdfText enableUnderline() {
+    public XEasyPdfTextScript enableUnderline() {
         this.param.setIsUnderline(Boolean.TRUE);
         return this;
     }
@@ -142,9 +88,9 @@ public class XEasyPdfText extends XEasyPdfTextBase {
     /**
      * 开启删除线
      *
-     * @return 返回文本组件
+     * @return 返回角标组件
      */
-    public XEasyPdfText enableDeleteLine() {
+    public XEasyPdfTextScript enableDeleteLine() {
         this.param.setIsDeleteLine(Boolean.TRUE);
         return this;
     }
@@ -152,9 +98,9 @@ public class XEasyPdfText extends XEasyPdfTextBase {
     /**
      * 开启高亮
      *
-     * @return 返回文本组件
+     * @return 返回角标组件
      */
-    public XEasyPdfText enableHighlight() {
+    public XEasyPdfTextScript enableHighlight() {
         this.param.setIsHighlight(Boolean.TRUE);
         return this;
     }
@@ -162,9 +108,9 @@ public class XEasyPdfText extends XEasyPdfTextBase {
     /**
      * 开启整行旋转
      *
-     * @return 返回文本组件
+     * @return 返回角标组件
      */
-    public XEasyPdfText enableRotateLine() {
+    public XEasyPdfTextScript enableRotateLine() {
         this.param.setIsRotateLine(Boolean.TRUE);
         return this;
     }
@@ -172,10 +118,10 @@ public class XEasyPdfText extends XEasyPdfTextBase {
     /**
      * 开启上下文重置
      *
-     * @return 返回文本组件
+     * @return 返回角标组件
      */
     @Override
-    public XEasyPdfText enableResetContext() {
+    public XEasyPdfTextScript enableResetContext() {
         this.param.setIsResetContext(Boolean.TRUE);
         return this;
     }
@@ -183,9 +129,9 @@ public class XEasyPdfText extends XEasyPdfTextBase {
     /**
      * 开启自身样式
      *
-     * @return 返回文本组件
+     * @return 返回角标组件
      */
-    public XEasyPdfText enableSelfStyle() {
+    public XEasyPdfTextScript enableSelfStyle() {
         this.param.setUseSelfStyle(Boolean.TRUE);
         return this;
     }
@@ -193,9 +139,9 @@ public class XEasyPdfText extends XEasyPdfTextBase {
     /**
      * 关闭自身样式
      *
-     * @return 返回文本组件
+     * @return 返回角标组件
      */
-    public XEasyPdfText disableSelfStyle() {
+    public XEasyPdfTextScript disableSelfStyle() {
         this.param.setUseSelfStyle(Boolean.FALSE);
         return this;
     }
@@ -204,9 +150,9 @@ public class XEasyPdfText extends XEasyPdfTextBase {
      * 设置自动缩进
      *
      * @param indent 缩进值
-     * @return 返回文本组件
+     * @return 返回角标组件
      */
-    public XEasyPdfText setAutoIndent(int indent) {
+    public XEasyPdfTextScript setAutoIndent(int indent) {
         this.param.setIndent(Math.abs(indent));
         return this;
     }
@@ -235,9 +181,9 @@ public class XEasyPdfText extends XEasyPdfTextBase {
      * 设置边距（上下左右）
      *
      * @param margin 边距
-     * @return 返回文本组件
+     * @return 返回角标组件
      */
-    public XEasyPdfText setMargin(float margin) {
+    public XEasyPdfTextScript setMargin(float margin) {
         this.param.setMarginLeft(margin).setMarginRight(margin).setMarginTop(margin).setMarginBottom(margin);
         return this;
     }
@@ -246,9 +192,9 @@ public class XEasyPdfText extends XEasyPdfTextBase {
      * 设置左边距
      *
      * @param margin 边距
-     * @return 返回文本组件
+     * @return 返回角标组件
      */
-    public XEasyPdfText setMarginLeft(float margin) {
+    public XEasyPdfTextScript setMarginLeft(float margin) {
         this.param.setMarginLeft(margin);
         return this;
     }
@@ -257,9 +203,9 @@ public class XEasyPdfText extends XEasyPdfTextBase {
      * 设置右边距
      *
      * @param margin 边距
-     * @return 返回文本组件
+     * @return 返回角标组件
      */
-    public XEasyPdfText setMarginRight(float margin) {
+    public XEasyPdfTextScript setMarginRight(float margin) {
         this.param.setMarginRight(margin);
         return this;
     }
@@ -268,9 +214,9 @@ public class XEasyPdfText extends XEasyPdfTextBase {
      * 设置上边距
      *
      * @param margin 边距
-     * @return 返回文本组件
+     * @return 返回角标组件
      */
-    public XEasyPdfText setMarginTop(float margin) {
+    public XEasyPdfTextScript setMarginTop(float margin) {
         this.param.setMarginTop(margin);
         return this;
     }
@@ -279,9 +225,9 @@ public class XEasyPdfText extends XEasyPdfTextBase {
      * 设置下边距
      *
      * @param margin 边距
-     * @return 返回文本组件
+     * @return 返回角标组件
      */
-    public XEasyPdfText setMarginBottom(float margin) {
+    public XEasyPdfTextScript setMarginBottom(float margin) {
         this.param.setMarginBottom(margin);
         return this;
     }
@@ -290,9 +236,9 @@ public class XEasyPdfText extends XEasyPdfTextBase {
      * 设置行间距
      *
      * @param leading 行间距
-     * @return 返回文本组件
+     * @return 返回角标组件
      */
-    public XEasyPdfText setLeading(float leading) {
+    public XEasyPdfTextScript setLeading(float leading) {
         this.param.setLeading(Math.abs(leading));
         return this;
     }
@@ -301,9 +247,9 @@ public class XEasyPdfText extends XEasyPdfTextBase {
      * 设置文本间隔
      *
      * @param characterSpacing 文本间隔
-     * @return 返回文本组件
+     * @return 返回角标组件
      */
-    public XEasyPdfText setCharacterSpacing(float characterSpacing) {
+    public XEasyPdfTextScript setCharacterSpacing(float characterSpacing) {
         this.param.setCharacterSpacing(Math.abs(characterSpacing));
         return this;
     }
@@ -312,9 +258,9 @@ public class XEasyPdfText extends XEasyPdfTextBase {
      * 设置字体路径
      *
      * @param fontPath 字体路径
-     * @return 返回文本组件
+     * @return 返回角标组件
      */
-    public XEasyPdfText setFontPath(String fontPath) {
+    public XEasyPdfTextScript setFontPath(String fontPath) {
         this.param.setFontPath(fontPath);
         return this;
     }
@@ -323,9 +269,9 @@ public class XEasyPdfText extends XEasyPdfTextBase {
      * 设置默认字体样式
      *
      * @param style 默认字体样式
-     * @return 返回文本组件
+     * @return 返回角标组件
      */
-    public XEasyPdfText setDefaultFontStyle(XEasyPdfDefaultFontStyle style) {
+    public XEasyPdfTextScript setDefaultFontStyle(XEasyPdfDefaultFontStyle style) {
         if (style != null) {
             this.param.setFontPath(style.getPath());
         }
@@ -336,9 +282,9 @@ public class XEasyPdfText extends XEasyPdfTextBase {
      * 设置字体大小
      *
      * @param fontSize 字体大小
-     * @return 返回文本组件
+     * @return 返回角标组件
      */
-    public XEasyPdfText setFontSize(float fontSize) {
+    public XEasyPdfTextScript setFontSize(float fontSize) {
         this.param.setFontSize(Math.abs(fontSize));
         return this;
     }
@@ -347,9 +293,9 @@ public class XEasyPdfText extends XEasyPdfTextBase {
      * 设置字体颜色
      *
      * @param fontColor 字体颜色
-     * @return 返回文本组件
+     * @return 返回角标组件
      */
-    public XEasyPdfText setFontColor(Color fontColor) {
+    public XEasyPdfTextScript setFontColor(Color fontColor) {
         if (fontColor != null) {
             this.param.setFontColor(fontColor);
         }
@@ -360,9 +306,9 @@ public class XEasyPdfText extends XEasyPdfTextBase {
      * 设置高亮颜色
      *
      * @param highlightColor 高亮颜色
-     * @return 返回文本组件
+     * @return 返回角标组件
      */
-    public XEasyPdfText setHighlightColor(Color highlightColor) {
+    public XEasyPdfTextScript setHighlightColor(Color highlightColor) {
         if (highlightColor != null) {
             this.param.setHighlightColor(highlightColor);
         }
@@ -373,9 +319,9 @@ public class XEasyPdfText extends XEasyPdfTextBase {
      * 设置下划线颜色
      *
      * @param underlineColor 下划线颜色
-     * @return 返回文本组件
+     * @return 返回角标组件
      */
-    public XEasyPdfText setUnderlineColor(Color underlineColor) {
+    public XEasyPdfTextScript setUnderlineColor(Color underlineColor) {
         if (underlineColor != null) {
             this.param.setUnderlineColor(underlineColor);
         }
@@ -386,9 +332,9 @@ public class XEasyPdfText extends XEasyPdfTextBase {
      * 设置下划线线宽
      *
      * @param underlineWidth 下划线线宽
-     * @return 返回文本组件
+     * @return 返回角标组件
      */
-    public XEasyPdfText setUnderlineWidth(float underlineWidth) {
+    public XEasyPdfTextScript setUnderlineWidth(float underlineWidth) {
         this.param.setUnderlineWidth(Math.abs(underlineWidth));
         return this;
     }
@@ -397,9 +343,9 @@ public class XEasyPdfText extends XEasyPdfTextBase {
      * 设置删除线颜色
      *
      * @param deleteLineColor 删除线颜色
-     * @return 返回文本组件
+     * @return 返回角标组件
      */
-    public XEasyPdfText setDeleteLineColor(Color deleteLineColor) {
+    public XEasyPdfTextScript setDeleteLineColor(Color deleteLineColor) {
         if (deleteLineColor != null) {
             this.param.setDeleteLineColor(deleteLineColor);
         }
@@ -410,9 +356,9 @@ public class XEasyPdfText extends XEasyPdfTextBase {
      * 设置删除线线宽
      *
      * @param deleteLineWidth 删除线线宽
-     * @return 返回文本组件
+     * @return 返回角标组件
      */
-    public XEasyPdfText setDeleteLineWidth(float deleteLineWidth) {
+    public XEasyPdfTextScript setDeleteLineWidth(float deleteLineWidth) {
         this.param.setDeleteLineWidth(Math.abs(deleteLineWidth));
         return this;
     }
@@ -421,9 +367,9 @@ public class XEasyPdfText extends XEasyPdfTextBase {
      * 设置超链接地址
      *
      * @param linkUrl 超链接地址
-     * @return 返回文本组件
+     * @return 返回角标组件
      */
-    public XEasyPdfText setLink(String linkUrl) {
+    public XEasyPdfTextScript setLink(String linkUrl) {
         this.param.setLinkUrl(linkUrl);
         return this;
     }
@@ -432,9 +378,9 @@ public class XEasyPdfText extends XEasyPdfTextBase {
      * 设置评论
      *
      * @param comment 评论
-     * @return 返回文本组件
+     * @return 返回角标组件
      */
-    public XEasyPdfText setComment(String comment) {
+    public XEasyPdfTextScript setComment(String comment) {
         this.param.setComment(comment);
         return this;
     }
@@ -445,77 +391,9 @@ public class XEasyPdfText extends XEasyPdfTextBase {
      * @param alpha 文本透明度
      * @return 返回页面水印组件
      */
-    public XEasyPdfText setAlpha(float alpha) {
+    public XEasyPdfTextScript setAlpha(float alpha) {
         if (alpha >= 0 && alpha <= 1) {
             this.param.setAlpha(alpha);
-        }
-        return this;
-    }
-
-    /**
-     * 设置文本弧度(逆时针旋转)
-     *
-     * @param radians 文本弧度
-     * @return 返回文本扩展组件
-     */
-    public XEasyPdfText setRadians(double radians) {
-        final int min = 0;
-        final int max = 360;
-        if (radians % max != min) {
-            radians = radians % max;
-            if (radians < min) {
-                radians += max;
-            }
-            this.param.setRadians(radians);
-        }
-        return this;
-    }
-
-    /**
-     * 设置水平样式（居左、居中、居右）
-     *
-     * @param style 样式
-     * @return 返回文本组件
-     */
-    public XEasyPdfText setHorizontalStyle(XEasyPdfPositionStyle style) {
-        // 如果样式不为空，则设置样式
-        if (style != null) {
-            // 检查水平样式
-            XEasyPdfPositionStyle.checkHorizontalStyle(style);
-            // 设置全局水平样式
-            this.param.setHorizontalStyle(style);
-        }
-        return this;
-    }
-
-    /**
-     * 设置垂直样式（居上、居中、居下）
-     *
-     * @param style 样式
-     * @return 返回文本组件
-     */
-    public XEasyPdfText setVerticalStyle(XEasyPdfPositionStyle style) {
-        // 如果样式不为空，则设置样式
-        if (style != null) {
-            // 检查水平样式
-            XEasyPdfPositionStyle.checkVerticalStyle(style);
-            // 设置全局水平样式
-            this.param.setVerticalStyle(style);
-        }
-        return this;
-    }
-
-    /**
-     * 设置拆分后的待添加文本列表
-     *
-     * @param splitTextList 拆分后的待添加文本列表
-     * @return 返回文本组件
-     */
-    public XEasyPdfText setSplitTextList(List<String> splitTextList) {
-        if (splitTextList==null) {
-            this.param.setSplitTextList(null).setSplitTemplateTextList(null);
-        }else {
-            this.param.setSplitTextList(new ArrayList<>(splitTextList)).setSplitTemplateTextList(new ArrayList<>(splitTextList));
         }
         return this;
     }
@@ -525,9 +403,9 @@ public class XEasyPdfText extends XEasyPdfTextBase {
      *
      * @param oldValue    待替换字符串
      * @param replacement 替换字符串
-     * @return 返回返回文本组件
+     * @return 返回返回角标组件
      */
-    public XEasyPdfText setReplaceCharacters(String oldValue, String replacement) {
+    public XEasyPdfTextScript setReplaceCharacters(String oldValue, String replacement) {
         if (oldValue != null && replacement != null) {
             this.param.getReplaceCharacterMap().put(oldValue, replacement);
         }
@@ -538,9 +416,9 @@ public class XEasyPdfText extends XEasyPdfTextBase {
      * 设置替换字符
      *
      * @param replaceMap 待替换字典
-     * @return 返回返回文本组件
+     * @return 返回返回角标组件
      */
-    public XEasyPdfText setReplaceCharacters(Map<String, String> replaceMap) {
+    public XEasyPdfTextScript setReplaceCharacters(Map<String, String> replaceMap) {
         if (replaceMap != null && !replaceMap.isEmpty()) {
             this.param.getReplaceCharacterMap().putAll(replaceMap);
         }
@@ -551,9 +429,9 @@ public class XEasyPdfText extends XEasyPdfTextBase {
      * 设置是否换行（影响下一个组件是否换行）
      *
      * @param isNewLine 是否换行
-     * @return 返回文本组件
+     * @return 返回角标组件
      */
-    public XEasyPdfText setNewLine(boolean isNewLine) {
+    public XEasyPdfTextScript setNewLine(boolean isNewLine) {
         this.param.setIsNewLine(isNewLine);
         return this;
     }
@@ -562,9 +440,9 @@ public class XEasyPdfText extends XEasyPdfTextBase {
      * 设置是否分页检查
      *
      * @param isCheckPage 是否分页检查
-     * @return 返回文本组件
+     * @return 返回角标组件
      */
-    public XEasyPdfText setCheckPage(boolean isCheckPage) {
+    public XEasyPdfTextScript setCheckPage(boolean isCheckPage) {
         this.param.setCheckPage(isCheckPage);
         return this;
     }
@@ -574,10 +452,10 @@ public class XEasyPdfText extends XEasyPdfTextBase {
      *
      * @param beginX 当前页面X轴坐标
      * @param beginY 当前页面Y轴坐标
-     * @return 返回文本组件
+     * @return 返回角标组件
      */
     @Override
-    public XEasyPdfText setPosition(float beginX, float beginY) {
+    public XEasyPdfTextScript setPosition(float beginX, float beginY) {
         this.param.setBeginX(beginX).setBeginY(beginY);
         return this;
     }
@@ -586,10 +464,10 @@ public class XEasyPdfText extends XEasyPdfTextBase {
      * 设置宽度
      *
      * @param width 宽度
-     * @return 返回文本组件
+     * @return 返回角标组件
      */
     @Override
-    public XEasyPdfText setWidth(float width) {
+    public XEasyPdfTextScript setWidth(float width) {
         this.param.setMaxWidth(Math.abs(width));
         return this;
     }
@@ -598,10 +476,10 @@ public class XEasyPdfText extends XEasyPdfTextBase {
      * 设置高度
      *
      * @param height 高度
-     * @return 返回文本组件
+     * @return 返回角标组件
      */
     @Override
-    public XEasyPdfText setHeight(float height) {
+    public XEasyPdfTextScript setHeight(float height) {
         this.param.setMaxHeight(Math.abs(height));
         return this;
     }
@@ -610,9 +488,9 @@ public class XEasyPdfText extends XEasyPdfTextBase {
      * 设置最大高度
      *
      * @param maxHeight 最大高度
-     * @return 返回文本组件
+     * @return 返回角标组件
      */
-    public XEasyPdfText setMaxHeight(Float maxHeight) {
+    public XEasyPdfTextScript setMaxHeight(Float maxHeight) {
         this.param.setMaxHeight(maxHeight);
         return this;
     }
@@ -621,10 +499,10 @@ public class XEasyPdfText extends XEasyPdfTextBase {
      * 设置内容模式
      *
      * @param mode 内容模式
-     * @return 返回文本组件
+     * @return 返回角标组件
      */
     @Override
-    public XEasyPdfText setContentMode(ContentMode mode) {
+    public XEasyPdfTextScript setContentMode(ContentMode mode) {
         if (mode != null) {
             this.param.setContentMode(mode);
         }
@@ -635,9 +513,9 @@ public class XEasyPdfText extends XEasyPdfTextBase {
      * 设置渲染模式
      *
      * @param renderingMode 渲染模式
-     * @return 返回文本组件
+     * @return 返回角标组件
      */
-    public XEasyPdfText setRenderingMode(XEasypdfTextRenderingMode renderingMode) {
+    public XEasyPdfTextScript setRenderingMode(XEasypdfTextRenderingMode renderingMode) {
         if (renderingMode != null) {
             this.param.setRenderingMode(renderingMode);
         }
@@ -648,10 +526,10 @@ public class XEasyPdfText extends XEasyPdfTextBase {
      * 设置分页条件
      *
      * @param pagingCondition 分页条件
-     * @return 返回文本组件
+     * @return 返回角标组件
      */
     @Override
-    public XEasyPdfText setPagingCondition(XEasyPdfPagingCondition pagingCondition) {
+    public XEasyPdfTextScript setPagingCondition(XEasyPdfPagingCondition pagingCondition) {
         this.param.setPagingCondition(pagingCondition);
         return this;
     }
@@ -660,31 +538,36 @@ public class XEasyPdfText extends XEasyPdfTextBase {
      * 设置是否需要初始化
      *
      * @param needInitialize 是否需要初始化
-     * @return 返回文本组件
+     * @return 返回角标组件
      */
     @Override
-    public XEasyPdfText setNeedInitialize(boolean needInitialize) {
+    public XEasyPdfTextScript setNeedInitialize(boolean needInitialize) {
         this.param.setIsNeedInitialize(needInitialize);
         return this;
     }
 
     /**
-     * 替换占位符
+     * 设置字体缩放比例
      *
-     * @param placeholder 占位符
-     * @param value       新字符串
-     * @return 返回文本组件
+     * @param fontScaleRatio 字体缩放比例（0.1~0.7之间）
+     * @return 返回角标组件
      */
-    public XEasyPdfText replaceAllPlaceholder(String placeholder, String value) {
-        // 获取待添加文本列表
-        List<String> textList = this.param.getSplitTextList();
-        // 获取待添加文本列表(模板)
-        List<String> templateTextList = this.param.getSplitTemplateTextList();
-        // 遍历待添加文本列表
-        for (int i = 0, count = textList.size(); i < count; i++) {
-            // 替换占位符
-            textList.set(i, templateTextList.get(i).replace(placeholder, value));
-        }
+    public XEasyPdfTextScript setFontScaleRatio(float fontScaleRatio) {
+        float ratio = Math.abs(fontScaleRatio);
+        float max = 0.7F;
+        float min = 0.1F;
+        this.param.setFontScaleRatio(Math.min(max, Math.max(ratio, min)));
+        return this;
+    }
+
+    /**
+     * 设置角标类型
+     *
+     * @param scriptType 角标类型
+     * @return 返回角标组件
+     */
+    public XEasyPdfTextScript setScriptType(XEasyPdfTextScriptType scriptType) {
+        this.param.setScriptType(scriptType);
         return this;
     }
 
@@ -828,7 +711,7 @@ public class XEasyPdfText extends XEasyPdfTextBase {
      * @return 返回透明度
      */
     @Override
-    public float getAlpha() {
+    float getAlpha() {
         return this.param.getAlpha();
     }
 
@@ -1058,6 +941,24 @@ public class XEasyPdfText extends XEasyPdfTextBase {
      */
     @Override
     void init(XEasyPdfDocument document, XEasyPdfPage page) {
+        // 如果字体缩放比例未初始化，则初始化为0.5F
+        if (this.param.getFontScaleRatio() == null) {
+            // 初始化为0.5F
+            this.param.setFontScaleRatio(0.5F);
+        }
+        // 如果角标类型未初始化，则初始化为上标类型
+        if (this.param.getScriptType() == null) {
+            // 初始化为上标类型
+            this.param.setScriptType(XEasyPdfTextScriptType.SUPERSCRIPT);
+        }
+        // 如果渲染模式未初始化，则初始化为正常
+        if (this.param.getRenderingMode() == null) {
+            // 初始化为正常
+            this.param.setRenderingMode(XEasypdfTextRenderingMode.NORMAL);
+        }
+        // 初始化文本追加
+        this.param.setIsTextAppend(Boolean.TRUE);
+        // 其他参数初始化
         this.param.init(document, page);
     }
 
@@ -1074,6 +975,19 @@ public class XEasyPdfText extends XEasyPdfTextBase {
         return this.param.initBeginX(document, page, text);
     }
 
+    /**
+     * 绘制
+     *
+     * @param document pdf文档
+     * @param page     pdf页面
+     */
+    @Override
+    public void draw(XEasyPdfDocument document, XEasyPdfPage page) {
+        // 初始化
+        this.init(document, page);
+        // 绘制
+        this.doDraw(document, page);
+    }
 
     /**
      * 添加文本
@@ -1095,59 +1009,92 @@ public class XEasyPdfText extends XEasyPdfTextBase {
             float beginX,
             float beginY
     ) {
-        // 如果文本弧度大于0，则进行文本旋转
-        if (this.param.getRadians() > 0) {
-            // 如果开启整行旋转，则整行旋转
-            if (this.param.getIsRotateLine()) {
-                // 开启文本输入
-                stream.beginText();
-                // 设置文本弧度
-                stream.setTextMatrix(Matrix.getRotateInstance(Math.toRadians(this.param.getRadians()), beginX, beginY));
-                // 文本输入
-                stream.showText(text);
-                // 结束文本写入
-                stream.endText();
-            }
-            // 否则单字符旋转
-            else {
-                // 当前行x轴坐标
-                float x = beginX;
-                // 获取当前行字符数组
-                char[] charArray = text.toCharArray();
-                // 定义临时字符串
-                String textTemp;
-                // 遍历前行字符数组
-                for (char c : charArray) {
-                    // 获取待写入文本
-                    textTemp = String.valueOf(c);
-                    // 开启文本输入
-                    stream.beginText();
-                    // 设置文本弧度
-                    stream.setTextMatrix(Matrix.getRotateInstance(Math.toRadians(this.param.getRadians()), x, beginY));
-                    // 文本输入
-                    stream.showText(textTemp);
-                    // 结束文本写入
-                    stream.endText();
-                    // 重置当前行x轴坐标， x轴坐标 = x轴坐标 + 文本宽度
-                    x = x + XEasyPdfTextUtil.getTextRealWidth(textTemp, font, this.param.getFontSize(), this.param.getCharacterSpacing());
-                }
-            }
+        // 如果角标类型为上标，则添加文本上标
+        if (this.param.getScriptType() == XEasyPdfTextScriptType.SUPERSCRIPT) {
+            // 添加文本上标
+            this.addTextSuperscript(font, page, stream, text, beginX, beginY);
         }
-        // 否则正常文本输入
-        else {
-            // 开启文本输入
-            stream.beginText();
+        // 如果角标类型为下标，则添加文本下标
+        if (this.param.getScriptType() == XEasyPdfTextScriptType.SUBSCRIPT) {
+            // 添加文本下标
+            this.addTextSubscript(font, page, stream, text, beginX, beginY);
+        }
+    }
+
+    /**
+     * 添加文本上标
+     *
+     * @param font   pdfbox字体
+     * @param page   pdf页面
+     * @param stream 内容流
+     * @param text   待写入文本
+     * @param beginX X轴坐标
+     * @param beginY Y轴坐标
+     */
+    @SneakyThrows
+    private void addTextSuperscript(
+            PDFont font,
+            XEasyPdfPage page,
+            PDPageContentStream stream,
+            String text,
+            float beginX,
+            float beginY
+    ) {
+        // 定义文本移动基线
+        float textRise = XEasyPdfFontUtil.getFontHeight(font, this.param.getFontSize()) * (1 - this.param.getFontScaleRatio());
+        // 开启文本输入
+        stream.beginText();
+        // 如果渲染模式为斜体，则设置字体为斜体
+        if (this.param.getRenderingMode().isItalic()) {
             // 设置斜体
-            this.setItalic(stream, beginX, beginY);
-            // 文本输入
-            stream.showText(text);
-            // 结束文本写入
-            stream.endText();
+            stream.setTextMatrix(new Matrix(this.param.getFontScaleRatio(), 0F, 0.2F, this.param.getFontScaleRatio(), beginX, beginY + textRise));
         }
-        // 重置颜色为页面背景色
-        stream.setStrokingColor(page.getBackgroundColor());
-        // 重置颜色为页面背景色
-        stream.setNonStrokingColor(page.getBackgroundColor());
+        // 否则设置文本定位
+        else {
+            // 设置文本定位
+            stream.setTextMatrix(new Matrix(this.param.getFontScaleRatio(), 0F, 0F, this.param.getFontScaleRatio(), beginX, beginY + textRise));
+        }
+        // 文本输入
+        stream.showText(text);
+        // 结束文本写入
+        stream.endText();
+    }
+
+    /**
+     * 添加文本下标
+     *
+     * @param font   pdfbox字体
+     * @param page   pdf页面
+     * @param stream 内容流
+     * @param text   待写入文本
+     * @param beginX X轴坐标
+     * @param beginY Y轴坐标
+     */
+    @SneakyThrows
+    private void addTextSubscript(
+            PDFont font,
+            XEasyPdfPage page,
+            PDPageContentStream stream,
+            String text,
+            float beginX,
+            float beginY
+    ) {
+        // 开启文本输入
+        stream.beginText();
+        // 如果渲染模式为斜体，则设置字体为斜体
+        if (this.param.getRenderingMode().isItalic()) {
+            // 设置斜体
+            stream.setTextMatrix(new Matrix(this.param.getFontScaleRatio(), 0F, 0.2F, this.param.getFontScaleRatio(), beginX, beginY));
+        }
+        // 否则设置文本定位
+        else {
+            // 设置文本定位
+            stream.setTextMatrix(new Matrix(this.param.getFontScaleRatio(), 0F, 0F, this.param.getFontScaleRatio(), beginX, beginY));
+        }
+        // 文本输入
+        stream.showText(text);
+        // 结束文本写入
+        stream.endText();
     }
 
     /**
@@ -1169,37 +1116,9 @@ public class XEasyPdfText extends XEasyPdfTextBase {
         rectangle.setLowerLeftY(beginY);
         // 设置结束Y轴坐标
         rectangle.setUpperRightY(beginY + this.param.getFontHeight());
-        // 如果文本弧度大于0，则结束X轴坐标为起始坐标+字体大小*字符数
-        if (this.param.getRadians() > 0) {
-            // 设置结束X轴坐标为起始坐标+字体大小*字符数
-            rectangle.setUpperRightX(beginX + this.param.getFontSize() * text.length());
-        }
-        // 文本弧度为0，则结束X轴坐标为起始坐标+文本真实宽度
-        else {
-            // 设置结束X轴坐标为起始坐标+文本真实宽度
-            rectangle.setUpperRightX(beginX + XEasyPdfTextUtil.getTextRealWidth(text, font, this.param.getFontSize(), this.getCharacterSpacing()));
-        }
+        // 设置结束X轴坐标为起始坐标+文本真实宽度
+        rectangle.setUpperRightX(beginX + XEasyPdfTextUtil.getTextRealWidth(text, font, this.param.getFontSize() * this.param.getFontScaleRatio(), this.getCharacterSpacing()));
+        // 返回尺寸
         return rectangle;
-    }
-
-    /**
-     * 设置斜体
-     *
-     * @param stream 内容流
-     * @param beginX X轴坐标
-     * @param beginY Y轴坐标
-     */
-    @SneakyThrows
-    private void setItalic(PDPageContentStream stream, float beginX, float beginY) {
-        // 如果渲染模式为斜体，则设置字体为斜体
-        if (this.param.getRenderingMode().isItalic()) {
-            // 设置斜体
-            stream.setTextMatrix(new Matrix(1, 0, 0.2F, 1, beginX, beginY));
-        }
-        // 否则设置文本定位
-        else {
-            // 设置文本定位
-            stream.newLineAtOffset(beginX, beginY);
-        }
     }
 }

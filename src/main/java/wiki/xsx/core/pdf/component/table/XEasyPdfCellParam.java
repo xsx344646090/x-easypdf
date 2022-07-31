@@ -39,26 +39,6 @@ class XEasyPdfCellParam implements Serializable {
      */
     private XEasyPdfComponent.ContentMode contentMode;
     /**
-     * 是否重置上下文
-     */
-    private Boolean isResetContext;
-    /**
-     * 是否水平合并
-     */
-    private Boolean isHorizontalMerge = Boolean.FALSE;
-    /**
-     * 是否垂直合并
-     */
-    private Boolean isVerticalMerge = Boolean.FALSE;
-    /**
-     * 是否组件换行
-     */
-    private Boolean isNewLine = Boolean.TRUE;
-    /**
-     * 是否组件样式
-     */
-    private Boolean isComponentSelfStyle = Boolean.FALSE;
-    /**
      * 是否带有边框
      */
     private Boolean hasBorder;
@@ -148,6 +128,30 @@ class XEasyPdfCellParam implements Serializable {
      * 默认居上
      */
     private XEasyPdfPositionStyle verticalStyle;
+    /**
+     * 是否重置上下文
+     */
+    private Boolean isResetContext;
+    /**
+     * 是否水平合并
+     */
+    private Boolean isHorizontalMerge = Boolean.FALSE;
+    /**
+     * 是否垂直合并
+     */
+    private Boolean isVerticalMerge = Boolean.FALSE;
+    /**
+     * 是否组件换行
+     */
+    private Boolean isNewLine = Boolean.TRUE;
+    /**
+     * 是否组件样式
+     */
+    private Boolean isComponentSelfStyle = Boolean.FALSE;
+    /**
+     * 是否自动缩放字体大小
+     */
+    private Boolean isAutoScaleFontSize;
 
     /**
      * 初始化
@@ -241,6 +245,11 @@ class XEasyPdfCellParam implements Serializable {
         if (this.verticalStyle == null) {
             // 初始化垂直样式
             this.verticalStyle = rowParam.getVerticalStyle();
+        }
+        // 如果是否自动缩放字体大小未初始化，则初始化为表格行是否自动缩放字体大小
+        if (this.isAutoScaleFontSize == null) {
+            // 初始化为表格行是否自动缩放字体大小
+            this.isAutoScaleFontSize = rowParam.getIsAutoScaleFontSize();
         }
     }
 }

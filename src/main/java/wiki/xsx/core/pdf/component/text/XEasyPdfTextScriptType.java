@@ -1,11 +1,10 @@
-package wiki.xsx.core.pdf;
-
-import org.junit.Test;
-import wiki.xsx.core.pdf.handler.XEasyPdfHandler;
+package wiki.xsx.core.pdf.component.text;
 
 /**
+ * pdf文本角标类型
+ *
  * @author xsx
- * @date 2022/6/26
+ * @date 2022/7/30
  * @since 1.8
  * <p>
  * Copyright (c) 2020-2022 xsx All Rights Reserved.
@@ -19,11 +18,13 @@ import wiki.xsx.core.pdf.handler.XEasyPdfHandler;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public class HelloWorld {
-
-    @Test
-    public void test() {
-        System.setProperty(XEasyPdfHandler.FontMappingPolicy.key(), XEasyPdfHandler.FontMappingPolicy.ALL.name());
-        XEasyPdfHandler.Document.build(XEasyPdfHandler.Page.build(XEasyPdfHandler.Text.build("Hello World"))).save("E:\\pdf\\hello-world.pdf").close();
-    }
+public enum XEasyPdfTextScriptType {
+    /**
+     * 上标
+     */
+    SUPERSCRIPT,
+    /**
+     * 下标
+     */
+    SUBSCRIPT;
 }

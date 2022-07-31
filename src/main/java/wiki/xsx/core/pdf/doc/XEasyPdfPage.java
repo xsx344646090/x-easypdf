@@ -747,6 +747,12 @@ public class XEasyPdfPage implements Serializable {
                     this.modifyPageSize(page, modifyPageSize);
                 }
             }
+            // 绘制页眉与页脚
+            this.drawHeaderAndFooter(document);
+            // 绘制背景图片
+            this.drawBackgroundImage(document);
+            // 设置背景颜色
+            this.setLastPageBackgroundColor(document);
         }
         // 获取pdf组件列表
         List<XEasyPdfComponent> componentList = this.param.getComponentList();

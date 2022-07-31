@@ -3,7 +3,6 @@ package wiki.xsx.core.pdf.doc;
 import lombok.SneakyThrows;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageTree;
@@ -33,6 +32,7 @@ import java.awt.print.PrinterJob;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.*;
 
@@ -988,23 +988,22 @@ public class XEasyPdfDocument implements Closeable, Serializable {
         List<PDDocument> tempList = new ArrayList<>(tempTargetList.size());
         // 遍历临时任务
         for (String tempPath : tempTargetList) {
-            // 读取临时文件
-            File file = new File(tempPath);
-            // 加载临时pdfbox文档
-            PDDocument temp = PDDocument.load(file, MemoryUsageSetting.setupTempFileOnly());
-            // 获取临时pdfbox页面树
-            PDPageTree tempPageTree = temp.getPages();
-            // 遍历临时页面树
-            for (PDPage page : tempPageTree) {
-                // 添加页面至任务文档
-                PDPage importPage = target.importPage(page);
-                // 添加页面资源
-                importPage.setResources(page.getResources());
+            // 创建输入流
+            try (InputStream inputStream = Files.newInputStream(Paths.get(tempPath), StandardOpenOption.DELETE_ON_CLOSE)) {
+                // 加载临时pdfbox文档
+                PDDocument temp = PDDocument.load(inputStream);
+                // 获取临时pdfbox页面树
+                PDPageTree tempPageTree = temp.getPages();
+                // 遍历临时页面树
+                for (PDPage page : tempPageTree) {
+                    // 添加页面至任务文档
+                    PDPage importPage = target.importPage(page);
+                    // 添加页面资源
+                    importPage.setResources(page.getResources());
+                }
+                // 添加临时文档列表
+                tempList.add(temp);
             }
-            // 添加临时文档列表
-            tempList.add(temp);
-            // 删除临时文件
-            file.deleteOnExit();
         }
         // 替换总页码占位符
         this.replaceTotalPagePlaceholder(target, true);

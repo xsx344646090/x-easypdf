@@ -6,7 +6,7 @@
 </p>
 
 #### 更新说明
-master分支将作为稳定版本发布，develop分支将会不定期进行更新，欢迎大家提供宝贵意见，目前稳定版本 v2.9.8，QQ交流群：15018726
+master分支将作为稳定版本发布，develop分支将会不定期进行更新，欢迎大家提供宝贵意见，目前稳定版本 v2.9.9，QQ交流群：15018726
 
 ---
 
@@ -21,7 +21,7 @@ https://www.x-easypdf.cn
 ---
 
 #### 当前版本
-> <font size=3>v2.9.8</font>
+> <font size=3>v2.9.9</font>
 
 ---
 
@@ -102,7 +102,7 @@ https://www.x-easypdf.cn
 <dependency>
     <groupId>wiki.xsx</groupId>
     <artifactId>x-easypdf</artifactId>
-    <version>2.9.8</version>
+    <version>2.9.9</version>
 </dependency>
 ```
 
@@ -193,7 +193,7 @@ XEasyPdfHandler.Document.build(XEasyPdfHandler.Page.build(XEasyPdfHandler.Text.b
 <a href="https://dynamictp.cn/" target="_blank">
 <img src="https://oss.dev33.cn/sa-token/link/dynamic-tp.png" title="基于配置中心的轻量级动态可监控线程池" width="15%">
 </a>
-<a href="https://gitee.com/dromara/x-easypdf" target="_blank">
+<a href="https://www.x-easypdf.cn" target="_blank">
 <img src="https://oss.dev33.cn/sa-token/link/x-easypdf.png" title="一个用搭积木的方式构建pdf的框架（基于pdfbox）" width="15%">
 </a>
 <a href="http://dromara.gitee.io/image-combiner" target="_blank">

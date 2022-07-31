@@ -42,6 +42,10 @@ public class XEasyPdfFontMapperHandler implements FontMapper {
      */
     private static final ConcurrentHashMap<String, FontBoxFont> FONT_PATH_MAPPING = new ConcurrentHashMap<>(16);
     /**
+     * 默认字体名称
+     */
+    private static final String DEFAULT_FONT_NAME = XEasyPdfDefaultFontStyle.NORMAL.getName();
+    /**
      * 字体映射助手实例
      */
     private static final XEasyPdfFontMapperHandler INSTANCE = new XEasyPdfFontMapperHandler();
@@ -102,8 +106,8 @@ public class XEasyPdfFontMapperHandler implements FontMapper {
             // 返回字体
             return new FontMapping<>(ttf, false);
         }
-        // 返回空
-        return null;
+        // 返回默认字体
+        return new FontMapping<>((TrueTypeFont) FONT_NAME_MAPPING.get(DEFAULT_FONT_NAME), true);
     }
 
     /**
@@ -122,8 +126,8 @@ public class XEasyPdfFontMapperHandler implements FontMapper {
             // 返回字体
             return new FontMapping<>(font, false);
         }
-        // 返回空
-        return null;
+        // 返回默认字体
+        return new FontMapping<>(FONT_NAME_MAPPING.get(DEFAULT_FONT_NAME), true);
     }
 
     /**
@@ -149,7 +153,7 @@ public class XEasyPdfFontMapperHandler implements FontMapper {
             return new CIDFontMapping(null, font, false);
         }
         // 返回默认字体类型信息
-        return new CIDFontMapping(null, FONT_NAME_MAPPING.get(XEasyPdfDefaultFontStyle.NORMAL.getName()), false);
+        return new CIDFontMapping(null, FONT_NAME_MAPPING.get(DEFAULT_FONT_NAME), true);
     }
 
     /**
@@ -162,15 +166,17 @@ public class XEasyPdfFontMapperHandler implements FontMapper {
         for (XEasyPdfDefaultFontStyle style : styles) {
             // 初始化输入流（从资源路径读取）
             try (InputStream inputStream = new BufferedInputStream(XEasyPdfFontMapperHandler.class.getResourceAsStream(style.getPath()))) {
+                // 解析字体
+                TrueTypeFont font = new TTFParser(true, true).parse(inputStream);
                 // 添加字体
-                addFont(style.getPath(), new TTFParser(true, true).parse(inputStream));
+                this.addFont(style.getPath(), font);
             } catch (IOException e) {
                 // 提示异常信息
                 throw new RuntimeException(e);
             }
         }
         // 初始化字体映射
-        initFontMapper();
+        this.initFontMapper();
     }
 
     /**

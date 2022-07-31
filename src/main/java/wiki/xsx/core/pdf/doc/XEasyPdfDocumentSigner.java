@@ -23,6 +23,9 @@ import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.Security;
@@ -195,35 +198,94 @@ public class XEasyPdfDocumentSigner implements Serializable {
      */
     @SneakyThrows
     public void sign(int pageIndex, OutputStream outputStream) {
-        // 初始化参数
-        this.param.init(pageIndex);
         // 创建字节数组输出流
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(8192)) {
+            // 初始化参数
+            this.param.init(pageIndex);
             // 创建任务文档
             PDDocument target = this.param.getDocument();
             // 保存文档
             target.save(byteArrayOutputStream);
             // 添加签名
-            this.addSignature(PDDocument.load(byteArrayOutputStream.toByteArray()), outputStream);
+            this.addSignature(true, PDDocument.load(byteArrayOutputStream.toByteArray()), outputStream);
         }
         // 关闭文档
         this.param.getPdfDocument().close();
     }
 
     /**
+     * 签名
+     *
+     * @param outputStream 输出流
+     * @param pageIndexes  签名页面索引
+     */
+    @SneakyThrows
+    public void sign(OutputStream outputStream, int... pageIndexes) {
+        // 创建字节数组输出流
+        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(8192)) {
+            // 获取任务文档
+            PDDocument target = this.param.getDocument();
+            // 保存文档
+            target.save(byteArrayOutputStream);
+            // 关闭文档
+            target.close();
+            // 重置任务文档
+            this.param.setDocument(PDDocument.load(byteArrayOutputStream.toByteArray()));
+        }
+        // 定义当前索引
+        int index = 0;
+        // 获取签名内存大小（默认：250K）
+        int signSize = this.param.getPreferredSignatureSize();
+        // 获取pdf访问权限
+        int accessPermission = this.param.getAccessPermissions();
+        // 如果页面索引不为空，则根据页面索引添加签名
+        if (pageIndexes != null && pageIndexes.length > 0) {
+            // 获取最后索引
+            int lastIndex = pageIndexes.length - 1;
+            // 遍历页面索引
+            for (int pageIndex : pageIndexes) {
+                // 添加签名并获取索引
+                index = this.addSignature(index, pageIndex, index == lastIndex, signSize, accessPermission, this.param.getDocument(), outputStream);
+                // 重置签名内存大小（原大小3.5倍）
+                signSize = (int) (signSize * 3.5);
+            }
+        }
+        // 否则全文档页面签名
+        else {
+            // 获取页面总数
+            int total = this.param.getDocument().getNumberOfPages();
+            // 获取最后索引
+            int lastIndex = total - 1;
+            // 遍历页面
+            for (int pageIndex = 0; pageIndex < total; pageIndex++) {
+                // 添加签名并获取索引
+                index = this.addSignature(index, pageIndex, index == lastIndex, signSize, accessPermission, this.param.getDocument(), outputStream);
+                // 重置签名内存大小（原大小3.5倍）
+                signSize = (int) (signSize * 3.5);
+            }
+        }
+        // 资源释放
+        this.release();
+    }
+
+    /**
      * 添加签名
      *
+     * @param isAddInfo    是否添加信息
      * @param target       目标文档
      * @param outputStream 输出流
      */
     @SneakyThrows
-    void addSignature(PDDocument target, OutputStream outputStream) {
+    void addSignature(boolean isAddInfo, PDDocument target, OutputStream outputStream) {
         // 获取pdf文档
         XEasyPdfDocument pdfDocument = this.param.getPdfDocument();
-        // 替换总页码占位符
-        pdfDocument.replaceTotalPagePlaceholder(target, false);
-        // 设置基础信息（文档信息、保护策略、版本、xmp信息及书签）
-        pdfDocument.setBasicInfo(target);
+        // 添加信息
+        if (isAddInfo) {
+            // 替换总页码占位符
+            pdfDocument.replaceTotalPagePlaceholder(target, false);
+            // 设置基础信息（文档信息、保护策略、版本、xmp信息及书签）
+            pdfDocument.setBasicInfo(target);
+        }
         // 设置mdp权限
         this.setMdpPermission(target, this.param.getSignature(), this.param.getAccessPermissions());
         // 重置签名表单
@@ -232,7 +294,7 @@ public class XEasyPdfDocumentSigner implements Serializable {
         target.addSignature(this.param.getSignature(), this.getSignatureInterface(), this.param.getSignatureOptions());
         // 保存文档
         target.saveIncremental(outputStream);
-        // 关闭任务文档
+        // 关闭文档
         target.close();
     }
 
@@ -243,7 +305,7 @@ public class XEasyPdfDocumentSigner implements Serializable {
      */
     void resetSignForm(PDDocument target) {
         // 获取pdfbox表单
-        PDAcroForm acroForm = target.getDocumentCatalog().getAcroForm();
+        PDAcroForm acroForm = target.getDocumentCatalog().getAcroForm(null);
         // 如果表单不为空且首次使用，则清除首次使用项
         if (acroForm != null && acroForm.getNeedAppearances()) {
             // 如果表单字段为空，则清除首次使用项
@@ -252,6 +314,62 @@ public class XEasyPdfDocumentSigner implements Serializable {
                 acroForm.getCOSObject().removeItem(COSName.NEED_APPEARANCES);
             }
         }
+    }
+
+    /**
+     * 添加签名
+     *
+     * @param index            当前索引
+     * @param pageIndex        页面索引
+     * @param isLast           是否最后一页
+     * @param signSize         签名内存
+     * @param accessPermission 访问权限
+     * @param target           pdfbox文档
+     * @param outputStream     输出流
+     * @return 返回索引
+     */
+    @SneakyThrows
+    private int addSignature(
+            int index,
+            int pageIndex,
+            boolean isLast,
+            int signSize,
+            int accessPermission,
+            PDDocument target,
+            OutputStream outputStream
+    ) {
+        // 设置签名内存大小
+        this.param.setPreferredSignatureSize(signSize);
+        // 如果为最后签名，则保存为最后文档
+        if (isLast) {
+            // 设置访问权限
+            this.param.setAccessPermissions(accessPermission);
+            // 初始化参数
+            this.param.init(pageIndex);
+            // 添加签名
+            this.addSignature(true, target, outputStream);
+        }
+        // 否则保存临时文档
+        else {
+            // 设置访问权限
+            this.param.setAccessPermissions(accessPermission > 1 ? 2 : accessPermission);
+            // 初始化参数
+            this.param.init(pageIndex);
+            // 获取临时目录
+            String tempPath = this.param.getTempDir() + File.separatorChar + index;
+            // 创建文件流
+            try (FileOutputStream fileOutputStream = new FileOutputStream(tempPath)) {
+                // 添加签名
+                this.addSignature(false, target, fileOutputStream);
+                // 创建新输入流
+                try (InputStream inputStream = Files.newInputStream(Paths.get(tempPath), StandardOpenOption.DELETE_ON_CLOSE)) {
+                    // 设置pdfbox文档
+                    this.param.setDocument(PDDocument.load(inputStream));
+                }
+            }
+        }
+        // 返回当前索引+1
+        return index + 1;
     }
 
     /**
@@ -318,7 +436,8 @@ public class XEasyPdfDocumentSigner implements Serializable {
                 continue;
             }
             if (sig.getCOSObject().containsKey(COSName.CONTENTS)) {
-                throw new IOException("DocMDP transform method not allowed if an approval signature exists");
+                return;
+                // throw new IOException("DocMDP transform method not allowed if an approval signature exists");
             }
         }
 
@@ -350,6 +469,17 @@ public class XEasyPdfDocumentSigner implements Serializable {
         permsDict.setItem(COSName.DOCMDP, signature);
         catalogDict.setNeedToBeUpdated(true);
         permsDict.setNeedToBeUpdated(true);
+    }
+
+    /**
+     * 资源释放
+     */
+    @SneakyThrows
+    private void release() {
+        // 关闭文档
+        this.param.getDocument().close();
+        // 关闭文档
+        this.param.getPdfDocument().close();
     }
 
     /**

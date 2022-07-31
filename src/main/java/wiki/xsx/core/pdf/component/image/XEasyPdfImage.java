@@ -331,12 +331,12 @@ public class XEasyPdfImage implements XEasyPdfComponent {
      * @return 返回图片组件
      */
     public XEasyPdfImage setHorizontalStyle(XEasyPdfPositionStyle style) {
+        // 如果样式不为空，则设置样式
         if (style != null) {
-            if (style == XEasyPdfPositionStyle.LEFT || style == XEasyPdfPositionStyle.CENTER || style == XEasyPdfPositionStyle.RIGHT) {
-                this.param.setHorizontalStyle(style);
-            } else {
-                throw new IllegalArgumentException("only set LEFT, CENTER or RIGHT style");
-            }
+            // 检查水平样式
+            XEasyPdfPositionStyle.checkHorizontalStyle(style);
+            // 设置全局水平样式
+            this.param.setHorizontalStyle(style);
         }
         return this;
     }
@@ -348,12 +348,12 @@ public class XEasyPdfImage implements XEasyPdfComponent {
      * @return 返回图片组件
      */
     public XEasyPdfImage setVerticalStyle(XEasyPdfPositionStyle style) {
+        // 如果样式不为空，则设置样式
         if (style != null) {
-            if (style == XEasyPdfPositionStyle.TOP || style == XEasyPdfPositionStyle.CENTER || style == XEasyPdfPositionStyle.BOTTOM) {
-                this.param.setVerticalStyle(style);
-            } else {
-                throw new IllegalArgumentException("only set TOP, CENTER or BOTTOM style");
-            }
+            // 检查水平样式
+            XEasyPdfPositionStyle.checkVerticalStyle(style);
+            // 设置全局水平样式
+            this.param.setVerticalStyle(style);
         }
         return this;
     }
