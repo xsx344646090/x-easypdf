@@ -28,6 +28,7 @@ import wiki.xsx.core.pdf.footer.XEasyPdfFooter;
 import wiki.xsx.core.pdf.header.XEasyPdfDefaultHeader;
 import wiki.xsx.core.pdf.header.XEasyPdfHeader;
 import wiki.xsx.core.pdf.mark.XEasyPdfDefaultWatermark;
+import wiki.xsx.core.pdf.template.XEasyPdfTemplate;
 import wiki.xsx.core.pdf.template.XEasyPdfTemplateFontBuilder;
 
 import java.io.File;
@@ -472,7 +473,7 @@ public class XEasyPdfHandler {
         /**
          * 构建文本角标
          *
-         * @param text 待写入文本
+         * @param text       待写入文本
          * @param scriptText 待写入角标文本
          * @return 返回pdf文本扩展组件
          */
@@ -1013,12 +1014,22 @@ public class XEasyPdfHandler {
          */
         public static class Font {
             /**
-             * 获取构建器
+             * 获取字体构建器
+             *
              * @return 返回字体构建器
              */
             public static XEasyPdfTemplateFontBuilder builder() {
                 return new XEasyPdfTemplateFontBuilder();
             }
+        }
+
+        /**
+         * 构建模板
+         *
+         * @return 返回pdf模板
+         */
+        public static XEasyPdfTemplate build() {
+            return new XEasyPdfTemplate();
         }
     }
 

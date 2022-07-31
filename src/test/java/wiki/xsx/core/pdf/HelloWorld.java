@@ -26,9 +26,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * @author xsx
@@ -58,9 +56,20 @@ public class HelloWorld {
     @Test
     public void test2() {
         XEasyPdfHandler.Template.Font.builder()
-                .setFontPath("C:\\Windows\\Fonts\\msyh.ttf")
+                .setFontPath("E:\\pdf\\test\\fo\\msyh.ttf")
                 .setOutputPath("E:\\pdf\\test\\fo\\msyh.xml")
                 .build();
+        List<String> list = new ArrayList<>(3);
+        list.add("第一行");
+        list.add("第二行");
+        list.add("第三行");
+        Map<String, Object> data = new HashMap<>(1);
+        data.put("orders", list);
+        XEasyPdfHandler.Template.build()
+                .setConfigPath("E:\\pdf\\test\\fo\\fop.xconf")
+                .setTemplatePath("E:\\pdf\\test\\fo\\region-1\\test.fo")
+                .setTemplateData(data)
+                .create("E:\\pdf\\test\\fo\\test.pdf");
     }
 
     @SneakyThrows
