@@ -63,6 +63,10 @@ class XEasyPdfTextParam implements Serializable {
      */
     private Float fontSize = 12F;
     /**
+     * 字体缩放比例
+     */
+    private Float fontScaleRatio;
+    /**
      * 字体高度
      */
     private Float fontHeight;
@@ -287,6 +291,11 @@ class XEasyPdfTextParam implements Serializable {
             // 初始化为页面字体路径
             this.fontPath = page.getFontPath();
         }
+        // 如果字体缩放比例未初始化，则初始化为1F
+        if (this.fontScaleRatio == null) {
+            // 初始化为1F
+            this.fontScaleRatio = 1F;
+        }
         // 初始化字体高度
         this.fontHeight = this.fontSize;
         // 如果下划线颜色为空，则重置为字体颜色
@@ -505,8 +514,8 @@ class XEasyPdfTextParam implements Serializable {
                     this.maxWidth - x - this.marginRight,
                     // 字体
                     font,
-                    // 字体大小
-                    this.fontSize,
+                    // 字体大小 * 字体缩放比例
+                    this.fontSize * this.fontScaleRatio,
                     // 文本间隔
                     this.characterSpacing
             );
@@ -550,8 +559,8 @@ class XEasyPdfTextParam implements Serializable {
                                 this.maxWidth - this.marginLeft - this.marginRight,
                                 // 字体
                                 font,
-                                // 字体大小
-                                this.fontSize,
+                                // 字体大小 * 字体缩放比例
+                                this.fontSize * this.fontScaleRatio,
                                 // 文本间隔
                                 this.characterSpacing
                         )
@@ -568,8 +577,8 @@ class XEasyPdfTextParam implements Serializable {
                     this.maxWidth - this.marginLeft - this.marginRight,
                     // 字体
                     font,
-                    // 字体大小
-                    this.fontSize,
+                    // 字体大小 * 字体缩放比例
+                    this.fontSize * this.fontScaleRatio,
                     // 文本间隔
                     this.characterSpacing
             );

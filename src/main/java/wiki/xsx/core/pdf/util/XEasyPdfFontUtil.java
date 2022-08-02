@@ -1,5 +1,6 @@
 package wiki.xsx.core.pdf.util;
 
+import lombok.SneakyThrows;
 import org.apache.fontbox.ttf.OTFParser;
 import org.apache.fontbox.ttf.TTFParser;
 import org.apache.fontbox.ttf.TrueTypeCollection;
@@ -99,6 +100,35 @@ public class XEasyPdfFontUtil {
                 // 重置偏移量
                 offset += Character.charCount(codePoint);
             }
+        }
+    }
+
+    /**
+     * 添加字体
+     * @param fontPath 字体路径
+     */
+    public static void addFont(String fontPath) {
+        try {
+            // 获取字体路径
+            String lowerPath = fontPath.toLowerCase(Locale.ROOT);
+            // 如果字体为ttf字体，则添加ttf字体
+            if (lowerPath.endsWith(TTF)) {
+                // 添加ttf字体
+                addAndGetTTFFont(fontPath);
+            }
+            // 如果字体为ttc字体集合，则添加ttc字体集合
+            if (lowerPath.contains(TTC)) {
+                // 添加ttc字体集合
+                addAndGetTTCFont(fontPath);
+            }
+            // 如果字体为otf字体，则添加otf字体
+            if (lowerPath.endsWith(OTF)) {
+                // 添加otf字体
+                addAndGetOTFFont(fontPath);
+            }
+        } catch (Exception e) {
+            // 提示错误信息
+            throw new IllegalArgumentException("the font can not be loaded，the path['" + fontPath + "'] is error");
         }
     }
 
@@ -226,34 +256,8 @@ public class XEasyPdfFontUtil {
      */
     private static PDFont loadTTF(XEasyPdfDocument document, String fontPath, boolean isEmbedded) {
         try {
-            // 从缓存中获取字体
-            TrueTypeFont trueTypeFont = (TrueTypeFont) XEasyPdfFontMapperHandler.getInstance().getFontByPath(fontPath);
-            // 如果字体为空，则读取字体
-            if (trueTypeFont == null) {
-                // 加锁
-                synchronized (TTF_LOCK) {
-                    // 再次从缓存中获取字体
-                    trueTypeFont = (TrueTypeFont) XEasyPdfFontMapperHandler.getInstance().getFontByPath(fontPath);
-                    // 如果仍然为空，则读取字体文件
-                    if (trueTypeFont == null) {
-                        // 初始化输入流（从资源路径读取）
-                        try (InputStream inputStream = new BufferedInputStream(XEasyPdfFontUtil.class.getResourceAsStream(fontPath))) {
-                            // 解析ttf字体
-                            trueTypeFont = new TTFParser(true, true).parse(inputStream);
-                        } catch (Exception e) {
-                            // 重置输入流（从绝对路径读取）
-                            try (InputStream inputStream = new BufferedInputStream(Files.newInputStream(Paths.get(fontPath)))) {
-                                // 重置ttf字体
-                                trueTypeFont = new TTFParser(true, true).parse(inputStream);
-                            }
-                        }
-                        // 添加字体缓存
-                        XEasyPdfFontMapperHandler.getInstance().addFont(fontPath, trueTypeFont);
-                    }
-                }
-            }
             // 加载字体
-            PDFont font = PDType0Font.load(document.getTarget(), trueTypeFont, isEmbedded);
+            PDFont font = PDType0Font.load(document.getTarget(), addAndGetTTFFont(fontPath), isEmbedded);
             // 如果需要嵌入，则添加字体缓存
             if (isEmbedded) {
                 // 添加字体缓存
@@ -268,6 +272,44 @@ public class XEasyPdfFontUtil {
     }
 
     /**
+     * 添加并获取ttf字体
+     *
+     * @param fontPath 字体路径
+     * @return 返回ttf字体
+     */
+    @SneakyThrows
+    private static TrueTypeFont addAndGetTTFFont(String fontPath) {
+        // 从缓存中获取字体
+        TrueTypeFont trueTypeFont = (TrueTypeFont) XEasyPdfFontMapperHandler.getInstance().getFontByPath(fontPath);
+        // 如果字体为空，则读取字体
+        if (trueTypeFont == null) {
+            // 加锁
+            synchronized (TTF_LOCK) {
+                // 再次从缓存中获取字体
+                trueTypeFont = (TrueTypeFont) XEasyPdfFontMapperHandler.getInstance().getFontByPath(fontPath);
+                // 如果仍然为空，则读取字体文件
+                if (trueTypeFont == null) {
+                    // 初始化输入流（从资源路径读取）
+                    try (InputStream inputStream = new BufferedInputStream(XEasyPdfFontUtil.class.getResourceAsStream(fontPath))) {
+                        // 解析ttf字体
+                        trueTypeFont = new TTFParser(true, true).parse(inputStream);
+                    } catch (Exception e) {
+                        // 重置输入流（从绝对路径读取）
+                        try (InputStream inputStream = new BufferedInputStream(Files.newInputStream(Paths.get(fontPath)))) {
+                            // 重置ttf字体
+                            trueTypeFont = new TTFParser(true, true).parse(inputStream);
+                        }
+                    }
+                    // 添加字体缓存
+                    XEasyPdfFontMapperHandler.getInstance().addFont(fontPath, trueTypeFont);
+                }
+            }
+        }
+        // 返回字体
+        return trueTypeFont;
+    }
+
+    /**
      * 加载ttc字体
      *
      * @param document   pdf文档
@@ -277,55 +319,8 @@ public class XEasyPdfFontUtil {
      */
     private static PDFont loadTTC(XEasyPdfDocument document, String fontPath, boolean isEmbedded) {
         try {
-            // 定义字体路径拆分长度
-            final int length = 2;
-            // 拆分字体路径
-            String[] fontPathSplit = fontPath.split(COLLECTION_FONT_SEPARATOR);
-            // 如果拆分字体路径长度不等于定义的长度，则提示错误信息
-            if (fontPathSplit.length != length) {
-                // 提示错误信息
-                throw new IllegalArgumentException();
-            }
-            // 从缓存中获取字体
-            TrueTypeFont trueTypeFont = (TrueTypeFont) XEasyPdfFontMapperHandler.getInstance().getFontByPath(fontPath);
-            // 如果字体为空，则读取字体
-            if (trueTypeFont == null) {
-                // 加锁
-                synchronized (TTC_LOCK) {
-                    // 再次从缓存中获取字体
-                    trueTypeFont = (TrueTypeFont) XEasyPdfFontMapperHandler.getInstance().getFontByPath(fontPath);
-                    // 如果仍然为空，则读取字体文件
-                    if (trueTypeFont == null) {
-                        // 初始化输入流（从资源路径读取）
-                        try (InputStream inputStream = new BufferedInputStream(XEasyPdfFontUtil.class.getResourceAsStream(fontPathSplit[0]))) {
-                            // 创建ttc字体集合
-                            TrueTypeCollection trueTypeCollection = new TrueTypeCollection(inputStream);
-                            // 反射获取调用方法
-                            Method method = trueTypeCollection.getClass().getDeclaredMethod("getFontAtIndex", int.class);
-                            // 设置访问权限
-                            method.setAccessible(true);
-                            // 解析ttf字体
-                            trueTypeFont = (TrueTypeFont) method.invoke(trueTypeCollection, Integer.parseInt(fontPathSplit[1]));
-                        } catch (Exception e) {
-                            // 重置输入流（从绝对路径读取）
-                            try (InputStream inputStream = new BufferedInputStream(Files.newInputStream(Paths.get(fontPathSplit[0])))) {
-                                // 创建ttc字体集合
-                                TrueTypeCollection trueTypeCollection = new TrueTypeCollection(inputStream);
-                                // 反射获取调用方法
-                                Method method = trueTypeCollection.getClass().getDeclaredMethod("getFontAtIndex", int.class);
-                                // 设置访问权限
-                                method.setAccessible(true);
-                                // 解析ttf字体
-                                trueTypeFont = (TrueTypeFont) method.invoke(trueTypeCollection, Integer.parseInt(fontPathSplit[1]));
-                            }
-                        }
-                        // 添加字体缓存
-                        XEasyPdfFontMapperHandler.getInstance().addFont(fontPath, trueTypeFont);
-                    }
-                }
-            }
             // 加载字体
-            PDFont font = PDType0Font.load(document.getTarget(), trueTypeFont, isEmbedded);
+            PDFont font = PDType0Font.load(document.getTarget(), addAndGetTTCFont(fontPath), isEmbedded);
             // 如果需要嵌入，则添加字体缓存
             if (isEmbedded) {
                 // 添加字体缓存
@@ -337,6 +332,65 @@ public class XEasyPdfFontUtil {
             // 提示错误信息
             throw new IllegalArgumentException("the font can not be loaded，the path['" + fontPath + "'] is error");
         }
+    }
+
+    /**
+     * 添加并获取ttc字体
+     *
+     * @param fontPath 字体路径
+     * @return 返回ttc字体
+     */
+    @SneakyThrows
+    private static TrueTypeFont addAndGetTTCFont(String fontPath) {
+        // 定义字体路径拆分长度
+        final int length = 2;
+        // 拆分字体路径
+        String[] fontPathSplit = fontPath.split(COLLECTION_FONT_SEPARATOR);
+        // 如果拆分字体路径长度不等于定义的长度，则提示错误信息
+        if (fontPathSplit.length != length) {
+            // 提示错误信息
+            throw new IllegalArgumentException();
+        }
+        // 从缓存中获取字体
+        TrueTypeFont trueTypeFont = (TrueTypeFont) XEasyPdfFontMapperHandler.getInstance().getFontByPath(fontPath);
+        // 如果字体为空，则读取字体
+        if (trueTypeFont == null) {
+            // 加锁
+            synchronized (TTC_LOCK) {
+                // 再次从缓存中获取字体
+                trueTypeFont = (TrueTypeFont) XEasyPdfFontMapperHandler.getInstance().getFontByPath(fontPath);
+                // 如果仍然为空，则读取字体文件
+                if (trueTypeFont == null) {
+                    // 初始化输入流（从资源路径读取）
+                    try (InputStream inputStream = new BufferedInputStream(XEasyPdfFontUtil.class.getResourceAsStream(fontPathSplit[0]))) {
+                        // 创建ttc字体集合
+                        TrueTypeCollection trueTypeCollection = new TrueTypeCollection(inputStream);
+                        // 反射获取调用方法
+                        Method method = trueTypeCollection.getClass().getDeclaredMethod("getFontAtIndex", int.class);
+                        // 设置访问权限
+                        method.setAccessible(true);
+                        // 解析ttf字体
+                        trueTypeFont = (TrueTypeFont) method.invoke(trueTypeCollection, Integer.parseInt(fontPathSplit[1]));
+                    } catch (Exception e) {
+                        // 重置输入流（从绝对路径读取）
+                        try (InputStream inputStream = new BufferedInputStream(Files.newInputStream(Paths.get(fontPathSplit[0])))) {
+                            // 创建ttc字体集合
+                            TrueTypeCollection trueTypeCollection = new TrueTypeCollection(inputStream);
+                            // 反射获取调用方法
+                            Method method = trueTypeCollection.getClass().getDeclaredMethod("getFontAtIndex", int.class);
+                            // 设置访问权限
+                            method.setAccessible(true);
+                            // 解析ttf字体
+                            trueTypeFont = (TrueTypeFont) method.invoke(trueTypeCollection, Integer.parseInt(fontPathSplit[1]));
+                        }
+                    }
+                    // 添加字体缓存
+                    XEasyPdfFontMapperHandler.getInstance().addFont(fontPath, trueTypeFont);
+                }
+            }
+        }
+        // 返回字体
+        return trueTypeFont;
     }
 
     /**
@@ -355,34 +409,8 @@ public class XEasyPdfFontUtil {
                 // 返回字体
                 return font;
             }
-            // 从缓存中获取字体
-            TrueTypeFont trueTypeFont = (TrueTypeFont) XEasyPdfFontMapperHandler.getInstance().getFontByPath(fontPath);
-            // 如果字体为空，则读取字体
-            if (trueTypeFont == null) {
-                // 加锁
-                synchronized (OTF_LOCK) {
-                    // 再次从缓存中获取字体
-                    trueTypeFont = (TrueTypeFont) XEasyPdfFontMapperHandler.getInstance().getFontByPath(fontPath);
-                    // 如果仍然为空，则读取字体文件
-                    if (trueTypeFont == null) {
-                        // 初始化输入流（从资源路径读取）
-                        try (InputStream inputStream = new BufferedInputStream(XEasyPdfFontUtil.class.getResourceAsStream(fontPath))) {
-                            // 解析otf字体
-                            trueTypeFont = new OTFParser(false, true).parse(inputStream);
-                        } catch (Exception e) {
-                            // 重置输入流（从绝对路径读取）
-                            try (InputStream inputStream = new BufferedInputStream(Files.newInputStream(Paths.get(fontPath)))) {
-                                // 重置otf字体
-                                trueTypeFont = new OTFParser(false, true).parse(inputStream);
-                            }
-                        }
-                        // 添加字体缓存
-                        XEasyPdfFontMapperHandler.getInstance().addFont(fontPath, trueTypeFont);
-                    }
-                }
-            }
             // 加载字体
-            font = PDType0Font.load(document.getTarget(), trueTypeFont, false);
+            font = PDType0Font.load(document.getTarget(), addAndGetOTFFont(fontPath), false);
             // 添加字体缓存
             document.addOtfFont(fontPath, font);
             // 返回pdfbox字体
@@ -391,5 +419,43 @@ public class XEasyPdfFontUtil {
             // 提示错误信息
             throw new IllegalArgumentException("the font can not be loaded，the path['" + fontPath + "'] is error");
         }
+    }
+
+    /**
+     * 添加并获取otf字体
+     *
+     * @param fontPath 字体路径
+     * @return 返回otf字体
+     */
+    @SneakyThrows
+    private static TrueTypeFont addAndGetOTFFont(String fontPath) {
+        // 从缓存中获取字体
+        TrueTypeFont trueTypeFont = (TrueTypeFont) XEasyPdfFontMapperHandler.getInstance().getFontByPath(fontPath);
+        // 如果字体为空，则读取字体
+        if (trueTypeFont == null) {
+            // 加锁
+            synchronized (OTF_LOCK) {
+                // 再次从缓存中获取字体
+                trueTypeFont = (TrueTypeFont) XEasyPdfFontMapperHandler.getInstance().getFontByPath(fontPath);
+                // 如果仍然为空，则读取字体文件
+                if (trueTypeFont == null) {
+                    // 初始化输入流（从资源路径读取）
+                    try (InputStream inputStream = new BufferedInputStream(XEasyPdfFontUtil.class.getResourceAsStream(fontPath))) {
+                        // 解析otf字体
+                        trueTypeFont = new OTFParser(false, true).parse(inputStream);
+                    } catch (Exception e) {
+                        // 重置输入流（从绝对路径读取）
+                        try (InputStream inputStream = new BufferedInputStream(Files.newInputStream(Paths.get(fontPath)))) {
+                            // 重置otf字体
+                            trueTypeFont = new OTFParser(false, true).parse(inputStream);
+                        }
+                    }
+                    // 添加字体缓存
+                    XEasyPdfFontMapperHandler.getInstance().addFont(fontPath, trueTypeFont);
+                }
+            }
+        }
+        // 返回字体
+        return trueTypeFont;
     }
 }

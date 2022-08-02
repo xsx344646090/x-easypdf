@@ -105,7 +105,7 @@ public class XEasyPdfDocumentExtractor implements Serializable {
     }
 
     /**
-     * 提取文本(全部)
+     * 提取文本
      *
      * @param textList  待接收文本列表
      * @param pageIndex 页面索引
