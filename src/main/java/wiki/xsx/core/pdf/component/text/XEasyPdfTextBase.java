@@ -10,6 +10,7 @@ import org.apache.pdfbox.pdmodel.interactive.action.PDActionURI;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationLink;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationText;
 import wiki.xsx.core.pdf.component.XEasyPdfComponent;
+import wiki.xsx.core.pdf.component.XEasyPdfComponentEvent;
 import wiki.xsx.core.pdf.component.XEasyPdfPagingCondition;
 import wiki.xsx.core.pdf.doc.XEasyPdfDocument;
 import wiki.xsx.core.pdf.doc.XEasyPdfPage;
@@ -43,6 +44,15 @@ import java.util.UUID;
 abstract class XEasyPdfTextBase implements XEasyPdfComponent {
 
     private static final long serialVersionUID = 3126411220662964797L;
+
+    /**
+     * 绘制之前事件
+     */
+    private XEasyPdfComponentEvent beforeEvent;
+    /**
+     * 绘制之后事件
+     */
+    private XEasyPdfComponentEvent afterEvent;
 
     /**
      * 设置定位
@@ -380,6 +390,24 @@ abstract class XEasyPdfTextBase implements XEasyPdfComponent {
     abstract float initBeginX(XEasyPdfDocument document, XEasyPdfPage page, String text);
 
     /**
+     * 绘制之前
+     *
+     * @param event 组件事件
+     */
+    public void onBeforeDraw(XEasyPdfComponentEvent event) {
+        this.beforeEvent = event;
+    }
+
+    /**
+     * 绘制之后
+     *
+     * @param event 组件事件
+     */
+    public void onAfterDraw(XEasyPdfComponentEvent event) {
+        this.afterEvent = event;
+    }
+
+    /**
      * 绘制
      *
      * @param document pdf文档
@@ -387,7 +415,18 @@ abstract class XEasyPdfTextBase implements XEasyPdfComponent {
      */
     @Override
     public void draw(XEasyPdfDocument document, XEasyPdfPage page) {
+        // 如果绘制之前事件不为空，则执行
+        if (this.beforeEvent != null) {
+            // 执行绘制之前事件
+            this.beforeEvent.execute(document, page, this);
+        }
+        // 绘制
         this.doDraw(document, page);
+        // 如果绘制之后事件不为空，则执行
+        if (this.afterEvent != null) {
+            // 执行绘制之后事件
+            this.afterEvent.execute(document, page, this);
+        }
     }
 
     /**

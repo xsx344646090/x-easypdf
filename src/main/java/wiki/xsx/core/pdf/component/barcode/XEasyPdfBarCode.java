@@ -401,18 +401,10 @@ public class XEasyPdfBarCode implements XEasyPdfComponent {
     public void draw(XEasyPdfDocument document, XEasyPdfPage page) {
         // 初始化参数
         this.param.init(document, page);
-        // 编码
-        BitMatrix bitMatrix = new MultiFormatWriter().encode(
-                this.param.getContent(),
-                this.param.getCodeType().codeFormat,
-                this.param.getImageMaxWidth(),
-                this.param.getImageMaxHeight(),
-                this.param.getEncodeHints()
-        );
         // 获取任务文档
         PDDocument target = document.getTarget();
         // 获取条形码图片
-        BufferedImage bufferedImage = this.getBarCodeImage(bitMatrix);
+        BufferedImage bufferedImage = this.getBarCodeImage(this.createBitMatrix());
         // 创建pdfBox图片
         PDImageXObject pdImage = PDImageXObject.createFromByteArray(
                 target,
@@ -439,17 +431,27 @@ public class XEasyPdfBarCode implements XEasyPdfComponent {
     }
 
     /**
-     * 获取高度
-     *
-     * @param document pdf文档
-     * @param page     pdf页面
-     * @return 返回高度
+     * 初始化（公共参数）
      */
-    public float getHeight(XEasyPdfDocument document, XEasyPdfPage page) {
-        if (this.param.getImageHeight() == null) {
-            this.param.init(document, page);
-        }
-        return this.param.getImageHeight();
+    public void init() {
+        // 初始化参数
+        this.param.init();
+    }
+
+    /**
+     * 创建位矩阵
+     * @return 返回位矩阵
+     */
+    @SneakyThrows
+    public BitMatrix createBitMatrix() {
+        // 编码
+        return new MultiFormatWriter().encode(
+                this.param.getContent(),
+                this.param.getCodeType().codeFormat,
+                this.param.getImageMaxWidth(),
+                this.param.getImageMaxHeight(),
+                this.param.getEncodeHints()
+        );
     }
 
     /**
@@ -458,7 +460,7 @@ public class XEasyPdfBarCode implements XEasyPdfComponent {
      * @param matrix 位矩阵
      * @return 返回条形码图片
      */
-    private BufferedImage getBarCodeImage(BitMatrix matrix) {
+    public BufferedImage getBarCodeImage(BitMatrix matrix) {
         // 获取图片
         BufferedImage bufferedImage = this.toBufferedImage(matrix);
         // 如果显示文字，则添加图片文字
@@ -474,6 +476,20 @@ public class XEasyPdfBarCode implements XEasyPdfComponent {
             this.param.resetBeginY(bufferedImage.getHeight());
         }
         return bufferedImage;
+    }
+
+    /**
+     * 获取高度
+     *
+     * @param document pdf文档
+     * @param page     pdf页面
+     * @return 返回高度
+     */
+    public float getHeight(XEasyPdfDocument document, XEasyPdfPage page) {
+        if (this.param.getImageHeight() == null) {
+            this.param.init(document, page);
+        }
+        return this.param.getImageHeight();
     }
 
     /**
