@@ -2,6 +2,7 @@ package wiki.xsx.core.pdf.template;
 
 import lombok.Data;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -29,17 +30,42 @@ class XEasyPdfTemplateParam {
      * 配置路径
      */
     private String configPath;
-
     /**
      * 模板路径
      */
     private String templatePath;
-
     /**
      * 模板数据
      */
     private Map<String, Object> templateData;
+    /**
+     * 标题
+     */
+    private String title;
+    /**
+     * 作者
+     */
+    private String author;
+    /**
+     * 主题
+     */
+    private String subject;
+    /**
+     * 关键词
+     */
+    private String keywords;
+    /**
+     * 创建者
+     */
+    private String creator;
+    /**
+     * 创建时间
+     */
+    private Date creationDate;
 
+    /**
+     * 初始化
+     */
     void init() {
         if (this.configPath == null) {
             throw new IllegalArgumentException("the config path can not be null");
@@ -49,6 +75,10 @@ class XEasyPdfTemplateParam {
         }
     }
 
+    /**
+     * 模板数据是否非空
+     * @return 返回布尔值，是为true，否为false
+     */
     boolean isNotEmptyTemplateData() {
         return this.templateData != null && !this.templateData.isEmpty();
     }

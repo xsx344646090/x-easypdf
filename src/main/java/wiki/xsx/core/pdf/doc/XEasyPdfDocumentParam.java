@@ -49,7 +49,7 @@ class XEasyPdfDocumentParam implements Serializable {
     /**
      * 生产者
      */
-    private static final String PRODUCER = "x-easypdf/pdfbox";
+    private static final String PRODUCER = XEasyPdfConstants.PDFBOX_PRODUCER;
     /**
      * 内容模式
      */

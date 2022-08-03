@@ -2,6 +2,7 @@ package wiki.xsx.core.pdf.template;
 
 import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
+import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.FopFactoryBuilder;
 import org.apache.fop.configuration.DefaultConfigurationBuilder;
@@ -10,6 +11,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.StringTemplateResolver;
+import wiki.xsx.core.pdf.doc.XEasyPdfConstants;
 import wiki.xsx.core.pdf.doc.XEasyPdfDocument;
 import wiki.xsx.core.pdf.handler.XEasyPdfHandler;
 
@@ -21,8 +23,10 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * pdf模板
@@ -83,6 +87,72 @@ public class XEasyPdfTemplate {
     }
 
     /**
+     * 设置作者
+     *
+     * @param author 作者
+     * @return 返回pdf模板
+     */
+    public XEasyPdfTemplate setAuthor(String author) {
+        this.param.setAuthor(author);
+        return this;
+    }
+
+    /**
+     * 设置创建者
+     *
+     * @param creator 创建者
+     * @return 返回pdf模板
+     */
+    public XEasyPdfTemplate setCreator(String creator) {
+        this.param.setCreator(creator);
+        return this;
+    }
+
+    /**
+     * 设置标题
+     *
+     * @param title 标题
+     * @return 返回pdf模板
+     */
+    public XEasyPdfTemplate setTitle(String title) {
+        this.param.setTitle(title);
+        return this;
+    }
+
+    /**
+     * 设置主题
+     *
+     * @param subject 主题
+     * @return 返回pdf模板
+     */
+    public XEasyPdfTemplate setSubject(String subject) {
+        this.param.setSubject(subject);
+        return this;
+    }
+
+    /**
+     * 设置关键词
+     *
+     * @param keywords 关键词
+     * @return 返回pdf模板
+     */
+    public XEasyPdfTemplate setKeywords(String keywords) {
+        this.param.setKeywords(keywords);
+        return this;
+    }
+
+    /**
+     * 设置创建时间
+     *
+     * @param date 创建时间
+     * @return 返回pdf模板
+     */
+    public XEasyPdfTemplate setCreationDate(Date date) {
+        this.param.setCreationDate(date);
+        return this;
+    }
+
+    /**
      * 创建pdf
      *
      * @return 返回pdf文档
@@ -91,7 +161,7 @@ public class XEasyPdfTemplate {
     public XEasyPdfDocument create() {
         // 创建输出流
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-            // 构建pdf
+            // 创建pdf
             this.create(outputStream);
             // 创建输入流
             try (InputStream inputStream = new BufferedInputStream(new ByteArrayInputStream(outputStream.toByteArray()))) {
@@ -108,7 +178,9 @@ public class XEasyPdfTemplate {
      */
     @SneakyThrows
     public void create(String outputPath) {
+        // 创建输出流
         try (OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(outputPath))) {
+            // 创建pdf
             this.create(outputStream);
         }
     }
@@ -122,39 +194,29 @@ public class XEasyPdfTemplate {
     public void create(OutputStream outputStream) {
         // 初始化参数
         this.param.init();
-        InputStreamReader reader = null;
-        InputStream inputStream = null;
-        try {
-            // 创建模板输入流读取器
-            reader = new InputStreamReader(
-                    new BufferedInputStream(new ByteArrayInputStream(this.getTemplate().getBytes(StandardCharsets.UTF_8))),
-                    StandardCharsets.UTF_8
-            );
-            // 创建配置输入流
-            inputStream = Files.newInputStream(Paths.get(this.param.getConfigPath()));
+        try (
+                // 创建模板输入流读取器
+                InputStreamReader reader = new InputStreamReader(
+                        new BufferedInputStream(new ByteArrayInputStream(this.getTemplate().getBytes(StandardCharsets.UTF_8))),
+                        StandardCharsets.UTF_8
+                );
+                // 创建配置输入流
+                InputStream inputStream = Files.newInputStream(Paths.get(this.param.getConfigPath()));
+        ) {
             // 创建fop工厂
             final FopFactory fopFactory = new FopFactoryBuilder(new File(this.param.getConfigPath()).getParentFile().toURI()).setConfiguration(
                     new DefaultConfigurationBuilder().build(inputStream)
             ).build();
             // 定义转换结构
-//            SAXResult result = new SAXResult(fopFactory.newFop(MimeConstants.MIME_PDF, fopFactory.newFOUserAgent(), outputStream).getDefaultHandler());
+            SAXResult result = new SAXResult();
             // 设置系统id
-//            result.setSystemId(UUID.randomUUID().toString());
+            result.setSystemId(UUID.randomUUID().toString());
             // 设置内容助手
-//            result.setHandler(fopFactory.newFop(MimeConstants.MIME_PDF, fopFactory.newFOUserAgent(), outputStream).getDefaultHandler());
+            result.setHandler(fopFactory.newFop(MimeConstants.MIME_PDF, this.getFOUserAgent(fopFactory), outputStream).getDefaultHandler());
             // 创建转换器
             Transformer transformer = TransformerFactory.newInstance().newTransformer(new StreamSource(reader));
-            // 设置参数版本
-            transformer.setParameter("versionParam", "2.0");
             // 转换
-            transformer.transform(new StreamSource(), new SAXResult(fopFactory.newFop(MimeConstants.MIME_PDF, fopFactory.newFOUserAgent(), outputStream).getDefaultHandler()));
-        } finally {
-            if (reader != null) {
-                reader.close();
-            }
-            if (inputStream != null) {
-                inputStream.close();
-            }
+            transformer.transform(new StreamSource(), result);
         }
     }
 
@@ -199,8 +261,36 @@ public class XEasyPdfTemplate {
             // 处理模板并返回
             return templateEngine.process(template, context);
         }
-        System.out.println("template = " + template);
         // 返回模板内容
         return template;
+    }
+
+    /**
+     * 获取代理
+     *
+     * @param fopFactory fop工厂
+     * @return 返回代理
+     */
+    private FOUserAgent getFOUserAgent(FopFactory fopFactory) {
+        // 创建代理
+        FOUserAgent userAgent = fopFactory.newFOUserAgent();
+        // 设置生产者
+        userAgent.setProducer(XEasyPdfConstants.FOP_PRODUCER);
+        // 设置可访问性
+        userAgent.setAccessibility(true);
+        // 设置作者
+        userAgent.setAuthor(this.param.getAuthor());
+        // 设置创建者
+        userAgent.setCreator(this.param.getCreator());
+        // 设置标题
+        userAgent.setTitle(this.param.getTitle());
+        // 设置主题
+        userAgent.setSubject(this.param.getSubject());
+        // 设置关键词
+        userAgent.setKeywords(this.param.getKeywords());
+        // 设置创建时间
+        userAgent.setCreationDate(this.param.getCreationDate());
+        // 返回代理
+        return userAgent;
     }
 }
