@@ -210,7 +210,8 @@ class XEasyPdfPageParam implements Serializable {
         if (this.backgroundColor == null) {
             // 初始化为文档背景色
             this.backgroundColor = documentParam.getGlobalBackgroundColor();
-        }// 如果页面背景图片未初始化，则初始化为文档背景图片
+        }
+        // 如果页面背景图片未初始化，则初始化为文档背景图片
         if (this.backgroundImage == null) {
             // 初始化为文档背景图片
             this.backgroundImage = documentParam.getGlobalBackgroundImage();
