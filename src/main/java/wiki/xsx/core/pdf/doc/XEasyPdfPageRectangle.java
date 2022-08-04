@@ -30,11 +30,11 @@ public class XEasyPdfPageRectangle implements Serializable {
     /**
      * 每英寸像素点
      */
-    private static final Integer POINTS_PER_INCH = 72;
+    private static final Integer POINTS_PER_INCH = XEasyPdfConstants.POINTS_PER_INCH;
     /**
      * 每毫米像素点
      */
-    private static final Float POINTS_PER_MM = 1 / 25.4f * POINTS_PER_INCH;
+    private static final Float POINTS_PER_MM = XEasyPdfConstants.POINTS_PER_MM;
     /**
      * 宽度
      */

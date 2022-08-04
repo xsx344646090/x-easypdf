@@ -19,15 +19,14 @@ import wiki.xsx.core.pdf.component.table.XEasyPdfTable;
 import wiki.xsx.core.pdf.component.text.XEasyPdfText;
 import wiki.xsx.core.pdf.component.text.XEasyPdfTextExtend;
 import wiki.xsx.core.pdf.component.text.XEasyPdfTextScript;
-import wiki.xsx.core.pdf.doc.XEasyPdfDefaultFontStyle;
-import wiki.xsx.core.pdf.doc.XEasyPdfDocument;
-import wiki.xsx.core.pdf.doc.XEasyPdfPage;
-import wiki.xsx.core.pdf.doc.XEasyPdfPageRectangle;
+import wiki.xsx.core.pdf.doc.*;
 import wiki.xsx.core.pdf.footer.XEasyPdfDefaultFooter;
 import wiki.xsx.core.pdf.footer.XEasyPdfFooter;
 import wiki.xsx.core.pdf.header.XEasyPdfDefaultHeader;
 import wiki.xsx.core.pdf.header.XEasyPdfHeader;
 import wiki.xsx.core.pdf.mark.XEasyPdfDefaultWatermark;
+import wiki.xsx.core.pdf.template.XEasyPdfTemplate;
+import wiki.xsx.core.pdf.template.XEasyPdfTemplateFontBuilder;
 
 import java.io.File;
 import java.io.InputStream;
@@ -153,12 +152,12 @@ public class XEasyPdfHandler {
         /**
          * 总页码占位符
          */
-        private static final String TOTAL_PAGE_PLACEHOLDER = "${TPE}";
+        private static final String TOTAL_PAGE_PLACEHOLDER = XEasyPdfConstants.TOTAL_PAGE_PLACEHOLDER;
 
         /**
          * 当前页码占位符
          */
-        private static final String CURRENT_PAGE_PLACEHOLDER = "${PE}";
+        private static final String CURRENT_PAGE_PLACEHOLDER = XEasyPdfConstants.CURRENT_PAGE_PLACEHOLDER;
 
         /**
          * 构建页面
@@ -471,7 +470,7 @@ public class XEasyPdfHandler {
         /**
          * 构建文本角标
          *
-         * @param text 待写入文本
+         * @param text       待写入文本
          * @param scriptText 待写入角标文本
          * @return 返回pdf文本扩展组件
          */
@@ -1001,6 +1000,34 @@ public class XEasyPdfHandler {
          * 粗体
          */
         public static final XEasyPdfDefaultFontStyle BOLD = XEasyPdfDefaultFontStyle.BOLD;
+    }
+
+    /**
+     * pdf模板
+     */
+    public static class Template {
+        /**
+         * 字体构建器
+         */
+        public static class Font {
+            /**
+             * 获取字体构建器
+             *
+             * @return 返回字体构建器
+             */
+            public static XEasyPdfTemplateFontBuilder builder() {
+                return new XEasyPdfTemplateFontBuilder();
+            }
+        }
+
+        /**
+         * 构建模板
+         *
+         * @return 返回pdf模板
+         */
+        public static XEasyPdfTemplate build() {
+            return new XEasyPdfTemplate();
+        }
     }
 
     /**
