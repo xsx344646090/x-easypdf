@@ -512,9 +512,9 @@ public class XEasyPdfText extends XEasyPdfTextBase {
      * @return 返回文本组件
      */
     public XEasyPdfText setSplitTextList(List<String> splitTextList) {
-        if (splitTextList==null) {
+        if (splitTextList == null) {
             this.param.setSplitTextList(null).setSplitTemplateTextList(null);
-        }else {
+        } else {
             this.param.setSplitTextList(new ArrayList<>(splitTextList)).setSplitTemplateTextList(new ArrayList<>(splitTextList));
         }
         return this;
@@ -1073,7 +1073,6 @@ public class XEasyPdfText extends XEasyPdfTextBase {
     float initBeginX(XEasyPdfDocument document, XEasyPdfPage page, String text) {
         return this.param.initBeginX(document, page, text);
     }
-
 
     /**
      * 添加文本
