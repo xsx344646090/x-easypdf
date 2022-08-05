@@ -153,17 +153,33 @@ class XEasyPdfBarCodeParam implements Serializable {
 
     /**
      * 初始化
+     */
+    void init() {
+        // 初始化编码设置
+        this.initEncodeHints();
+        // 初始化宽度与高度
+        this.initWidthAndHeight();
+        // 如果显示文字，则重置高度
+        if (this.isShowWords) {
+            // 如果文字为空，则重置为条形码内容
+            if (this.words == null || this.words.trim().length() == 0) {
+                // 重置为条形码内容
+                this.words = this.content;
+            }
+        }
+    }
+
+    /**
+     * 初始化
      *
      * @param document pdf文档
      * @param page     pdf页面
      */
     void init(XEasyPdfDocument document, XEasyPdfPage page) {
+        // 初始化
+        this.init();
         // 获取页面尺寸
         PDRectangle rectangle = page.getLastPage().getMediaBox();
-        // 初始化编码设置
-        this.initEncodeHints();
-        // 初始化宽度与高度
-        this.initWidthAndHeight();
         // 初始化Y轴坐标
         this.initBeginY(document, page, rectangle);
         // 如果内容模式未初始化，则初始化为页面内容模式
@@ -190,14 +206,6 @@ class XEasyPdfBarCodeParam implements Serializable {
         else {
             // 页面X轴起始坐标 += 左边距
             this.beginX += this.marginLeft;
-        }
-        // 如果显示文字，则重置高度
-        if (this.isShowWords) {
-            // 如果文字为空，则重置为条形码内容
-            if (this.words == null || this.words.trim().length() == 0) {
-                // 重置为条形码内容
-                this.words = this.content;
-            }
         }
     }
 

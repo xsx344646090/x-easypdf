@@ -67,6 +67,14 @@ public interface XEasyPdfFooter extends Serializable {
     XEasyPdfFooter setMarginBottom(float margin);
 
     /**
+     * 设置高度
+     *
+     * @param height 高度
+     * @return 返回页脚组件
+     */
+    XEasyPdfFooter setHeight(float height);
+
+    /**
      * 添加自定义组件
      *
      * @param component pdf组件
