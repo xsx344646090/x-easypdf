@@ -51,6 +51,10 @@ class XEasyPdfFooterParam implements Serializable {
      */
     private XEasyPdfComponent component;
     /**
+     * 高度
+     */
+    private Float height;
+    /**
      * 左边距
      */
     private Float marginLeft = 0F;
@@ -70,10 +74,6 @@ class XEasyPdfFooterParam implements Serializable {
      * 页面Y轴起始坐标
      */
     private Float beginY;
-    /**
-     * 高度
-     */
-    private Float height;
 
     /**
      * 初始化
