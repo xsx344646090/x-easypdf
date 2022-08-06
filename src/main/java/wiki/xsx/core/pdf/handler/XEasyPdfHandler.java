@@ -25,8 +25,6 @@ import wiki.xsx.core.pdf.footer.XEasyPdfFooter;
 import wiki.xsx.core.pdf.header.XEasyPdfDefaultHeader;
 import wiki.xsx.core.pdf.header.XEasyPdfHeader;
 import wiki.xsx.core.pdf.mark.XEasyPdfDefaultWatermark;
-import wiki.xsx.core.pdf.template.XEasyPdfTemplate;
-import wiki.xsx.core.pdf.template.XEasyPdfTemplateFontBuilder;
 
 import java.io.File;
 import java.io.InputStream;
@@ -1003,34 +1001,6 @@ public class XEasyPdfHandler {
     }
 
     /**
-     * pdf模板
-     */
-    public static class Template {
-        /**
-         * 字体构建器
-         */
-        public static class Font {
-            /**
-             * 获取字体构建器
-             *
-             * @return 返回字体构建器
-             */
-            public static XEasyPdfTemplateFontBuilder builder() {
-                return new XEasyPdfTemplateFontBuilder();
-            }
-        }
-
-        /**
-         * 构建模板
-         *
-         * @return 返回pdf模板
-         */
-        public static XEasyPdfTemplate build() {
-            return new XEasyPdfTemplate();
-        }
-    }
-
-    /**
      * pdf字体映射策略
      */
     public enum FontMappingPolicy {
@@ -1049,7 +1019,7 @@ public class XEasyPdfHandler {
          * @return 返回key
          */
         public static String key() {
-            return "x-easypdf.font.mapping";
+            return XEasyPdfConstants.FONT_MAPPING_POLICY_KEY;
         }
     }
 }
