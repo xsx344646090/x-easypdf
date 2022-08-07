@@ -19,6 +19,7 @@
         <batik.version>1.14</batik.version>
         <aspose-words.version>22.5</aspose-words.version>
         <fop.version>2.7</fop.version>
+        <commons-io.version>2.11.0</commons-io.version>
         <thymeleaf.version>3.0.15.RELEASE</thymeleaf.version>
         <junit.version>4.13.2</junit.version>
 
@@ -179,19 +180,6 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>com.aspose</groupId>
-            <artifactId>aspose-words</artifactId>
-            <version>${aspose-words.version}</version>
-            <type>pom</type>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.apache.xmlgraphics</groupId>
             <artifactId>batik-codec</artifactId>
             <version>${batik.version}</version>
@@ -218,7 +206,7 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.11.0</version>
+            <version>${commons-io.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -227,18 +215,12 @@
             <version>${thymeleaf.version}</version>
             <optional>true</optional>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>cn.hutool</groupId>-->
-<!--            <artifactId>hutool-all</artifactId>-->
-<!--            <version>5.7.16</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
-    <repositories>
-        <repository>
-            <id>AsposeJavaAPI</id>
-            <name>Aspose Java API</name>
-            <url>https://repository.aspose.com/repo/</url>
-        </repository>
-    </repositories>
 </project>

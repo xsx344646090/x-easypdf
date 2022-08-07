@@ -2,9 +2,7 @@ package wiki.xsx.core.pdf.doc;
 
 import org.junit.Before;
 import org.junit.Test;
-import wiki.xsx.core.pdf.convertor.XEasyPdfConvertor;
 import wiki.xsx.core.pdf.handler.XEasyPdfHandler;
-import wiki.xsx.core.pdf.util.XEasyPdfClassUtil;
 import wiki.xsx.core.pdf.util.XEasyPdfTextUtil;
 
 import java.util.HashMap;
@@ -58,22 +56,5 @@ public class XEasyPdfDocumentReplacerTest {
                 .enableReplaceCOSArray()
                 .replaceText(map)
                 .finish(filePath);
-    }
-
-    @Test
-    public void test(){
-        try {
-            long old = System.currentTimeMillis();
-            //新建一个pdf文档
-            String source = "C:\\Users\\Administrator\\Desktop\\test.doc";
-            String dest = "C:\\Users\\Administrator\\Desktop\\test.pdf";
-            XEasyPdfClassUtil.resetField("com.aspose.words.zzYP3");
-            XEasyPdfConvertor.toPdf(source, dest);
-            long now = System.currentTimeMillis();
-            //转化用时
-            System.out.println("Word 转 Pdf 共耗时：" + ((now - old) / 1000.0) + "秒");
-        } catch (Exception e) {
-            System.out.println("Word 转 Pdf 失败...");
-        }
     }
 }
