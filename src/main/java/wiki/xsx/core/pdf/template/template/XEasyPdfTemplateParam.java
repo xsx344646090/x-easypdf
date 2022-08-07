@@ -1,9 +1,9 @@
-package wiki.xsx.core.pdf.template;
+package wiki.xsx.core.pdf.template.template;
 
 import lombok.Data;
+import wiki.xsx.core.pdf.template.template.datasource.XEasyPdfTemplateDataSource;
 
 import java.util.Date;
-import java.util.Map;
 
 /**
  * pdf模板参数
@@ -31,14 +31,6 @@ class XEasyPdfTemplateParam {
      */
     private String configPath;
     /**
-     * 模板路径
-     */
-    private String templatePath;
-    /**
-     * 模板数据
-     */
-    private Map<String, Object> templateData;
-    /**
      * 标题
      */
     private String title;
@@ -62,6 +54,18 @@ class XEasyPdfTemplateParam {
      * 创建时间
      */
     private Date creationDate;
+    /**
+     * 数据源
+     */
+    private XEasyPdfTemplateDataSource dataSource;
+    /**
+     * 是否开启辅助功能
+     */
+    private Boolean isAccessibility = Boolean.FALSE;
+    /**
+     * 是否开启保留空标签
+     */
+    private Boolean isKeepEmptyTags = Boolean.TRUE;
 
     /**
      * 初始化
@@ -70,16 +74,8 @@ class XEasyPdfTemplateParam {
         if (this.configPath == null) {
             throw new IllegalArgumentException("the config path can not be null");
         }
-        if (this.templatePath == null) {
-            throw new IllegalArgumentException("the template path can not be null");
+        if (this.dataSource == null) {
+            throw new IllegalArgumentException("the data source can not be null");
         }
-    }
-
-    /**
-     * 模板数据是否非空
-     * @return 返回布尔值，是为true，否为false
-     */
-    boolean isNotEmptyTemplateData() {
-        return this.templateData != null && !this.templateData.isEmpty();
     }
 }

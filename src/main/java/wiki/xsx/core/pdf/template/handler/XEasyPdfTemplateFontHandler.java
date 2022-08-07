@@ -1,11 +1,11 @@
-package wiki.xsx.core.pdf.template;
+package wiki.xsx.core.pdf.template.handler;
 
-import lombok.Data;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.apache.fop.fonts.apps.TTFReader;
 
 /**
- * pdf模板字体构建器
+ * pdf模板字体助手
  *
  * @author xsx
  * @date 2022/7/31
@@ -22,9 +22,9 @@ import org.apache.fop.fonts.apps.TTFReader;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-@Data
+@Setter
 @Accessors(chain = true)
-public class XEasyPdfTemplateFontBuilder {
+public class XEasyPdfTemplateFontHandler {
 
     /**
      * 字体路径
@@ -36,9 +36,9 @@ public class XEasyPdfTemplateFontBuilder {
     private String outputPath;
 
     /**
-     * 构建
+     * 转换
      */
-    public void build() {
+    public void transform() {
         // 如果字体路径未初始化，则提示错误
         if (this.fontPath == null) {
             // 提示错误

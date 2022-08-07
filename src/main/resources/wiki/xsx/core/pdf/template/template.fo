@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--定义转义字符-->
+<!DOCTYPE root [<!ENTITY nbsp " "><!ENTITY lt "&lt;"><!ENTITY gt "&gt;"><!ENTITY amp "&amp;">]>
+<!--根标签-->
+<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
+    <!--页面模板-->
+    <fo:layout-master-set>
+<!--        &lt;!&ndash;单页面模板&ndash;&gt;-->
+<!--        <fo:simple-page-master page-width="595.27563px" page-height="841.8898px" master-name="page0" margin-top="10px"-->
+<!--                               margin-bottom="10px">-->
+<!--            &lt;!&ndash;页面的主体&ndash;&gt;-->
+<!--            <fo:region-body margin-top="20px"/>-->
+<!--            &lt;!&ndash;页面的页眉&ndash;&gt;-->
+<!--            <fo:region-before extent="10px"/>-->
+<!--            &lt;!&ndash;页面的页脚&ndash;&gt;-->
+<!--            <fo:region-after extent="10px"/>-->
+<!--            &lt;!&ndash;页面的左侧栏&ndash;&gt;-->
+<!--            <fo:region-start/>-->
+<!--            &lt;!&ndash;页面的右侧栏&ndash;&gt;-->
+<!--            <fo:region-end/>-->
+<!--        </fo:simple-page-master>-->
+    </fo:layout-master-set>
+
+<!--    &lt;!&ndash;页面内容&ndash;&gt;-->
+<!--    <fo:page-sequence master-reference="page1" id="total-page-number" font-family="Microsoft YaHei">-->
+<!--        &lt;!&ndash;页眉内容&ndash;&gt;-->
+<!--        <fo:static-content flow-name="xsl-region-before" text-align="right">-->
+<!--            <fo:block>-->
+<!--                当前第 <fo:page-number/> 页，共 <fo:page-number-citation-last ref-id="total-page-number"/> 页-->
+<!--            </fo:block>-->
+<!--        </fo:static-content>-->
+<!--        &lt;!&ndash;页脚内容&ndash;&gt;-->
+<!--        <fo:static-content flow-name="xsl-region-after" text-align="center">-->
+<!--            <fo:block>-->
+<!--                第 <fo:page-number/> 页-->
+<!--            </fo:block>-->
+<!--        </fo:static-content>-->
+
+<!--        &lt;!&ndash;页面内容&ndash;&gt;-->
+<!--        <fo:flow flow-name="xsl-region-body">-->
+<!--            &lt;!&ndash;文本&ndash;&gt;-->
+<!--            <fo:block><fo:inline border-after-width="1px" border-after-color="red" border-after-style="solid" background-color="rgb(200,100,200)">第一个段落</fo:inline></fo:block>-->
+<!--            <fo:block break-before="page">新的一页，第二个段落</fo:block>-->
+<!--        </fo:flow>-->
+<!--    </fo:page-sequence>-->
+</fo:root>
