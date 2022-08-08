@@ -1049,7 +1049,7 @@ public class XEasyPdfHandler {
          * @return 返回key
          */
         public static String key() {
-            return "x-easypdf.font.mapping";
+            return XEasyPdfConstants.FONT_MAPPING_POLICY_KEY;
         }
     }
 }

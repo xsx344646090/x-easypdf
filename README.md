@@ -6,7 +6,7 @@
 </p>
 
 #### 更新说明
-master分支将作为稳定版本发布，develop分支将会不定期进行更新，欢迎大家提供宝贵意见，目前稳定版本 v2.9.9，QQ交流群：15018726
+master分支将作为稳定版本发布，develop分支将会不定期进行更新，欢迎大家提供宝贵意见，QQ交流群：15018726
 
 ---
 
@@ -21,7 +21,7 @@ https://www.x-easypdf.cn
 ---
 
 #### 当前版本
-> <font size=3>v2.9.9</font>
+> <font size=3>v2.9.10</font>
 
 ---
 
@@ -102,7 +102,7 @@ https://www.x-easypdf.cn
 <dependency>
     <groupId>wiki.xsx</groupId>
     <artifactId>x-easypdf</artifactId>
-    <version>2.9.9</version>
+    <version>2.9.10</version>
 </dependency>
 ```
 

@@ -25,10 +25,6 @@ public final class XEasyPdfConstants {
      */
     public static final String PDFBOX_PRODUCER = "x-easypdf/pdfbox";
     /**
-     * fop生产者
-     */
-    public static final String FOP_PRODUCER = "x-easypdf/fop";
-    /**
      * 每英寸像素点
      */
     public static final Integer POINTS_PER_INCH = 72;
@@ -39,10 +35,13 @@ public final class XEasyPdfConstants {
     /**
      * 总页码占位符
      */
-    public static final String TOTAL_PAGE_PLACEHOLDER = "${TPE}";
-
+    public static final String TOTAL_PAGE_PLACEHOLDER = "${TPN}";
     /**
      * 当前页码占位符
      */
-    public static final String CURRENT_PAGE_PLACEHOLDER = "${PE}";
+    public static final String CURRENT_PAGE_PLACEHOLDER = "${CPN}";
+    /**
+     * 字体映射策略键
+     */
+    public static final String FONT_MAPPING_POLICY_KEY = "x-easypdf.font.mapping";
 }

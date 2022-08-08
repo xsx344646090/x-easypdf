@@ -132,6 +132,18 @@ public class XEasyPdfDefaultFooter implements XEasyPdfFooter {
     }
 
     /**
+     * 设置高度
+     *
+     * @param height 高度
+     * @return 返回页脚组件
+     */
+    @Override
+    public XEasyPdfFooter setHeight(float height) {
+        this.param.setHeight(Math.abs(height));
+        return this;
+    }
+
+    /**
      * 添加自定义组件
      *
      * @param component pdf组件
