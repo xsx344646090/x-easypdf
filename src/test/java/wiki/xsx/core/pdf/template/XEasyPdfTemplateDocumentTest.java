@@ -23,7 +23,7 @@ public class XEasyPdfTemplateDocumentTest {
 
     @Test
     public void testXmlContent() {
-        System.out.println(XEasyPdfTemplateHandler.Document.build().addPage(XEasyPdfTemplateHandler.Page.build()).getXMLContent());
+        System.out.println(XEasyPdfTemplateHandler.Document.build().addPage(XEasyPdfTemplateHandler.Page.build()).getContent());
     }
 
     @Test

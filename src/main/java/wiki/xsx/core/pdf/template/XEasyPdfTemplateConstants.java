@@ -78,6 +78,11 @@ public final class XEasyPdfTemplateConstants {
          * <p>标签："fo:block"</p>
          */
         public static final String BLOCK = "fo:block";
+        /**
+         * 内行
+         * <p>标签："fo:inline"</p>
+         */
+        public static final String IN_LINE = "fo:inline";
     }
 
 }

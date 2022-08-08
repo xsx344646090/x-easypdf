@@ -104,12 +104,12 @@ public class XEasyPdfTemplateDocument {
     }
 
     /**
-     * 获取xml（xsl-fo）文档内容
+     * 获取xsl-fo文档内容
      *
      * @return 返回文档内容
      */
     @SneakyThrows
-    public String getXMLContent() {
+    public String getContent() {
         // 创建输出流
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream(8192)) {
             // 创建转换器

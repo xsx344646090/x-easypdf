@@ -1,5 +1,7 @@
 package wiki.xsx.core.pdf.template.handler;
 
+import wiki.xsx.core.pdf.template.component.text.XEasyPdfTemplateText;
+import wiki.xsx.core.pdf.template.component.text.XEasyPdfTemplateTextExtend;
 import wiki.xsx.core.pdf.template.doc.XEasyPdfTemplateDocument;
 import wiki.xsx.core.pdf.template.page.XEasyPdfTemplatePage;
 import wiki.xsx.core.pdf.template.template.XEasyPdfTemplate;
@@ -95,7 +97,7 @@ public class XEasyPdfTemplateHandler {
         /**
          * 构建文档
          *
-         * @return 返回pdf模板文档
+         * @return 返回pdf模板-文档
          */
         public static XEasyPdfTemplateDocument build() {
             return new XEasyPdfTemplateDocument();
@@ -109,10 +111,38 @@ public class XEasyPdfTemplateHandler {
         /**
          * 构建页面
          *
-         * @return 返回pdf模板页面
+         * @return 返回pdf模板-页面
          */
         public static XEasyPdfTemplatePage build() {
             return new XEasyPdfTemplatePage();
+        }
+    }
+
+    /**
+     * pdf模板文本
+     */
+    public static class Text {
+        /**
+         * 构建文本
+         *
+         * @return 返回pdf模板-文本
+         */
+        public static XEasyPdfTemplateText build() {
+            return new XEasyPdfTemplateText();
+        }
+    }
+
+    /**
+     * pdf模板文本扩展
+     */
+    public static class TextExtend {
+        /**
+         * 构建文本扩展
+         *
+         * @return 返回pdf模板-文本扩展
+         */
+        public static XEasyPdfTemplateTextExtend build() {
+            return new XEasyPdfTemplateTextExtend();
         }
     }
 
