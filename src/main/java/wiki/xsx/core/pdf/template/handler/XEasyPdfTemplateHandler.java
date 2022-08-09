@@ -1,5 +1,6 @@
 package wiki.xsx.core.pdf.template.handler;
 
+import wiki.xsx.core.pdf.template.component.image.XEasyPdfTemplateImage;
 import wiki.xsx.core.pdf.template.component.text.XEasyPdfTemplateText;
 import wiki.xsx.core.pdf.template.component.text.XEasyPdfTemplateTextExtend;
 import wiki.xsx.core.pdf.template.doc.XEasyPdfTemplateDocument;
@@ -143,6 +144,20 @@ public class XEasyPdfTemplateHandler {
          */
         public static XEasyPdfTemplateTextExtend build() {
             return new XEasyPdfTemplateTextExtend();
+        }
+    }
+
+    /**
+     * pdf模板图像
+     */
+    public static class Image {
+        /**
+         * 构建图像
+         *
+         * @return 返回pdf模板-图像
+         */
+        public static XEasyPdfTemplateImage build() {
+            return new XEasyPdfTemplateImage();
         }
     }
 

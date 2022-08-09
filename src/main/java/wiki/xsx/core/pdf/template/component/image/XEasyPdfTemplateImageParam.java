@@ -1,16 +1,14 @@
-package wiki.xsx.core.pdf.template.component.text;
+package wiki.xsx.core.pdf.template.component.image;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
 import wiki.xsx.core.pdf.template.XEasyPdfTemplateTextPositionStyle;
 
-import java.awt.*;
-
 /**
- * pdf模板-文本基础参数
+ * pdf模板-图像参数
  *
  * @author xsx
- * @date 2022/8/8
+ * @date 2022/8/9
  * @since 1.8
  * <p>
  * Copyright (c) 2020-2022 xsx All Rights Reserved.
@@ -26,37 +24,33 @@ import java.awt.*;
  */
 @Data
 @Accessors(chain = true)
-class XEasyPdfTemplateTextBaseParam {
+class XEasyPdfTemplateImageParam {
+    /**
+     * 宽度
+     */
+    private String width;
     /**
      * 高度
      */
     private String height;
     /**
-     * 字体名称
+     * 图像路径
      */
-    private String fontFamily;
+    private String path;
     /**
-     * 字体大小
+     * 是否远程图片
      */
-    private String fontSize;
-    /**
-     * 字体大小调整
-     */
-    private String fontSizeAdjust;
-    /**
-     * 字体颜色
-     */
-    private Color fontColor;
+    private Boolean isRemote;
     /**
      * 是否包含边框
      */
     private Boolean hasBorder;
     /**
-     * 是否包含block边框
-     */
-    private Boolean hasBlockBorder;
-    /**
      * 水平样式（居左、居中、居右）
      */
     private XEasyPdfTemplateTextPositionStyle horizontalStyle;
+    /**
+     * 垂直样式（居上、居中、居下）
+     */
+    private XEasyPdfTemplateTextPositionStyle verticalStyle;
 }

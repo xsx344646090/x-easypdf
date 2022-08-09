@@ -3,9 +3,9 @@ package wiki.xsx.core.pdf.template.component.text;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import wiki.xsx.core.pdf.template.component.XEasyPdfTemplateComponent;
 import wiki.xsx.core.pdf.template.XEasyPdfTemplateConstants;
-import wiki.xsx.core.pdf.util.XEasyPdfTextUtil;
+import wiki.xsx.core.pdf.template.XEasyPdfTemplateTextPositionStyle;
+import wiki.xsx.core.pdf.template.component.XEasyPdfTemplateComponent;
 
 import java.awt.*;
 
@@ -28,18 +28,12 @@ import java.awt.*;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public class XEasyPdfTemplateText implements XEasyPdfTemplateComponent {
+public class XEasyPdfTemplateText extends XEasyPdfTemplateTextBase implements XEasyPdfTemplateComponent {
 
     /**
      * 文本参数
      */
     private final XEasyPdfTemplateTextParam param = new XEasyPdfTemplateTextParam();
-
-    /**
-     * 无参构造
-     */
-    public XEasyPdfTemplateText() {
-    }
 
     /**
      * 设置高度
@@ -108,12 +102,33 @@ public class XEasyPdfTemplateText implements XEasyPdfTemplateComponent {
     }
 
     /**
+     * 设置水平样式
+     *
+     * @param style 水平样式
+     * @return 返回pdf模板-文本组件
+     */
+    public XEasyPdfTemplateText setHorizontalStyle(XEasyPdfTemplateTextPositionStyle style) {
+        this.param.setHorizontalStyle(style);
+        return this;
+    }
+
+    /**
      * 开启边框（调试时使用）
      *
      * @return 返回pdf模板-文本组件
      */
     public XEasyPdfTemplateText enableBorder() {
         this.param.setHasBorder(Boolean.TRUE);
+        return this;
+    }
+
+    /**
+     * 开启block边框（调试时使用）
+     *
+     * @return 返回pdf模板-文本组件
+     */
+    public XEasyPdfTemplateText enableBlockBorder() {
+        this.param.setHasBlockBorder(Boolean.TRUE);
         return this;
     }
 
@@ -131,12 +146,33 @@ public class XEasyPdfTemplateText implements XEasyPdfTemplateComponent {
             return null;
         }
         // 创建block节点
-        Element block = document.createElement(XEasyPdfTemplateConstants.TagName.BLOCK);
-        // 如果高度不为空，则设置行内高度
-        if (this.param.getHeight() != null) {
-            // 设置行内高度
-            block.setAttribute("line-height", this.param.getHeight());
-        }
+        Element block = this.createBlock(document, this.param);
+        // 创建inline节点
+        Element inline = this.createInline(document, block);
+        // 添加inline节点
+        block.appendChild(inline);
+        // 返回block节点
+        return block;
+    }
+
+    /**
+     * 初始化
+     *
+     * @param param 文本基础参数
+     * @return 返回pdf模板-文本组件
+     */
+    XEasyPdfTemplateText init(XEasyPdfTemplateTextBaseParam param) {
+        this.param.init(param);
+        return this;
+    }
+
+    /**
+     * 创建inline节点
+     *
+     * @param document fo文档
+     * @param block    block节点
+     */
+    private Element createInline(Document document, Element block) {
         // 创建inline节点
         Element inline = document.createElement(XEasyPdfTemplateConstants.TagName.IN_LINE);
         // 如果开启边框，则添加边框
@@ -166,7 +202,7 @@ public class XEasyPdfTemplateText implements XEasyPdfTemplateComponent {
             // 设置字体颜色
             inline.setAttribute(
                     "color",
-                    XEasyPdfTextUtil.join(
+                    String.join(
                             "",
                             "rgb(",
                             String.valueOf(fontColor.getRed()),
@@ -180,29 +216,7 @@ public class XEasyPdfTemplateText implements XEasyPdfTemplateComponent {
         }
         // 设置文本
         inline.setTextContent(this.param.getText());
-        // 添加inline节点
-        block.appendChild(inline);
-        // 返回block节点
-        return block;
-    }
-
-    /**
-     * 初始化
-     *
-     * @param param 文本基础参数
-     * @return 返回pdf模板-文本组件
-     */
-    XEasyPdfTemplateText init(XEasyPdfTemplateTextBaseParam param) {
-        this.param.init(param);
-        return this;
-    }
-
-    /**
-     * 获取文本参数
-     *
-     * @return 返回文本参数
-     */
-    XEasyPdfTemplateTextParam getParam() {
-        return this.param;
+        // 返回inline节点
+        return inline;
     }
 }

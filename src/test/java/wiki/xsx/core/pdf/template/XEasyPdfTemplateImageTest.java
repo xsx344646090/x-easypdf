@@ -20,42 +20,24 @@ import wiki.xsx.core.pdf.template.handler.XEasyPdfTemplateHandler;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public class XEasyPdfTemplateTextTest {
+public class XEasyPdfTemplateImageTest {
 
     @Test
     public void testText() {
         // 定义fop配置文件路径
         String configPath = "E:\\pdf\\test\\fo\\fop.xconf";
         // 定义输出路径
-        String outputPath = "E:\\pdf\\test\\fo\\template-text.pdf";
+        String outputPath = "E:\\pdf\\test\\fo\\template-image.pdf";
         // 转换pdf
         XEasyPdfTemplateDocument document = XEasyPdfTemplateHandler.Document.build().setConfigPath(configPath).addPage(
                 XEasyPdfTemplateHandler.Page.build().addBodyComponent(
-                        XEasyPdfTemplateHandler.Text.build().setText("hello world")
+                        XEasyPdfTemplateHandler.Image.build()
+                                .setPath("E:\\pdf\\test\\fo\\test.jpg")
+                                .setWidth("100px")
                                 .setHeight("100px")
-                                .setHorizontalStyle(XEasyPdfTemplateTextPositionStyle.RIGHT)
                                 .enableBorder()
-                )
-        );
-        // 打印xml内容
-        System.out.println(document.getContent());
-        // 转换pdf
-        document.transform(outputPath);
-    }
-
-    @Test
-    public void testTextExtend() {
-        // 定义fop配置文件路径
-        String configPath = "E:\\pdf\\test\\fo\\fop.xconf";
-        // 定义输出路径
-        String outputPath = "E:\\pdf\\test\\fo\\template-textExtend.pdf";
-        // 转换pdf
-        XEasyPdfTemplateDocument document = XEasyPdfTemplateHandler.Document.build().setConfigPath(configPath).addPage(
-                XEasyPdfTemplateHandler.Page.build().addBodyComponent(
-                        XEasyPdfTemplateHandler.TextExtend.build().addTexts(
-                                XEasyPdfTemplateHandler.Text.build().setText("hello"),
-                                XEasyPdfTemplateHandler.Text.build().setText(" my world")
-                        )
+                        .setHorizontalStyle(XEasyPdfTemplateTextPositionStyle.CENTER)
+//                                .enableRemote()
                 )
         );
         // 打印xml内容

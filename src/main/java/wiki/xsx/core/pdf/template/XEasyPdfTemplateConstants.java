@@ -83,6 +83,11 @@ public final class XEasyPdfTemplateConstants {
          * <p>标签："fo:inline"</p>
          */
         public static final String IN_LINE = "fo:inline";
+        /**
+         * 外部图形
+         * <p>标签："fo:external-graphic"</p>
+         */
+        public static final String EXTERNAL_GRAPHIC = "fo:external-graphic";
     }
 
 }
