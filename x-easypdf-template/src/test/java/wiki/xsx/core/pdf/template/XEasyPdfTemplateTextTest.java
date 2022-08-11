@@ -34,7 +34,7 @@ public class XEasyPdfTemplateTextTest {
                         XEasyPdfTemplateHandler.Text.build().setText("hello world")
                                 .setLeading("30px")
                                 .setLetterSpacing("30px")
-                                .setHorizontalStyle(XEasyPdfTemplateTextPositionStyle.LEFT)
+                                .setHorizontalStyle(XEasyPdfTemplatePositionStyle.LEFT)
                                 .enableBorder()
                 )
         );

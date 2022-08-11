@@ -1,8 +1,9 @@
 package wiki.xsx.core.pdf.template.component.text;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-import wiki.xsx.core.pdf.template.XEasyPdfTemplateTextPositionStyle;
+import wiki.xsx.core.pdf.template.component.XEasyPdfTemplateComponentParam;
 
 import java.awt.*;
 
@@ -26,7 +27,8 @@ import java.awt.*;
  */
 @Data
 @Accessors(chain = true)
-class XEasyPdfTemplateTextBaseParam {
+@EqualsAndHashCode(callSuper = true)
+class XEasyPdfTemplateTextBaseParam extends XEasyPdfTemplateComponentParam {
     /**
      * 行间距
      */
@@ -59,28 +61,4 @@ class XEasyPdfTemplateTextBaseParam {
      * 字体颜色
      */
     private Color fontColor;
-    /**
-     * 上填充
-     */
-    private String paddingTop;
-    /**
-     * 下填充
-     */
-    private String paddingBottom;
-    /**
-     * 左填充
-     */
-    private String paddingLeft;
-    /**
-     * 右填充
-     */
-    private String paddingRight;
-    /**
-     * 是否包含边框
-     */
-    private Boolean hasBorder;
-    /**
-     * 水平样式（居左、居中、居右）
-     */
-    private XEasyPdfTemplateTextPositionStyle horizontalStyle;
 }

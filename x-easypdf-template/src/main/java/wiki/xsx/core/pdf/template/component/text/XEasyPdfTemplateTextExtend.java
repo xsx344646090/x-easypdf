@@ -3,8 +3,7 @@ package wiki.xsx.core.pdf.template.component.text;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import wiki.xsx.core.pdf.template.XEasyPdfTemplateTextPositionStyle;
-import wiki.xsx.core.pdf.template.component.XEasyPdfTemplateComponent;
+import wiki.xsx.core.pdf.template.XEasyPdfTemplatePositionStyle;
 
 import java.awt.*;
 import java.util.Collections;
@@ -29,7 +28,7 @@ import java.util.List;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public class XEasyPdfTemplateTextExtend extends XEasyPdfTemplateTextBase implements XEasyPdfTemplateComponent {
+public class XEasyPdfTemplateTextExtend extends XEasyPdfTemplateTextBase {
 
     /**
      * 文本扩展参数
@@ -108,7 +107,7 @@ public class XEasyPdfTemplateTextExtend extends XEasyPdfTemplateTextBase impleme
      * @param style 水平样式
      * @return 返回pdf模板-文本扩展组件
      */
-    public XEasyPdfTemplateTextExtend setHorizontalStyle(XEasyPdfTemplateTextPositionStyle style) {
+    public XEasyPdfTemplateTextExtend setHorizontalStyle(XEasyPdfTemplatePositionStyle style) {
         this.param.setHorizontalStyle(style);
         return this;
     }
@@ -150,31 +149,31 @@ public class XEasyPdfTemplateTextExtend extends XEasyPdfTemplateTextBase impleme
     }
 
     /**
-     * 创建节点
+     * 创建元素
      *
      * @param document fo文档
-     * @return 返回节点
+     * @return 返回元素
      */
     @Override
-    public Node createNode(Document document) {
-        // 如果文本为空，则返回空节点
+    public Element createElement(Document document) {
+        // 如果文本为空，则返回空元素
         if (this.param.getTextList() == null) {
-            // 返回空节点
+            // 返回空元素
             return null;
         }
-        // 创建block节点
-        Element block = this.createBlock(document, this.param);
+        // 初始化block元素
+        Element block = this.initBlock(document, this.param);
         // 遍历文本扩展组件
         for (XEasyPdfTemplateText text : this.param.getTextList()) {
-            // 初始化并创建节点
-            Node node = text.init(this.param).createNode(document);
-            // 如果节点不为空，则添加节点
+            // 初始化并创建元素
+            Node node = text.init(this.param).createElement(document);
+            // 如果元素不为空，则添加元素
             if (node!=null) {
-                // 添加节点
+                // 添加元素
                 block.appendChild(node.getFirstChild());
             }
         }
-        // 返回block节点
+        // 返回block元素
         return block;
     }
 }

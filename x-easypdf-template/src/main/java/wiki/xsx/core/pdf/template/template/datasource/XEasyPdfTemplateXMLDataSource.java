@@ -50,17 +50,22 @@ public class XEasyPdfTemplateXMLDataSource implements XEasyPdfTemplateDataSource
      *
      * @return 返回数据源读取器
      */
+    @SuppressWarnings("all")
     @Override
     public Reader getSourceReader() {
         // 如果不为空数据，则加载xml数据
         if (this.isNotEmptyData()) {
-            // 加载xml
-            try (InputStream inputStream = new FileInputStream(this.xmlPath)) {
-                // 返回数据源读取器
-                return new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+            try {
+                // 返回数据源读取器（从资源路径读取）
+                return new InputStreamReader(this.getClass().getResourceAsStream(this.xmlPath), StandardCharsets.UTF_8);
             } catch (Exception e) {
-                // 提示错误信息
-                throw new IllegalArgumentException("the xml can not be loaded，the path['" + this.xmlPath + "'] is error");
+                try {
+                    // 返回数据源读取器（从绝对路径读取）
+                    return new InputStreamReader(new FileInputStream(this.xmlPath), StandardCharsets.UTF_8);
+                } catch (Exception ex) {
+                    // 提示错误信息
+                    throw new IllegalArgumentException("the xml can not be loaded，the path['" + this.xmlPath + "'] is error");
+                }
             }
         }
         // 返回空数据源读取器
@@ -74,22 +79,33 @@ public class XEasyPdfTemplateXMLDataSource implements XEasyPdfTemplateDataSource
      * @param foAgent      fo代理
      * @param outputStream 输出流
      */
+    @SuppressWarnings("all")
     @SneakyThrows
     @Override
     public void transform(FopFactory fopFactory, FOUserAgent foAgent, OutputStream outputStream) {
         // 定义转换器
         Transformer transformer;
         try (
-                // 加载模板
-                InputStream inputStream = new FileInputStream(this.templatePath);
+                // 加载模板（从资源路径读取）
+                InputStream inputStream = this.getClass().getResourceAsStream(this.templatePath);
                 // 创建读取器
                 InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
         ) {
             // 创建转换器
             transformer = TransformerFactory.newInstance().newTransformer(new StreamSource(reader));
         } catch (Exception e) {
-            // 提示错误信息
-            throw new IllegalArgumentException("the template can not be loaded，the path['" + this.templatePath + "'] is error");
+            try (
+                    // 加载模板（从绝对路径读取）
+                    InputStream inputStream = new FileInputStream(this.templatePath);
+                    // 创建读取器
+                    InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+            ) {
+                // 创建转换器
+                transformer = TransformerFactory.newInstance().newTransformer(new StreamSource(reader));
+            } catch (Exception ex) {
+                // 提示错误信息
+                throw new IllegalArgumentException("the template can not be loaded，the path['" + this.templatePath + "'] is error");
+            }
         }
         // 设置参数版本
         transformer.setParameter("versionParam", "2.0");

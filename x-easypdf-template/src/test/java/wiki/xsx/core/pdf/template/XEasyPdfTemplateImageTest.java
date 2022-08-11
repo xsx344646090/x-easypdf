@@ -35,7 +35,7 @@ public class XEasyPdfTemplateImageTest {
                                 .setPath("E:\\pdf\\test\\fo\\test.jpg")
                                 .setWidth("100px")
                                 .setHeight("100px")
-                                .setHorizontalStyle(XEasyPdfTemplateTextPositionStyle.CENTER)
+                                .setHorizontalStyle(XEasyPdfTemplatePositionStyle.HORIZONTAL_CENTER)
                                 .enableBorder()
                                 // .enableRemote()
                 )

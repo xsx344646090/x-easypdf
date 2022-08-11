@@ -6,15 +6,15 @@
         <groupId>wiki.xsx</groupId>
         <artifactId>x-easypdf-parent</artifactId>
         <version>2.10.0</version>
-        <relativePath>../x-easypdf-parent</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <groupId>wiki.xsx</groupId>
-    <artifactId>x-easypdf-extension-svg</artifactId>
+    <artifactId>x-easypdf</artifactId>
     <version>2.10.0</version>
     <packaging>jar</packaging>
-    <name>x-easypdf-extension-svg</name>
+    <name>x-easypdf</name>
     <url>https://www.x-easypdf.cn</url>
-    <description>SVG extension module for x-easypdf</description>
+    <description>A framework based on pdfbox and fop</description>
 
     <properties>
         <skipTests>true</skipTests>
@@ -134,43 +134,29 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
             <groupId>wiki.xsx</groupId>
             <artifactId>x-easypdf-core</artifactId>
             <version>${project.version}</version>
         </dependency>
-
         <dependency>
-            <groupId>org.apache.xmlgraphics</groupId>
-            <artifactId>batik-codec</artifactId>
-            <exclusions>
-                <exclusion>
-                    <artifactId>xmlgraphics-commons</artifactId>
-                    <groupId>org.apache.xmlgraphics</groupId>
-                </exclusion>
-            </exclusions>
+            <groupId>wiki.xsx</groupId>
+            <artifactId>x-easypdf-barcode</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.xmlgraphics</groupId>
-            <artifactId>xmlgraphics-commons</artifactId>
-            <exclusions>
-                <exclusion>
-                    <artifactId>commons-logging</artifactId>
-                    <groupId>commons-logging</groupId>
-                </exclusion>
-            </exclusions>
+            <groupId>wiki.xsx</groupId>
+            <artifactId>x-easypdf-sign</artifactId>
+            <version>${project.version}</version>
         </dependency>
-
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
+            <groupId>wiki.xsx</groupId>
+            <artifactId>x-easypdf-svg</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>wiki.xsx</groupId>
+            <artifactId>x-easypdf-template</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
-
 </project>

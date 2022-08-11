@@ -8,9 +8,6 @@ import org.apache.pdfbox.pdmodel.*;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import wiki.xsx.core.pdf.component.XEasyPdfComponent;
 import wiki.xsx.core.pdf.component.image.XEasyPdfImage;
-import wiki.xsx.core.pdf.doc.XEasyPdfDefaultFontStyle;
-import wiki.xsx.core.pdf.doc.XEasyPdfDocumentBookmark;
-import wiki.xsx.core.pdf.doc.XEasyPdfDocumentPermission;
 import wiki.xsx.core.pdf.footer.XEasyPdfFooter;
 import wiki.xsx.core.pdf.header.XEasyPdfHeader;
 import wiki.xsx.core.pdf.mark.XEasyPdfWatermark;
@@ -327,6 +324,8 @@ class XEasyPdfDocumentParam implements Serializable {
      * @param document pdf文档
      */
     private void initFont(XEasyPdfDocument document) {
+        this.fontCache.clear();
+        this.otfFontCache.clear();
         if (this.fontPath == null) {
             this.fontPath = this.defaultFontStyle.getPath();
         }

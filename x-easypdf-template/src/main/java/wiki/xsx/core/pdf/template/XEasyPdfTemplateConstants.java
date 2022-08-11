@@ -25,69 +25,15 @@ public final class XEasyPdfTemplateConstants {
      */
     public static final String FOP_PRODUCER = "x-easypdf/fop";
     /**
+     * 默认配置路径
+     */
+    public static final String DEFAULT_CONFIG_PATH = "/wiki/xsx/core/pdf/template/fop.xconf";
+    /**
      * 默认模板路径
      */
     public static final String DEFAULT_TEMPLATE_PATH = "/wiki/xsx/core/pdf/template/template.fo";
-
     /**
-     * 标签名
+     * 默认边框参数
      */
-    public static class TagName {
-        /**
-         * 页面模板
-         * <p>标签："fo:layout-master-set"</p>
-         */
-        public static final String LAYOUT_MASTER_SET = "fo:layout-master-set";
-        /**
-         * 单页面模板
-         * <p>标签："fo:simple-page-master"</p>
-         */
-        public static final String SIMPLE_PAGE_MASTER = "fo:simple-page-master";
-        /**
-         * 主体（页面的主体）
-         * <p>标签："fo:region-body"</p>
-         */
-        public static final String REGION_BODY = "fo:region-body";
-        /**
-         * 页眉
-         * <p>标签："fo:region-before"</p>
-         */
-        public static final String REGION_BEFORE = "fo:region-before";
-        /**
-         * 页脚
-         * <p>标签："fo:region-after"</p>
-         */
-        public static final String REGION_AFTER = "fo:region-after";
-        /**
-         * 页面序列
-         * <p>标签："fo:page-sequence"</p>
-         */
-        public static final String PAGE_SEQUENCE = "fo:page-sequence";
-        /**
-         * 静态内容
-         * <p>标签："fo:static-content"</p>
-         */
-        public static final String STATIC_CONTENT = "fo:static-content";
-        /**
-         * 页面流
-         * <p>标签："fo:flow"</p>
-         */
-        public static final String FLOW = "fo:flow";
-        /**
-         * 块
-         * <p>标签："fo:block"</p>
-         */
-        public static final String BLOCK = "fo:block";
-        /**
-         * 内行
-         * <p>标签："fo:inline"</p>
-         */
-        public static final String IN_LINE = "fo:inline";
-        /**
-         * 外部图形
-         * <p>标签："fo:external-graphic"</p>
-         */
-        public static final String EXTERNAL_GRAPHIC = "fo:external-graphic";
-    }
-
+    public static final String DEFAULT_BORDER_VALUE = "1px solid black";
 }

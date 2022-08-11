@@ -91,6 +91,7 @@ public class XEasyPdfDocumentAnalyzer implements Serializable {
     XEasyPdfDocumentAnalyzer(XEasyPdfDocument pdfDocument) {
         this.pdfDocument = pdfDocument;
         this.document = this.pdfDocument.build(true);
+        this.pdfDocument.getParam().setIsReset(Boolean.TRUE);
     }
 
     /**

@@ -49,7 +49,7 @@ class XEasyPdfTemplatePageParam {
      */
     private String marginRight = "0px";
     /**
-     * 页面的主体参数
+     * 页面主体参数
      */
     private XEasyPdfTemplateRegionBodyParam regionBodyParam = new XEasyPdfTemplateRegionBodyParam();
     /**

@@ -2,10 +2,8 @@ package wiki.xsx.core.pdf.template.component.text;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import wiki.xsx.core.pdf.template.XEasyPdfTemplateConstants;
-import wiki.xsx.core.pdf.template.XEasyPdfTemplateTextPositionStyle;
-import wiki.xsx.core.pdf.template.component.XEasyPdfTemplateComponent;
+import wiki.xsx.core.pdf.template.XEasyPdfTemplateTag;
+import wiki.xsx.core.pdf.template.XEasyPdfTemplatePositionStyle;
 
 import java.awt.*;
 
@@ -28,7 +26,7 @@ import java.awt.*;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public class XEasyPdfTemplateText extends XEasyPdfTemplateTextBase implements XEasyPdfTemplateComponent {
+public class XEasyPdfTemplateText extends XEasyPdfTemplateTextBase {
 
     /**
      * 文本参数
@@ -118,7 +116,7 @@ public class XEasyPdfTemplateText extends XEasyPdfTemplateTextBase implements XE
      * @param style 水平样式
      * @return 返回pdf模板-文本组件
      */
-    public XEasyPdfTemplateText setHorizontalStyle(XEasyPdfTemplateTextPositionStyle style) {
+    public XEasyPdfTemplateText setHorizontalStyle(XEasyPdfTemplatePositionStyle style) {
         this.param.setHorizontalStyle(style);
         return this;
     }
@@ -134,25 +132,25 @@ public class XEasyPdfTemplateText extends XEasyPdfTemplateTextBase implements XE
     }
 
     /**
-     * 创建节点
+     * 创建元素
      *
      * @param document fo文档
-     * @return 返回节点
+     * @return 返回元素
      */
     @Override
-    public Node createNode(Document document) {
-        // 如果文本为空，则返回空节点
+    public Element createElement(Document document) {
+        // 如果文本为空，则返回空元素
         if (this.param.getText() == null) {
-            // 返回空节点
+            // 返回空元素
             return null;
         }
-        // 创建block节点
-        Element block = this.createBlock(document, this.param);
-        // 创建inline节点
+        // 初始化block元素
+        Element block = this.initBlock(document, this.param);
+        // 创建inline元素
         Element inline = this.createInline(document);
-        // 添加inline节点
+        // 添加inline元素
         block.appendChild(inline);
-        // 返回block节点
+        // 返回block元素
         return block;
     }
 
@@ -168,13 +166,13 @@ public class XEasyPdfTemplateText extends XEasyPdfTemplateTextBase implements XE
     }
 
     /**
-     * 创建inline节点
+     * 创建inline元素
      *
      * @param document fo文档
      */
     private Element createInline(Document document) {
-        // 创建inline节点
-        Element inline = document.createElement(XEasyPdfTemplateConstants.TagName.IN_LINE);
+        // 创建inline元素
+        Element inline = document.createElement(XEasyPdfTemplateTag.IN_LINE);
         // 如果字体名称不为空，则设置字体名称
         if (this.param.getFontFamily() != null) {
             // 设置字体名称
@@ -221,7 +219,7 @@ public class XEasyPdfTemplateText extends XEasyPdfTemplateTextBase implements XE
         }
         // 设置文本
         inline.setTextContent(this.param.getText());
-        // 返回inline节点
+        // 返回inline元素
         return inline;
     }
 }

@@ -2,9 +2,8 @@ package wiki.xsx.core.pdf.template.component.image;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import wiki.xsx.core.pdf.template.XEasyPdfTemplateConstants;
-import wiki.xsx.core.pdf.template.XEasyPdfTemplateTextPositionStyle;
+import wiki.xsx.core.pdf.template.XEasyPdfTemplateTag;
+import wiki.xsx.core.pdf.template.XEasyPdfTemplatePositionStyle;
 import wiki.xsx.core.pdf.template.component.XEasyPdfTemplateComponent;
 
 import java.io.File;
@@ -75,19 +74,8 @@ public class XEasyPdfTemplateImage implements XEasyPdfTemplateComponent {
      * @param style 水平样式
      * @return 返回pdf模板-图像组件
      */
-    public XEasyPdfTemplateImage setHorizontalStyle(XEasyPdfTemplateTextPositionStyle style) {
+    public XEasyPdfTemplateImage setHorizontalStyle(XEasyPdfTemplatePositionStyle style) {
         this.param.setHorizontalStyle(style);
-        return this;
-    }
-
-    /**
-     * 设置垂直样式
-     *
-     * @param style 垂直样式
-     * @return 返回pdf模板-图像组件
-     */
-    public XEasyPdfTemplateImage setVerticalStyle(XEasyPdfTemplateTextPositionStyle style) {
-        this.param.setVerticalStyle(style);
         return this;
     }
 
@@ -112,69 +100,50 @@ public class XEasyPdfTemplateImage implements XEasyPdfTemplateComponent {
     }
 
     /**
-     * 创建节点
+     * 创建元素
      *
      * @param document fo文档
-     * @return 返回节点
+     * @return 返回元素
      */
     @Override
-    public Node createNode(Document document) {
+    public Element createElement(Document document) {
+        // 如果图像路径为空，则返回空元素
         if (this.param.getPath() == null) {
+            // 返回空元素
             return null;
         }
-        // 创建block节点
-        Element block = this.createBlock(document);
+        // 创建block元素
+        Element block = this.createBlockElement(document, this.param);
+        // 创建externalGraphic元素
         Element externalGraphic = this.createExternalGraphic(document);
+        // 添加externalGraphic元素
         block.appendChild(externalGraphic);
-        // 返回block节点
+        // 返回block元素
         return block;
     }
 
     /**
-     * 创建Block节点
+     * 创建externalGraphic元素
      *
      * @param document fo文档
-     * @return 返回节点
+     * @return 返回元素
      */
-    private Element createBlock(Document document) {
-        // 创建block节点
-        Element block = document.createElement(XEasyPdfTemplateConstants.TagName.BLOCK);
-//        // 如果高度不为空，则设置行内高度
-//        if (this.param.getHeight() != null) {
-//            // 设置行内高度
-//            block.setAttribute("line-height", (this.param.getHeight()));
-//        }
-        // 如果开启边框，则添加边框
-        if (this.param.getHasBorder() != null) {
-            // 添加边框
-            block.setAttribute("border", "1px solid black");
-        }
-        // 如果水平样式不为空，则设置水平样式
-        if (this.param.getHorizontalStyle() != null) {
-            // 获取水平样式
-            XEasyPdfTemplateTextPositionStyle style = this.param.getHorizontalStyle();
-            // 如果为水平样式，则设置水平样式
-            if (style.isHorizontalStyle()) {
-                // 设置水平样式
-                block.setAttribute(style.isCenter() ? "text-align" : style.getKey(), style.getValue());
-            }
-        }
-        // 返回block节点
-        return block;
-    }
-
     private Element createExternalGraphic(Document document) {
-        // 创建externalGraphic节点
-        Element externalGraphic = document.createElement(XEasyPdfTemplateConstants.TagName.EXTERNAL_GRAPHIC);
+        // 创建externalGraphic元素
+        Element externalGraphic = document.createElement(XEasyPdfTemplateTag.EXTERNAL_GRAPHIC);
+        // 如果宽度不为空，则设置图像宽度
         if (this.param.getWidth() != null) {
-            // 设置垂直样式
+            // 设置图像宽度
             externalGraphic.setAttribute("content-width", this.param.getWidth());
         }
+        // 如果高度不为空，则设置图像高度
         if (this.param.getHeight() != null) {
-            // 设置垂直样式
+            // 设置图像高度
             externalGraphic.setAttribute("content-height", this.param.getHeight());
         }
+        // 设置图像路径
         externalGraphic.setAttribute("src", this.param.getIsRemote() != null ? this.param.getPath() : new File(this.param.getPath()).toURI().getPath());
+        // 返回externalGraphic元素
         return externalGraphic;
     }
 }

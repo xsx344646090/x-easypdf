@@ -3,7 +3,7 @@ package wiki.xsx.core.pdf.template.page;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import wiki.xsx.core.pdf.template.XEasyPdfTemplateConstants;
+import wiki.xsx.core.pdf.template.XEasyPdfTemplateTag;
 import wiki.xsx.core.pdf.template.component.XEasyPdfTemplateComponent;
 
 import java.util.Collections;
@@ -340,7 +340,7 @@ public class XEasyPdfTemplatePage implements XEasyPdfTemplatePageComponent {
         // 构建页面模板名称
         String masterName = "page" + index;
         // 创建页面模板
-        Node layoutMasterSet = root.getElementsByTagName(XEasyPdfTemplateConstants.TagName.LAYOUT_MASTER_SET).item(0);
+        Node layoutMasterSet = root.getElementsByTagName(XEasyPdfTemplateTag.LAYOUT_MASTER_SET).item(0);
         // 添加单页面模板
         layoutMasterSet.appendChild(this.createSimplePageMaster(document, masterName));
         // 返回页面名称
@@ -356,7 +356,7 @@ public class XEasyPdfTemplatePage implements XEasyPdfTemplatePageComponent {
      */
     private Element createSimplePageMaster(Document document, String masterName) {
         // 创建单页面模板
-        Element simplePageMaster = document.createElement(XEasyPdfTemplateConstants.TagName.SIMPLE_PAGE_MASTER);
+        Element simplePageMaster = document.createElement(XEasyPdfTemplateTag.SIMPLE_PAGE_MASTER);
         // 设置页面名称
         simplePageMaster.setAttribute("master-name", masterName);
         // 设置页面宽度
@@ -389,7 +389,7 @@ public class XEasyPdfTemplatePage implements XEasyPdfTemplatePageComponent {
      */
     private Element createRegionBody(Document document) {
         // 创建页面主体区域
-        Element regionBody = document.createElement(XEasyPdfTemplateConstants.TagName.REGION_BODY);
+        Element regionBody = document.createElement(XEasyPdfTemplateTag.REGION_BODY);
         // 设置页面主体区域上边距
         regionBody.setAttribute("margin-top", this.param.getRegionBodyParam().getMarginTop());
         // 设置页面主体区域下边距
@@ -410,7 +410,7 @@ public class XEasyPdfTemplatePage implements XEasyPdfTemplatePageComponent {
      */
     private Element createRegionBefore(Document document) {
         // 创建页眉区域
-        Element regionBefore = document.createElement(XEasyPdfTemplateConstants.TagName.REGION_BEFORE);
+        Element regionBefore = document.createElement(XEasyPdfTemplateTag.REGION_BEFORE);
         // 设置页眉区域高度
         regionBefore.setAttribute("extent", this.param.getRegionBeforeParam().getHeight());
         // 返回页眉区域
@@ -425,7 +425,7 @@ public class XEasyPdfTemplatePage implements XEasyPdfTemplatePageComponent {
      */
     private Element createRegionAfter(Document document) {
         // 创建页脚区域
-        Element regionAfter = document.createElement(XEasyPdfTemplateConstants.TagName.REGION_AFTER);
+        Element regionAfter = document.createElement(XEasyPdfTemplateTag.REGION_AFTER);
         // 设置页脚区域高度
         regionAfter.setAttribute("extent", this.param.getRegionAfterParam().getHeight());
         // 返回页脚区域
@@ -441,7 +441,7 @@ public class XEasyPdfTemplatePage implements XEasyPdfTemplatePageComponent {
      */
     private Element addPageSequence(Document document, String masterName) {
         // 创建页面序列
-        Element pageSequence = document.createElement(XEasyPdfTemplateConstants.TagName.PAGE_SEQUENCE);
+        Element pageSequence = document.createElement(XEasyPdfTemplateTag.PAGE_SEQUENCE);
         // 设置页面模板名称
         pageSequence.setAttribute("master-reference", masterName);
         // 添加页面主体区域
@@ -468,7 +468,7 @@ public class XEasyPdfTemplatePage implements XEasyPdfTemplatePageComponent {
      */
     private Element addRegionBody(Document document) {
         // 创建页面流
-        Element flow = document.createElement(XEasyPdfTemplateConstants.TagName.FLOW);
+        Element flow = document.createElement(XEasyPdfTemplateTag.FLOW);
         // 设置页面流向（页面主体区域）
         flow.setAttribute("flow-name", "xsl-region-body");
         // 如果包含页面主体，则添加组件
@@ -482,7 +482,7 @@ public class XEasyPdfTemplatePage implements XEasyPdfTemplatePageComponent {
         // 否则添加空元素
         else {
             // 添加空元素
-            flow.appendChild(document.createElement(XEasyPdfTemplateConstants.TagName.BLOCK));
+            flow.appendChild(document.createElement(XEasyPdfTemplateTag.BLOCK));
         }
         // 返回页面流
         return flow;
@@ -496,7 +496,7 @@ public class XEasyPdfTemplatePage implements XEasyPdfTemplatePageComponent {
      */
     private Element addRegionBefore(Document document) {
         // 创建静态内容
-        Element staticContent = document.createElement(XEasyPdfTemplateConstants.TagName.STATIC_CONTENT);
+        Element staticContent = document.createElement(XEasyPdfTemplateTag.STATIC_CONTENT);
         // 设置页面流向（页眉区域）
         staticContent.setAttribute("flow-name", "xsl-region-before");
         // 遍历页眉区域组件列表
@@ -516,7 +516,7 @@ public class XEasyPdfTemplatePage implements XEasyPdfTemplatePageComponent {
      */
     private Element addRegionAfter(Document document) {
         // 创建静态内容
-        Element staticContent = document.createElement(XEasyPdfTemplateConstants.TagName.STATIC_CONTENT);
+        Element staticContent = document.createElement(XEasyPdfTemplateTag.STATIC_CONTENT);
         // 设置页面流向（页脚区域）
         staticContent.setAttribute("flow-name", "xsl-region-after");
         // 遍历页脚区域组件列表

@@ -1,15 +1,13 @@
-package wiki.xsx.core.pdf.template.component.image;
+package wiki.xsx.core.pdf.template.component;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.experimental.Accessors;
-import wiki.xsx.core.pdf.template.component.XEasyPdfTemplateComponentParam;
+import wiki.xsx.core.pdf.template.XEasyPdfTemplatePositionStyle;
 
 /**
- * pdf模板-图像参数
+ * pdf模板组件公共参数
  *
  * @author xsx
- * @date 2022/8/9
+ * @date 2022/8/11
  * @since 1.8
  * <p>
  * Copyright (c) 2020-2022 xsx All Rights Reserved.
@@ -24,23 +22,29 @@ import wiki.xsx.core.pdf.template.component.XEasyPdfTemplateComponentParam;
  * </p>
  */
 @Data
-@Accessors(chain = true)
-@EqualsAndHashCode(callSuper = true)
-class XEasyPdfTemplateImageParam extends XEasyPdfTemplateComponentParam {
+public class XEasyPdfTemplateComponentParam {
     /**
-     * 宽度
+     * 上填充
      */
-    private String width;
+    protected String paddingTop;
     /**
-     * 高度
+     * 下填充
      */
-    private String height;
+    protected String paddingBottom;
     /**
-     * 图像路径
+     * 左填充
      */
-    private String path;
+    protected String paddingLeft;
     /**
-     * 是否远程图片
+     * 右填充
      */
-    private Boolean isRemote;
+    protected String paddingRight;
+    /**
+     * 是否包含边框
+     */
+    protected Boolean hasBorder;
+    /**
+     * 水平样式（居左、居中、居右）
+     */
+    protected XEasyPdfTemplatePositionStyle horizontalStyle;
 }

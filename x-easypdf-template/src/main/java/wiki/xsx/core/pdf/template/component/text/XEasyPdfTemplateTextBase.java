@@ -2,8 +2,7 @@ package wiki.xsx.core.pdf.template.component.text;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import wiki.xsx.core.pdf.template.XEasyPdfTemplateConstants;
-import wiki.xsx.core.pdf.template.XEasyPdfTemplateTextPositionStyle;
+import wiki.xsx.core.pdf.template.component.XEasyPdfTemplateComponent;
 
 /**
  * pdf模板-文本基础组件
@@ -24,23 +23,18 @@ import wiki.xsx.core.pdf.template.XEasyPdfTemplateTextPositionStyle;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public class XEasyPdfTemplateTextBase {
+abstract class XEasyPdfTemplateTextBase implements XEasyPdfTemplateComponent {
 
     /**
-     * 创建Block节点
+     * 初始化Block元素
      *
      * @param document fo文档
      * @param param    文本参数
-     * @return 返回节点
+     * @return 返回元素
      */
-    Element createBlock(Document document, XEasyPdfTemplateTextBaseParam param) {
-        // 创建block节点
-        Element block = document.createElement(XEasyPdfTemplateConstants.TagName.BLOCK);
-        // 如果开启边框，则添加边框
-        if (param.getHasBorder() != null) {
-            // 添加边框
-            block.setAttribute("border", "1px solid black");
-        }
+    Element initBlock(Document document, XEasyPdfTemplateTextBaseParam param) {
+        // 创建block元素
+        Element block = this.createBlockElement(document, param);
         // 如果行间距不为空，则设置行间距
         if (param.getLeading() != null) {
             // 设置行间距
@@ -51,37 +45,7 @@ public class XEasyPdfTemplateTextBase {
             // 设置字符间距
             block.setAttribute("letter-spacing", param.getLetterSpacing());
         }
-        // 如果水平样式不为空，则设置水平样式
-        if (param.getHorizontalStyle() != null) {
-            // 获取水平样式
-            XEasyPdfTemplateTextPositionStyle style = param.getHorizontalStyle();
-            // 如果为水平样式，则设置水平样式
-            if (style.isHorizontalStyle()) {
-                // 设置水平样式
-                block.setAttribute(style.isCenter() ? "text-align" : style.getKey(), style.getValue());
-            }
-        }
-        // 如果上填充不为空，则设置上填充
-        if (param.getPaddingTop() != null) {
-            // 设置上填充
-            block.setAttribute("padding-top", param.getPaddingTop());
-        }
-        // 如果下填充不为空，则设置下填充
-        if (param.getPaddingBottom() != null) {
-            // 设置下填充
-            block.setAttribute("padding-bottom", param.getPaddingBottom());
-        }
-        // 如果左填充不为空，则设置左填充
-        if (param.getPaddingLeft() != null) {
-            // 设置左填充
-            block.setAttribute("padding-left", param.getPaddingLeft());
-        }
-        // 如果右填充不为空，则设置右填充
-        if (param.getPaddingRight() != null) {
-            // 设置右填充
-            block.setAttribute("padding-left", param.getPaddingRight());
-        }
-        // 返回block节点
+        // 返回block元素
         return block;
     }
 }

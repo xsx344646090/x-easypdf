@@ -1,7 +1,7 @@
 package wiki.xsx.core.pdf.template;
 
 /**
- * pdf模板文本位置样式
+ * pdf模板位置样式
  *
  * @author xsx
  * @date 2022/8/9
@@ -18,7 +18,7 @@ package wiki.xsx.core.pdf.template;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public enum XEasyPdfTemplateTextPositionStyle {
+public enum XEasyPdfTemplatePositionStyle {
     /**
      * 居上
      */
@@ -28,9 +28,13 @@ public enum XEasyPdfTemplateTextPositionStyle {
      */
     BOTTOM("display-align", "after"),
     /**
-     * 居中
+     * 水平居中
      */
-    CENTER("text-align/display-align", "center"),
+    HORIZONTAL_CENTER("text-align", "center"),
+    /**
+     * 垂直居中
+     */
+    VERTICAL_CENTER("display-align", "center"),
     /**
      * 居左
      */
@@ -55,7 +59,7 @@ public enum XEasyPdfTemplateTextPositionStyle {
      * @param key   键
      * @param value 值
      */
-    XEasyPdfTemplateTextPositionStyle(String key, String value) {
+    XEasyPdfTemplatePositionStyle(String key, String value) {
         this.key = key;
         this.value = value;
     }
@@ -79,21 +83,12 @@ public enum XEasyPdfTemplateTextPositionStyle {
     }
 
     /**
-     * 是否居中样式
-     *
-     * @return 返回布尔值，是为true，否为false
-     */
-    public boolean isCenter() {
-        return this == CENTER;
-    }
-
-    /**
      * 是否水平样式
      *
      * @return 返回布尔值，是为true，否为false
      */
     public boolean isHorizontalStyle() {
-        return this == LEFT || this == CENTER || this == RIGHT;
+        return this == LEFT || this == HORIZONTAL_CENTER || this == RIGHT;
     }
 
     /**
@@ -102,6 +97,6 @@ public enum XEasyPdfTemplateTextPositionStyle {
      * @return 返回布尔值，是为true，否为false
      */
     public boolean isVerticalStyle() {
-        return this == TOP || this == CENTER || this == BOTTOM;
+        return this == TOP || this == VERTICAL_CENTER || this == BOTTOM;
     }
 }

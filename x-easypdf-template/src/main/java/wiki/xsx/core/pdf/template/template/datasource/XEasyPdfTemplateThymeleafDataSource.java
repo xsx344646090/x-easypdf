@@ -59,11 +59,8 @@ public class XEasyPdfTemplateThymeleafDataSource implements XEasyPdfTemplateData
     @SneakyThrows
     @Override
     public Reader getSourceReader() {
-        // 获取输入流
-        try (InputStream inputStream = this.getInputStream()) {
-            // 创建数据源
-            return new InputStreamReader(inputStream, StandardCharsets.UTF_8);
-        }
+        // 创建数据源
+        return new InputStreamReader(this.getInputStream(), StandardCharsets.UTF_8);
     }
 
     /**
@@ -93,8 +90,13 @@ public class XEasyPdfTemplateThymeleafDataSource implements XEasyPdfTemplateData
                 // 获取模板内容
                 template = new String(Files.readAllBytes(Paths.get(this.templatePath)), StandardCharsets.UTF_8);
             } catch (Exception e) {
-                // 提示错误信息
-                throw new IllegalArgumentException("the template can not be loaded，the path['" + this.templatePath + "'] is error");
+                try {
+                    // 获取模板内容
+                    template = new String(Files.readAllBytes(Paths.get(this.templatePath)), StandardCharsets.UTF_8);
+                } catch (Exception ex) {
+                    // 提示错误信息
+                    throw new IllegalArgumentException("the template can not be loaded，the path['" + this.templatePath + "'] is error");
+                }
             }
             // 创建模板引擎
             TemplateEngine templateEngine = new TemplateEngine();

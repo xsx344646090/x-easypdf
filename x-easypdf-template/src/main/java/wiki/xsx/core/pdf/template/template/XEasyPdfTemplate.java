@@ -189,21 +189,35 @@ public class XEasyPdfTemplate {
     public void transform(OutputStream outputStream) {
         // 初始化参数
         this.param.init();
+        // 定义fop工厂
+        FopFactory factory;
         try (
-                // 创建配置输入流
-                InputStream inputStream = Files.newInputStream(Paths.get(this.param.getConfigPath()))
+                // 创建配置输入流（从资源路径读取）
+                InputStream inputStream = this.getClass().getResourceAsStream(this.param.getConfigPath())
         ) {
             // 创建fop工厂
-            FopFactory factory = new FopFactoryBuilder(
-                    new File(this.param.getConfigPath()).toURI()
+            factory = new FopFactoryBuilder(
+                    new File(".").toURI()
             ).setConfiguration(
                     new DefaultConfigurationBuilder().build(inputStream)
             ).build();
-            // 获取fo代理
-            FOUserAgent agent = this.getFOUserAgent(factory);
-            // 转换pdf
-            this.param.getDataSource().transform(factory, agent, outputStream);
+        }catch (Exception e) {
+            try (
+                    // 创建配置输入流（从绝对路径读取）
+                    InputStream inputStream = Files.newInputStream(Paths.get(this.param.getConfigPath()))
+            ) {
+                // 创建fop工厂
+                factory = new FopFactoryBuilder(
+                        new File(this.param.getConfigPath()).toURI()
+                ).setConfiguration(
+                        new DefaultConfigurationBuilder().build(inputStream)
+                ).build();
+            }
         }
+        // 获取fo代理
+        FOUserAgent agent = this.getUserAgent(factory);
+        // 转换pdf
+        this.param.getDataSource().transform(factory, agent, outputStream);
     }
 
     /**
@@ -212,7 +226,7 @@ public class XEasyPdfTemplate {
      * @param fopFactory fop工厂
      * @return 返回代理
      */
-    private FOUserAgent getFOUserAgent(FopFactory fopFactory) {
+    private FOUserAgent getUserAgent(FopFactory fopFactory) {
         // 创建代理
         FOUserAgent userAgent = fopFactory.newFOUserAgent();
         // 设置生产者

@@ -1,6 +1,7 @@
 package wiki.xsx.core.pdf.template.template;
 
 import lombok.Data;
+import wiki.xsx.core.pdf.template.XEasyPdfTemplateConstants;
 import wiki.xsx.core.pdf.template.template.datasource.XEasyPdfTemplateDataSource;
 
 import java.util.Date;
@@ -72,7 +73,7 @@ class XEasyPdfTemplateParam {
      */
     void init() {
         if (this.configPath == null) {
-            throw new IllegalArgumentException("the config path can not be null");
+            this.configPath = XEasyPdfTemplateConstants.DEFAULT_CONFIG_PATH;
         }
         if (this.dataSource == null) {
             throw new IllegalArgumentException("the data source can not be null");
