@@ -9,12 +9,12 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <groupId>wiki.xsx</groupId>
-    <artifactId>x-easypdf</artifactId>
+    <artifactId>x-easypdf-pdfbox</artifactId>
     <version>2.10.0</version>
     <packaging>jar</packaging>
-    <name>x-easypdf</name>
+    <name>x-easypdf-pdfbox</name>
     <url>https://www.x-easypdf.cn</url>
-    <description>A framework based on pdfbox and fop</description>
+    <description>A framework based on pdfbox</description>
 
     <properties>
         <skipTests>true</skipTests>
@@ -134,14 +134,44 @@
 
     <dependencies>
         <dependency>
-            <groupId>wiki.xsx</groupId>
-            <artifactId>x-easypdf-pdfbox</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
         </dependency>
         <dependency>
-            <groupId>wiki.xsx</groupId>
-            <artifactId>x-easypdf-fop</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>fontbox</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>preflight</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>xmpbox</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk15on</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-codec</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

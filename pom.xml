@@ -28,12 +28,9 @@
     </properties>
 
     <modules>
+        <module>x-easypdf-pdfbox</module>
+        <module>x-easypdf-fop</module>
         <module>x-easypdf-all</module>
-        <module>x-easypdf-core</module>
-        <module>x-easypdf-barcode</module>
-        <module>x-easypdf-sign</module>
-        <module>x-easypdf-svg</module>
-        <module>x-easypdf-template</module>
     </modules>
 
     <licenses>
