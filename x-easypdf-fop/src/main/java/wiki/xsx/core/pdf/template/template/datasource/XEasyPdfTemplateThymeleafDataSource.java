@@ -38,6 +38,11 @@ import java.util.Map;
 @Setter
 @Accessors(chain = true)
 public class XEasyPdfTemplateThymeleafDataSource implements XEasyPdfTemplateDataSource {
+
+    /**
+     * 模板引擎
+     */
+    private static final TemplateEngine TEMPLATE_ENGINE = initTemplateEngine();
     /**
      * 模板路径（绝对路径）
      */
@@ -59,7 +64,6 @@ public class XEasyPdfTemplateThymeleafDataSource implements XEasyPdfTemplateData
     @SneakyThrows
     @Override
     public Reader getSourceReader() {
-        // 创建数据源
         return new InputStreamReader(this.getInputStream(), StandardCharsets.UTF_8);
     }
 
@@ -77,51 +81,137 @@ public class XEasyPdfTemplateThymeleafDataSource implements XEasyPdfTemplateData
     }
 
     /**
+     * 初始化模板引擎
+     *
+     * @return 返回模板引擎
+     */
+    private static TemplateEngine initTemplateEngine() {
+        // 创建模板引擎
+        TemplateEngine templateEngine = new TemplateEngine();
+        // 创建字符串解析器
+        StringTemplateResolver resolver = new StringTemplateResolver();
+        // 设置模板模式
+        resolver.setTemplateMode(TemplateMode.XML);
+        // 设置模板解析器
+        templateEngine.setTemplateResolver(resolver);
+        // 返回模板引擎
+        return templateEngine;
+    }
+
+    /**
      * 获取输入流
      *
      * @return 返回输入流
      */
+    @SneakyThrows
     private InputStream getInputStream() {
-        // 如果模板数据不为空，则处理模板
-        if (this.isNotEmptyTemplateData()) {
-            // 定义模板
-            String template;
-            try {
-                // 获取模板内容
-                template = new String(Files.readAllBytes(Paths.get(this.templatePath)), StandardCharsets.UTF_8);
-            } catch (Exception e) {
-                try {
-                    // 获取模板内容
-                    template = new String(Files.readAllBytes(Paths.get(this.templatePath)), StandardCharsets.UTF_8);
-                } catch (Exception ex) {
-                    // 提示错误信息
-                    throw new IllegalArgumentException("the template can not be loaded，the path['" + this.templatePath + "'] is error");
-                }
-            }
-            // 创建模板引擎
-            TemplateEngine templateEngine = new TemplateEngine();
-            // 创建字符串解析器
-            StringTemplateResolver resolver = new StringTemplateResolver();
-            // 设置模板模式
-            resolver.setTemplateMode(TemplateMode.XML);
-            // 设置模板解析器
-            templateEngine.setTemplateResolver(resolver);
-            // 创建上下文
-            Context context = new Context();
-            // 设置本地化策略
-            context.setLocale(this.locale);
-            // 设置变量数据
-            context.setVariables(this.templateData);
-            // 处理模板并返回
-            return new BufferedInputStream(new ByteArrayInputStream(templateEngine.process(template, context).getBytes(StandardCharsets.UTF_8)));
-        } else {
-            try {
-                return Files.newInputStream(Paths.get(this.templatePath));
-            } catch (Exception e) {
-                // 提示错误信息
-                throw new IllegalArgumentException("the template can not be loaded，the path['" + this.templatePath + "'] is error");
-            }
+        // 如果模板数据不为空，则处理模板，否则直接加载模板
+        return this.isNotEmptyTemplateData()?this.processTemplate():this.loadTemplateInputStream();
+    }
+
+    /**
+     * 加载模板输入流
+     *
+     * @return 返回模板输入流
+     */
+    @SneakyThrows
+    private InputStream loadTemplateInputStream() {
+        try {
+            // 从资源路径加载模板
+            InputStream inputStream = this.getClass().getResourceAsStream(this.templatePath);
+            // 如果不为空，则返回，否则从绝对路径加载模板
+            return inputStream != null ? inputStream : Files.newInputStream(Paths.get(this.templatePath));
+        } catch (Exception e) {
+            // 提示错误信息
+            throw new IllegalArgumentException("the template can not be loaded，the path['" + this.templatePath + "'] is error");
         }
+    }
+
+    /**
+     * 处理模板
+     *
+     * @return 返回模板输入流
+     */
+    @SneakyThrows
+    private InputStream processTemplate() {
+        // 创建上下文
+        Context context = new Context();
+        // 设置本地化策略
+        context.setLocale(this.locale);
+        // 设置变量数据
+        context.setVariables(this.templateData);
+        try (
+                // 创建输出流
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream(8192);
+                // 创建写入器
+                Writer writer = new OutputStreamWriter(outputStream)
+        ) {
+            // 处理模板
+            TEMPLATE_ENGINE.process(this.readTemplateContent(), context, writer);
+            // 返回输入流
+            return new BufferedInputStream(new ByteArrayInputStream(outputStream.toByteArray()));
+        }
+    }
+
+    /**
+     * 读取模板内容
+     *
+     * @return 返回模板内容
+     */
+    private String readTemplateContent() {
+        // 从资源路径读取内容
+        String content = this.readTemplateContentForResource();
+        // 如果内容为不为空，则从绝对路径读取内容
+        return content != null ? content : this.readTemplateContentForPath();
+    }
+
+    /**
+     * 从资源路径读取模板内容
+     *
+     * @return 返回模板内容
+     */
+    @SneakyThrows
+    private String readTemplateContentForResource() {
+        try (
+                // 创建输出流
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                // 读取输入流
+                InputStream inputStream = this.getClass().getResourceAsStream(this.templatePath);
+        ) {
+            // 如果输入流为空，则返回空
+            if (inputStream == null) {
+                // 返回空
+                return null;
+            }
+            // 创建字节数组
+            byte[] buffer = new byte[8192];
+            // 定义长度
+            int length;
+            // 循环读取
+            while ((length = inputStream.read(buffer)) != -1) {
+                // 写入内容
+                outputStream.write(buffer, 0, length);
+            }
+            // 返回内容
+            return outputStream.toString(StandardCharsets.UTF_8.name());
+        }
+    }
+
+    /**
+     * 从绝对路径读取模板内容
+     *
+     * @return 返回模板内容
+     */
+    @SneakyThrows
+    private String readTemplateContentForPath() {
+        try {
+            // 返回模板内容（从绝对路径读取）
+            return new String(Files.readAllBytes(Paths.get(this.templatePath)), StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            // 提示错误信息
+            throw new IllegalArgumentException("the template can not be loaded，the path['" + this.templatePath + "'] is error");
+        }
+
     }
 
     /**
