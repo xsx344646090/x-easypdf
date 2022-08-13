@@ -1,10 +1,6 @@
 package wiki.xsx.core.pdf.template.doc;
 
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.fop.layoutmgr.inline.TextLayoutManager;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import wiki.xsx.core.pdf.doc.XEasyPdfDocument;
@@ -14,14 +10,8 @@ import wiki.xsx.core.pdf.template.page.XEasyPdfTemplatePageComponent;
 import wiki.xsx.core.pdf.template.template.XEasyPdfTemplate;
 
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
 /**
@@ -43,8 +33,6 @@ import java.util.Collections;
  * </p>
  */
 public class XEasyPdfTemplateDocument {
-
-    private static final Log log = LogFactory.getLog(XEasyPdfTemplateDocument.class);
 
     /**
      * pdf模板文档参数
@@ -96,9 +84,6 @@ public class XEasyPdfTemplateDocument {
      */
     @SneakyThrows
     public void transform(OutputStream outputStream) {
-        if (log.isDebugEnabled()) {
-            log.debug("XSL-FO ==> \n" + this.getContent());
-        }
         this.initTemplate().transform(outputStream);
     }
 
@@ -109,50 +94,16 @@ public class XEasyPdfTemplateDocument {
      */
     @SneakyThrows
     public XEasyPdfDocument transform() {
-        if (log.isDebugEnabled()) {
-            log.debug("XSL-FO ==> \n" + this.getContent());
-        }
         return this.initTemplate().transform();
     }
 
     /**
-     * 获取xsl-fo文档内容
-     *
-     * @return 返回文档内容
-     */
-    @SneakyThrows
-    public String getContent() {
-        // 创建输出流
-        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream(8192)) {
-            // 创建转换器
-            Transformer transformer = TransformerFactory.newInstance().newTransformer();
-            // 设置编码类型
-            transformer.setOutputProperty("encoding", StandardCharsets.UTF_8.toString());
-            // 转换
-            transformer.transform(new DOMSource(this.initDocument()), new StreamResult(outputStream));
-            // 返回字符串
-            return outputStream.toString(StandardCharsets.UTF_8.toString());
-        }
-    }
-
-    /**
-     * 初始化模板
-     *
-     * @return 返回pdf模板
-     */
-    private XEasyPdfTemplate initTemplate() {
-        return XEasyPdfTemplateHandler.Template.build()
-                .setConfigPath(this.param.getConfigPath())
-                .setDataSource(XEasyPdfTemplateHandler.DataSource.Document.build().setDocument(this.initDocument()));
-    }
-
-    /**
-     * 初始化文档
+     * 获取xsl-fo文档
      *
      * @return 返回xsl-fo文档
      */
     @SneakyThrows
-    private Document initDocument() {
+    public Document getDocument() {
         // 定义文档
         Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(
                 this.getClass().getResourceAsStream(XEasyPdfTemplateConstants.DEFAULT_TEMPLATE_PATH)
@@ -168,5 +119,26 @@ public class XEasyPdfTemplateDocument {
         }
         // 返回文档
         return document;
+    }
+
+    /**
+     * 获取xsl-fo文档内容
+     *
+     * @return 返回文档内容
+     */
+    @SneakyThrows
+    public String getContent() {
+        return XEasyPdfTemplateHandler.DataSource.Document.build().setDocument(this.getDocument()).getDocumentContent();
+    }
+
+    /**
+     * 初始化模板
+     *
+     * @return 返回pdf模板
+     */
+    private XEasyPdfTemplate initTemplate() {
+        return XEasyPdfTemplateHandler.Template.build()
+                .setConfigPath(this.param.getConfigPath())
+                .setDataSource(XEasyPdfTemplateHandler.DataSource.Document.build().setDocument(this.getDocument()));
     }
 }

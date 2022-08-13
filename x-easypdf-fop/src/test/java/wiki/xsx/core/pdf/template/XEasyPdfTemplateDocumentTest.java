@@ -22,6 +22,11 @@ import wiki.xsx.core.pdf.template.handler.XEasyPdfTemplateHandler;
 public class XEasyPdfTemplateDocumentTest {
 
     @Test
+    public void helloWorld() {
+        XEasyPdfTemplateHandler.Document.build().addPage(XEasyPdfTemplateHandler.Page.build().addBodyComponent(XEasyPdfTemplateHandler.Text.build().setText("hello world"))).transform("E:\\pdf\\hello-world.pdf");
+    }
+
+    @Test
     public void testXmlContent() {
         System.out.println(XEasyPdfTemplateHandler.Document.build().addPage(XEasyPdfTemplateHandler.Page.build()).getContent());
     }

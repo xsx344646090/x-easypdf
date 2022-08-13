@@ -7,8 +7,14 @@ import org.apache.xmlgraphics.util.MimeConstants;
 import org.xml.sax.InputSource;
 
 import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 
 /**
  * pdf模板数据源
@@ -63,6 +69,30 @@ public interface XEasyPdfTemplateDataSource {
         try (Reader reader = this.getSourceReader()) {
             // 转换文件
             factory.newSAXParser().parse(new InputSource(reader), fopFactory.newFop(MimeConstants.MIME_PDF, foAgent, outputStream).getDefaultHandler());
+        }
+    }
+
+    /**
+     * 获取xsl-fo文档内容
+     *
+     * @return 返回文档内容
+     */
+    @SneakyThrows
+    default String getDocumentContent() {
+        try (
+                // 创建输出流
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream(8192);
+                // 获取数据源读取器
+                Reader reader = this.getSourceReader()
+        ) {
+            // 创建转换器
+            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            // 设置编码类型
+            transformer.setOutputProperty("encoding", StandardCharsets.UTF_8.toString());
+            // 转换
+            transformer.transform(new StreamSource(reader), new StreamResult(outputStream));
+            // 返回字符串
+            return outputStream.toString(StandardCharsets.UTF_8.toString());
         }
     }
 }

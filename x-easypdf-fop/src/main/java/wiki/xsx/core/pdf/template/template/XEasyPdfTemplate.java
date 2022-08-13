@@ -1,6 +1,8 @@
 package wiki.xsx.core.pdf.template.template;
 
 import lombok.SneakyThrows;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.FopFactoryBuilder;
@@ -32,6 +34,11 @@ import java.util.Date;
  * </p>
  */
 public class XEasyPdfTemplate {
+
+    /**
+     * 日志
+     */
+    private static final Log log = LogFactory.getLog(XEasyPdfTemplate.class);
 
     /**
      * 模板参数
@@ -216,6 +223,11 @@ public class XEasyPdfTemplate {
         }
         // 获取fo代理
         FOUserAgent agent = this.getUserAgent(factory);
+        // 如果开启日志，则打印xsl-fo内容
+        if (log.isDebugEnabled()) {
+            // 打印xsl-fo内容
+            log.debug("XSL-FO ==> \n" + this.param.getDataSource().getDocumentContent());
+        }
         // 转换pdf
         this.param.getDataSource().transform(factory, agent, outputStream);
     }
