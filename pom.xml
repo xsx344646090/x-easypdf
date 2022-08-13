@@ -8,7 +8,7 @@
     <packaging>pom</packaging>
     <name>x-easypdf-parent</name>
     <url>https://www.x-easypdf.cn</url>
-    <description>parent module for x-easypdf</description>
+    <description>Parent module for x-easypdf</description>
 
     <properties>
         <java.version>1.8</java.version>
