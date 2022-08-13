@@ -3,6 +3,9 @@ package wiki.xsx.core.pdf.template;
 import org.junit.Test;
 import wiki.xsx.core.pdf.template.handler.XEasyPdfTemplateHandler;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author xsx
  * @date 2022/8/6
@@ -37,30 +40,39 @@ public class XEasyPdfTemplateTest {
     @Test
     public void testThymeleaf() {
         // 定义fop配置文件路径
-        String configPath = "E:\\pdf\\test\\fo\\fop.xconf";
+        String configPath = "H:\\java_workspace\\my\\mutil\\x-easypdf\\x-easypdf-fop\\src\\main\\resources\\wiki\\xsx\\core\\pdf\\template\\fop.xconf";
         // 定义xsl-fo模板路径
-        String templatePath = "H:\\java_workspace\\my\\x-easypdf\\src\\main\\resources\\wiki\\xsx\\core\\pdf\\template\\template.fo";
+        String templatePath = "H:\\java_workspace\\my\\mutil\\x-easypdf\\x-easypdf-fop\\src\\test\\resources\\thymeleaf\\template.fo";
         // 定义pdf输出路径
         String outputPath = "E:\\pdf\\test\\fo\\Thymeleaf.pdf";
+        // 定义数据map
+        Map<String, Object> data = new HashMap<>();
+        // 设置值
+        data.put("data", "hello world");
         // 转换pdf
         XEasyPdfTemplateHandler.Template.build()
                 .setConfigPath(configPath)
-                .setDataSource(XEasyPdfTemplateHandler.DataSource.Thymeleaf.build().setTemplatePath(templatePath))
+                .setDataSource(XEasyPdfTemplateHandler.DataSource.Thymeleaf.build().setTemplatePath(templatePath).setTemplateData(data))
                 .transform(outputPath);
     }
 
     @Test
     public void testXml() {
         // 定义fop配置文件路径
-        String configPath = "E:\\pdf\\test\\fo\\fop.xconf";
+        String configPath = "H:\\java_workspace\\my\\mutil\\x-easypdf\\x-easypdf-fop\\src\\main\\resources\\wiki\\xsx\\core\\pdf\\template\\fop.xconf";
         // 定义xsl-fo模板路径
-        String templatePath = "H:\\java_workspace\\my\\x-easypdf\\src\\main\\resources\\wiki\\xsx\\core\\pdf\\template\\template.fo";
+        String templatePath = "H:\\java_workspace\\my\\mutil\\x-easypdf\\x-easypdf-fop\\src\\test\\resources\\xml\\template.fo";
+        // 定义xml数据路径
+        String xmlPath = "H:\\java_workspace\\my\\mutil\\x-easypdf\\x-easypdf-fop\\src\\test\\resources\\xml\\data.xml";
         // 定义pdf输出路径
-        String outputPath = "E:\\pdf\\test\\fo\\Xml.pdf";
+        String outputPath = "E:\\pdf\\test\\fo\\XML.pdf";
         // 转换pdf
         XEasyPdfTemplateHandler.Template.build()
+                // 设置配置文件
                 .setConfigPath(configPath)
-                .setDataSource(XEasyPdfTemplateHandler.DataSource.XML.build().setTemplatePath(templatePath))
+                // 设置XML数据源
+                .setDataSource(XEasyPdfTemplateHandler.DataSource.XML.build().setTemplatePath(templatePath).setXmlPath(xmlPath))
+                // 转换
                 .transform(outputPath);
     }
 }

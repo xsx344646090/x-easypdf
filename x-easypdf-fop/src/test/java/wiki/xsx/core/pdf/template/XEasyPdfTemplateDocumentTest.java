@@ -23,7 +23,7 @@ public class XEasyPdfTemplateDocumentTest {
 
     @Test
     public void helloWorld() {
-        XEasyPdfTemplateHandler.Document.build().addPage(XEasyPdfTemplateHandler.Page.build().addBodyComponent(XEasyPdfTemplateHandler.Text.build().setText("hello world"))).transform("E:\\pdf\\hello-world.pdf");
+        XEasyPdfTemplateHandler.Document.build().addPage(XEasyPdfTemplateHandler.Page.build().addBodyComponent(XEasyPdfTemplateHandler.Text.build().setText("hello world").setHorizontalStyle(XEasyPdfTemplatePositionStyle.HORIZONTAL_CENTER))).transform("E:\\pdf\\test\\fo\\document.pdf");
     }
 
     @Test
