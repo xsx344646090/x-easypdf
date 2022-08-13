@@ -2,11 +2,11 @@
 	<img src="https://images.gitee.com/uploads/images/2021/0621/111332_1f43ae97_1494292.png" width="45%">
 </p>
 <p align="center">
-	<strong>一个用搭积木的方式构建pdf的框架（基于pdfbox）</strong>
+	<strong>一个用搭积木的方式构建pdf的框架（基于pdfbox/fop）</strong>
 </p>
 
 #### 更新说明
-master分支将作为稳定版本发布，develop分支将会不定期进行更新，欢迎大家提供宝贵意见，目前稳定版本 v2.9.9，QQ交流群：15018726
+master分支将作为稳定版本发布，develop分支将会不定期进行更新，欢迎大家提供宝贵意见，QQ交流群：15018726
 
 ---
 
@@ -16,17 +16,17 @@ https://www.x-easypdf.cn
 ---
 
 #### 项目概述
-> <font size=3>x-easypdf基于pdfbox二次封装，极大降低使用门槛，以组件化的形式进行pdf的构建。简单易用，帮助开发者快速生成pdf文档。</font>
+> <font size=3>x-easypdf基于pdfbox/fop二次封装，拥有两大模块：pdfbox模块极大降低pdfbox的使用门槛，以组件化的形式进行pdf的构建；fop模块采用数据源的方式对xsl-fo模板进行转换。两个模块均可单独使用，也可以结合使用，帮助开发者快速生成pdf文档。</font>
 
 ---
 
 #### 当前版本
-> <font size=3>v2.9.9</font>
+> <font size=3>v2.10.0</font>
 
 ---
 
 #### 使用环境
-> <font size=3>jdk 1.7+</font>
+> <font size=3>jdk 1.8+</font>
 
 ---
 
@@ -36,6 +36,7 @@ https://www.x-easypdf.cn
 ---
 
 #### 项目特性
+##### pdfbox模块：
 - 体积轻量
 
 > 仅包含pdfbox相关依赖（数字签名需单独添加bouncycastle依赖，条形码需单独添加zxing依赖，svg需单独添加batik依赖）
@@ -80,10 +81,15 @@ https://www.x-easypdf.cn
 
 > 内置水印、页眉、页脚、文本、图片、表格、矩形、圆形、线条、布局、条形码（一维码/二维码）等组件
 
+##### fop模块：
+- 基于模板生成
+- 内置三种数据源（xml 数据源、thymeleaf 数据源、document 数据源）
+- 灵活的扩展性
+
 ---
 
 #### 软件架构
-![软件架构](https://oscimg.oschina.net/oscnet/up-4639789b72131924e62650113e6cf80597c.png "x-easypdf整体架构")
+![软件架构](https://oscimg.oschina.net/oscnet/up-96975e855f8b12ae0d0d65f409fb63d1ebc.png "x-easypdf整体架构")
 
 ---
 
@@ -98,11 +104,30 @@ https://www.x-easypdf.cn
 ---
 
 #### maven坐标
+- ##### 全部模块（pdfbox + fop）
 ```maven
 <dependency>
     <groupId>wiki.xsx</groupId>
     <artifactId>x-easypdf</artifactId>
-    <version>2.9.9</version>
+    <version>2.10.0</version>
+</dependency>
+```
+
+- ##### pdfbox模块
+```maven
+<dependency>
+    <groupId>wiki.xsx</groupId>
+    <artifactId>x-easypdf-pdfbox</artifactId>
+    <version>2.10.0</version>
+</dependency>
+```
+
+- ##### fop模块
+```maven
+<dependency>
+    <groupId>wiki.xsx</groupId>
+    <artifactId>x-easypdf-fop</artifactId>
+    <version>2.10.0</version>
 </dependency>
 ```
 
@@ -115,9 +140,9 @@ mvn clean install
 
 ---
 
-#### 快速体验
+#### 快速体验（pdfbox模块）
 ```
-XEasyPdfHandler.Document.build(XEasyPdfHandler.Page.build(XEasyPdfHandler.Text.build("Hello World"))).save("E:\\pdf\\hello-world.pdf").close();
+XEasyPdfHandler.Document.build(XEasyPdfHandler.Page.build(XEasyPdfHandler.Text.build("Hello World"))).save("E:\pdf\hello-world.pdf").close();
 ```
 
 更多教程，请查看[文档](https://www.x-easypdf.cn)
