@@ -104,7 +104,7 @@ https://www.x-easypdf.cn
 ---
 
 #### maven坐标
-- ##### 全部模块（pdfbox + fop）
+- ##### pdfbox + fop
 ```maven
 <dependency>
     <groupId>wiki.xsx</groupId>
