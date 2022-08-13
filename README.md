@@ -37,10 +37,6 @@ https://www.x-easypdf.cn
 
 #### 项目特性
 - ##### pdfbox模块
-  - 体积轻量
-
-  > 仅包含pdfbox相关依赖（数字签名需单独添加bouncycastle依赖，条形码需单独添加zxing依赖，svg需单独添加batik依赖）
-
   - 简单智能
 
   > 自动换行与分页
@@ -83,7 +79,7 @@ https://www.x-easypdf.cn
 
 - ##### fop模块
   - 基于模板生成
-  - 内置三种数据源（xml 数据源、thymeleaf 数据源、document 数据源）
+  - 内置数据源（xml 数据源、thymeleaf 数据源、document 数据源）
   - 灵活的扩展性
 
 ---
@@ -104,7 +100,7 @@ https://www.x-easypdf.cn
 ---
 
 #### maven坐标
-- ##### pdfbox + fop
+- ##### 全功能模块（pdfbox + fop）
 ```maven
 <dependency>
     <groupId>wiki.xsx</groupId>
