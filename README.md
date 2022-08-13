@@ -36,7 +36,7 @@ https://www.x-easypdf.cn
 ---
 
 #### 项目特性
-- ##### pdfbox模块：
+- ##### pdfbox模块
   - 体积轻量
 
   > 仅包含pdfbox相关依赖（数字签名需单独添加bouncycastle依赖，条形码需单独添加zxing依赖，svg需单独添加batik依赖）
@@ -81,7 +81,7 @@ https://www.x-easypdf.cn
 
   > 内置水印、页眉、页脚、文本、图片、表格、矩形、圆形、线条、布局、条形码（一维码/二维码）等组件
 
-- ##### fop模块：
+- ##### fop模块
   - 基于模板生成
   - 内置三种数据源（xml 数据源、thymeleaf 数据源、document 数据源）
   - 灵活的扩展性
@@ -140,9 +140,14 @@ mvn clean install
 
 ---
 
-#### 快速体验（pdfbox模块）
+#### 快速体验
+- ##### pdfbox模块
 ```
 XEasyPdfHandler.Document.build(XEasyPdfHandler.Page.build(XEasyPdfHandler.Text.build("Hello World"))).save("E:\pdf\hello-world.pdf").close();
+```
+- ##### fop模块（使用document数据源）
+```
+XEasyPdfTemplateHandler.Document.build().addPage(XEasyPdfTemplateHandler.Page.build().addBodyComponent(XEasyPdfTemplateHandler.Text.build().setText("hello world"))).transform("E:\pdf\hello-world.pdf");
 ```
 
 更多教程，请查看[文档](https://www.x-easypdf.cn)
