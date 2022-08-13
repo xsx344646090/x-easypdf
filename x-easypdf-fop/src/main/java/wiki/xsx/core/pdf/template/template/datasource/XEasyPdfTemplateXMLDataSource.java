@@ -68,12 +68,6 @@ public class XEasyPdfTemplateXMLDataSource implements XEasyPdfTemplateDataSource
             } catch (Exception e) {
                 // 提示错误信息
                 throw new IllegalArgumentException("the xml can not be loaded，the path['" + this.xmlPath + "'] is error");
-            } finally {
-                // 如果输入流不为空，则关闭输入流
-                if (inputStream != null) {
-                    // 关闭输入流
-                    inputStream.close();
-                }
             }
         }
         // 返回空数据源读取器
@@ -111,8 +105,6 @@ public class XEasyPdfTemplateXMLDataSource implements XEasyPdfTemplateDataSource
             streamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
             // 创建转换器
             transformer = TransformerFactory.newInstance().newTransformer(new StreamSource(streamReader));
-            // 设置参数版本
-            transformer.setParameter("versionParam", "2.0");
             // 获取数据源读取器
             try (Reader reader = this.getSourceReader()) {
                 // 转换文件
