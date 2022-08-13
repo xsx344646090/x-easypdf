@@ -73,6 +73,14 @@ class XEasyPdfTableParam implements Serializable {
      */
     private Float borderWidth = 1F;
     /**
+     * 边框点线长度
+     */
+    private Float borderLineLength;
+    /**
+     * 边框点线间隔
+     */
+    private Float borderLineSpace;
+    /**
      * 左边距
      */
     private Float marginLeft;

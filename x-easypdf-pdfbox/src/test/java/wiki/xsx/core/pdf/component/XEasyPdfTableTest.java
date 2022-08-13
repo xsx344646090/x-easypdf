@@ -1,9 +1,6 @@
 package wiki.xsx.core.pdf.component;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.Accessors;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.junit.Before;
@@ -148,57 +145,61 @@ public class XEasyPdfTableTest {
         System.out.println("finish，耗时：" + (end - begin) + " ms");
     }
 
+    @SneakyThrows
     @Test
     public void testTable2() throws IOException {
         String filePath = OUTPUT_PATH + "testTable2.pdf";
-        XEasyPdfHandler.Document.build().addPage(
-                XEasyPdfHandler.Page.build(
-                        XEasyPdfHandler.Table.build(
-                                XEasyPdfHandler.Table.Row.build(
-                                        XEasyPdfHandler.Table.Row.Cell.build(100F, 15F).addContent(
-                                                XEasyPdfHandler.Text.build("1-1")
-                                        ),
-                                        XEasyPdfHandler.Table.Row.Cell.build(100F, 15F).addContent(
-                                                XEasyPdfHandler.Text.build("1-2")
-                                        ),
-                                        XEasyPdfHandler.Table.Row.Cell.build(100F, 15F).addContent(
-                                                XEasyPdfHandler.Text.build("1-3")
-                                        ),
-                                        XEasyPdfHandler.Table.Row.Cell.build(100F, 15F).addContent(
-                                                XEasyPdfHandler.Text.build("1-4")
-                                        )
-                                ).setHorizontalStyle(XEasyPdfPositionStyle.LEFT),
-                                XEasyPdfHandler.Table.Row.build(
-                                        XEasyPdfHandler.Table.Row.Cell.build(100F, 15F).addContent(
-                                                XEasyPdfHandler.Text.build("2-1")
-                                        ),
-                                        XEasyPdfHandler.Table.Row.Cell.build(100F, 15F).addContent(
-                                                XEasyPdfHandler.Text.build("2-2")
-                                        ),
-                                        XEasyPdfHandler.Table.Row.Cell.build(100F, 15F).addContent(
-                                                XEasyPdfHandler.Text.build("2-3")
-                                        ),
-                                        XEasyPdfHandler.Table.Row.Cell.build(100F, 15F).addContent(
-                                                XEasyPdfHandler.Text.build("2-4")
-                                        )
-                                ).setHorizontalStyle(XEasyPdfPositionStyle.CENTER),
-                                XEasyPdfHandler.Table.Row.build(
-                                        XEasyPdfHandler.Table.Row.Cell.build(100F, 15F).addContent(
-                                                XEasyPdfHandler.Text.build(Arrays.asList("3-1")).enableSelfStyle().setVerticalStyle(XEasyPdfPositionStyle.CENTER)
-                                        ),
-                                        XEasyPdfHandler.Table.Row.Cell.build(100F, 15F).addContent(
-                                                XEasyPdfHandler.Text.build("3-2")
-                                        ),
-                                        XEasyPdfHandler.Table.Row.Cell.build(100F, 15F).addContent(
-                                                XEasyPdfHandler.Text.build("3-3")
-                                        ),
-                                        XEasyPdfHandler.Table.Row.Cell.build(100F, 15F).addContent(
-                                                XEasyPdfHandler.Text.build("3-4")
-                                        ).setBorderWidth(2F)
-                                ).setHorizontalStyle(XEasyPdfPositionStyle.RIGHT)
-                        ).setMarginLeft(100F)
-                )
-        ).setFontPath(FONT_PATH).save(filePath).close();
+        for (int i = 1; i < 11; i++) {
+            XEasyPdfHandler.Document.build().addPage(
+                    XEasyPdfHandler.Page.build(
+                            XEasyPdfHandler.Table.build(
+                                    XEasyPdfHandler.Table.Row.build(
+                                            XEasyPdfHandler.Table.Row.Cell.build(100F, 15F).addContent(
+                                                    XEasyPdfHandler.Text.build("1-1")
+                                            ),
+                                            XEasyPdfHandler.Table.Row.Cell.build(100F, 15F).addContent(
+                                                    XEasyPdfHandler.Text.build("1-2")
+                                            ),
+                                            XEasyPdfHandler.Table.Row.Cell.build(100F, 15F).addContent(
+                                                    XEasyPdfHandler.Text.build("1-3")
+                                            ),
+                                            XEasyPdfHandler.Table.Row.Cell.build(100F, 15F).addContent(
+                                                    XEasyPdfHandler.Text.build("1-4")
+                                            )
+                                    ).setHorizontalStyle(XEasyPdfPositionStyle.LEFT),
+                                    XEasyPdfHandler.Table.Row.build(
+                                            XEasyPdfHandler.Table.Row.Cell.build(100F, 15F).addContent(
+                                                    XEasyPdfHandler.Text.build("2-1")
+                                            ),
+                                            XEasyPdfHandler.Table.Row.Cell.build(100F, 15F).addContent(
+                                                    XEasyPdfHandler.Text.build("2-2")
+                                            ),
+                                            XEasyPdfHandler.Table.Row.Cell.build(100F, 15F).addContent(
+                                                    XEasyPdfHandler.Text.build("2-3")
+                                            ),
+                                            XEasyPdfHandler.Table.Row.Cell.build(100F, 15F).addContent(
+                                                    XEasyPdfHandler.Text.build("2-4")
+                                            )
+                                    ).setHorizontalStyle(XEasyPdfPositionStyle.CENTER),
+                                    XEasyPdfHandler.Table.Row.build(
+                                            XEasyPdfHandler.Table.Row.Cell.build(100F, 15F).addContent(
+                                                    XEasyPdfHandler.Text.build(Arrays.asList("3-1")).enableSelfStyle().setVerticalStyle(XEasyPdfPositionStyle.CENTER)
+                                            ),
+                                            XEasyPdfHandler.Table.Row.Cell.build(100F, 15F).addContent(
+                                                    XEasyPdfHandler.Text.build("3-2")
+                                            ),
+                                            XEasyPdfHandler.Table.Row.Cell.build(100F, 15F).addContent(
+                                                    XEasyPdfHandler.Text.build("3-3")
+                                            ),
+                                            XEasyPdfHandler.Table.Row.Cell.build(100F, 15F).addContent(
+                                                    XEasyPdfHandler.Text.build("3-4")
+                                            )
+                                    ).setHorizontalStyle(XEasyPdfPositionStyle.RIGHT)
+                            ).setMarginLeft(100F).setBorderLineLength(i).setBorderLineSpace(i)
+                    )
+            ).setFontPath(FONT_PATH).save(filePath).close();
+            Thread.sleep(5000L);
+        }
         System.out.println("finish");
     }
 

@@ -67,6 +67,18 @@ class XEasyPdfCellParam implements Serializable {
      */
     private Color borderColor;
     /**
+     * 边框宽度
+     */
+    private Float borderWidth;
+    /**
+     * 边框点线长度
+     */
+    private Float borderLineLength;
+    /**
+     * 边框点线间隔
+     */
+    private Float borderLineSpace;
+    /**
      * 左边框颜色
      */
     private Color leftBorderColor;
@@ -82,10 +94,6 @@ class XEasyPdfCellParam implements Serializable {
      * 下边框颜色
      */
     private Color bottomBorderColor;
-    /**
-     * 边框宽度
-     */
-    private Float borderWidth;
     /**
      * 列宽
      */
@@ -179,6 +187,16 @@ class XEasyPdfCellParam implements Serializable {
             if (this.borderColor == null) {
                 // 初始化边框颜色
                 this.borderColor = rowParam.getBorderColor();
+            }
+            // 如果边框点线长度未初始化，则进行初始化
+            if (this.borderLineLength == null) {
+                // 初始化边框点线长度
+                this.borderLineLength = rowParam.getBorderLineLength();
+            }
+            // 如果边框点线间隔未初始化，则进行初始化
+            if (this.borderLineSpace == null) {
+                // 初始化边框点线间隔
+                this.borderLineSpace = rowParam.getBorderLineSpace();
             }
             // 如果左边框颜色未初始化，则进行初始化
             if (this.leftBorderColor==null) {

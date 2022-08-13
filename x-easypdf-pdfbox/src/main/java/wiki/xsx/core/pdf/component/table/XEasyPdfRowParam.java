@@ -4,8 +4,6 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import wiki.xsx.core.pdf.component.XEasyPdfComponent;
-import wiki.xsx.core.pdf.component.table.XEasyPdfCellBorder;
-import wiki.xsx.core.pdf.component.table.XEasyPdfTableParam;
 import wiki.xsx.core.pdf.component.text.XEasyPdfText;
 import wiki.xsx.core.pdf.doc.XEasyPdfDocument;
 import wiki.xsx.core.pdf.doc.XEasyPdfPage;
@@ -73,6 +71,14 @@ class XEasyPdfRowParam implements Serializable {
      * 边框宽度
      */
     private Float borderWidth;
+    /**
+     * 边框点线长度
+     */
+    private Float borderLineLength;
+    /**
+     * 边框点线间隔
+     */
+    private Float borderLineSpace;
     /**
      * 左边距
      */
@@ -167,6 +173,16 @@ class XEasyPdfRowParam implements Serializable {
                 if (this.borderColor == null) {
                     // 初始化边框颜色
                     this.borderColor = tableParam.getBorderColor();
+                }
+                // 如果边框点线长度未初始化，则进行初始化
+                if (this.borderLineLength == null) {
+                    // 初始化边框点线长度
+                    this.borderLineLength = tableParam.getBorderLineLength();
+                }
+                // 如果边框点线间隔未初始化，则进行初始化
+                if (this.borderLineSpace == null) {
+                    // 初始化边框点线间隔
+                    this.borderLineSpace = tableParam.getBorderLineSpace();
                 }
             }
             // 否则重置边框宽度为0

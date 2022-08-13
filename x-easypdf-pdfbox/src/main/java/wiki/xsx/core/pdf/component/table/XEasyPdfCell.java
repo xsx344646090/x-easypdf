@@ -6,10 +6,6 @@ import wiki.xsx.core.pdf.component.barcode.XEasyPdfBarCode;
 import wiki.xsx.core.pdf.component.image.XEasyPdfImage;
 import wiki.xsx.core.pdf.component.line.XEasyPdfLine;
 import wiki.xsx.core.pdf.component.rect.XEasyPdfRect;
-import wiki.xsx.core.pdf.component.table.XEasyPdfCellBorder;
-import wiki.xsx.core.pdf.component.table.XEasyPdfCellParam;
-import wiki.xsx.core.pdf.component.table.XEasyPdfTable;
-import wiki.xsx.core.pdf.component.table.XEasyPdfTableParam;
 import wiki.xsx.core.pdf.component.text.XEasyPdfText;
 import wiki.xsx.core.pdf.doc.XEasyPdfDefaultFontStyle;
 import wiki.xsx.core.pdf.doc.XEasyPdfDocument;
@@ -115,13 +111,35 @@ public class XEasyPdfCell implements Serializable {
     }
 
     /**
-     * 边框宽度
+     * 设置边框宽度
      *
-     * @param lineWidth 宽度
+     * @param borderWidth 边框宽度
      * @return 返回单元格组件
      */
-    public XEasyPdfCell setBorderWidth(float lineWidth) {
-        this.param.setBorderWidth(Math.abs(lineWidth));
+    public XEasyPdfCell setBorderWidth(float borderWidth) {
+        this.param.setBorderWidth(Math.abs(borderWidth));
+        return this;
+    }
+
+    /**
+     * 设置边框点线长度
+     *
+     * @param borderLineLength 边框点线长度
+     * @return 返回单元格组件
+     */
+    public XEasyPdfCell setBorderLineLength(float borderLineLength) {
+        this.param.setBorderLineLength(Math.abs(borderLineLength));
+        return this;
+    }
+
+    /**
+     * 设置边框点线间隔
+     *
+     * @param borderLineSpace 边框点线间隔
+     * @return 返回单元格组件
+     */
+    public XEasyPdfCell setBorderLineSpace(float borderLineSpace) {
+        this.param.setBorderLineSpace(Math.abs(borderLineSpace));
         return this;
     }
 
@@ -655,6 +673,8 @@ public class XEasyPdfCell implements Serializable {
                     .setTopBorderColor(this.param.getTopBorderColor())
                     .setBottomBorderColor(this.param.getBottomBorderColor())
                     .setBorderWidth(this.param.getBorderWidth())
+                    .setBorderLineLength(this.param.getBorderLineLength())
+                    .setBorderLineSpace(this.param.getBorderLineSpace())
                     .setBeginX(row.getParam().getBeginX())
                     .setBeginY(row.getParam().getBeginY() - this.param.getMarginTop())
                     .setHasTopBorder(this.param.getHasTopBorder())

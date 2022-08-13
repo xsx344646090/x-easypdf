@@ -1,9 +1,6 @@
 package wiki.xsx.core.pdf.component.table;
 
 import wiki.xsx.core.pdf.component.XEasyPdfComponent;
-import wiki.xsx.core.pdf.component.table.XEasyPdfCell;
-import wiki.xsx.core.pdf.component.table.XEasyPdfRowParam;
-import wiki.xsx.core.pdf.component.table.XEasyPdfTable;
 import wiki.xsx.core.pdf.doc.XEasyPdfDefaultFontStyle;
 import wiki.xsx.core.pdf.doc.XEasyPdfDocument;
 import wiki.xsx.core.pdf.doc.XEasyPdfPage;
@@ -138,13 +135,13 @@ public class XEasyPdfRow implements Serializable {
     }
 
     /**
-     * 边框宽度
+     * 设置边框宽度
      *
-     * @param lineWidth 宽度
+     * @param borderWidth 边框宽度
      * @return 返回表格行组件
      */
-    public XEasyPdfRow setBorderWidth(float lineWidth) {
-        this.param.setBorderWidth(Math.abs(lineWidth));
+    public XEasyPdfRow setBorderWidth(float borderWidth) {
+        this.param.setBorderWidth(Math.abs(borderWidth));
         return this;
     }
 
@@ -158,6 +155,28 @@ public class XEasyPdfRow implements Serializable {
         if (borderColor != null) {
             this.param.setBorderColor(borderColor);
         }
+        return this;
+    }
+
+    /**
+     * 设置边框点线长度
+     *
+     * @param borderLineLength 边框点线长度
+     * @return 返回表格行组件
+     */
+    public XEasyPdfRow setBorderLineLength(float borderLineLength) {
+        this.param.setBorderLineLength(Math.abs(borderLineLength));
+        return this;
+    }
+
+    /**
+     * 设置边框点线间隔
+     *
+     * @param borderLineSpace 边框点线间隔
+     * @return 返回表格行组件
+     */
+    public XEasyPdfRow setBorderLineSpace(float borderLineSpace) {
+        this.param.setBorderLineSpace(Math.abs(borderLineSpace));
         return this;
     }
 

@@ -84,6 +84,14 @@ final class XEasyPdfCellBorder {
      */
     private Float borderWidth;
     /**
+     * 边框点线长度
+     */
+    private Float borderLineLength;
+    /**
+     * 边框点线间隔
+     */
+    private Float borderLineSpace;
+    /**
      * 是否带有上边框
      */
     private Boolean hasTopBorder = Boolean.TRUE;
@@ -110,7 +118,7 @@ final class XEasyPdfCellBorder {
         // 设置线宽
         contentStream.setLineWidth(this.borderWidth);
         // 设置线帽样式
-        contentStream.setLineCapStyle(2);
+        contentStream.setLineCapStyle(0);
         // 连线
         this.line(contentStream);
         // 设置颜色
@@ -123,8 +131,33 @@ final class XEasyPdfCellBorder {
         this.page = null;
     }
 
-    @SneakyThrows
+    /**
+     * 连线
+     *
+     * @param contentStream pdfbox内容流
+     */
     private void line(PDPageContentStream contentStream) {
+        // 定义最小值
+        float min = 1F;
+        // 如果点线长度不为空且大于最小值且点线间隔不为空且大于最小值，则绘制虚线
+        if (this.borderLineLength != null && this.borderLineLength >= min && this.borderLineSpace != null && this.borderLineSpace >= min) {
+            // 绘制虚线
+            this.drawDottedLine(contentStream);
+        }
+        // 否则绘制实线
+        else {
+            // 绘制实线
+            this.drawSolidLine(contentStream);
+        }
+    }
+
+    /**
+     * 绘制实线
+     *
+     * @param contentStream pdfbox内容流
+     */
+    @SneakyThrows
+    private void drawSolidLine(PDPageContentStream contentStream) {
         // 定义X轴坐标
         float beginX = this.beginX;
         // 定义Y轴坐标
@@ -193,5 +226,118 @@ final class XEasyPdfCellBorder {
             // 结束
             contentStream.stroke();
         }
+    }
+
+    /**
+     * 绘制虚线
+     *
+     * @param contentStream pdfbox内容流
+     */
+    @SneakyThrows
+    private void drawDottedLine(PDPageContentStream contentStream) {
+        // 定义X轴坐标
+        float endX = this.beginX + this.width;
+        // 定义Y轴坐标
+        float endY = this.beginY - this.height;
+        // 如果包含上边框，则绘制上边框
+        if (this.hasTopBorder) {
+            // 绘制上边框
+            this.drawDottedLine(contentStream, this.topBorderColor, this.beginX, this.beginY, endX, this.beginY);
+        }
+        // 如果包含下边框，则绘制下边框
+        if (this.hasBottomBorder) {
+            // 绘制下边框
+            this.drawDottedLine(contentStream, this.bottomBorderColor, this.beginX, endY, endX, endY);
+        }
+        // 如果包含左边框，则绘制左边框
+        if (this.hasLeftBorder) {
+            // 绘制左边框
+            this.drawDottedLine(contentStream, this.leftBorderColor, this.beginX, this.beginY, this.beginX, endY);
+        }
+        // 如果包含右边框，则绘制右边框
+        if (this.hasRightBorder) {
+            // 绘制右边框
+            this.drawDottedLine(contentStream, this.rightBorderColor, endX, this.beginY, endX, endY);
+        }
+    }
+
+    /**
+     * 绘制虚线
+     *
+     * @param contentStream pdfbox内容流
+     * @param borderColor   边框颜色
+     * @param beginX        X轴起始坐标
+     * @param beginY        Y轴起始坐标
+     * @param endX          X轴结束坐标
+     * @param endY          Y轴结束坐标
+     */
+    @SneakyThrows
+    private void drawDottedLine(
+            PDPageContentStream contentStream,
+            Color borderColor,
+            float beginX,
+            float beginY,
+            float endX,
+            float endY
+    ) {
+        // 设置颜色
+        contentStream.setStrokingColor(borderColor);
+        // 计算总长度
+        float totalLength = endX - beginX;
+        // 判断是否水平
+        boolean isHorizontal = totalLength > 0;
+        // 如果非水平，则重置总长度
+        if (!isHorizontal) {
+            // 重置总长度
+            totalLength = beginY - endY;
+        }
+        // 计算线长
+        float lineWidth = this.borderLineLength + this.borderLineSpace;
+        // 计算线条数量（向下取整，至少为1）
+        int count = Math.max((int) (totalLength / (lineWidth)), 1);
+        // 计算偏移量（居中计算）
+        float offset = Math.abs((totalLength - (count * lineWidth) + this.borderLineSpace) / 2);
+        // 如果点线长度大于总长度，则重置点线长度 = 总长度
+        if (this.borderLineLength > totalLength) {
+            // 重置点线长度 = 总长度
+            this.borderLineLength = totalLength;
+            // 重置偏移量为0
+            offset = 0F;
+        }
+        // 如果为水平，则重置X轴起始坐标
+        if (isHorizontal) {
+            // 重置X轴起始坐标
+            beginX = beginX + offset;
+        }
+        // 否则重置Y轴起始坐标
+        else {
+            // 重置Y轴起始坐标
+            beginY = beginY - offset;
+        }
+        // 循环连线
+        for (int i = 0; i < count; i++) {
+            // 移动到X,Y坐标点
+            contentStream.moveTo(beginX, beginY);
+            // 如果为水平，则水平连线
+            if (isHorizontal) {
+                // 重置X轴坐标 = X轴坐标 + 点线长度
+                beginX = beginX + this.borderLineLength;
+                // 连线
+                contentStream.lineTo(beginX, beginY);
+                // 重置X轴坐标 = X轴坐标 + 点线间隔
+                beginX = beginX + this.borderLineSpace;
+            }
+            // 否则垂直连线
+            else {
+                // 重置Y轴坐标 = Y轴坐标 - 点线长度
+                beginY = beginY - this.borderLineLength;
+                // 连线
+                contentStream.lineTo(beginX, beginY);
+                // 重置Y轴坐标 = Y轴坐标 - 点线间隔
+                beginY = beginY - this.borderLineSpace;
+            }
+        }
+        // 结束
+        contentStream.stroke();
     }
 }
