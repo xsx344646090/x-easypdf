@@ -3,18 +3,26 @@
 * 快速了解
   * [项目介绍](/README.md)
   * [软件协议](/md/软件协议.md) 
-  * [快速入门](/md/快速入门.md)
+  * 快速入门
+    * [pdfbox模块](/md/pdfbox/快速入门.md)
+    * [fop模块](/md/fop/快速入门.md)
 * 使用指南
-  * [pdf助手](/md/助手说明.md)
-  * [pdf文档](/md/文档说明.md)
-  * [pdf页面](/md/页面说明.md)
-  * [pdf页眉](/md/页眉说明.md)
-  * [pdf页脚](/md/页脚说明.md)
-  * [pdf水印](/md/水印说明.md)
-  * pdf组件
-    * [pdf文本](/md/文本组件说明.md)
-    * [pdf图片](/md/图片组件说明.md)
-  * [参考示例](/md/参考示例.md)
+  * [pdfbox模块](/md/pdfbox/pdfbox模块说明.md)
+    * [API文档](/md/pdfbox/api文档.md)
+    * [pdf助手](/md/pdfbox/助手说明.md)
+    * [pdf文档](/md/pdfbox/文档说明.md)
+    * [pdf页面](/md/pdfbox/页面说明.md)
+    * [pdf页眉](/md/pdfbox/页眉说明.md)
+    * [pdf页脚](/md/pdfbox/页脚说明.md)
+    * [pdf水印](/md/pdfbox/水印说明.md)
+    * pdf组件
+      * [pdf文本](/md/pdfbox/文本组件说明.md)
+      * [pdf图片](/md/pdfbox/图片组件说明.md)
+    * [参考示例](/md/pdfbox/参考示例.md)
+  * [fop模块](/md/fop/fop模块说明.md)
+    * [API文档](/md/fop/api文档.md)
+    * [配置文件](/md/fop/配置文件.md)
+    * [数据源](/md/fop/数据源.md)
 * 其他
   * [常见问题](/md/常见问题.md)
   * [后续计划](/md/后续计划.md)
