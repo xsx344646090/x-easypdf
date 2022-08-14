@@ -6,12 +6,12 @@
 </p>
 
 #### 更新说明
-master分支将作为稳定版本发布，develop分支将会不定期进行更新，欢迎大家提供宝贵意见，QQ交流群：15018726
+> <font size=3>master分支将作为稳定版本发布，develop分支将会不定期进行更新，欢迎大家提供宝贵意见，QQ交流群：15018726</font>
 
 ---
 
 #### 项目主页
-https://www.x-easypdf.cn
+> <font size=3>https://www.x-easypdf.cn</font>
 
 ---
 
@@ -27,11 +27,6 @@ https://www.x-easypdf.cn
 
 #### 使用环境
 > <font size=3>jdk 1.8+</font>
-
----
-
-#### API文档
-> <font size=3>https://apidoc.gitee.com/dromara/x-easypdf</font>
 
 ---
 
