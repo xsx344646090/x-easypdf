@@ -13,6 +13,8 @@ import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * pdf模板-xml数据源
@@ -61,16 +63,11 @@ public class XEasyPdfTemplateXMLDataSource implements XEasyPdfTemplateDataSource
                 // 如果输入流为空，则从绝对路径加载xml数据
                 if (inputStream == null) {
                     // 从绝对路径加载xml数据
-                    inputStream = new FileInputStream(this.xmlPath);
+                    inputStream = Files.newInputStream(Paths.get(this.xmlPath));
                 }
                 // 返回数据源读取器
                 return new InputStreamReader(inputStream, StandardCharsets.UTF_8);
             } catch (Exception e) {
-                // 如果输入流不为空，则关闭输入流
-                if (inputStream != null) {
-                    // 关闭输入流
-                    inputStream.close();
-                }
                 // 提示错误信息
                 throw new IllegalArgumentException("the xml can not be loaded，the path['" + this.xmlPath + "'] is error");
             }
