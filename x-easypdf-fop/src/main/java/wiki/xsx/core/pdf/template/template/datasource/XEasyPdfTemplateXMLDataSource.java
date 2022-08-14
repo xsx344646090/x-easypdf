@@ -57,9 +57,9 @@ public class XEasyPdfTemplateXMLDataSource implements XEasyPdfTemplateDataSource
     public Reader getSourceReader() {
         // 如果不为空数据，则加载xml数据
         if (this.isNotEmptyData()) {
-            // 从资源路径加载xml数据
-            InputStream inputStream = this.getClass().getResourceAsStream(this.xmlPath);
             try {
+                // 从资源路径加载xml数据
+                InputStream inputStream = this.getClass().getResourceAsStream(this.xmlPath);
                 // // 如果不为空，则返回数据源读取器，否则从绝对路径重新加载模板
                 return inputStream != null ? new InputStreamReader(inputStream, StandardCharsets.UTF_8) : new InputStreamReader(Files.newInputStream(Paths.get(this.templatePath)), StandardCharsets.UTF_8);
             } catch (Exception e) {
