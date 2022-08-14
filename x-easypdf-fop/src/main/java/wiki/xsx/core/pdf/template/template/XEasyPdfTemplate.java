@@ -208,7 +208,7 @@ public class XEasyPdfTemplate {
             ).setConfiguration(
                     new DefaultConfigurationBuilder().build(inputStream)
             ).build();
-        }catch (Exception e) {
+        } catch (Exception e) {
             try (
                     // 创建配置输入流（从绝对路径读取）
                     InputStream inputStream = Files.newInputStream(Paths.get(this.param.getConfigPath()))

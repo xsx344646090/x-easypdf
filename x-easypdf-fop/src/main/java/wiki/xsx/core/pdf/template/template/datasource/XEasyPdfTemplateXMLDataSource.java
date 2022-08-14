@@ -66,6 +66,11 @@ public class XEasyPdfTemplateXMLDataSource implements XEasyPdfTemplateDataSource
                 // 返回数据源读取器
                 return new InputStreamReader(inputStream, StandardCharsets.UTF_8);
             } catch (Exception e) {
+                // 如果输入流不为空，则关闭输入流
+                if (inputStream != null) {
+                    // 关闭输入流
+                    inputStream.close();
+                }
                 // 提示错误信息
                 throw new IllegalArgumentException("the xml can not be loaded，the path['" + this.xmlPath + "'] is error");
             }
@@ -86,8 +91,6 @@ public class XEasyPdfTemplateXMLDataSource implements XEasyPdfTemplateDataSource
     public void transform(FopFactory fopFactory, FOUserAgent foAgent, OutputStream outputStream) {
         // 定义转换器
         Transformer transformer;
-        // 定义输入流读取器
-        InputStreamReader streamReader = null;
         // 加载模板（从资源路径读取）
         InputStream inputStream = this.getClass().getResourceAsStream(this.templatePath);
         try {
@@ -101,25 +104,21 @@ public class XEasyPdfTemplateXMLDataSource implements XEasyPdfTemplateDataSource
                 // 提示错误信息
                 throw new IllegalArgumentException("the template can not be loaded，the path['" + this.templatePath + "'] is error");
             }
-            // 创建读取器
-            streamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
-            // 创建转换器
-            transformer = TransformerFactory.newInstance().newTransformer(new StreamSource(streamReader));
-            // 获取数据源读取器
-            try (Reader reader = this.getSourceReader()) {
-                // 转换文件
-                transformer.transform(new StreamSource(reader), new SAXResult(fopFactory.newFop(MimeConstants.MIME_PDF, foAgent, outputStream).getDefaultHandler()));
+            // 创建输入流读取器
+            try (InputStreamReader streamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
+                // 创建转换器
+                transformer = TransformerFactory.newInstance().newTransformer(new StreamSource(streamReader));
+                // 获取数据源读取器
+                try (Reader reader = this.getSourceReader()) {
+                    // 转换文件
+                    transformer.transform(new StreamSource(reader), new SAXResult(fopFactory.newFop(MimeConstants.MIME_PDF, foAgent, outputStream).getDefaultHandler()));
+                }
             }
         } finally {
             // 如果输入流不为空，则关闭输入流
             if (inputStream != null) {
                 // 关闭输入流
                 inputStream.close();
-            }
-            // 如果输入流读取器不为空，则关闭输入流读取器
-            if (streamReader != null) {
-                // 关闭输入流读取器
-                streamReader.close();
             }
         }
     }

@@ -108,7 +108,7 @@ public class XEasyPdfTemplateThymeleafDataSource implements XEasyPdfTemplateData
     @SneakyThrows
     private InputStream getInputStream() {
         // 如果模板数据不为空，则处理模板，否则直接加载模板
-        return this.isNotEmptyTemplateData()?this.processTemplate():this.loadTemplateInputStream();
+        return this.isNotEmptyTemplateData() ? this.processTemplate() : this.loadTemplateInputStream();
     }
 
     /**
