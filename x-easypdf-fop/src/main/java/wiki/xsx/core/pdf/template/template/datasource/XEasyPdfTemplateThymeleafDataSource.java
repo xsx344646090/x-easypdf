@@ -8,7 +8,7 @@ import org.apache.fop.apps.FopFactory;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.templatemode.TemplateMode;
-import org.thymeleaf.templateresolver.StringTemplateResolver;
+import org.thymeleaf.templateresolver.FileTemplateResolver;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -88,8 +88,10 @@ public class XEasyPdfTemplateThymeleafDataSource implements XEasyPdfTemplateData
     private static TemplateEngine initTemplateEngine() {
         // 创建模板引擎
         TemplateEngine templateEngine = new TemplateEngine();
-        // 创建字符串解析器
-        StringTemplateResolver resolver = new StringTemplateResolver();
+        // 创建文件解析器
+        FileTemplateResolver resolver = new FileTemplateResolver();
+        // 设置字符编码
+        resolver.setCharacterEncoding(StandardCharsets.UTF_8.name());
         // 设置模板模式
         resolver.setTemplateMode(TemplateMode.XML);
         // 设置模板解析器
@@ -147,71 +149,10 @@ public class XEasyPdfTemplateThymeleafDataSource implements XEasyPdfTemplateData
                 Writer writer = new OutputStreamWriter(outputStream)
         ) {
             // 处理模板
-            TEMPLATE_ENGINE.process(this.readTemplateContent(), context, writer);
+            TEMPLATE_ENGINE.process(this.templatePath, context, writer);
             // 返回输入流
             return new BufferedInputStream(new ByteArrayInputStream(outputStream.toByteArray()));
         }
-    }
-
-    /**
-     * 读取模板内容
-     *
-     * @return 返回模板内容
-     */
-    private String readTemplateContent() {
-        // 从资源路径读取内容
-        String content = this.readTemplateContentForResource();
-        // 如果内容为不为空，则从绝对路径读取内容
-        return content != null ? content : this.readTemplateContentForPath();
-    }
-
-    /**
-     * 从资源路径读取模板内容
-     *
-     * @return 返回模板内容
-     */
-    @SneakyThrows
-    private String readTemplateContentForResource() {
-        try (
-                // 创建输出流
-                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                // 读取输入流
-                InputStream inputStream = this.getClass().getResourceAsStream(this.templatePath);
-        ) {
-            // 如果输入流为空，则返回空
-            if (inputStream == null) {
-                // 返回空
-                return null;
-            }
-            // 创建字节数组
-            byte[] buffer = new byte[8192];
-            // 定义长度
-            int length;
-            // 循环读取
-            while ((length = inputStream.read(buffer)) != -1) {
-                // 写入内容
-                outputStream.write(buffer, 0, length);
-            }
-            // 返回内容
-            return outputStream.toString(StandardCharsets.UTF_8.name());
-        }
-    }
-
-    /**
-     * 从绝对路径读取模板内容
-     *
-     * @return 返回模板内容
-     */
-    @SneakyThrows
-    private String readTemplateContentForPath() {
-        try {
-            // 返回模板内容（从绝对路径读取）
-            return new String(Files.readAllBytes(Paths.get(this.templatePath)), StandardCharsets.UTF_8);
-        } catch (Exception e) {
-            // 提示错误信息
-            throw new IllegalArgumentException("the template can not be loaded，the path['" + this.templatePath + "'] is error");
-        }
-
     }
 
     /**
