@@ -100,7 +100,8 @@ public class XEasyPdfPageTest {
                         ""
                 ).setMargin(200F)
         ).setDefaultFontStyle(XEasyPdfDefaultFontStyle.BOLD);
-        document.addPage(xEasyPdfPage).save(filePath).close();
-        System.out.println("finish");
+        XEasyPdfPage xEasyPdfPage2 = XEasyPdfHandler.Page.build();
+        xEasyPdfPage2.addComponent(XEasyPdfHandler.Text.build("222"));
+        document.addPage(xEasyPdfPage, xEasyPdfPage2).save(filePath).close();
     }
 }
