@@ -6,13 +6,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import wiki.xsx.core.pdf.component.image.XEasyPdfImageType;
 import wiki.xsx.core.pdf.component.text.XEasypdfTextRenderingMode;
-import wiki.xsx.core.pdf.doc.XEasyPdfDocument;
-import wiki.xsx.core.pdf.doc.XEasyPdfDocumentBookmark;
-import wiki.xsx.core.pdf.doc.XEasyPdfDocumentSigner;
-import wiki.xsx.core.pdf.doc.XEasyPdfPositionStyle;
 import wiki.xsx.core.pdf.handler.XEasyPdfHandler;
-import wiki.xsx.core.pdf.util.XEasyPdfFileUtil;
-import wiki.xsx.core.pdf.util.XEasyPdfImageUtil;
 
 import java.awt.*;
 import java.io.File;
@@ -593,5 +587,11 @@ public class XEasyPdfDocumentTest {
                 .image(OUTPUT_PATH, XEasyPdfImageType.JPEG)
                 .finish()
                 .close();
+    }
+
+    @Test
+    public void test33() {
+        final String sourcePath = OUTPUT_PATH + "doc3.pdf";
+        XEasyPdfHandler.Document.load(sourcePath).print(1).close();
     }
 }

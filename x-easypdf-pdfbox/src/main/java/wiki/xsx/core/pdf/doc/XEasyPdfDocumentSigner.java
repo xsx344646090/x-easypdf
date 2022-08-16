@@ -163,9 +163,9 @@ public class XEasyPdfDocumentSigner implements Serializable {
     }
 
     /**
-     * 设置签名后pdf访问权限
+     * 设置签名后pdf权限
      *
-     * @param accessPermissions pdf访问权限
+     * @param accessPermissions pdf权限
      * @return 返回pdf文档签名器
      */
     public XEasyPdfDocumentSigner setAccessPermissions(int accessPermissions) {
@@ -315,7 +315,7 @@ public class XEasyPdfDocumentSigner implements Serializable {
      * @param pageIndex        页面索引
      * @param isLast           是否最后一页
      * @param signSize         签名内存
-     * @param accessPermission 访问权限
+     * @param accessPermission 权限
      * @param target           pdfbox文档
      * @param outputStream     输出流
      * @return 返回索引
@@ -418,7 +418,7 @@ public class XEasyPdfDocumentSigner implements Serializable {
      *
      * @param doc               pdfbox文档
      * @param signature         pdfbox签名
-     * @param accessPermissions 签名后pdf访问权限
+     * @param accessPermissions 签名后pdf权限
      */
     @SneakyThrows
     private void setMdpPermission(PDDocument doc, PDSignature signature, int accessPermissions) {

@@ -10,6 +10,7 @@ import org.apache.pdfbox.pdmodel.common.PDMetadata;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDDocumentOutline;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
+import org.apache.pdfbox.printing.PDFPageable;
 import org.apache.pdfbox.printing.PDFPrintable;
 import org.apache.pdfbox.printing.Scaling;
 import org.apache.xmpbox.XMPMetadata;
@@ -17,7 +18,6 @@ import org.apache.xmpbox.schema.AdobePDFSchema;
 import org.apache.xmpbox.xml.XmpSerializer;
 import wiki.xsx.core.pdf.component.XEasyPdfComponent;
 import wiki.xsx.core.pdf.component.image.XEasyPdfImage;
-import wiki.xsx.core.pdf.doc.*;
 import wiki.xsx.core.pdf.footer.XEasyPdfFooter;
 import wiki.xsx.core.pdf.handler.XEasyPdfHandler;
 import wiki.xsx.core.pdf.header.XEasyPdfHeader;
@@ -27,7 +27,6 @@ import wiki.xsx.core.pdf.util.XEasyPdfTextUtil;
 
 import javax.print.PrintServiceLookup;
 import java.awt.*;
-import java.awt.print.Book;
 import java.awt.print.PageFormat;
 import java.awt.print.PrinterJob;
 import java.io.*;
@@ -786,24 +785,30 @@ public class XEasyPdfDocument implements Closeable, Serializable {
      */
     @SneakyThrows
     public XEasyPdfDocument print(int count, XEasyPdfPrintStyle style, Scaling scaling) {
-        // 获取打印任务
-        PrinterJob job = PrinterJob.getPrinterJob();
-        // 设置打印服务（默认）
-        job.setPrintService(PrintServiceLookup.lookupDefaultPrintService());
+        // 构建文档
+        PDDocument document = this.build(true);
+        // 创建打印选项
+        PDFPrintable printable = new PDFPrintable(document, scaling);
         // 创建打印任务
-        Book book = new Book();
+        PDFPageable target = new PDFPageable(document);
         // 创建页面格式对象
         PageFormat pageFormat = new PageFormat();
         // 设置打印方向
         pageFormat.setOrientation(style.getOrientation());
-        // 设置打印纸张
-        book.append(new PDFPrintable(this.build(true), scaling), pageFormat);
+        // 添加打印页面
+        target.append(printable, pageFormat);
+        // 获取打印任务
+        PrinterJob job = PrinterJob.getPrinterJob();
+        // 设置打印服务（默认）
+        job.setPrintService(PrintServiceLookup.lookupDefaultPrintService());
         // 设置打印任务
-        job.setPageable(book);
+        job.setPageable(target);
         // 设置打印数量
         job.setCopies(count);
         // 执行打印
         job.print();
+        // 设置重置
+        this.getParam().setIsReset(Boolean.TRUE);
         return this;
     }
 
