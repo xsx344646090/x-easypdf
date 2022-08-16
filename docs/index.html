@@ -100,11 +100,13 @@
 
     // 返回顶部
     window.onscroll = function () {
+
         const distance = document.documentElement.scrollTop || document.body.scrollTop;
         if (distance > 800) {
             document.getElementById("topBtn").style.display = "flex";
         }else{
             document.getElementById("topBtn").style.display = "none";
+
         }
         document.getElementById("topBtn").onclick = function () {
             document.documentElement.scrollTop = document.body.scrollTop = 0;
