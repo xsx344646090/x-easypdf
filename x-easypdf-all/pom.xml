@@ -137,6 +137,12 @@
             <groupId>wiki.xsx</groupId>
             <artifactId>x-easypdf-pdfbox</artifactId>
             <version>${project.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>xmlgraphics-commons</artifactId>
+                    <groupId>org.apache.xmlgraphics</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>wiki.xsx</groupId>
