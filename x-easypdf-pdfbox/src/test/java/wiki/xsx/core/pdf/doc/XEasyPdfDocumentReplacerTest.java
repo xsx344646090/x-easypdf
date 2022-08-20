@@ -57,4 +57,19 @@ public class XEasyPdfDocumentReplacerTest {
                 .replaceText(map)
                 .finish(filePath);
     }
+
+    /**
+     * absolute
+     */
+    @Test
+    public void testImage(){
+        String sourcePath = OUTPUT_PATH+"temp.pdf";
+        String filePath = OUTPUT_PATH+"testFill.pdf";
+        XEasyPdfHandler.Document
+                .load(sourcePath)
+                .replacer()
+                .replaceImage(null)
+                .finish(filePath);
+    }
+
 }
