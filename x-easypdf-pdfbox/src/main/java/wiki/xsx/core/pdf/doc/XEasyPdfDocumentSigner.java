@@ -60,7 +60,7 @@ public class XEasyPdfDocumentSigner implements Serializable {
      * @param name        名称
      * @param location    位置
      * @param reason      原因
-     * @param contactInfo 联系信息
+     * @param contactInfo 信息
      * @return 返回pdf文档签名器
      */
     public XEasyPdfDocumentSigner setSignerInfo(
