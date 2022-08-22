@@ -66,7 +66,7 @@ public class XEasyPdfTemplateTag {
      */
     public static final String BLOCK = "fo:block";
     /**
-     * 内行
+     * 内联
      * <p>标签："fo:inline"</p>
      */
     public static final String IN_LINE = "fo:inline";
@@ -75,4 +75,39 @@ public class XEasyPdfTemplateTag {
      * <p>标签："fo:external-graphic"</p>
      */
     public static final String EXTERNAL_GRAPHIC = "fo:external-graphic";
+    /**
+     * 表格
+     * <p>标签："fo:table"</p>
+     */
+    public static final String TABLE = "fo:table";
+    /**
+     * 表格列
+     * <p>标签："fo:table-column"</p>
+     */
+    public static final String TABLE_COLUMN = "fo:table-column";
+    /**
+     * 表头
+     * <p>标签："fo:table-header"</p>
+     */
+    public static final String TABLE_HEADER = "fo:table-header";
+    /**
+     * 表尾
+     * <p>标签："fo:table-footer"</p>
+     */
+    public static final String TABLE_FOOTER = "fo:table-footer";
+    /**
+     * 表体
+     * <p>标签："fo:table-body"</p>
+     */
+    public static final String TABLE_BODY = "fo:table-body";
+    /**
+     * 表格行
+     * <p>标签："fo:table-row"</p>
+     */
+    public static final String TABLE_ROW = "fo:table-row";
+    /**
+     * 表格单元格
+     * <p>标签："fo:table-cell"</p>
+     */
+    public static final String TABLE_CELL = "fo:table-cell";
 }
