@@ -79,12 +79,13 @@
         // 版权插件
         plugins: [
             function (hook) {
+                // 返回顶部按钮
                 const topBtn = [
                     '<div id="topBtn" title="返回顶部" style="right: 40px;bottom: 40px;width: 50px;height: 50px;background-color: #0BF;color: whitesmoke;border-radius: 20%;position: fixed;cursor: pointer;display: none">',
                     '<span style="margin: auto;font-size: 18px;">TOP</span>',
                     '</div>'
                 ].join('');
-
+                // 版权信息
                 const footer = [
                     '<footer style="text-align: center;font-size: 18px;">',
                     '<span>Copyright&nbsp;&copy;&nbsp;2020-2022 XSX.&nbsp;All Rights Reserved.</span>',
@@ -92,28 +93,29 @@
                     '<span>&nbsp;Proudly published with <a href="https://docsify.js.org" target="_blank">docsify</a>.</span>',
                     '</footer>'
                 ].join('');
+                // 加入星球
+                const planet = [
+                    '<img id="planet" src="https://article-images.zsxq.com/FhqBztN5QMQqVG_TsY3ifELM_n-k" style="right: 60px;top: 60px;width: 15%;position: fixed;display: none;"/>'
+                ].join('');
 
                 hook.afterEach(function (html) {
-                    return html + topBtn + footer;
+                    return html + planet + topBtn + footer;
+                });
+
+                hook.doneEach(function() {
+                    // 加入星球
+                    joinPlanet();
+                });
+
+                hook.mounted(function() {
+                    // 返回顶部
+                    toTop();
                 });
             }
         ]
     };
 
-    // 返回顶部
-    window.onscroll = function () {
 
-        const distance = document.documentElement.scrollTop || document.body.scrollTop;
-        if (distance > 800) {
-            document.getElementById("topBtn").style.display = "flex";
-        }else{
-            document.getElementById("topBtn").style.display = "none";
-
-        }
-        document.getElementById("topBtn").onclick = function () {
-            document.documentElement.scrollTop = document.body.scrollTop = 0;
-        }
-    }
 </script>
 <!-- docsify支持 -->
 <script src="//cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>
@@ -123,12 +125,40 @@
 <!--<script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/zoom-image.min.js"></script>-->
 <!-- 搜索功能支持 -->
 <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
-<!--在所有的代码块上添加一个简单的Click to copy按钮来允许用户从你的文档中轻易地复制代码-->
+<!-- 在所有的代码块上添加一个简单的Click to copy按钮来允许用户从你的文档中轻易地复制代码 -->
 <script src="//cdn.jsdelivr.net/npm/docsify-copy-code/dist/docsify-copy-code.min.js"></script>
 <!-- 代码高亮支持 -->
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1.22.0/components/prism-java.min.js"></script>
 <!-- 分页导航支持 -->
 <script src="//cdn.jsdelivr.net/npm/docsify-pagination/dist/docsify-pagination.min.js"></script>
-</body>
+<!-- 自定义函数 -->
+<script>
+    // 返回顶部
+    function toTop () {
+        window.onscroll = function () {
+            const distance = document.documentElement.scrollTop || document.body.scrollTop;
+            if (distance > 800) {
+                document.getElementById("topBtn").style.display = "flex";
+            }else{
+                document.getElementById("topBtn").style.display = "none";
 
+            }
+            document.getElementById("topBtn").onclick = function () {
+                document.documentElement.scrollTop = document.body.scrollTop = 0;
+            }
+        }
+    }
+
+    // 加入星球
+    function joinPlanet () {
+        let element = document.querySelector("nav.app-nav");
+        element.onmouseover = function () {
+            document.getElementById("planet").style.display="flex";
+        }
+        element.onmouseout = function () {
+            document.getElementById("planet").style.display="none";
+        }
+    }
+</script>
+</body>
 </html>
