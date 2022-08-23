@@ -1,6 +1,7 @@
 package wiki.xsx.core.pdf.template.handler;
 
 import wiki.xsx.core.pdf.template.component.image.XEasyPdfTemplateImage;
+import wiki.xsx.core.pdf.template.component.table.*;
 import wiki.xsx.core.pdf.template.component.text.XEasyPdfTemplateText;
 import wiki.xsx.core.pdf.template.component.text.XEasyPdfTemplateTextExtend;
 import wiki.xsx.core.pdf.template.doc.XEasyPdfTemplateDocument;
@@ -158,6 +159,90 @@ public class XEasyPdfTemplateHandler {
          */
         public static XEasyPdfTemplateImage build() {
             return new XEasyPdfTemplateImage();
+        }
+    }
+
+    /**
+     * pdf模板表格
+     */
+    public static class Table {
+        /**
+         * 构建表格
+         *
+         * @return 返回pdf模板-表格
+         */
+        public static XEasyPdfTemplateTable build() {
+            return new XEasyPdfTemplateTable();
+        }
+
+        /**
+         * pdf模板表头
+         */
+        public static class Header {
+            /**
+             * 构建表头
+             *
+             * @return 返回pdf模板-表头
+             */
+            public static XEasyPdfTemplateTableHeader build() {
+                return new XEasyPdfTemplateTableHeader();
+            }
+        }
+
+        /**
+         * pdf模板表尾
+         */
+        public static class Footer {
+            /**
+             * 构建表尾
+             *
+             * @return 返回pdf模板-表尾
+             */
+            public static XEasyPdfTemplateTableFooter build() {
+                return new XEasyPdfTemplateTableFooter();
+            }
+        }
+
+        /**
+         * pdf模板表格体
+         */
+        public static class Body {
+            /**
+             * 构建表格体
+             *
+             * @return 返回pdf模板-表格体
+             */
+            public static XEasyPdfTemplateTableBody build() {
+                return new XEasyPdfTemplateTableBody();
+            }
+        }
+
+        /**
+         * pdf模板表格行
+         */
+        public static class Row {
+            /**
+             * 构建表格行
+             *
+             * @return 返回pdf模板-表格行
+             */
+            public static XEasyPdfTemplateTableRow build() {
+                return new XEasyPdfTemplateTableRow();
+            }
+        }
+
+        /**
+         * pdf模板表格单元格
+         */
+        public static class Cell {
+            /**
+             * 构建表格单元格
+             *
+             * @return 返回pdf模板-表格单元格
+             */
+            public static XEasyPdfTemplateTableCell build() {
+                return new XEasyPdfTemplateTableCell();
+            }
         }
     }
 

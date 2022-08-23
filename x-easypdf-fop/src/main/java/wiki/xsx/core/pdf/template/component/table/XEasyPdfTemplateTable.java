@@ -4,6 +4,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import wiki.xsx.core.pdf.template.XEasyPdfTemplateTag;
 import wiki.xsx.core.pdf.template.component.XEasyPdfTemplateComponent;
+import wiki.xsx.core.pdf.template.handler.XEasyPdfTemplateElementHandler;
 
 /**
  * pdf模板-表格组件
@@ -31,6 +32,39 @@ public class XEasyPdfTemplateTable implements XEasyPdfTemplateComponent {
     private final XEasyPdfTemplateTableParam param = new XEasyPdfTemplateTableParam();
 
     /**
+     * 设置表头
+     *
+     * @param header 表头
+     * @return 返回表格组件
+     */
+    public XEasyPdfTemplateTable setHeader(XEasyPdfTemplateTableHeader header) {
+        this.param.setHeader(header);
+        return this;
+    }
+
+    /**
+     * 设置表格体
+     *
+     * @param body 表格体
+     * @return 返回表格组件
+     */
+    public XEasyPdfTemplateTable setBody(XEasyPdfTemplateTableBody body) {
+        this.param.setBody(body);
+        return this;
+    }
+
+    /**
+     * 设置表尾
+     *
+     * @param footer 表尾
+     * @return 返回表格组件
+     */
+    public XEasyPdfTemplateTable setFooter(XEasyPdfTemplateTableFooter footer) {
+        this.param.setFooter(footer);
+        return this;
+    }
+
+    /**
      * 创建元素
      *
      * @param document fo文档
@@ -40,10 +74,8 @@ public class XEasyPdfTemplateTable implements XEasyPdfTemplateComponent {
     public Element createElement(Document document) {
         // 创建block元素
         Element block = this.createBlockElement(document, this.param);
-        // 创建table元素
-        Element table = this.createTable(document);
         // 添加table元素
-        block.appendChild(table);
+        block.appendChild(this.createTable(document));
         // 返回block元素
         return block;
     }
@@ -57,9 +89,13 @@ public class XEasyPdfTemplateTable implements XEasyPdfTemplateComponent {
     private Element createTable(Document document) {
         // 创建table元素
         Element table = document.createElement(XEasyPdfTemplateTag.TABLE);
-        table.appendChild(this.createTableHeader(document));
-        table.appendChild(this.createTableBody(document));
-        table.appendChild(this.createTableFooter(document));
+        // 添加表头
+        XEasyPdfTemplateElementHandler.appendChild(table, this.createTableHeader(document));
+        // 添加表格体
+        XEasyPdfTemplateElementHandler.appendChild(table, this.createTableBody(document));
+        // 添加表尾
+        XEasyPdfTemplateElementHandler.appendChild(table, this.createTableFooter(document));
+        // 返回table元素
         return table;
     }
 
@@ -70,8 +106,10 @@ public class XEasyPdfTemplateTable implements XEasyPdfTemplateComponent {
      * @return 返回元素
      */
     private Element createTableHeader(Document document) {
-        Element tableHeader = document.createElement(XEasyPdfTemplateTag.TABLE_HEADER);
-        return tableHeader;
+        // 获取表头
+        XEasyPdfTemplateTableHeader header = this.param.getHeader();
+        // 如果表头为空则返回空，否则返回表头元素
+        return header == null ? null : header.createElement(document);
     }
 
     /**
@@ -81,8 +119,15 @@ public class XEasyPdfTemplateTable implements XEasyPdfTemplateComponent {
      * @return 返回元素
      */
     private Element createTableBody(Document document) {
-        Element tableBody = document.createElement(XEasyPdfTemplateTag.TABLE_BODY);
-        return tableBody;
+        // 获取表格体
+        XEasyPdfTemplateTableBody body = this.param.getBody();
+        // 如果表格体为空，则提示错误信息
+        if (body == null) {
+            // 提示错误信息
+            throw new IllegalArgumentException("the table body can not be null");
+        }
+        // 返回表格体元素
+        return body.createElement(document);
     }
 
     /**
@@ -92,7 +137,9 @@ public class XEasyPdfTemplateTable implements XEasyPdfTemplateComponent {
      * @return 返回元素
      */
     private Element createTableFooter(Document document) {
-        Element tableFooter = document.createElement(XEasyPdfTemplateTag.TABLE_FOOTER);
-        return tableFooter;
+        // 获取表尾
+        XEasyPdfTemplateTableFooter footer = this.param.getFooter();
+        // 如果表尾为空则返回空，否则返回表尾元素
+        return footer == null ? null : footer.createElement(document);
     }
 }
