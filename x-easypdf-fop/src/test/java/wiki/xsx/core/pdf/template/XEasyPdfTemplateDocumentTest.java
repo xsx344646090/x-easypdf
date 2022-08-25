@@ -42,4 +42,15 @@ public class XEasyPdfTemplateDocumentTest {
                 XEasyPdfTemplateHandler.Page.build()
         ).transform(outputPath);
     }
+
+    @Test
+    public void testChinese() {
+        XEasyPdfTemplateHandler.Document.build().addPage(
+                XEasyPdfTemplateHandler.Page.build().addBodyComponent(
+                        XEasyPdfTemplateHandler.Text.build().setText("你好贵阳")
+                                .setHorizontalStyle(XEasyPdfTemplatePositionStyle.HORIZONTAL_CENTER)
+                                .setFontFamily("微软雅黑")
+                )
+        ).transform("E:\\pdf\\test\\fo\\document.pdf");
+    }
 }

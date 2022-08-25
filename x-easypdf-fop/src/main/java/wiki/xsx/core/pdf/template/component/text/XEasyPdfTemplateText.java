@@ -78,6 +78,17 @@ public class XEasyPdfTemplateText extends XEasyPdfTemplateTextBase {
     }
 
     /**
+     * 设置字体样式
+     *
+     * @param fontStyle 字体样式
+     * @return 返回pdf模板-文本组件
+     */
+    public XEasyPdfTemplateText setFontStyle(String fontStyle) {
+        this.param.setFontStyle(fontStyle);
+        return this;
+    }
+
+    /**
      * 设置字体大小
      *
      * @param fontSize 字体大小
@@ -179,7 +190,7 @@ public class XEasyPdfTemplateText extends XEasyPdfTemplateTextBase {
             inline.setAttribute("font-family", this.param.getFontFamily());
         }
         // 如果字体样式不为空，则设置字体样式
-        if (this.param.getFontFamily() != null) {
+        if (this.param.getFontStyle() != null) {
             // 设置字体样式
             inline.setAttribute("font-style", this.param.getFontStyle());
         }

@@ -27,7 +27,7 @@ public class XEasyPdfTemplateTest {
     @Test
     public void testFont() {
         // 定义字体路径
-        String fontPath = "H:\\java_workspace\\my\\x-easypdf\\src\\main\\resources\\wiki\\xsx\\core\\pdf\\ttf\\HarmonyOS_Sans_SC_Medium.ttf";
+        String fontPath = "C:\\Windows\\Fonts\\msyh.ttf";
         // 定义输出路径
         String outputPath = "E:\\pdf\\test\\fo\\myFont.xml";
         // 转换字体
