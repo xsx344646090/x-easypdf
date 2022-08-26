@@ -167,7 +167,7 @@
 </div>
 <div style="width: 16%;height: 25%;">
 <a href="https://plugins.sheng90.wang/fast-request/" target="_blank">
-<img src="https://oss.dev33.cn/sa-token/link/fast-request.png" title="Idea 版 Postman，为简化调试API而生" style="width: 60%;height: 60%;align-self:center;">
+<img src="https://oss.dev33.cn/sa-token/link/fast-request.gif" title="Idea 版 Postman，为简化调试API而生" style="width: 60%;height: 60%;align-self:center;">
 </a>
 </div>
 <div style="width: 16%;height: 25%;">

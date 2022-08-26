@@ -61,7 +61,7 @@ https://www.x-easypdf.cn
 <img src="https://oss.dev33.cn/sa-token/link/hertzbeat_brand.jpg" title="易用友好的云监控系统" width="15%">
 </a>
 <a href="https://plugins.sheng90.wang/fast-request/" target="_blank">
-<img src="https://oss.dev33.cn/sa-token/link/fast-request.png" title="Idea 版 Postman，为简化调试API而生" width="15%">
+<img src="https://oss.dev33.cn/sa-token/link/fast-request.gif" title="Idea 版 Postman，为简化调试API而生" width="15%">
 </a>
 <a href="https://www.jeesuite.com/" target="_blank">
 <img src="https://oss.dev33.cn/sa-token/link/mendmix.png" title="开源分布式云原生架构一站式解决方案" width="15%">
