@@ -1,4 +1,4 @@
-package wiki.xsx.core.pdf.template;
+package wiki.xsx.core.pdf.template.enums;
 
 /**
  * pdf模板位置样式

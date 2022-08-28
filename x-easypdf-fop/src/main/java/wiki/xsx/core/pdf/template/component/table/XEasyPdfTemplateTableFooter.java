@@ -2,7 +2,7 @@ package wiki.xsx.core.pdf.template.component.table;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import wiki.xsx.core.pdf.template.XEasyPdfTemplateTag;
+import wiki.xsx.core.pdf.template.XEasyPdfTemplateTags;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -87,7 +87,7 @@ public class XEasyPdfTemplateTableFooter {
      */
     public Element createElement(Document document) {
         // 创建tableFooter元素
-        Element tableFooter = document.createElement(XEasyPdfTemplateTag.TABLE_FOOTER);
+        Element tableFooter = document.createElement(XEasyPdfTemplateTags.TABLE_FOOTER);
         // 遍历表格行列表
         for (XEasyPdfTemplateTableRow row : this.rows) {
             // 添加表格行

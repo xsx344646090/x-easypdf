@@ -1,7 +1,7 @@
 package wiki.xsx.core.pdf.template.component;
 
 import lombok.Data;
-import wiki.xsx.core.pdf.template.XEasyPdfTemplatePositionStyle;
+import wiki.xsx.core.pdf.template.enums.XEasyPdfTemplatePositionStyle;
 
 /**
  * pdf模板组件公共参数

@@ -1,8 +1,10 @@
 package wiki.xsx.core.pdf.template.component.table;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 import wiki.xsx.core.pdf.template.component.XEasyPdfTemplateComponent;
+import wiki.xsx.core.pdf.template.component.XEasyPdfTemplateComponentParam;
 
 /**
  * pdf模板-表格单元格参数
@@ -24,10 +26,35 @@ import wiki.xsx.core.pdf.template.component.XEasyPdfTemplateComponent;
  */
 @Data
 @Accessors(chain = true)
-class XEasyPdfTemplateTableCellParam {
+@EqualsAndHashCode(callSuper = true)
+class XEasyPdfTemplateTableCellParam extends XEasyPdfTemplateComponentParam {
 
     /**
      * pdf模板组件
      */
     private XEasyPdfTemplateComponent component;
+    /**
+     * 宽度
+     */
+    private String width;
+    /**
+     * 高度
+     */
+    private String height;
+    /**
+     * 边框样式
+     */
+    private String borderStyle;
+    /**
+     * 边框折叠
+     */
+    protected String borderCollapse;
+    /**
+     * 边框间距
+     */
+    protected String borderSpacing;
+    /**
+     * 边框
+     */
+    protected String border;
 }

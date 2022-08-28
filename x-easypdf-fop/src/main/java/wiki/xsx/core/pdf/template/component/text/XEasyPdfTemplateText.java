@@ -2,8 +2,8 @@ package wiki.xsx.core.pdf.template.component.text;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import wiki.xsx.core.pdf.template.XEasyPdfTemplateTag;
-import wiki.xsx.core.pdf.template.XEasyPdfTemplatePositionStyle;
+import wiki.xsx.core.pdf.template.XEasyPdfTemplateTags;
+import wiki.xsx.core.pdf.template.enums.XEasyPdfTemplatePositionStyle;
 
 import java.awt.*;
 
@@ -183,7 +183,7 @@ public class XEasyPdfTemplateText extends XEasyPdfTemplateTextBase {
      */
     private Element createInline(Document document) {
         // 创建inline元素
-        Element inline = document.createElement(XEasyPdfTemplateTag.IN_LINE);
+        Element inline = document.createElement(XEasyPdfTemplateTags.IN_LINE);
         // 如果字体名称不为空，则设置字体名称
         if (this.param.getFontFamily() != null) {
             // 设置字体名称

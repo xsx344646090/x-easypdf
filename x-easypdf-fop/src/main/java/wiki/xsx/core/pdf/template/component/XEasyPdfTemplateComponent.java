@@ -2,9 +2,8 @@ package wiki.xsx.core.pdf.template.component;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import wiki.xsx.core.pdf.template.XEasyPdfTemplateConstants;
-import wiki.xsx.core.pdf.template.XEasyPdfTemplatePositionStyle;
-import wiki.xsx.core.pdf.template.XEasyPdfTemplateTag;
+import wiki.xsx.core.pdf.template.XEasyPdfTemplateTags;
+import wiki.xsx.core.pdf.template.enums.XEasyPdfTemplatePositionStyle;
 
 /**
  * pdf模板组件
@@ -41,7 +40,7 @@ public interface XEasyPdfTemplateComponent {
      * @return 返回空元素
      */
     default Element createEmptyElement(Document document) {
-        return document.createElement(XEasyPdfTemplateTag.BLOCK);
+        return document.createElement(XEasyPdfTemplateTags.BLOCK);
     }
 
     /**
@@ -54,11 +53,11 @@ public interface XEasyPdfTemplateComponent {
     default Element createBlockElement(Document document, XEasyPdfTemplateComponentParam param) {
         // 创建block元素
         Element block = this.createEmptyElement(document);
-        // 如果开启边框，则添加边框
-        if (param.getHasBorder() != null) {
-            // 添加边框
-            block.setAttribute("border", XEasyPdfTemplateConstants.DEFAULT_BORDER_VALUE);
-        }
+        // // 如果开启边框，则添加边框
+        // if (param.getHasBorder() != null) {
+        //     // 添加边框
+        //     block.setAttribute("border", XEasyPdfTemplateConstants.DEFAULT_BORDER_VALUE);
+        // }
         // 如果水平样式不为空，则设置水平样式
         if (param.getHorizontalStyle() != null) {
             // 获取水平样式

@@ -18,7 +18,7 @@ package wiki.xsx.core.pdf.template;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public class XEasyPdfTemplateTag {
+public class XEasyPdfTemplateTags {
 
     /**
      * 页面模板

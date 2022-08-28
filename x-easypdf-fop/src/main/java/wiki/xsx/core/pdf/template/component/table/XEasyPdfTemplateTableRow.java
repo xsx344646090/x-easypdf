@@ -2,7 +2,7 @@ package wiki.xsx.core.pdf.template.component.table;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import wiki.xsx.core.pdf.template.XEasyPdfTemplateTag;
+import wiki.xsx.core.pdf.template.XEasyPdfTemplateTags;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,17 +27,43 @@ import java.util.List;
  */
 public class XEasyPdfTemplateTableRow {
 
+    /**
+     * 表格行参数
+     */
     private final XEasyPdfTemplateTableRowParam param = new XEasyPdfTemplateTableRowParam();
 
-    public XEasyPdfTemplateTableRow addCell(XEasyPdfTemplateTableCell ...cells) {
-        if (cells!=null) {
+    /**
+     * 设置边框样式
+     *
+     * @param borderStyle 边框样式
+     * @return 返回表格行组件
+     */
+    public XEasyPdfTemplateTableRow setBorderStyle(String borderStyle) {
+        this.param.setBorderStyle(borderStyle);
+        return this;
+    }
+
+    /**
+     * 添加单元格
+     *
+     * @param cells 单元格列表
+     * @return 返回表格行组件
+     */
+    public XEasyPdfTemplateTableRow addCell(XEasyPdfTemplateTableCell... cells) {
+        if (cells != null) {
             Collections.addAll(this.param.getCells(), cells);
         }
         return this;
     }
 
+    /**
+     * 添加单元格
+     *
+     * @param cells 单元格列表
+     * @return 返回表格行组件
+     */
     public XEasyPdfTemplateTableRow addCell(List<XEasyPdfTemplateTableCell> cells) {
-        if (cells!=null) {
+        if (cells != null) {
             this.param.getCells().addAll(cells);
         }
         return this;
@@ -51,15 +77,24 @@ public class XEasyPdfTemplateTableRow {
      */
     public Element createElement(Document document) {
         // 创建tableRow元素
-        Element tableRow = document.createElement(XEasyPdfTemplateTag.TABLE_ROW);
+        Element tableRow = document.createElement(XEasyPdfTemplateTags.TABLE_ROW);
         // 获取单元格列表
         List<XEasyPdfTemplateTableCell> cells = this.param.getCells();
         // 遍历单元格列表
         for (XEasyPdfTemplateTableCell cell : cells) {
             // 添加单元格
-            tableRow.appendChild(cell.createElement(document));
+            tableRow.appendChild(cell.init(this).createElement(document));
         }
         // 返回tableCell元素
         return tableRow;
+    }
+
+    /**
+     * 获取参数
+     *
+     * @return 返回表格行参数
+     */
+    XEasyPdfTemplateTableRowParam getParam() {
+        return this.param;
     }
 }

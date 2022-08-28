@@ -2,8 +2,7 @@ package wiki.xsx.core.pdf.template.component.text;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import wiki.xsx.core.pdf.template.XEasyPdfTemplatePositionStyle;
+import wiki.xsx.core.pdf.template.enums.XEasyPdfTemplatePositionStyle;
 
 import java.awt.*;
 import java.util.Collections;
@@ -166,11 +165,11 @@ public class XEasyPdfTemplateTextExtend extends XEasyPdfTemplateTextBase {
         // 遍历文本扩展组件
         for (XEasyPdfTemplateText text : this.param.getTextList()) {
             // 初始化并创建元素
-            Node node = text.init(this.param).createElement(document);
+            Element element = text.init(this.param).createElement(document);
             // 如果元素不为空，则添加元素
-            if (node!=null) {
+            if (element != null) {
                 // 添加元素
-                block.appendChild(node.getFirstChild());
+                block.appendChild(element.getFirstChild());
             }
         }
         // 返回block元素
