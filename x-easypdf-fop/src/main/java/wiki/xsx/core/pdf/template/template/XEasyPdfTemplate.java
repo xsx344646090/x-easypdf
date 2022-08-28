@@ -224,9 +224,9 @@ public class XEasyPdfTemplate {
         // 获取fo代理
         FOUserAgent agent = this.getUserAgent(factory);
         // 如果开启日志，则打印xsl-fo内容
-        if (log.isDebugEnabled()) {
+        if (log.isInfoEnabled()) {
             // 打印xsl-fo内容
-            log.debug("XSL-FO ==> \n" + this.param.getDataSource().getDocumentContent());
+            log.info("XSL-FO ==> \n" + this.param.getDataSource().getDocumentContent());
         }
         // 转换pdf
         this.param.getDataSource().transform(factory, agent, outputStream);

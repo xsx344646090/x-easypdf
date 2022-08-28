@@ -67,6 +67,21 @@ public class XEasyPdfTemplateTest {
     }
 
     @Test
+    public void testThymeleaf3() {
+        // 定义fop配置文件路径
+        String configPath = "H:\\java_workspace\\my\\mutil\\x-easypdf\\x-easypdf-fop\\src\\main\\resources\\wiki\\xsx\\core\\pdf\\template\\fop.xconf";
+        // 定义xsl-fo模板路径
+        String templatePath = "H:\\java_workspace\\my\\mutil\\x-easypdf\\x-easypdf-fop\\src\\test\\resources\\thymeleaf\\template2.fo";
+        // 定义pdf输出路径
+        String outputPath = "E:\\pdf\\test\\fo\\Thymeleaf.pdf";
+        // 转换pdf
+        XEasyPdfTemplateHandler.Template.build()
+                .setConfigPath(configPath)
+                .setDataSource(XEasyPdfTemplateHandler.DataSource.Thymeleaf.build().setTemplatePath(templatePath))
+                .transform(outputPath);
+    }
+
+    @Test
     public void testXml() {
         for (int i = 0; i < 10; i++) {
             long begin = System.currentTimeMillis();

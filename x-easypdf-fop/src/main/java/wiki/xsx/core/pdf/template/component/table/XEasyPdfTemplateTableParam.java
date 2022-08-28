@@ -28,6 +28,14 @@ import wiki.xsx.core.pdf.template.component.XEasyPdfTemplateComponentParam;
 @EqualsAndHashCode(callSuper = true)
 class XEasyPdfTemplateTableParam extends XEasyPdfTemplateComponentParam {
     /**
+     * 宽度
+     */
+    private String width;
+    /**
+     * 高度
+     */
+    private String height;
+    /**
      * 最小列宽
      */
     private String minColumnWidth;
@@ -35,6 +43,18 @@ class XEasyPdfTemplateTableParam extends XEasyPdfTemplateComponentParam {
      * 最小行高
      */
     private String minRowHeight;
+    /**
+     * 边框折叠
+     */
+    protected String borderCollapse;
+    /**
+     * 边框间距
+     */
+    protected String borderSpacing;
+    /**
+     * 边框
+     */
+    protected String border;
     /**
      * 表头
      */

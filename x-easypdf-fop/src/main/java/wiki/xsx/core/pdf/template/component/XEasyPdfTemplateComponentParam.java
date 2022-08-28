@@ -1,7 +1,7 @@
 package wiki.xsx.core.pdf.template.component;
 
 import lombok.Data;
-import wiki.xsx.core.pdf.template.XEasyPdfTemplatePositionStyle;
+import wiki.xsx.core.pdf.template.enums.XEasyPdfTemplatePositionStyle;
 
 /**
  * pdf模板组件公共参数
@@ -47,4 +47,8 @@ public class XEasyPdfTemplateComponentParam {
      * 水平样式（居左、居中、居右）
      */
     protected XEasyPdfTemplatePositionStyle horizontalStyle;
+    /**
+     * 水平样式（居上、居中、居下）
+     */
+    protected XEasyPdfTemplatePositionStyle verticalStyle;
 }

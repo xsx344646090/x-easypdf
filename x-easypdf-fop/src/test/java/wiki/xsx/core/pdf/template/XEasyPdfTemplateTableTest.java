@@ -2,6 +2,8 @@ package wiki.xsx.core.pdf.template;
 
 import org.junit.Test;
 import wiki.xsx.core.pdf.template.doc.XEasyPdfTemplateDocument;
+import wiki.xsx.core.pdf.template.enums.XEasyPdfTemplateBorderStyle;
+import wiki.xsx.core.pdf.template.enums.XEasyPdfTemplatePositionStyle;
 import wiki.xsx.core.pdf.template.handler.XEasyPdfTemplateHandler;
 
 /**
@@ -35,14 +37,188 @@ public class XEasyPdfTemplateTableTest {
                                 XEasyPdfTemplateHandler.Table.Body.build().addRow(
                                         XEasyPdfTemplateHandler.Table.Row.build().addCell(
                                                 XEasyPdfTemplateHandler.Table.Cell.build().setComponent(
-                                                        XEasyPdfTemplateHandler.Text.build().setText("HELLO").setHorizontalStyle(XEasyPdfTemplatePositionStyle.HORIZONTAL_CENTER)
+                                                        XEasyPdfTemplateHandler.Text.build().setText("1").setHorizontalStyle(XEasyPdfTemplatePositionStyle.HORIZONTAL_CENTER)
                                                 ),
                                                 XEasyPdfTemplateHandler.Table.Cell.build().setComponent(
-                                                        XEasyPdfTemplateHandler.Text.build().setText("WORLD").setHorizontalStyle(XEasyPdfTemplatePositionStyle.HORIZONTAL_CENTER)
+                                                        XEasyPdfTemplateHandler.Text.build().setText("2").setHorizontalStyle(XEasyPdfTemplatePositionStyle.HORIZONTAL_CENTER)
                                                 )
                                         )
                                 )
                         )
+                )
+        );
+        // 转换pdf
+        document.transform(outputPath);
+    }
+
+    @Test
+    public void testTableBorderStyle() {
+        // 定义fop配置文件路径
+        String configPath = "E:\\pdf\\test\\fo\\fop.xconf";
+        // 定义输出路径
+        String outputPath = "E:\\pdf\\test\\fo\\template-table-border-style.pdf";
+        // 转换pdf
+        XEasyPdfTemplateDocument document = XEasyPdfTemplateHandler.Document.build().setConfigPath(configPath).addPage(
+                XEasyPdfTemplateHandler.Page.build().addBodyComponent(
+                        XEasyPdfTemplateHandler.Table.build().setBody(
+                                XEasyPdfTemplateHandler.Table.Body.build().addRow(
+                                        XEasyPdfTemplateHandler.Table.Row.build().addCell(
+                                                XEasyPdfTemplateHandler.Table.Cell.build().setComponent(
+                                                        XEasyPdfTemplateHandler.Text.build().setText("1").setHorizontalStyle(XEasyPdfTemplatePositionStyle.HORIZONTAL_CENTER)
+                                                ),
+                                                XEasyPdfTemplateHandler.Table.Cell.build().setComponent(
+                                                        XEasyPdfTemplateHandler.Text.build().setText("2").setHorizontalStyle(XEasyPdfTemplatePositionStyle.HORIZONTAL_CENTER)
+                                                )
+                                        )
+                                )
+                        ),
+                        XEasyPdfTemplateHandler.Table.build().setBody(
+                                XEasyPdfTemplateHandler.Table.Body.build().addRow(
+                                        XEasyPdfTemplateHandler.Table.Row.build().addCell(
+                                                XEasyPdfTemplateHandler.Table.Cell.build().setComponent(
+                                                        XEasyPdfTemplateHandler.Text.build().setText("NONE").setHorizontalStyle(XEasyPdfTemplatePositionStyle.HORIZONTAL_CENTER)
+                                                ),
+                                                XEasyPdfTemplateHandler.Table.Cell.build().setComponent(
+                                                        XEasyPdfTemplateHandler.Text.build().setText("NONE").setHorizontalStyle(XEasyPdfTemplatePositionStyle.HORIZONTAL_CENTER)
+                                                )
+                                        ).setBorderStyle(XEasyPdfTemplateBorderStyle.NONE.getValue())
+                                )
+                        ).setBorderCollapse("separate"),
+                        XEasyPdfTemplateHandler.Table.build().setBody(
+                                XEasyPdfTemplateHandler.Table.Body.build().addRow(
+                                        XEasyPdfTemplateHandler.Table.Row.build().addCell(
+                                                XEasyPdfTemplateHandler.Table.Cell.build().setComponent(
+                                                        XEasyPdfTemplateHandler.Text.build().setText("HIDDEN").setHorizontalStyle(XEasyPdfTemplatePositionStyle.HORIZONTAL_CENTER)
+                                                ),
+                                                XEasyPdfTemplateHandler.Table.Cell.build().setComponent(
+                                                        XEasyPdfTemplateHandler.Text.build().setText("HIDDEN").setHorizontalStyle(XEasyPdfTemplatePositionStyle.HORIZONTAL_CENTER)
+                                                )
+                                        ).setBorderStyle(XEasyPdfTemplateBorderStyle.HIDDEN.getValue())
+                                )
+                        ).setBorderCollapse("separate"),
+                        XEasyPdfTemplateHandler.Table.build().setBody(
+                                XEasyPdfTemplateHandler.Table.Body.build().addRow(
+                                        XEasyPdfTemplateHandler.Table.Row.build().addCell(
+                                                XEasyPdfTemplateHandler.Table.Cell.build().setComponent(
+                                                        XEasyPdfTemplateHandler.Text.build().setText("DOTTED").setHorizontalStyle(XEasyPdfTemplatePositionStyle.HORIZONTAL_CENTER)
+                                                ),
+                                                XEasyPdfTemplateHandler.Table.Cell.build().setComponent(
+                                                        XEasyPdfTemplateHandler.Text.build().setText("DOTTED").setHorizontalStyle(XEasyPdfTemplatePositionStyle.HORIZONTAL_CENTER)
+                                                )
+                                        ).setBorderStyle(XEasyPdfTemplateBorderStyle.DOTTED.getValue())
+                                )
+                        ).setBorderCollapse("separate"),
+                        XEasyPdfTemplateHandler.Table.build().setBody(
+                                XEasyPdfTemplateHandler.Table.Body.build().addRow(
+                                        XEasyPdfTemplateHandler.Table.Row.build().addCell(
+                                                XEasyPdfTemplateHandler.Table.Cell.build().setComponent(
+                                                        XEasyPdfTemplateHandler.Text.build().setText("DASHED").setHorizontalStyle(XEasyPdfTemplatePositionStyle.HORIZONTAL_CENTER)
+                                                ),
+                                                XEasyPdfTemplateHandler.Table.Cell.build().setComponent(
+                                                        XEasyPdfTemplateHandler.Text.build().setText("DASHED").setHorizontalStyle(XEasyPdfTemplatePositionStyle.HORIZONTAL_CENTER)
+                                                )
+                                        ).setBorderStyle(XEasyPdfTemplateBorderStyle.DASHED.getValue())
+                                )
+                        ).setBorderCollapse("separate"),
+                        XEasyPdfTemplateHandler.Table.build().setBody(
+                                XEasyPdfTemplateHandler.Table.Body.build().addRow(
+                                        XEasyPdfTemplateHandler.Table.Row.build().addCell(
+                                                XEasyPdfTemplateHandler.Table.Cell.build().setComponent(
+                                                        XEasyPdfTemplateHandler.Text.build().setText("SOLID").setHorizontalStyle(XEasyPdfTemplatePositionStyle.HORIZONTAL_CENTER)
+                                                ),
+                                                XEasyPdfTemplateHandler.Table.Cell.build().setComponent(
+                                                        XEasyPdfTemplateHandler.Text.build().setText("SOLID").setHorizontalStyle(XEasyPdfTemplatePositionStyle.HORIZONTAL_CENTER)
+                                                )
+                                        ).setBorderStyle(XEasyPdfTemplateBorderStyle.SOLID.getValue())
+                                )
+                        ).setBorderCollapse("separate"),
+                        XEasyPdfTemplateHandler.Table.build().setBody(
+                                XEasyPdfTemplateHandler.Table.Body.build().addRow(
+                                        XEasyPdfTemplateHandler.Table.Row.build().addCell(
+                                                XEasyPdfTemplateHandler.Table.Cell.build().setComponent(
+                                                        XEasyPdfTemplateHandler.Text.build().setText("DOUBLE").setHorizontalStyle(XEasyPdfTemplatePositionStyle.HORIZONTAL_CENTER)
+                                                ),
+                                                XEasyPdfTemplateHandler.Table.Cell.build().setComponent(
+                                                        XEasyPdfTemplateHandler.Text.build().setText("DOUBLE").setHorizontalStyle(XEasyPdfTemplatePositionStyle.HORIZONTAL_CENTER)
+                                                )
+                                        ).setBorderStyle(XEasyPdfTemplateBorderStyle.DOUBLE.getValue())
+                                )
+                        ).setBorderCollapse("separate"),
+                        XEasyPdfTemplateHandler.Table.build().setBody(
+                                XEasyPdfTemplateHandler.Table.Body.build().addRow(
+                                        XEasyPdfTemplateHandler.Table.Row.build().addCell(
+                                                XEasyPdfTemplateHandler.Table.Cell.build().setComponent(
+                                                        XEasyPdfTemplateHandler.Text.build().setText("GROOVE").setHorizontalStyle(XEasyPdfTemplatePositionStyle.HORIZONTAL_CENTER)
+                                                ),
+                                                XEasyPdfTemplateHandler.Table.Cell.build().setComponent(
+                                                        XEasyPdfTemplateHandler.Text.build().setText("GROOVE").setHorizontalStyle(XEasyPdfTemplatePositionStyle.HORIZONTAL_CENTER)
+                                                )
+                                        ).setBorderStyle(XEasyPdfTemplateBorderStyle.GROOVE.getValue())
+                                )
+                        ).setBorderCollapse("separate"),
+                        XEasyPdfTemplateHandler.Table.build().setBody(
+                                XEasyPdfTemplateHandler.Table.Body.build().addRow(
+                                        XEasyPdfTemplateHandler.Table.Row.build().addCell(
+                                                XEasyPdfTemplateHandler.Table.Cell.build().setComponent(
+                                                        XEasyPdfTemplateHandler.Text.build().setText("RIDGE").setHorizontalStyle(XEasyPdfTemplatePositionStyle.HORIZONTAL_CENTER)
+                                                ),
+                                                XEasyPdfTemplateHandler.Table.Cell.build().setComponent(
+                                                        XEasyPdfTemplateHandler.Text.build().setText("RIDGE").setHorizontalStyle(XEasyPdfTemplatePositionStyle.HORIZONTAL_CENTER)
+                                                )
+                                        ).setBorderStyle(XEasyPdfTemplateBorderStyle.RIDGE.getValue())
+                                )
+                        ).setBorderCollapse("separate"),
+                        XEasyPdfTemplateHandler.Table.build().setBody(
+                                XEasyPdfTemplateHandler.Table.Body.build().addRow(
+                                        XEasyPdfTemplateHandler.Table.Row.build().addCell(
+                                                XEasyPdfTemplateHandler.Table.Cell.build().setComponent(
+                                                        XEasyPdfTemplateHandler.Text.build().setText("INSET").setHorizontalStyle(XEasyPdfTemplatePositionStyle.HORIZONTAL_CENTER)
+                                                ),
+                                                XEasyPdfTemplateHandler.Table.Cell.build().setComponent(
+                                                        XEasyPdfTemplateHandler.Text.build().setText("INSET").setHorizontalStyle(XEasyPdfTemplatePositionStyle.HORIZONTAL_CENTER)
+                                                )
+                                        ).setBorderStyle(XEasyPdfTemplateBorderStyle.INSET.getValue())
+                                )
+                        ).setBorderCollapse("separate"),
+                        XEasyPdfTemplateHandler.Table.build().setBody(
+                                XEasyPdfTemplateHandler.Table.Body.build().addRow(
+                                        XEasyPdfTemplateHandler.Table.Row.build().addCell(
+                                                XEasyPdfTemplateHandler.Table.Cell.build().setComponent(
+                                                        XEasyPdfTemplateHandler.Text.build().setText("OUTSET").setHorizontalStyle(XEasyPdfTemplatePositionStyle.HORIZONTAL_CENTER)
+                                                ),
+                                                XEasyPdfTemplateHandler.Table.Cell.build().setComponent(
+                                                        XEasyPdfTemplateHandler.Text.build().setText("OUTSET").setHorizontalStyle(XEasyPdfTemplatePositionStyle.HORIZONTAL_CENTER)
+                                                )
+                                        ).setBorderStyle(XEasyPdfTemplateBorderStyle.OUTSET.getValue())
+                                )
+                        ).setBorderCollapse("separate")
+                )
+        );
+        // 转换pdf
+        document.transform(outputPath);
+    }
+
+    @Test
+    public void testTableBorderStyle3D() {
+        // 定义fop配置文件路径
+        String configPath = "E:\\pdf\\test\\fo\\fop.xconf";
+        // 定义输出路径
+        String outputPath = "E:\\pdf\\test\\fo\\template-table-border-style3D.pdf";
+        // 转换pdf
+        XEasyPdfTemplateDocument document = XEasyPdfTemplateHandler.Document.build().setConfigPath(configPath).addPage(
+                XEasyPdfTemplateHandler.Page.build().addBodyComponent(
+                        XEasyPdfTemplateHandler.Table.build().setBody(
+                                XEasyPdfTemplateHandler.Table.Body.build().addRow(
+                                        XEasyPdfTemplateHandler.Table.Row.build().addCell(
+                                                XEasyPdfTemplateHandler.Table.Cell.build().setComponent(
+                                                        XEasyPdfTemplateHandler.Text.build().setText("1").setHorizontalStyle(XEasyPdfTemplatePositionStyle.HORIZONTAL_CENTER)
+                                                ).setBorder("inset 5pt").setWidth("70pt"),
+                                                XEasyPdfTemplateHandler.Table.Cell.build().setComponent(
+                                                        XEasyPdfTemplateHandler.Text.build().setText("2").setHorizontalStyle(XEasyPdfTemplatePositionStyle.HORIZONTAL_CENTER)
+                                                ).setBorder("inset 5pt").setWidth("70pt")
+                                        )
+                                )
+                        ).setWidth("200pt").setHeight("100pt").setBorder("outset 10pt").setBorderCollapse("separate").setBorderSpacing("15pt").setHorizontalStyle(XEasyPdfTemplatePositionStyle.HORIZONTAL_CENTER)
                 )
         );
         // 转换pdf

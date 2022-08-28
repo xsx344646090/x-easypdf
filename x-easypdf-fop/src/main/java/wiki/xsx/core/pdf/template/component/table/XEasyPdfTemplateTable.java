@@ -2,8 +2,10 @@ package wiki.xsx.core.pdf.template.component.table;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import wiki.xsx.core.pdf.template.XEasyPdfTemplateTag;
+import wiki.xsx.core.pdf.template.XEasyPdfTemplateAttributes;
+import wiki.xsx.core.pdf.template.XEasyPdfTemplateTags;
 import wiki.xsx.core.pdf.template.component.XEasyPdfTemplateComponent;
+import wiki.xsx.core.pdf.template.enums.XEasyPdfTemplatePositionStyle;
 import wiki.xsx.core.pdf.template.handler.XEasyPdfTemplateElementHandler;
 
 /**
@@ -64,6 +66,116 @@ public class XEasyPdfTemplateTable implements XEasyPdfTemplateComponent {
         return this;
     }
 
+    // /**
+    //  * 设置上填充
+    //  *
+    //  * @param paddingTop 上填充
+    //  * @return 返回表格组件
+    //  */
+    // public XEasyPdfTemplateTable setPaddingTop(String paddingTop) {
+    //     this.param.setPaddingTop(paddingTop);
+    //     return this;
+    // }
+    //
+    // /**
+    //  * 设置下填充
+    //  *
+    //  * @param paddingBottom 下填充
+    //  * @return 返回表格组件
+    //  */
+    // public XEasyPdfTemplateTable setPaddingBottom(String paddingBottom) {
+    //     this.param.setPaddingBottom(paddingBottom);
+    //     return this;
+    // }
+    //
+    // /**
+    //  * 设置左填充
+    //  *
+    //  * @param paddingLeft 左填充
+    //  * @return 返回表格组件
+    //  */
+    // public XEasyPdfTemplateTable setPaddingLeft(String paddingLeft) {
+    //     this.param.setPaddingLeft(paddingLeft);
+    //     return this;
+    // }
+    //
+    // /**
+    //  * 设置右填充
+    //  *
+    //  * @param paddingRight 右填充
+    //  * @return 返回表格组件
+    //  */
+    // public XEasyPdfTemplateTable setPaddingRight(String paddingRight) {
+    //     this.param.setPaddingRight(paddingRight);
+    //     return this;
+    // }
+
+    /**
+     * 设置宽度
+     *
+     * @param width 宽度
+     * @return 返回表格组件
+     */
+    public XEasyPdfTemplateTable setWidth(String width) {
+        this.param.setWidth(width);
+        return this;
+    }
+
+    /**
+     * 设置高度
+     *
+     * @param height 高度
+     * @return 返回表格组件
+     */
+    public XEasyPdfTemplateTable setHeight(String height) {
+        this.param.setHeight(height);
+        return this;
+    }
+
+    /**
+     * 设置边框
+     *
+     * @param border 边框
+     * @return 返回表格组件
+     */
+    public XEasyPdfTemplateTable setBorder(String border) {
+        this.param.setBorder(border);
+        return this;
+    }
+
+    /**
+     * 设置边框折叠
+     *
+     * @param borderCollapse 边框折叠
+     * @return 返回表格组件
+     */
+    public XEasyPdfTemplateTable setBorderCollapse(String borderCollapse) {
+        this.param.setBorderCollapse(borderCollapse);
+        return this;
+    }
+
+    /**
+     * 设置边框间距
+     *
+     * @param borderSpacing 边框间距
+     * @return 返回表格组件
+     */
+    public XEasyPdfTemplateTable setBorderSpacing(String borderSpacing) {
+        this.param.setBorderSpacing(borderSpacing);
+        return this;
+    }
+
+    /**
+     * 设置文本水平样式
+     *
+     * @param horizontalStyle 水平样式
+     * @return 返回表格组件
+     */
+    public XEasyPdfTemplateTable setHorizontalStyle(XEasyPdfTemplatePositionStyle horizontalStyle) {
+        this.param.setHorizontalStyle(horizontalStyle);
+        return this;
+    }
+
     /**
      * 创建元素
      *
@@ -88,13 +200,43 @@ public class XEasyPdfTemplateTable implements XEasyPdfTemplateComponent {
      */
     private Element createTable(Document document) {
         // 创建table元素
-        Element table = document.createElement(XEasyPdfTemplateTag.TABLE);
+        Element table = document.createElement(XEasyPdfTemplateTags.TABLE);
         // 添加表头
         XEasyPdfTemplateElementHandler.appendChild(table, this.createTableHeader(document));
         // 添加表格体
         XEasyPdfTemplateElementHandler.appendChild(table, this.createTableBody(document));
         // 添加表尾
         XEasyPdfTemplateElementHandler.appendChild(table, this.createTableFooter(document));
+        // 如果上填充不为空，则设置上填充
+        if (this.param.getPaddingTop() != null) {
+            // 设置上填充
+            table.setAttribute(XEasyPdfTemplateAttributes.PADDING_TOP, this.param.getPaddingTop());
+        }
+        // 如果宽度不为空，则设置宽度
+        if (this.param.getWidth() != null) {
+            // 设置宽度
+            table.setAttribute(XEasyPdfTemplateAttributes.WIDTH, this.param.getWidth());
+        }
+        // 如果高度不为空，则设置高度
+        if (this.param.getHeight() != null) {
+            // 设置高度
+            table.setAttribute(XEasyPdfTemplateAttributes.HEIGHT, this.param.getHeight());
+        }
+        // 如果边框不为空，则设置边框
+        if (this.param.getBorder() != null) {
+            // 设置边框
+            table.setAttribute(XEasyPdfTemplateAttributes.BORDER, this.param.getBorder());
+        }
+        // 如果边框折叠不为空，则设置边框折叠
+        if (this.param.getBorderCollapse() != null) {
+            // 设置边框折叠
+            table.setAttribute(XEasyPdfTemplateAttributes.BORDER_COLLAPSE, this.param.getBorderCollapse());
+        }
+        // 如果边框间距不为空，则设置边框间距
+        if (this.param.getBorderSpacing() != null) {
+            // 设置边框间距
+            table.setAttribute(XEasyPdfTemplateAttributes.BORDER_SPACING, this.param.getBorderSpacing());
+        }
         // 返回table元素
         return table;
     }

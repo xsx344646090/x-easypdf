@@ -2,8 +2,9 @@ package wiki.xsx.core.pdf.template.component.image;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import wiki.xsx.core.pdf.template.XEasyPdfTemplateTag;
-import wiki.xsx.core.pdf.template.XEasyPdfTemplatePositionStyle;
+import wiki.xsx.core.pdf.template.XEasyPdfTemplateAttributes;
+import wiki.xsx.core.pdf.template.XEasyPdfTemplateTags;
+import wiki.xsx.core.pdf.template.enums.XEasyPdfTemplatePositionStyle;
 import wiki.xsx.core.pdf.template.component.XEasyPdfTemplateComponent;
 
 import java.io.File;
@@ -130,19 +131,19 @@ public class XEasyPdfTemplateImage implements XEasyPdfTemplateComponent {
      */
     private Element createExternalGraphic(Document document) {
         // 创建externalGraphic元素
-        Element externalGraphic = document.createElement(XEasyPdfTemplateTag.EXTERNAL_GRAPHIC);
+        Element externalGraphic = document.createElement(XEasyPdfTemplateTags.EXTERNAL_GRAPHIC);
         // 如果宽度不为空，则设置图像宽度
         if (this.param.getWidth() != null) {
             // 设置图像宽度
-            externalGraphic.setAttribute("content-width", this.param.getWidth());
+            externalGraphic.setAttribute(XEasyPdfTemplateAttributes.CONTENT_WIDTH, this.param.getWidth());
         }
         // 如果高度不为空，则设置图像高度
         if (this.param.getHeight() != null) {
             // 设置图像高度
-            externalGraphic.setAttribute("content-height", this.param.getHeight());
+            externalGraphic.setAttribute(XEasyPdfTemplateAttributes.CONTENT_HEIGHT, this.param.getHeight());
         }
         // 设置图像路径
-        externalGraphic.setAttribute("src", this.param.getIsRemote() != null ? this.param.getPath() : new File(this.param.getPath()).toURI().getPath());
+        externalGraphic.setAttribute(XEasyPdfTemplateAttributes.SRC, this.param.getIsRemote() != null ? this.param.getPath() : new File(this.param.getPath()).toURI().getPath());
         // 返回externalGraphic元素
         return externalGraphic;
     }

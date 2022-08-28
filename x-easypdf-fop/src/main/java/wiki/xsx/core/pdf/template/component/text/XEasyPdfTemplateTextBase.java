@@ -2,6 +2,7 @@ package wiki.xsx.core.pdf.template.component.text;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import wiki.xsx.core.pdf.template.XEasyPdfTemplateAttributes;
 import wiki.xsx.core.pdf.template.component.XEasyPdfTemplateComponent;
 
 /**
@@ -38,12 +39,12 @@ abstract class XEasyPdfTemplateTextBase implements XEasyPdfTemplateComponent {
         // 如果行间距不为空，则设置行间距
         if (param.getLeading() != null) {
             // 设置行间距
-            block.setAttribute("line-height", param.getLeading());
+            block.setAttribute(XEasyPdfTemplateAttributes.LINE_HEIGHT, param.getLeading());
         }
         // 如果字符间距不为空，则设置字符间距
         if (param.getLetterSpacing() != null) {
             // 设置字符间距
-            block.setAttribute("letter-spacing", param.getLetterSpacing());
+            block.setAttribute(XEasyPdfTemplateAttributes.LETTER_SPACING, param.getLetterSpacing());
         }
         // 返回block元素
         return block;
