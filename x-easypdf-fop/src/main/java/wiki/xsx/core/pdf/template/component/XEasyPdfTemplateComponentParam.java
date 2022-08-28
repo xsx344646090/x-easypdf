@@ -47,4 +47,8 @@ public class XEasyPdfTemplateComponentParam {
      * 水平样式（居左、居中、居右）
      */
     protected XEasyPdfTemplatePositionStyle horizontalStyle;
+    /**
+     * 水平样式（居上、居中、居下）
+     */
+    protected XEasyPdfTemplatePositionStyle verticalStyle;
 }

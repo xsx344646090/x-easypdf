@@ -1,9 +1,7 @@
 package wiki.xsx.core.pdf.template.enums;
 
-import wiki.xsx.core.pdf.template.XEasyPdfTemplateAttributes;
-
 /**
- * pdf模板边框样式
+ * pdf模板区域样式
  *
  * @author xsx
  * @date 2022/8/27
@@ -20,48 +18,28 @@ import wiki.xsx.core.pdf.template.XEasyPdfTemplateAttributes;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public enum XEasyPdfTemplateBorderStyle {
+public enum XEasyPdfTemplateRegionStyle {
 
     /**
-     * 无
+     * 主体
      */
-    NONE("none"),
+    BODY("xsl-region-body"),
     /**
-     * 隐藏
+     * 页眉
      */
-    HIDDEN("hidden"),
+    BEFORE("xsl-region-before"),
     /**
-     * 点虚线
+     * 页脚
      */
-    DOTTED("dotted"),
+    AFTER("xsl-region-after"),
     /**
-     * 短虚线
+     * 左侧栏
      */
-    DASHED("dashed"),
+    START("xsl-region-start"),
     /**
-     * 实线
+     * 右侧栏
      */
-    SOLID("solid"),
-    /**
-     * 双实线
-     */
-    DOUBLE("double"),
-    /**
-     * 凹线（槽）
-     */
-    GROOVE("groove"),
-    /**
-     * 凸线（脊）
-     */
-    RIDGE("ridge"),
-    /**
-     * 嵌入
-     */
-    INSET("inset"),
-    /**
-     * 凸出
-     */
-    OUTSET("outset");
+    END("xsl-region-end");
 
     /**
      * 值
@@ -73,17 +51,8 @@ public enum XEasyPdfTemplateBorderStyle {
      *
      * @param value 值
      */
-    XEasyPdfTemplateBorderStyle(String value) {
+    XEasyPdfTemplateRegionStyle(String value) {
         this.value = value;
-    }
-
-    /**
-     * 获取键
-     *
-     * @return 返回键
-     */
-    public String getKey() {
-        return XEasyPdfTemplateAttributes.BORDER_STYLE;
     }
 
     /**

@@ -2,6 +2,8 @@ package wiki.xsx.core.pdf.template.component;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import wiki.xsx.core.pdf.template.XEasyPdfTemplateAttributes;
+import wiki.xsx.core.pdf.template.XEasyPdfTemplateConstants;
 import wiki.xsx.core.pdf.template.XEasyPdfTemplateTags;
 import wiki.xsx.core.pdf.template.enums.XEasyPdfTemplatePositionStyle;
 
@@ -53,11 +55,11 @@ public interface XEasyPdfTemplateComponent {
     default Element createBlockElement(Document document, XEasyPdfTemplateComponentParam param) {
         // 创建block元素
         Element block = this.createEmptyElement(document);
-        // // 如果开启边框，则添加边框
-        // if (param.getHasBorder() != null) {
-        //     // 添加边框
-        //     block.setAttribute("border", XEasyPdfTemplateConstants.DEFAULT_BORDER_VALUE);
-        // }
+        // 如果开启边框，则添加边框
+        if (param.getHasBorder() != null) {
+            // 添加边框
+            block.setAttribute(XEasyPdfTemplateAttributes.BORDER, XEasyPdfTemplateConstants.DEFAULT_BORDER_VALUE);
+        }
         // 如果水平样式不为空，则设置水平样式
         if (param.getHorizontalStyle() != null) {
             // 获取水平样式
@@ -68,25 +70,35 @@ public interface XEasyPdfTemplateComponent {
                 block.setAttribute(style.getKey(), style.getValue());
             }
         }
+        // 如果垂直样式不为空，则设置垂直样式
+        if (param.getVerticalStyle() != null) {
+            // 获取垂直样式
+            XEasyPdfTemplatePositionStyle style = param.getVerticalStyle();
+            // 如果为垂直样式，则设置垂直样式
+            if (style.isVerticalStyle()) {
+                // 设置垂直样式
+                block.setAttribute(style.getKey(), style.getValue());
+            }
+        }
         // 如果上填充不为空，则设置上填充
         if (param.getPaddingTop() != null) {
             // 设置上填充
-            block.setAttribute("padding-top", param.getPaddingTop());
+            block.setAttribute(XEasyPdfTemplateAttributes.PADDING_TOP, param.getPaddingTop());
         }
         // 如果下填充不为空，则设置下填充
         if (param.getPaddingBottom() != null) {
             // 设置下填充
-            block.setAttribute("padding-bottom", param.getPaddingBottom());
+            block.setAttribute(XEasyPdfTemplateAttributes.PADDING_BOTTOM, param.getPaddingBottom());
         }
         // 如果左填充不为空，则设置左填充
         if (param.getPaddingLeft() != null) {
             // 设置左填充
-            block.setAttribute("padding-left", param.getPaddingLeft());
+            block.setAttribute(XEasyPdfTemplateAttributes.PADDING_LEFT, param.getPaddingLeft());
         }
         // 如果右填充不为空，则设置右填充
         if (param.getPaddingRight() != null) {
             // 设置右填充
-            block.setAttribute("padding-left", param.getPaddingRight());
+            block.setAttribute(XEasyPdfTemplateAttributes.PADDING_RIGHT, param.getPaddingRight());
         }
         // 返回block元素
         return block;

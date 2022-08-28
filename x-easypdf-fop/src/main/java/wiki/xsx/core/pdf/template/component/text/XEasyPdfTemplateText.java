@@ -2,6 +2,7 @@ package wiki.xsx.core.pdf.template.component.text;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import wiki.xsx.core.pdf.template.XEasyPdfTemplateAttributes;
 import wiki.xsx.core.pdf.template.XEasyPdfTemplateTags;
 import wiki.xsx.core.pdf.template.enums.XEasyPdfTemplatePositionStyle;
 
@@ -187,27 +188,27 @@ public class XEasyPdfTemplateText extends XEasyPdfTemplateTextBase {
         // 如果字体名称不为空，则设置字体名称
         if (this.param.getFontFamily() != null) {
             // 设置字体名称
-            inline.setAttribute("font-family", this.param.getFontFamily());
+            inline.setAttribute(XEasyPdfTemplateAttributes.FONT_FAMILY, this.param.getFontFamily());
         }
         // 如果字体样式不为空，则设置字体样式
         if (this.param.getFontStyle() != null) {
             // 设置字体样式
-            inline.setAttribute("font-style", this.param.getFontStyle());
+            inline.setAttribute(XEasyPdfTemplateAttributes.FONT_STYLE, this.param.getFontStyle());
         }
         // 如果字体大小不为空，则设置字体大小
         if (this.param.getFontSize() != null) {
             // 设置字体大小
-            inline.setAttribute("font-size", this.param.getFontSize());
+            inline.setAttribute(XEasyPdfTemplateAttributes.FONT_SIZE, this.param.getFontSize());
         }
         // 如果字体大小调整不为空，则设置字体大小调整
         if (this.param.getFontSizeAdjust() != null) {
             // 设置字体大小调整
-            inline.setAttribute("font-size-adjust", this.param.getFontSizeAdjust());
+            inline.setAttribute(XEasyPdfTemplateAttributes.FONT_SIZE_ADJUST, this.param.getFontSizeAdjust());
         }
         // 如果字体重量不为空，则设置字体重量
         if (this.param.getFontWeight() != null) {
             // 设置字体重量
-            inline.setAttribute("font-weight", this.param.getFontWeight());
+            inline.setAttribute(XEasyPdfTemplateAttributes.FONT_WEIGHT, this.param.getFontWeight());
         }
         // 如果字体颜色不为空，则设置字体颜色
         if (this.param.getFontColor() != null) {
@@ -215,7 +216,7 @@ public class XEasyPdfTemplateText extends XEasyPdfTemplateTextBase {
             Color fontColor = this.param.getFontColor();
             // 设置字体颜色
             inline.setAttribute(
-                    "color",
+                    XEasyPdfTemplateAttributes.COLOR,
                     String.join(
                             "",
                             "rgb(",

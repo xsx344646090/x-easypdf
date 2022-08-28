@@ -1,5 +1,7 @@
 package wiki.xsx.core.pdf.template.enums;
 
+import wiki.xsx.core.pdf.template.XEasyPdfTemplateAttributes;
+
 /**
  * pdf模板位置样式
  *
@@ -22,27 +24,27 @@ public enum XEasyPdfTemplatePositionStyle {
     /**
      * 居上
      */
-    TOP("display-align", "before"),
+    TOP(XEasyPdfTemplateAttributes.DISPLAY_ALIGN, "before"),
     /**
      * 居下
      */
-    BOTTOM("display-align", "after"),
-    /**
-     * 水平居中
-     */
-    HORIZONTAL_CENTER("text-align", "center"),
+    BOTTOM(XEasyPdfTemplateAttributes.DISPLAY_ALIGN, "after"),
     /**
      * 垂直居中
      */
-    VERTICAL_CENTER("display-align", "center"),
+    VERTICAL_CENTER(XEasyPdfTemplateAttributes.DISPLAY_ALIGN, "center"),
+    /**
+     * 水平居中
+     */
+    HORIZONTAL_CENTER(XEasyPdfTemplateAttributes.TEXT_ALIGN, "center"),
     /**
      * 居左
      */
-    LEFT("text-align", "start"),
+    LEFT(XEasyPdfTemplateAttributes.TEXT_ALIGN, "start"),
     /**
      * 居右
      */
-    RIGHT("text-align", "end");
+    RIGHT(XEasyPdfTemplateAttributes.TEXT_ALIGN, "end");
 
     /**
      * 键

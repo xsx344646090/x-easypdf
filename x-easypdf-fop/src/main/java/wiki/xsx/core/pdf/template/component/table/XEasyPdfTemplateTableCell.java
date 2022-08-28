@@ -94,7 +94,7 @@ public class XEasyPdfTemplateTableCell {
         // 如果边框样式不为空，则设置边框样式
         if (this.param.getBorderStyle() != null) {
             // 设置边框样式
-            tableCell.setAttribute("border-style", this.param.getBorderStyle());
+            tableCell.setAttribute(XEasyPdfTemplateAttributes.BORDER_STYLE, this.param.getBorderStyle());
         }
         // 如果模板组件不为空，则添加组件
         if (this.param.getComponent() != null) {

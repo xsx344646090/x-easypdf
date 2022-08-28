@@ -1,6 +1,5 @@
 package wiki.xsx.core.pdf.template;
 
-import org.junit.Before;
 import org.junit.Test;
 import wiki.xsx.core.pdf.template.doc.XEasyPdfTemplateDocument;
 import wiki.xsx.core.pdf.template.enums.XEasyPdfTemplateBorderStyle;
@@ -24,14 +23,6 @@ import wiki.xsx.core.pdf.template.handler.XEasyPdfTemplateHandler;
  * </p>
  */
 public class XEasyPdfTemplateTableTest {
-
-    @Before
-    public void setup() {
-        // 初始化日志实现
-        System.setProperty("org.apache.commons.logging.log", "org.apache.commons.logging.impl.SimpleLog");
-        // 初始化日志级别
-        System.setProperty("org.apache.commons.logging.simplelog.defaultlog", "info");
-    }
 
     @Test
     public void testTable() {
@@ -92,7 +83,7 @@ public class XEasyPdfTemplateTableTest {
                                                 )
                                         ).setBorderStyle(XEasyPdfTemplateBorderStyle.NONE.getValue())
                                 )
-                        ).setPaddingTop("10px").setBorderCollapse("separate"),
+                        ).setBorderCollapse("separate"),
                         XEasyPdfTemplateHandler.Table.build().setBody(
                                 XEasyPdfTemplateHandler.Table.Body.build().addRow(
                                         XEasyPdfTemplateHandler.Table.Row.build().addCell(
@@ -104,7 +95,7 @@ public class XEasyPdfTemplateTableTest {
                                                 )
                                         ).setBorderStyle(XEasyPdfTemplateBorderStyle.HIDDEN.getValue())
                                 )
-                        ).setPaddingTop("10px").setBorderCollapse("separate"),
+                        ).setBorderCollapse("separate"),
                         XEasyPdfTemplateHandler.Table.build().setBody(
                                 XEasyPdfTemplateHandler.Table.Body.build().addRow(
                                         XEasyPdfTemplateHandler.Table.Row.build().addCell(
@@ -116,7 +107,7 @@ public class XEasyPdfTemplateTableTest {
                                                 )
                                         ).setBorderStyle(XEasyPdfTemplateBorderStyle.DOTTED.getValue())
                                 )
-                        ).setPaddingTop("10px").setBorderCollapse("separate"),
+                        ).setBorderCollapse("separate"),
                         XEasyPdfTemplateHandler.Table.build().setBody(
                                 XEasyPdfTemplateHandler.Table.Body.build().addRow(
                                         XEasyPdfTemplateHandler.Table.Row.build().addCell(
@@ -128,7 +119,7 @@ public class XEasyPdfTemplateTableTest {
                                                 )
                                         ).setBorderStyle(XEasyPdfTemplateBorderStyle.DASHED.getValue())
                                 )
-                        ).setPaddingTop("10px").setBorderCollapse("separate"),
+                        ).setBorderCollapse("separate"),
                         XEasyPdfTemplateHandler.Table.build().setBody(
                                 XEasyPdfTemplateHandler.Table.Body.build().addRow(
                                         XEasyPdfTemplateHandler.Table.Row.build().addCell(
@@ -140,7 +131,7 @@ public class XEasyPdfTemplateTableTest {
                                                 )
                                         ).setBorderStyle(XEasyPdfTemplateBorderStyle.SOLID.getValue())
                                 )
-                        ).setPaddingTop("10px").setBorderCollapse("separate"),
+                        ).setBorderCollapse("separate"),
                         XEasyPdfTemplateHandler.Table.build().setBody(
                                 XEasyPdfTemplateHandler.Table.Body.build().addRow(
                                         XEasyPdfTemplateHandler.Table.Row.build().addCell(
@@ -152,7 +143,7 @@ public class XEasyPdfTemplateTableTest {
                                                 )
                                         ).setBorderStyle(XEasyPdfTemplateBorderStyle.DOUBLE.getValue())
                                 )
-                        ).setPaddingTop("10px").setBorderCollapse("separate"),
+                        ).setBorderCollapse("separate"),
                         XEasyPdfTemplateHandler.Table.build().setBody(
                                 XEasyPdfTemplateHandler.Table.Body.build().addRow(
                                         XEasyPdfTemplateHandler.Table.Row.build().addCell(
@@ -164,7 +155,7 @@ public class XEasyPdfTemplateTableTest {
                                                 )
                                         ).setBorderStyle(XEasyPdfTemplateBorderStyle.GROOVE.getValue())
                                 )
-                        ).setPaddingTop("10px").setBorderCollapse("separate"),
+                        ).setBorderCollapse("separate"),
                         XEasyPdfTemplateHandler.Table.build().setBody(
                                 XEasyPdfTemplateHandler.Table.Body.build().addRow(
                                         XEasyPdfTemplateHandler.Table.Row.build().addCell(
@@ -176,7 +167,7 @@ public class XEasyPdfTemplateTableTest {
                                                 )
                                         ).setBorderStyle(XEasyPdfTemplateBorderStyle.RIDGE.getValue())
                                 )
-                        ).setPaddingTop("10px").setBorderCollapse("separate"),
+                        ).setBorderCollapse("separate"),
                         XEasyPdfTemplateHandler.Table.build().setBody(
                                 XEasyPdfTemplateHandler.Table.Body.build().addRow(
                                         XEasyPdfTemplateHandler.Table.Row.build().addCell(
@@ -188,7 +179,7 @@ public class XEasyPdfTemplateTableTest {
                                                 )
                                         ).setBorderStyle(XEasyPdfTemplateBorderStyle.INSET.getValue())
                                 )
-                        ).setPaddingTop("10px").setBorderCollapse("separate"),
+                        ).setBorderCollapse("separate"),
                         XEasyPdfTemplateHandler.Table.build().setBody(
                                 XEasyPdfTemplateHandler.Table.Body.build().addRow(
                                         XEasyPdfTemplateHandler.Table.Row.build().addCell(
@@ -200,7 +191,7 @@ public class XEasyPdfTemplateTableTest {
                                                 )
                                         ).setBorderStyle(XEasyPdfTemplateBorderStyle.OUTSET.getValue())
                                 )
-                        ).setPaddingTop("10px").setBorderCollapse("separate")
+                        ).setBorderCollapse("separate")
                 )
         );
         // 转换pdf

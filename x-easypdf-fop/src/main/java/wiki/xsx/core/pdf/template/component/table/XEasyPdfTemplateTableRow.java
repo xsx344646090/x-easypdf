@@ -4,6 +4,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import wiki.xsx.core.pdf.template.XEasyPdfTemplateTags;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -31,6 +32,17 @@ public class XEasyPdfTemplateTableRow {
      * 表格行参数
      */
     private final XEasyPdfTemplateTableRowParam param = new XEasyPdfTemplateTableRowParam();
+
+    /**
+     * 设置初始化容量
+     *
+     * @param initialCapacity 设置初始化容量
+     * @return 返回表格行组件
+     */
+    private XEasyPdfTemplateTableRow setInitialCapacity(int initialCapacity) {
+        this.param.setCells(new ArrayList<>(initialCapacity));
+        return this;
+    }
 
     /**
      * 设置边框样式

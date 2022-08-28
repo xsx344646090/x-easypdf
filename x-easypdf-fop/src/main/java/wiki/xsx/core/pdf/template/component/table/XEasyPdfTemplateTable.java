@@ -66,49 +66,50 @@ public class XEasyPdfTemplateTable implements XEasyPdfTemplateComponent {
         return this;
     }
 
-    /**
-     * 设置上填充
-     *
-     * @param paddingTop 上填充
-     * @return 返回表格组件
-     */
-    public XEasyPdfTemplateTable setPaddingTop(String paddingTop) {
-        this.param.setPaddingTop(paddingTop);
-        return this;
-    }
+    // /**
+    //  * 设置上填充
+    //  *
+    //  * @param paddingTop 上填充
+    //  * @return 返回表格组件
+    //  */
+    // public XEasyPdfTemplateTable setPaddingTop(String paddingTop) {
+    //     this.param.setPaddingTop(paddingTop);
+    //     return this;
+    // }
+    //
+    // /**
+    //  * 设置下填充
+    //  *
+    //  * @param paddingBottom 下填充
+    //  * @return 返回表格组件
+    //  */
+    // public XEasyPdfTemplateTable setPaddingBottom(String paddingBottom) {
+    //     this.param.setPaddingBottom(paddingBottom);
+    //     return this;
+    // }
+    //
+    // /**
+    //  * 设置左填充
+    //  *
+    //  * @param paddingLeft 左填充
+    //  * @return 返回表格组件
+    //  */
+    // public XEasyPdfTemplateTable setPaddingLeft(String paddingLeft) {
+    //     this.param.setPaddingLeft(paddingLeft);
+    //     return this;
+    // }
+    //
+    // /**
+    //  * 设置右填充
+    //  *
+    //  * @param paddingRight 右填充
+    //  * @return 返回表格组件
+    //  */
+    // public XEasyPdfTemplateTable setPaddingRight(String paddingRight) {
+    //     this.param.setPaddingRight(paddingRight);
+    //     return this;
+    // }
 
-    /**
-     * 设置下填充
-     *
-     * @param paddingBottom 下填充
-     * @return 返回表格组件
-     */
-    public XEasyPdfTemplateTable setPaddingBottom(String paddingBottom) {
-        this.param.setPaddingBottom(paddingBottom);
-        return this;
-    }
-
-    /**
-     * 设置左填充
-     *
-     * @param paddingLeft 左填充
-     * @return 返回表格组件
-     */
-    public XEasyPdfTemplateTable setPaddingLeft(String paddingLeft) {
-        this.param.setPaddingLeft(paddingLeft);
-        return this;
-    }
-
-    /**
-     * 设置右填充
-     *
-     * @param paddingRight 右填充
-     * @return 返回表格组件
-     */
-    public XEasyPdfTemplateTable setPaddingRight(String paddingRight) {
-        this.param.setPaddingRight(paddingRight);
-        return this;
-    }
     /**
      * 设置宽度
      *
@@ -165,7 +166,7 @@ public class XEasyPdfTemplateTable implements XEasyPdfTemplateComponent {
     }
 
     /**
-     * 设置水平样式
+     * 设置文本水平样式
      *
      * @param horizontalStyle 水平样式
      * @return 返回表格组件
