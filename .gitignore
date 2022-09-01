@@ -23,3 +23,5 @@
 hs_err_pid*
 /target/
 /src/main/java/wiki/xsx/core/pdf/Test.java
+*.idea/
+*.iml
