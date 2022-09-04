@@ -59,6 +59,10 @@ public class XEasyPdfDocumentImager implements Serializable {
      */
     private RenderType renderType = RenderType.EXPORT;
     /**
+     * 是否内存优化（可能降低图像质量）
+     */
+    private Boolean isMemoryOptimization = Boolean.FALSE;
+    /**
      * 是否灰度
      */
     private Boolean isGray = Boolean.FALSE;
@@ -104,6 +108,16 @@ public class XEasyPdfDocumentImager implements Serializable {
      */
     public XEasyPdfDocumentImager setRenderType(RenderType renderType) {
         this.renderType = renderType;
+        return this;
+    }
+
+    /**
+     * 开启内存优化（可能降低图像质量）
+     *
+     * @return 返回pdf文档图像器
+     */
+    public XEasyPdfDocumentImager enableOptimization() {
+        this.isMemoryOptimization = Boolean.TRUE;
         return this;
     }
 
@@ -181,6 +195,8 @@ public class XEasyPdfDocumentImager implements Serializable {
         String imageTypeName = imageType.name().toLowerCase();
         // 初始化pdfBox文档渲染器
         PDFRenderer renderer = new PDFRenderer(this.document);
+        // 设置二次采样
+        renderer.setSubsamplingAllowed(this.isMemoryOptimization);
         // 设置渲染目的
         renderer.setDefaultDestination(this.renderType.destination);
         // 任务文档页面总数
@@ -236,6 +252,8 @@ public class XEasyPdfDocumentImager implements Serializable {
     public XEasyPdfDocumentImager image(OutputStream outputStream, XEasyPdfImageType imageType, int... pageIndex) {
         // 初始化pdfBox文档渲染器
         PDFRenderer renderer = new PDFRenderer(this.document);
+        // 设置二次采样
+        renderer.setSubsamplingAllowed(this.isMemoryOptimization);
         // 设置渲染目的
         renderer.setDefaultDestination(this.renderType.destination);
         // 如果合并图片，则合并后保存图片
