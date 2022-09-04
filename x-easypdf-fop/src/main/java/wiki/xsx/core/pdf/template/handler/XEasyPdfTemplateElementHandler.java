@@ -1,6 +1,9 @@
 package wiki.xsx.core.pdf.template.handler;
 
 import org.w3c.dom.Element;
+import wiki.xsx.core.pdf.template.XEasyPdfTemplateAttributes;
+
+import java.awt.*;
 
 /**
  * pdf模板元素助手
@@ -29,8 +32,32 @@ public class XEasyPdfTemplateElementHandler {
      * @param child  子元素
      */
     public static void appendChild(Element parent, Element child) {
-        if (child != null) {
+        if (parent != null && child != null) {
             parent.appendChild(child);
+        }
+    }
+
+    /**
+     * 添加颜色
+     *
+     * @param element 元素
+     * @param color   颜色
+     */
+    public static void appendColor(Element element, Color color) {
+        if (element != null && color != null) {
+            element.setAttribute(
+                    XEasyPdfTemplateAttributes.COLOR,
+                    String.join(
+                            "",
+                            "rgb(",
+                            String.valueOf(color.getRed()),
+                            ",",
+                            String.valueOf(color.getGreen()),
+                            ",",
+                            String.valueOf(color.getBlue()),
+                            ")"
+                    )
+            );
         }
     }
 }

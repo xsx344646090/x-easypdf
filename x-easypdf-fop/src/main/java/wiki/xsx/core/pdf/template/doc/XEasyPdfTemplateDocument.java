@@ -13,6 +13,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.Collections;
+import java.util.Optional;
 
 /**
  * pdf模板-文档
@@ -59,9 +60,7 @@ public class XEasyPdfTemplateDocument {
      * @return 返回pdf模板-文档
      */
     public XEasyPdfTemplateDocument addPage(XEasyPdfTemplatePageComponent... pages) {
-        if (pages != null) {
-            Collections.addAll(this.param.getPageList(), pages);
-        }
+        Optional.ofNullable(pages).ifPresent(v -> Collections.addAll(this.param.getPageList(), v));
         return this;
     }
 

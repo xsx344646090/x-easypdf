@@ -7,6 +7,7 @@ import wiki.xsx.core.pdf.template.enums.XEasyPdfTemplatePositionStyle;
 import java.awt.*;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * pdf模板-文本扩展组件
@@ -162,16 +163,13 @@ public class XEasyPdfTemplateTextExtend extends XEasyPdfTemplateTextBase {
         }
         // 初始化block元素
         Element block = this.initBlock(document, this.param);
-        // 遍历文本扩展组件
-        for (XEasyPdfTemplateText text : this.param.getTextList()) {
-            // 初始化并创建元素
-            Element element = text.init(this.param).createElement(document);
-            // 如果元素不为空，则添加元素
-            if (element != null) {
-                // 添加元素
-                block.appendChild(element.getFirstChild());
-            }
-        }
+        // 添加遍历子元素
+        this.param.getTextList().forEach(
+                v -> Optional.ofNullable(v.init(this.param).createElement(document)).ifPresent(
+                        // 添加元素
+                        e -> block.appendChild(e.getFirstChild())
+                )
+        );
         // 返回block元素
         return block;
     }

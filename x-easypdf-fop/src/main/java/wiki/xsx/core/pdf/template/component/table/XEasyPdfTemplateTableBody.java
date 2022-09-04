@@ -7,6 +7,7 @@ import wiki.xsx.core.pdf.template.XEasyPdfTemplateTags;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * pdf模板-表格体组件
@@ -51,9 +52,7 @@ public class XEasyPdfTemplateTableBody {
      * @return 返回表格体组件
      */
     public XEasyPdfTemplateTableBody addRow(XEasyPdfTemplateTableRow... rows) {
-        if (rows != null) {
-            Collections.addAll(this.rows, rows);
-        }
+        Optional.ofNullable(rows).ifPresent(v -> Collections.addAll(this.rows, v));
         return this;
     }
 
@@ -64,9 +63,7 @@ public class XEasyPdfTemplateTableBody {
      * @return 返回表格体组件
      */
     public XEasyPdfTemplateTableBody addRow(List<XEasyPdfTemplateTableRow> rows) {
-        if (rows != null) {
-            this.rows.addAll(rows);
-        }
+        Optional.ofNullable(rows).ifPresent(this.rows::addAll);
         return this;
     }
 

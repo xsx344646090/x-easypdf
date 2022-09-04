@@ -5,6 +5,8 @@ import org.w3c.dom.Element;
 import wiki.xsx.core.pdf.template.XEasyPdfTemplateAttributes;
 import wiki.xsx.core.pdf.template.component.XEasyPdfTemplateComponent;
 
+import java.util.Optional;
+
 /**
  * pdf模板-文本基础组件
  * <p>fo:block标签</p>
@@ -36,16 +38,10 @@ abstract class XEasyPdfTemplateTextBase implements XEasyPdfTemplateComponent {
     Element initBlock(Document document, XEasyPdfTemplateTextBaseParam param) {
         // 创建block元素
         Element block = this.createBlockElement(document, param);
-        // 如果行间距不为空，则设置行间距
-        if (param.getLeading() != null) {
-            // 设置行间距
-            block.setAttribute(XEasyPdfTemplateAttributes.LINE_HEIGHT, param.getLeading());
-        }
-        // 如果字符间距不为空，则设置字符间距
-        if (param.getLetterSpacing() != null) {
-            // 设置字符间距
-            block.setAttribute(XEasyPdfTemplateAttributes.LETTER_SPACING, param.getLetterSpacing());
-        }
+        // 设置行间距
+        Optional.ofNullable(param.getLeading()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.LINE_HEIGHT, v));
+        // 设置字符间距
+        Optional.ofNullable(param.getLetterSpacing()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.LETTER_SPACING, v));
         // 返回block元素
         return block;
     }

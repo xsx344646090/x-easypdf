@@ -6,6 +6,8 @@ import wiki.xsx.core.pdf.template.XEasyPdfTemplateAttributes;
 import wiki.xsx.core.pdf.template.XEasyPdfTemplateTags;
 import wiki.xsx.core.pdf.template.component.XEasyPdfTemplateComponent;
 
+import java.util.Optional;
+
 /**
  * pdf模板-表格单元格组件
  *
@@ -81,26 +83,14 @@ public class XEasyPdfTemplateTableCell {
     public Element createElement(Document document) {
         // 创建tableCell元素
         Element tableCell = document.createElement(XEasyPdfTemplateTags.TABLE_CELL);
-        // 如果宽度不为空，则设置宽度
-        if (this.param.getWidth() != null) {
-            // 设置宽度
-            tableCell.setAttribute(XEasyPdfTemplateAttributes.WIDTH, this.param.getWidth());
-        }
-        // 如果边框不为空，则设置边框
-        if (this.param.getBorder() != null) {
-            // 设置边框
-            tableCell.setAttribute(XEasyPdfTemplateAttributes.BORDER, this.param.getBorder());
-        }
-        // 如果边框样式不为空，则设置边框样式
-        if (this.param.getBorderStyle() != null) {
-            // 设置边框样式
-            tableCell.setAttribute(XEasyPdfTemplateAttributes.BORDER_STYLE, this.param.getBorderStyle());
-        }
-        // 如果模板组件不为空，则添加组件
-        if (this.param.getComponent() != null) {
-            // 添加组件
-            tableCell.appendChild(this.param.getComponent().createElement(document));
-        }
+        // 设置宽度
+        Optional.ofNullable(this.param.getWidth()).ifPresent(v -> tableCell.setAttribute(XEasyPdfTemplateAttributes.WIDTH, v));
+        // 设置边框
+        Optional.ofNullable(this.param.getBorder()).ifPresent(v -> tableCell.setAttribute(XEasyPdfTemplateAttributes.BORDER, v));
+        // 设置边框样式
+        Optional.ofNullable(this.param.getBorderStyle()).ifPresent(v -> tableCell.setAttribute(XEasyPdfTemplateAttributes.BORDER_STYLE, v));
+        // 添加组件
+        Optional.ofNullable(this.param.getComponent()).ifPresent(v -> tableCell.appendChild(v.createElement(document)));
         // 返回tableCell元素
         return tableCell;
     }

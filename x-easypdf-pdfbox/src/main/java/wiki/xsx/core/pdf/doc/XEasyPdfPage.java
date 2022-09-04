@@ -7,10 +7,6 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import wiki.xsx.core.pdf.component.XEasyPdfComponent;
 import wiki.xsx.core.pdf.component.image.XEasyPdfImage;
-import wiki.xsx.core.pdf.doc.XEasyPdfDefaultFontStyle;
-import wiki.xsx.core.pdf.doc.XEasyPdfDocument;
-import wiki.xsx.core.pdf.doc.XEasyPdfPageParam;
-import wiki.xsx.core.pdf.doc.XEasyPdfPageRectangle;
 import wiki.xsx.core.pdf.footer.XEasyPdfFooter;
 import wiki.xsx.core.pdf.header.XEasyPdfHeader;
 import wiki.xsx.core.pdf.mark.XEasyPdfWatermark;
@@ -655,16 +651,8 @@ public class XEasyPdfPage implements Serializable {
         this.param.setLastPage(page);
         // 添加pdfBox页面，如果页面尺寸为空，则添加默认A4页面，否则添加所给尺寸页面
         this.param.getNewPageList().add(page);
-        // 初始化总页数
-        document.getParam().initTotalPage(1);
-        // 重置页面X轴Y轴起始坐标
-        this.param.setPageX(null).setPageY(null);
-        // 绘制页眉与页脚
-        this.drawHeaderAndFooter(document);
-        // 绘制背景图片
-        this.drawBackgroundImage(document);
-        // 设置背景颜色
-        this.setLastPageBackgroundColor(document);
+        // 初始化页面
+        this.initPage(document);
         return this;
     }
 
@@ -751,12 +739,8 @@ public class XEasyPdfPage implements Serializable {
                     this.modifyPageSize(page, modifyPageSize);
                 }
             }
-            // 绘制页眉与页脚
-            this.drawHeaderAndFooter(document);
-            // 绘制背景图片
-            this.drawBackgroundImage(document);
-            // 设置背景颜色
-            this.setLastPageBackgroundColor(document);
+            // 初始化页面
+            this.initPage(document);
         }
         // 获取pdf组件列表
         List<XEasyPdfComponent> componentList = this.param.getComponentList();
@@ -834,6 +818,24 @@ public class XEasyPdfPage implements Serializable {
                 }
             }
         }
+    }
+
+    /**
+     * 初始化页面
+     *
+     * @param document pdf文档
+     */
+    private void initPage(XEasyPdfDocument document) {
+        // 初始化总页数
+        document.getParam().initTotalPage(1);
+        // 重置页面X轴Y轴起始坐标
+        this.param.setPageX(null).setPageY(null);
+        // 绘制页眉与页脚
+        this.drawHeaderAndFooter(document);
+        // 绘制背景图片
+        this.drawBackgroundImage(document);
+        // 设置背景颜色
+        this.setLastPageBackgroundColor(document);
     }
 
     /**
