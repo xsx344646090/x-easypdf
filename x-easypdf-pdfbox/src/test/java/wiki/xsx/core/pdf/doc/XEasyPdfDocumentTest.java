@@ -581,6 +581,7 @@ public class XEasyPdfDocumentTest {
         final String sourcePath = OUTPUT_PATH + "doc3.pdf";
         XEasyPdfHandler.Document.load(sourcePath)
                 .imager()
+                .enableOptimization()
                 .enableGray()
                 .enableHorizontalMerge()
                 .setDpi(144F)
