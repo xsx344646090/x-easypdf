@@ -1,6 +1,7 @@
 package wiki.xsx.core.pdf.template.handler;
 
 import wiki.xsx.core.pdf.template.component.image.XEasyPdfTemplateImage;
+import wiki.xsx.core.pdf.template.component.line.XEasyPdfTemplateSplitLine;
 import wiki.xsx.core.pdf.template.component.table.*;
 import wiki.xsx.core.pdf.template.component.text.XEasyPdfTemplateText;
 import wiki.xsx.core.pdf.template.component.text.XEasyPdfTemplateTextExtend;
@@ -243,6 +244,21 @@ public class XEasyPdfTemplateHandler {
             public static XEasyPdfTemplateTableCell build() {
                 return new XEasyPdfTemplateTableCell();
             }
+        }
+    }
+
+    /**
+     * pdf模板分割线
+     */
+    public static class SplitLine {
+        /**
+         *
+         * 构建分割线
+         *
+         * @return 返回pdf模板-分割线
+         */
+        public static XEasyPdfTemplateSplitLine build() {
+            return new XEasyPdfTemplateSplitLine();
         }
     }
 

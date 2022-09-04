@@ -110,4 +110,9 @@ public class XEasyPdfTemplateTags {
      * <p>标签："fo:table-cell"</p>
      */
     public static final String TABLE_CELL = "fo:table-cell";
+    /**
+     * 分割线
+     * <p>标签："fo:leader"</p>
+     */
+    public static final String LEADER = "fo:leader";
 }

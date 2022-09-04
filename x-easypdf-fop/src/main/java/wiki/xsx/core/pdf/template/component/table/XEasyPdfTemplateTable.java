@@ -8,6 +8,8 @@ import wiki.xsx.core.pdf.template.component.XEasyPdfTemplateComponent;
 import wiki.xsx.core.pdf.template.enums.XEasyPdfTemplatePositionStyle;
 import wiki.xsx.core.pdf.template.handler.XEasyPdfTemplateElementHandler;
 
+import java.util.Optional;
+
 /**
  * pdf模板-表格组件
  *
@@ -207,36 +209,18 @@ public class XEasyPdfTemplateTable implements XEasyPdfTemplateComponent {
         XEasyPdfTemplateElementHandler.appendChild(table, this.createTableBody(document));
         // 添加表尾
         XEasyPdfTemplateElementHandler.appendChild(table, this.createTableFooter(document));
-        // 如果上填充不为空，则设置上填充
-        if (this.param.getPaddingTop() != null) {
-            // 设置上填充
-            table.setAttribute(XEasyPdfTemplateAttributes.PADDING_TOP, this.param.getPaddingTop());
-        }
-        // 如果宽度不为空，则设置宽度
-        if (this.param.getWidth() != null) {
-            // 设置宽度
-            table.setAttribute(XEasyPdfTemplateAttributes.WIDTH, this.param.getWidth());
-        }
-        // 如果高度不为空，则设置高度
-        if (this.param.getHeight() != null) {
-            // 设置高度
-            table.setAttribute(XEasyPdfTemplateAttributes.HEIGHT, this.param.getHeight());
-        }
-        // 如果边框不为空，则设置边框
-        if (this.param.getBorder() != null) {
-            // 设置边框
-            table.setAttribute(XEasyPdfTemplateAttributes.BORDER, this.param.getBorder());
-        }
-        // 如果边框折叠不为空，则设置边框折叠
-        if (this.param.getBorderCollapse() != null) {
-            // 设置边框折叠
-            table.setAttribute(XEasyPdfTemplateAttributes.BORDER_COLLAPSE, this.param.getBorderCollapse());
-        }
-        // 如果边框间距不为空，则设置边框间距
-        if (this.param.getBorderSpacing() != null) {
-            // 设置边框间距
-            table.setAttribute(XEasyPdfTemplateAttributes.BORDER_SPACING, this.param.getBorderSpacing());
-        }
+        // 设置上填充
+        Optional.ofNullable(this.param.getPaddingTop()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.PADDING_TOP, v));
+        // 设置宽度
+        Optional.ofNullable(this.param.getWidth()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.WIDTH, v));
+        // 设置高度
+        Optional.ofNullable(this.param.getHeight()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.HEIGHT, v));
+        // 设置边框
+        Optional.ofNullable(this.param.getBorder()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.BORDER, v));
+        // 设置边框折叠
+        Optional.ofNullable(this.param.getBorderCollapse()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.BORDER_COLLAPSE, v));
+        // 设置边框间距
+        Optional.ofNullable(this.param.getBorderSpacing()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.BORDER_SPACING, v));
         // 返回table元素
         return table;
     }

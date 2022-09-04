@@ -1,7 +1,5 @@
 package wiki.xsx.core.pdf.template.enums;
 
-import wiki.xsx.core.pdf.template.XEasyPdfTemplateAttributes;
-
 /**
  * pdf模板边框样式
  *
@@ -75,15 +73,6 @@ public enum XEasyPdfTemplateBorderStyle {
      */
     XEasyPdfTemplateBorderStyle(String value) {
         this.value = value;
-    }
-
-    /**
-     * 获取键
-     *
-     * @return 返回键
-     */
-    public String getKey() {
-        return XEasyPdfTemplateAttributes.BORDER_STYLE;
     }
 
     /**

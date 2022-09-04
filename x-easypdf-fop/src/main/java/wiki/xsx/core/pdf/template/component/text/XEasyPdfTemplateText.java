@@ -5,8 +5,10 @@ import org.w3c.dom.Element;
 import wiki.xsx.core.pdf.template.XEasyPdfTemplateAttributes;
 import wiki.xsx.core.pdf.template.XEasyPdfTemplateTags;
 import wiki.xsx.core.pdf.template.enums.XEasyPdfTemplatePositionStyle;
+import wiki.xsx.core.pdf.template.handler.XEasyPdfTemplateElementHandler;
 
 import java.awt.*;
+import java.util.Optional;
 
 /**
  * pdf模板-文本组件
@@ -185,50 +187,18 @@ public class XEasyPdfTemplateText extends XEasyPdfTemplateTextBase {
     private Element createInline(Document document) {
         // 创建inline元素
         Element inline = document.createElement(XEasyPdfTemplateTags.IN_LINE);
-        // 如果字体名称不为空，则设置字体名称
-        if (this.param.getFontFamily() != null) {
-            // 设置字体名称
-            inline.setAttribute(XEasyPdfTemplateAttributes.FONT_FAMILY, this.param.getFontFamily());
-        }
-        // 如果字体样式不为空，则设置字体样式
-        if (this.param.getFontStyle() != null) {
-            // 设置字体样式
-            inline.setAttribute(XEasyPdfTemplateAttributes.FONT_STYLE, this.param.getFontStyle());
-        }
-        // 如果字体大小不为空，则设置字体大小
-        if (this.param.getFontSize() != null) {
-            // 设置字体大小
-            inline.setAttribute(XEasyPdfTemplateAttributes.FONT_SIZE, this.param.getFontSize());
-        }
-        // 如果字体大小调整不为空，则设置字体大小调整
-        if (this.param.getFontSizeAdjust() != null) {
-            // 设置字体大小调整
-            inline.setAttribute(XEasyPdfTemplateAttributes.FONT_SIZE_ADJUST, this.param.getFontSizeAdjust());
-        }
-        // 如果字体重量不为空，则设置字体重量
-        if (this.param.getFontWeight() != null) {
-            // 设置字体重量
-            inline.setAttribute(XEasyPdfTemplateAttributes.FONT_WEIGHT, this.param.getFontWeight());
-        }
-        // 如果字体颜色不为空，则设置字体颜色
-        if (this.param.getFontColor() != null) {
-            // 获取字体颜色
-            Color fontColor = this.param.getFontColor();
-            // 设置字体颜色
-            inline.setAttribute(
-                    XEasyPdfTemplateAttributes.COLOR,
-                    String.join(
-                            "",
-                            "rgb(",
-                            String.valueOf(fontColor.getRed()),
-                            ",",
-                            String.valueOf(fontColor.getGreen()),
-                            ",",
-                            String.valueOf(fontColor.getBlue()),
-                            ")"
-                    )
-            );
-        }
+        // 设置字体名称
+        Optional.ofNullable(this.param.getFontFamily()).ifPresent(v -> inline.setAttribute(XEasyPdfTemplateAttributes.FONT_FAMILY, v));
+        // 设置字体样式
+        Optional.ofNullable(this.param.getFontStyle()).ifPresent(v -> inline.setAttribute(XEasyPdfTemplateAttributes.FONT_STYLE, v));
+        // 设置字体大小
+        Optional.ofNullable(this.param.getFontSize()).ifPresent(v -> inline.setAttribute(XEasyPdfTemplateAttributes.FONT_SIZE, v));
+        // 设置字体大小调整
+        Optional.ofNullable(this.param.getFontSizeAdjust()).ifPresent(v -> inline.setAttribute(XEasyPdfTemplateAttributes.FONT_SIZE_ADJUST, v));
+        // 设置字体重量
+        Optional.ofNullable(this.param.getFontWeight()).ifPresent(v -> inline.setAttribute(XEasyPdfTemplateAttributes.FONT_WEIGHT, v));
+        // 设置字体颜色
+        Optional.ofNullable(this.param.getFontColor()).ifPresent(v -> XEasyPdfTemplateElementHandler.appendColor(inline, v));
         // 设置文本
         inline.setTextContent(this.param.getText());
         // 返回inline元素

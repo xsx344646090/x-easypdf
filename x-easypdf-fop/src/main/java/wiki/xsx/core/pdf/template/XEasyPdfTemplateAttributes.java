@@ -159,4 +159,16 @@ public class XEasyPdfTemplateAttributes {
      * 图像高度
      */
     public static final String CONTENT_HEIGHT = "content-height";
+    /**
+     * 分割线样式
+     */
+    public static final String LEADER_PATTERN = "leader-pattern";
+    /**
+     * 分割线长度
+     */
+    public static final String LEADER_LENGTH = "leader-length";
+    /**
+     * 规则样式
+     */
+    public static final String RULE_STYLE = "rule-style";
 }

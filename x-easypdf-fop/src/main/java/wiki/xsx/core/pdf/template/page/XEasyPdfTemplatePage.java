@@ -10,6 +10,7 @@ import wiki.xsx.core.pdf.template.enums.XEasyPdfTemplateRegionStyle;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * pdf模板-页面
@@ -43,9 +44,7 @@ public class XEasyPdfTemplatePage implements XEasyPdfTemplatePageComponent {
      * @return 返回pdf模板-页面
      */
     public XEasyPdfTemplatePage setPageWidth(String pageWidth) {
-        if (pageWidth != null) {
-            this.param.setPageWidth(pageWidth);
-        }
+        Optional.ofNullable(pageWidth).ifPresent(this.param::setPageWidth);
         return this;
     }
 
@@ -56,9 +55,7 @@ public class XEasyPdfTemplatePage implements XEasyPdfTemplatePageComponent {
      * @return 返回pdf模板-页面
      */
     public XEasyPdfTemplatePage setPageHeight(String pageHeight) {
-        if (pageHeight != null) {
-            this.param.setPageHeight(pageHeight);
-        }
+        Optional.ofNullable(pageHeight).ifPresent(this.param::setPageHeight);
         return this;
     }
 
@@ -69,12 +66,7 @@ public class XEasyPdfTemplatePage implements XEasyPdfTemplatePageComponent {
      * @return 返回pdf模板-页面
      */
     public XEasyPdfTemplatePage setPageMargin(String margin) {
-        if (margin != null) {
-            this.param.setMarginTop(margin)
-                    .setMarginBottom(margin)
-                    .setMarginLeft(margin)
-                    .setMarginRight(margin);
-        }
+        Optional.ofNullable(margin).ifPresent(v -> this.param.setMarginTop(v).setMarginBottom(v).setMarginLeft(v).setMarginRight(v));
         return this;
     }
 
@@ -85,9 +77,7 @@ public class XEasyPdfTemplatePage implements XEasyPdfTemplatePageComponent {
      * @return 返回pdf模板-页面
      */
     public XEasyPdfTemplatePage setPageMarginTop(String margin) {
-        if (margin != null) {
-            this.param.setMarginTop(margin);
-        }
+        Optional.ofNullable(margin).ifPresent(this.param::setMarginTop);
         return this;
     }
 
@@ -98,9 +88,7 @@ public class XEasyPdfTemplatePage implements XEasyPdfTemplatePageComponent {
      * @return 返回pdf模板-页面
      */
     public XEasyPdfTemplatePage setPageMarginBottom(String margin) {
-        if (margin != null) {
-            this.param.setMarginBottom(margin);
-        }
+        Optional.ofNullable(margin).ifPresent(this.param::setMarginBottom);
         return this;
     }
 
@@ -111,9 +99,7 @@ public class XEasyPdfTemplatePage implements XEasyPdfTemplatePageComponent {
      * @return 返回pdf模板-页面
      */
     public XEasyPdfTemplatePage setPageMarginLeft(String margin) {
-        if (margin != null) {
-            this.param.setMarginLeft(margin);
-        }
+        Optional.ofNullable(margin).ifPresent(this.param::setMarginLeft);
         return this;
     }
 
@@ -124,9 +110,7 @@ public class XEasyPdfTemplatePage implements XEasyPdfTemplatePageComponent {
      * @return 返回pdf模板-页面
      */
     public XEasyPdfTemplatePage setPageMarginRight(String margin) {
-        if (margin != null) {
-            this.param.setMarginRight(margin);
-        }
+        Optional.ofNullable(margin).ifPresent(this.param::setMarginRight);
         return this;
     }
 
@@ -137,13 +121,7 @@ public class XEasyPdfTemplatePage implements XEasyPdfTemplatePageComponent {
      * @return 返回pdf模板-页面
      */
     public XEasyPdfTemplatePage setBodyMargin(String margin) {
-        if (margin != null) {
-            this.param.getRegionBodyParam()
-                    .setMarginTop(margin)
-                    .setMarginBottom(margin)
-                    .setMarginLeft(margin)
-                    .setMarginRight(margin);
-        }
+        Optional.ofNullable(margin).ifPresent(v -> this.param.getRegionBodyParam().setMarginTop(v).setMarginBottom(v).setMarginLeft(v).setMarginRight(v));
         return this;
     }
 
@@ -154,9 +132,7 @@ public class XEasyPdfTemplatePage implements XEasyPdfTemplatePageComponent {
      * @return 返回pdf模板-页面
      */
     public XEasyPdfTemplatePage setBodyMarginTop(String margin) {
-        if (margin != null) {
-            this.param.getRegionBodyParam().setMarginTop(margin);
-        }
+        Optional.ofNullable(margin).ifPresent(this.param.getRegionBodyParam()::setMarginTop);
         return this;
     }
 
@@ -167,9 +143,7 @@ public class XEasyPdfTemplatePage implements XEasyPdfTemplatePageComponent {
      * @return 返回pdf模板-页面
      */
     public XEasyPdfTemplatePage setBodyMarginBottom(String margin) {
-        if (margin != null) {
-            this.param.getRegionBodyParam().setMarginBottom(margin);
-        }
+        Optional.ofNullable(margin).ifPresent(this.param.getRegionBodyParam()::setMarginBottom);
         return this;
     }
 
@@ -180,9 +154,7 @@ public class XEasyPdfTemplatePage implements XEasyPdfTemplatePageComponent {
      * @return 返回pdf模板-页面
      */
     public XEasyPdfTemplatePage setBodyMarginLeft(String margin) {
-        if (margin != null) {
-            this.param.getRegionBodyParam().setMarginLeft(margin);
-        }
+        Optional.ofNullable(margin).ifPresent(this.param.getRegionBodyParam()::setMarginLeft);
         return this;
     }
 
@@ -193,9 +165,7 @@ public class XEasyPdfTemplatePage implements XEasyPdfTemplatePageComponent {
      * @return 返回pdf模板-页面
      */
     public XEasyPdfTemplatePage setBodyMarginRight(String margin) {
-        if (margin != null) {
-            this.param.getRegionBodyParam().setMarginRight(margin);
-        }
+        Optional.ofNullable(margin).ifPresent(this.param.getRegionBodyParam()::setMarginRight);
         return this;
     }
 
@@ -206,9 +176,7 @@ public class XEasyPdfTemplatePage implements XEasyPdfTemplatePageComponent {
      * @return 返回pdf模板-页面
      */
     public XEasyPdfTemplatePage setHeaderHeight(String height) {
-        if (height != null) {
-            this.param.getRegionBeforeParam().setHeight(height);
-        }
+        Optional.ofNullable(height).ifPresent(this.param.getRegionBeforeParam()::setHeight);
         return this;
     }
 
@@ -219,9 +187,7 @@ public class XEasyPdfTemplatePage implements XEasyPdfTemplatePageComponent {
      * @return 返回pdf模板-页面
      */
     public XEasyPdfTemplatePage setFooterHeight(String height) {
-        if (height != null) {
-            this.param.getRegionAfterParam().setHeight(height);
-        }
+        Optional.ofNullable(height).ifPresent(this.param.getRegionAfterParam()::setHeight);
         return this;
     }
 
@@ -242,9 +208,7 @@ public class XEasyPdfTemplatePage implements XEasyPdfTemplatePageComponent {
      * @return 返回pdf模板-页面
      */
     public XEasyPdfTemplatePage addBodyComponent(XEasyPdfTemplateComponent... components) {
-        if (components != null) {
-            Collections.addAll(this.param.getRegionBodyParam().getComponentList(), components);
-        }
+        Optional.ofNullable(components).ifPresent(v -> Collections.addAll(this.param.getRegionBodyParam().getComponentList(), v));
         return this;
     }
 
@@ -255,9 +219,7 @@ public class XEasyPdfTemplatePage implements XEasyPdfTemplatePageComponent {
      * @return 返回pdf模板-页面
      */
     public XEasyPdfTemplatePage addBodyComponent(List<XEasyPdfTemplateComponent> components) {
-        if (components != null) {
-            this.param.getRegionBodyParam().getComponentList().addAll(components);
-        }
+        Optional.ofNullable(components).ifPresent(this.param.getRegionBodyParam().getComponentList()::addAll);
         return this;
     }
 
@@ -268,9 +230,7 @@ public class XEasyPdfTemplatePage implements XEasyPdfTemplatePageComponent {
      * @return 返回pdf模板-页面
      */
     public XEasyPdfTemplatePage addHeaderComponent(XEasyPdfTemplateComponent... components) {
-        if (components != null) {
-            Collections.addAll(this.param.getRegionBeforeParam().getComponentList(), components);
-        }
+        Optional.ofNullable(components).ifPresent(v -> Collections.addAll(this.param.getRegionBeforeParam().getComponentList(), v));
         return this;
     }
 
@@ -281,9 +241,7 @@ public class XEasyPdfTemplatePage implements XEasyPdfTemplatePageComponent {
      * @return 返回pdf模板-页面
      */
     public XEasyPdfTemplatePage addHeaderComponent(List<XEasyPdfTemplateComponent> components) {
-        if (components != null) {
-            this.param.getRegionBeforeParam().getComponentList().addAll(components);
-        }
+        Optional.ofNullable(components).ifPresent(this.param.getRegionBeforeParam().getComponentList()::addAll);
         return this;
     }
 
@@ -294,9 +252,7 @@ public class XEasyPdfTemplatePage implements XEasyPdfTemplatePageComponent {
      * @return 返回pdf模板-页面
      */
     public XEasyPdfTemplatePage addFooterComponent(XEasyPdfTemplateComponent... components) {
-        if (components != null) {
-            Collections.addAll(this.param.getRegionAfterParam().getComponentList(), components);
-        }
+        Optional.ofNullable(components).ifPresent(v -> Collections.addAll(this.param.getRegionAfterParam().getComponentList(), v));
         return this;
     }
 
@@ -307,9 +263,7 @@ public class XEasyPdfTemplatePage implements XEasyPdfTemplatePageComponent {
      * @return 返回pdf模板-页面
      */
     public XEasyPdfTemplatePage addFooterComponent(List<XEasyPdfTemplateComponent> components) {
-        if (components != null) {
-            this.param.getRegionAfterParam().getComponentList().addAll(components);
-        }
+        Optional.ofNullable(components).ifPresent(this.param.getRegionAfterParam().getComponentList()::addAll);
         return this;
     }
 
@@ -476,10 +430,10 @@ public class XEasyPdfTemplatePage implements XEasyPdfTemplatePageComponent {
         // 如果包含页面主体，则添加组件
         if (this.param.hasBody()) {
             // 遍历页面主体区域组件列表
-            for (XEasyPdfTemplateComponent component : this.param.getRegionBodyParam().getComponentList()) {
-                // 添加组件
-                flow.appendChild(component.transform(document));
-            }
+            this.param.getRegionBodyParam().getComponentList().forEach(
+                    // 添加组件
+                    v -> flow.appendChild(v.transform(document))
+            );
         }
         // 否则添加空元素
         else {
@@ -502,10 +456,10 @@ public class XEasyPdfTemplatePage implements XEasyPdfTemplatePageComponent {
         // 设置页面流向（页眉区域）
         staticContent.setAttribute(XEasyPdfTemplateAttributes.FLOW_NAME, XEasyPdfTemplateRegionStyle.BEFORE.getValue());
         // 遍历页眉区域组件列表
-        for (XEasyPdfTemplateComponent component : this.param.getRegionBeforeParam().getComponentList()) {
-            // 添加组件
-            staticContent.appendChild(component.transform(document));
-        }
+        this.param.getRegionBeforeParam().getComponentList().forEach(
+                // 添加组件
+                v -> staticContent.appendChild(v.transform(document))
+        );
         // 返回静态内容
         return staticContent;
     }
@@ -522,10 +476,10 @@ public class XEasyPdfTemplatePage implements XEasyPdfTemplatePageComponent {
         // 设置页面流向（页脚区域）
         staticContent.setAttribute(XEasyPdfTemplateAttributes.FLOW_NAME, XEasyPdfTemplateRegionStyle.AFTER.getValue());
         // 遍历页脚区域组件列表
-        for (XEasyPdfTemplateComponent component : this.param.getRegionAfterParam().getComponentList()) {
-            // 添加组件
-            staticContent.appendChild(component.transform(document));
-        }
+        this.param.getRegionAfterParam().getComponentList().forEach(
+                // 添加组件
+                v -> staticContent.appendChild(v.transform(document))
+        );
         // 返回静态内容
         return staticContent;
     }
