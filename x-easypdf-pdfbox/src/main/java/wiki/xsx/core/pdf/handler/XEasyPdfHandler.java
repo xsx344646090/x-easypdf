@@ -25,6 +25,7 @@ import wiki.xsx.core.pdf.footer.XEasyPdfFooter;
 import wiki.xsx.core.pdf.header.XEasyPdfDefaultHeader;
 import wiki.xsx.core.pdf.header.XEasyPdfHeader;
 import wiki.xsx.core.pdf.mark.XEasyPdfDefaultWatermark;
+import wiki.xsx.core.pdf.util.XEasyPdfFontUtil;
 
 import java.io.File;
 import java.io.InputStream;
@@ -998,6 +999,22 @@ public class XEasyPdfHandler {
          * 粗体
          */
         public static final XEasyPdfDefaultFontStyle BOLD = XEasyPdfDefaultFontStyle.BOLD;
+
+        /**
+         * 添加字体映射
+         *
+         * @param fontPath 字体路径
+         */
+        public static void addFont(String fontPath) {
+            XEasyPdfFontUtil.addFont(fontPath);
+        }
+
+        /**
+         * 开启系统字体映射
+         */
+        public static void enableSystemFontMapping() {
+            System.setProperty(FontMappingPolicy.key(), FontMappingPolicy.ALL.name());
+        }
     }
 
     /**

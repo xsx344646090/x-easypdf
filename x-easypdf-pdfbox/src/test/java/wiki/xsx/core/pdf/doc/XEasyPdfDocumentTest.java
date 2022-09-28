@@ -578,6 +578,9 @@ public class XEasyPdfDocumentTest {
 
     @Test
     public void test32() {
+        // XEasyPdfHandler.Font.addFont("C:\\Windows\\Fonts\\times.ttf");
+        // 设置加载系统字体
+        XEasyPdfHandler.Font.enableSystemFontMapping();
         final String sourcePath = OUTPUT_PATH + "doc3.pdf";
         XEasyPdfHandler.Document.load(sourcePath)
                 .imager()
