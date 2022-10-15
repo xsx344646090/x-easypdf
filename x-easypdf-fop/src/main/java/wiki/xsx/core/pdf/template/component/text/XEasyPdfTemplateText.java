@@ -103,6 +103,17 @@ public class XEasyPdfTemplateText extends XEasyPdfTemplateTextBase {
     }
 
     /**
+     * 设置字体重量
+     *
+     * @param fontWeight 字体重量
+     * @return 返回pdf模板-文本组件
+     */
+    public XEasyPdfTemplateText setFontWeight(String fontWeight) {
+        this.param.setFontWeight(fontWeight);
+        return this;
+    }
+
+    /**
      * 设置字体大小调整
      *
      * @param fontSizeAdjust 字体大小调整
