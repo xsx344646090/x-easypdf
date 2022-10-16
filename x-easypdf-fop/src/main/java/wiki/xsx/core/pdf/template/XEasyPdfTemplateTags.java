@@ -115,4 +115,9 @@ public class XEasyPdfTemplateTags {
      * <p>标签："fo:leader"</p>
      */
     public static final String LEADER = "fo:leader";
+    /**
+     * 条形码
+     * <p>标签："fo:barcode"</p>
+     */
+    public static final String BARCODE = "fo:barcode";
 }

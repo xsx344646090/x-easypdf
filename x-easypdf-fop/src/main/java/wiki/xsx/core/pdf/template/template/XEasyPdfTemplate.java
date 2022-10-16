@@ -3,11 +3,6 @@ package wiki.xsx.core.pdf.template.template;
 import lombok.SneakyThrows;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.fop.apps.FOUserAgent;
-import org.apache.fop.apps.FopFactory;
-import org.apache.fop.apps.FopFactoryBuilder;
-import org.apache.fop.configuration.DefaultConfigurationBuilder;
-import wiki.xsx.core.pdf.template.XEasyPdfTemplateConstants;
 import wiki.xsx.core.pdf.template.template.datasource.XEasyPdfTemplateDataSource;
 
 import java.io.*;
@@ -181,7 +176,7 @@ public class XEasyPdfTemplate {
     @SneakyThrows
     public void transform(String outputPath) {
         // 创建输出流
-        try (OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(outputPath))) {
+        try (OutputStream outputStream = new BufferedOutputStream(Files.newOutputStream(Paths.get(outputPath)))) {
             // 转换pdf
             this.transform(outputStream);
         }
@@ -194,72 +189,14 @@ public class XEasyPdfTemplate {
      */
     @SneakyThrows
     public void transform(OutputStream outputStream) {
-        // 初始化参数
-        this.param.init();
-        // 定义fop工厂
-        FopFactory factory;
-        try (
-                // 创建配置输入流（从资源路径读取）
-                InputStream inputStream = this.getClass().getResourceAsStream(this.param.getConfigPath())
-        ) {
-            // 创建fop工厂
-            factory = new FopFactoryBuilder(
-                    new File(".").toURI()
-            ).setConfiguration(
-                    new DefaultConfigurationBuilder().build(inputStream)
-            ).build();
-        } catch (Exception e) {
-            try (
-                    // 创建配置输入流（从绝对路径读取）
-                    InputStream inputStream = Files.newInputStream(Paths.get(this.param.getConfigPath()))
-            ) {
-                // 创建fop工厂
-                factory = new FopFactoryBuilder(
-                        new File(this.param.getConfigPath()).toURI()
-                ).setConfiguration(
-                        new DefaultConfigurationBuilder().build(inputStream)
-                ).build();
-            }
-        }
-        // 获取fo代理
-        FOUserAgent agent = this.getUserAgent(factory);
         // 如果开启日志，则打印xsl-fo内容
         if (log.isInfoEnabled()) {
             // 打印xsl-fo内容
             log.info("XSL-FO ==> \n" + this.param.getDataSource().getDocumentContent());
         }
+        // 初始化参数
+        this.param.initParams();
         // 转换pdf
-        this.param.getDataSource().transform(factory, agent, outputStream);
-    }
-
-    /**
-     * 获取fo代理
-     *
-     * @param fopFactory fop工厂
-     * @return 返回代理
-     */
-    private FOUserAgent getUserAgent(FopFactory fopFactory) {
-        // 创建代理
-        FOUserAgent userAgent = fopFactory.newFOUserAgent();
-        // 设置生产者
-        userAgent.setProducer(XEasyPdfTemplateConstants.FOP_PRODUCER);
-        // 设置开启辅助功能
-        userAgent.setAccessibility(this.param.getIsAccessibility());
-        // 设置作者
-        userAgent.setAuthor(this.param.getAuthor());
-        // 设置创建者
-        userAgent.setCreator(this.param.getCreator());
-        // 设置标题
-        userAgent.setTitle(this.param.getTitle());
-        // 设置主题
-        userAgent.setSubject(this.param.getSubject());
-        // 设置关键词
-        userAgent.setKeywords(this.param.getKeywords());
-        // 设置创建时间
-        userAgent.setCreationDate(this.param.getCreationDate());
-        // 设置保留空标签
-        userAgent.setKeepEmptyTags(this.param.getIsAccessibility());
-        // 返回代理
-        return userAgent;
+        this.param.getDataSource().transform(this.param.getFopFactory(), this.param.getUserAgent(), outputStream);
     }
 }

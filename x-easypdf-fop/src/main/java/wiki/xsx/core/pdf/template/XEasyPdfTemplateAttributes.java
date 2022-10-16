@@ -171,4 +171,60 @@ public class XEasyPdfTemplateAttributes {
      * 规则样式
      */
     public static final String RULE_STYLE = "rule-style";
+    /**
+     * 类型
+     */
+    public static final String TYPE = "type";
+    /**
+     * 内容
+     */
+    public static final String CONTENT = "content";
+    /**
+     * 条形码边距
+     */
+    public static final String CODE_MARGIN = "code-margin";
+    /**
+     * 纠错级别
+     */
+    public static final String ERROR_LEVEL = "error-level";
+    /**
+     * 文字
+     */
+    public static final String WORDS = "words";
+    /**
+     * 文字颜色
+     */
+    public static final String WORDS_COLOR = "words-color";
+    /**
+     * 文字样式
+     */
+    public static final String WORDS_STYLE = "words-style";
+    /**
+     * 文字大小
+     */
+    public static final String WORDS_SIZE = "words-size";
+    /**
+     * 文字偏移量-X轴
+     */
+    public static final String WORDS_OFFSET_X = "words-offset-x";
+    /**
+     * 文字偏移量-Y轴
+     */
+    public static final String WORDS_OFFSET_Y = "words-offset-y";
+    /**
+     * 旋转弧度
+     */
+    public static final String RADIANS = "radians";
+    /**
+     * 前景色
+     */
+    public static final String ON_COLOR = "on-color";
+    /**
+     * 背景色
+     */
+    public static final String OFF_COLOR = "off-color";
+    /**
+     * 缩放比例
+     */
+    public static final String SCALE_RATE = "scale-rate";
 }

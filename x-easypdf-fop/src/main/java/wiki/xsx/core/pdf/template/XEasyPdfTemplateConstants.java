@@ -45,7 +45,7 @@ public final class XEasyPdfTemplateConstants {
      */
     public static final String DEFAULT_DOTTED_SPLIT_LINE_STYLE_VALUE = "dots";
     /**
-     * 默认长度
+     * 命名空间
      */
-    public static final String DEFAULT_LENGTH_VALUE = "100%";
+    public static final String NAMESPACE = "http://www.x-easypdf.cn/ns";
 }
