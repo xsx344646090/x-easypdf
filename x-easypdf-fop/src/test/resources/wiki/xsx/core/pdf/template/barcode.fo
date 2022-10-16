@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--根标签-->
+<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
+    <!--页面模板-->
+    <fo:layout-master-set>
+        <!--单页面模板-->
+        <fo:simple-page-master master-name="A4">
+            <!--页面区域主体-->
+            <fo:region-body/>
+        </fo:simple-page-master>
+    </fo:layout-master-set>
+    <!--页面序列-->
+    <fo:page-sequence master-reference="A4">
+        <!--页面流-->
+        <fo:flow flow-name="xsl-region-body">
+
+            <fo:block text-align="center">
+                <!-- 条形码 -->
+                <fo:instream-foreign-object>
+                    <!-- 二维码 -->
+                    <fo:barcode xmlns:fo="http://www.x-easypdf.cn/ns"
+                                type="QR_CODE"
+                                scale-rate="3"
+                                code-margin="0"
+                                error-level="H"
+                                on-color="orange"
+                                off-color="white"
+                                width="100pt"
+                                height="100pt"
+                                content="https://www.x-easypdf.cn"
+                                words="https://www.x-easypdf.cn"
+                                words-size="8pt"
+                                words-style="bold"
+                                words-color="blue"
+                                words-offset-x="1"
+                                words-offset-y="5" />
+                </fo:instream-foreign-object>
+            </fo:block>
+            <fo:block text-align="center" margin-top="50pt">
+                <!-- 条形码 -->
+                <fo:instream-foreign-object>
+                    <!-- 一维码 -->
+                    <fo:barcode xmlns:fo="http://www.x-easypdf.cn/ns"
+                                type="EAN_13"
+                                code-margin="0"
+                                radians="0"
+                                width="100pt"
+                                height="30pt"
+                                content="6922454332930"
+                                words="6922454332930"
+                                words-size="12pt" />
+                </fo:instream-foreign-object>
+            </fo:block>
+        </fo:flow>
+    </fo:page-sequence>
+</fo:root>

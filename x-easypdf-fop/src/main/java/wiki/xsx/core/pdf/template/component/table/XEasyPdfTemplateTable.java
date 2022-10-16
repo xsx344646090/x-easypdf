@@ -12,6 +12,7 @@ import java.util.Optional;
 
 /**
  * pdf模板-表格组件
+ * <p>fo:table标签</p>
  *
  * @author xsx
  * @date 2022/8/22

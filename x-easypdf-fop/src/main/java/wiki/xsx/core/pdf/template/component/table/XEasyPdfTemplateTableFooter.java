@@ -11,6 +11,7 @@ import java.util.Optional;
 
 /**
  * pdf模板-表尾组件
+ * <p>fo:table-footer标签</p>
  *
  * @author xsx
  * @date 2022/8/23

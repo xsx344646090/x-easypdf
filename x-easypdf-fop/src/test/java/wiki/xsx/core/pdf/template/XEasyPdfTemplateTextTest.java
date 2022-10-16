@@ -32,11 +32,13 @@ public class XEasyPdfTemplateTextTest {
         // 转换pdf
         XEasyPdfTemplateDocument document = XEasyPdfTemplateHandler.Document.build().setConfigPath(configPath).addPage(
                 XEasyPdfTemplateHandler.Page.build().addBodyComponent(
-                        XEasyPdfTemplateHandler.Text.build().setText("hello world")
-                                .setLeading("30px")
-                                .setLetterSpacing("30px")
+                        XEasyPdfTemplateHandler.Text.build().setText("加粗")
+                                .setFontFamily("微软雅黑")
+                                .setFontWeight("bold")
+                                .setHorizontalStyle(XEasyPdfTemplatePositionStyle.LEFT),
+                        XEasyPdfTemplateHandler.Text.build().setText("不加粗")
+                                .setFontFamily("微软雅黑")
                                 .setHorizontalStyle(XEasyPdfTemplatePositionStyle.LEFT)
-                                .enableBorder()
                 )
         );
         // 转换pdf
