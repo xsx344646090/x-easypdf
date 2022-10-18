@@ -96,7 +96,7 @@ public class XEasyPdfTemplateAttributes {
      */
     public static final String TEXT_ALIGN = "text-align";
     /**
-     * 显示对齐
+     * 上下对齐
      */
     public static final String DISPLAY_ALIGN = "display-align";
     /**
@@ -171,6 +171,10 @@ public class XEasyPdfTemplateAttributes {
      * 规则样式
      */
     public static final String RULE_STYLE = "rule-style";
+    /**
+     * 命名空间
+     */
+    public static final String NAMESPACE = "xmlns:fo";
     /**
      * 类型
      */

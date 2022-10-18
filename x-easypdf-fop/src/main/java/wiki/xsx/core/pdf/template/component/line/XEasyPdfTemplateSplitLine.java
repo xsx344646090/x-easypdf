@@ -40,6 +40,7 @@ public class XEasyPdfTemplateSplitLine implements XEasyPdfTemplateComponent {
 
     /**
      * 设置长度
+     * <p>默认：100%</p>
      *
      * @param length 长度
      * @return 返回pdf模板-分割线组件
@@ -51,6 +52,7 @@ public class XEasyPdfTemplateSplitLine implements XEasyPdfTemplateComponent {
 
     /**
      * 设置样式
+     * <p>默认：solid</p>
      *
      * @param style 样式
      * @return 返回pdf模板-分割线组件

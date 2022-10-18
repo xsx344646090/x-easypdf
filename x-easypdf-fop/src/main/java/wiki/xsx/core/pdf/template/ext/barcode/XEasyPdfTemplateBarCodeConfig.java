@@ -436,6 +436,10 @@ public class XEasyPdfTemplateBarCodeConfig {
          */
         BOLD(Font.BOLD),
         /**
+         * 粗体斜体
+         */
+        BOLD_ITALIC(Font.BOLD|Font.ITALIC),
+        /**
          * 斜体
          */
         ITALIC(Font.ITALIC);

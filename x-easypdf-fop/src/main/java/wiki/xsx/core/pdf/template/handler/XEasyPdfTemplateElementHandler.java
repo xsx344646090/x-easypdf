@@ -44,9 +44,20 @@ public class XEasyPdfTemplateElementHandler {
      * @param color   颜色
      */
     public static void appendColor(Element element, Color color) {
+        appendColor(element, XEasyPdfTemplateAttributes.COLOR, color);
+    }
+
+    /**
+     * 添加颜色
+     *
+     * @param element   元素
+     * @param attribute 属性
+     * @param color     颜色
+     */
+    public static void appendColor(Element element, String attribute, Color color) {
         if (element != null && color != null) {
             element.setAttribute(
-                    XEasyPdfTemplateAttributes.COLOR,
+                    attribute,
                     String.join(
                             "",
                             "rgb(",
