@@ -2,7 +2,6 @@ package wiki.xsx.core.pdf.template;
 
 import org.junit.Test;
 import wiki.xsx.core.pdf.template.doc.XEasyPdfTemplateDocument;
-import wiki.xsx.core.pdf.template.enums.XEasyPdfTemplatePositionStyle;
 import wiki.xsx.core.pdf.template.handler.XEasyPdfTemplateHandler;
 
 /**
@@ -35,10 +34,10 @@ public class XEasyPdfTemplateTextTest {
                         XEasyPdfTemplateHandler.Text.build().setText("加粗")
                                 .setFontFamily("微软雅黑")
                                 .setFontWeight("bold")
-                                .setHorizontalStyle(XEasyPdfTemplatePositionStyle.LEFT),
+                                .setHorizontalStyle("left"),
                         XEasyPdfTemplateHandler.Text.build().setText("不加粗")
                                 .setFontFamily("微软雅黑")
-                                .setHorizontalStyle(XEasyPdfTemplatePositionStyle.LEFT)
+                                .setHorizontalStyle("right")
                 )
         );
         // 转换pdf

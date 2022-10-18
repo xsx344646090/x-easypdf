@@ -1,5 +1,6 @@
 package wiki.xsx.core.pdf.template.handler;
 
+import wiki.xsx.core.pdf.template.component.barcode.XEasyPdfTemplateBarcode;
 import wiki.xsx.core.pdf.template.component.image.XEasyPdfTemplateImage;
 import wiki.xsx.core.pdf.template.component.line.XEasyPdfTemplateSplitLine;
 import wiki.xsx.core.pdf.template.component.table.*;
@@ -259,6 +260,20 @@ public class XEasyPdfTemplateHandler {
          */
         public static XEasyPdfTemplateSplitLine build() {
             return new XEasyPdfTemplateSplitLine();
+        }
+    }
+
+    /**
+     * pdf模板条形码
+     */
+    public static class Barcode {
+        /**
+         * 构建条形码
+         *
+         * @return 返回pdf模板-条形码
+         */
+        public static XEasyPdfTemplateBarcode build() {
+            return new XEasyPdfTemplateBarcode();
         }
     }
 

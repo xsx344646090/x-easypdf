@@ -2,7 +2,6 @@ package wiki.xsx.core.pdf.template;
 
 import org.junit.Test;
 import wiki.xsx.core.pdf.template.doc.XEasyPdfTemplateDocument;
-import wiki.xsx.core.pdf.template.enums.XEasyPdfTemplatePositionStyle;
 import wiki.xsx.core.pdf.template.handler.XEasyPdfTemplateHandler;
 
 /**
@@ -24,7 +23,7 @@ import wiki.xsx.core.pdf.template.handler.XEasyPdfTemplateHandler;
 public class XEasyPdfTemplateImageTest {
 
     @Test
-    public void testText() {
+    public void testImage() {
         // 定义fop配置文件路径
         String configPath = "E:\\pdf\\test\\fo\\fop.xconf";
         // 定义输出路径
@@ -36,7 +35,7 @@ public class XEasyPdfTemplateImageTest {
                                 .setPath("E:\\pdf\\test\\fo\\test.jpg")
                                 .setWidth("100px")
                                 .setHeight("100px")
-                                .setHorizontalStyle(XEasyPdfTemplatePositionStyle.HORIZONTAL_CENTER)
+                                .setHorizontalStyle("center")
                                 .enableBorder()
                                 // .enableRemote()
                 )

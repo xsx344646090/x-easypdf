@@ -4,7 +4,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import wiki.xsx.core.pdf.template.XEasyPdfTemplateAttributes;
 import wiki.xsx.core.pdf.template.XEasyPdfTemplateTags;
-import wiki.xsx.core.pdf.template.enums.XEasyPdfTemplatePositionStyle;
 import wiki.xsx.core.pdf.template.component.XEasyPdfTemplateComponent;
 
 import java.io.File;
@@ -72,11 +71,14 @@ public class XEasyPdfTemplateImage implements XEasyPdfTemplateComponent {
 
     /**
      * 设置水平样式
+     * <p>LEFT：居左</p>
+     * <p>CENTER：居中</p>
+     * <p>RIGHT：居右</p>
      *
      * @param style 水平样式
      * @return 返回pdf模板-图像组件
      */
-    public XEasyPdfTemplateImage setHorizontalStyle(XEasyPdfTemplatePositionStyle style) {
+    public XEasyPdfTemplateImage setHorizontalStyle(String style) {
         this.param.setHorizontalStyle(style);
         return this;
     }

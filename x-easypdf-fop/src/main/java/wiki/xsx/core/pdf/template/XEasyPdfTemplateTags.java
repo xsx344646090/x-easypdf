@@ -116,6 +116,11 @@ public class XEasyPdfTemplateTags {
      */
     public static final String LEADER = "fo:leader";
     /**
+     * 外部对象
+     * <p>标签："fo:instream-foreign-object"</p>
+     */
+    public static final String INSTREAM_FOREIGN_OBJECT = "fo:instream-foreign-object";
+    /**
      * 条形码
      * <p>标签："fo:barcode"</p>
      */

@@ -1,7 +1,6 @@
 package wiki.xsx.core.pdf.template;
 
 import org.junit.Test;
-import wiki.xsx.core.pdf.template.enums.XEasyPdfTemplatePositionStyle;
 import wiki.xsx.core.pdf.template.handler.XEasyPdfTemplateHandler;
 
 /**
@@ -24,7 +23,7 @@ public class XEasyPdfTemplateDocumentTest {
 
     @Test
     public void helloWorld() {
-        XEasyPdfTemplateHandler.Document.build().addPage(XEasyPdfTemplateHandler.Page.build().addBodyComponent(XEasyPdfTemplateHandler.Text.build().setText("hello world").setHorizontalStyle(XEasyPdfTemplatePositionStyle.HORIZONTAL_CENTER))).transform("E:\\pdf\\test\\fo\\document.pdf");
+        XEasyPdfTemplateHandler.Document.build().addPage(XEasyPdfTemplateHandler.Page.build().addBodyComponent(XEasyPdfTemplateHandler.Text.build().setText("hello world").setHorizontalStyle("center"))).transform("E:\\pdf\\test\\fo\\document.pdf");
     }
 
     @Test
@@ -49,7 +48,7 @@ public class XEasyPdfTemplateDocumentTest {
         XEasyPdfTemplateHandler.Document.build().addPage(
                 XEasyPdfTemplateHandler.Page.build().addBodyComponent(
                         XEasyPdfTemplateHandler.Text.build().setText("你好贵阳")
-                                .setHorizontalStyle(XEasyPdfTemplatePositionStyle.HORIZONTAL_CENTER)
+                                .setHorizontalStyle("center")
                                 .setFontFamily("微软雅黑")
                 )
         ).transform("E:\\pdf\\test\\fo\\document.pdf");

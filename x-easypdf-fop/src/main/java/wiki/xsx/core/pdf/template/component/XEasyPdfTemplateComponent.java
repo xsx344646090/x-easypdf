@@ -59,25 +59,21 @@ public interface XEasyPdfTemplateComponent {
         // 添加边框
         Optional.ofNullable(param.getHasBorder()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.BORDER, XEasyPdfTemplateConstants.DEFAULT_BORDER_VALUE));
         // 设置水平样式
-        Optional.ofNullable(param.getHorizontalStyle()).ifPresent(
-                v -> {
-                    // 如果为水平样式，则设置水平样式
-                    if (v.isHorizontalStyle()) {
-                        // 设置水平样式
-                        block.setAttribute(v.getKey(), v.getValue());
-                    }
-                }
-        );
+        Optional.ofNullable(param.getHorizontalStyle()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.TEXT_ALIGN, v));
         // 设置垂直样式
-        Optional.ofNullable(param.getVerticalStyle()).ifPresent(
-                v -> {
-                    // 如果为垂直样式，则设置垂直样式
-                    if (v.isVerticalStyle()) {
-                        // 设置垂直样式
-                        block.setAttribute(v.getKey(), v.getValue());
-                    }
-                }
-        );
+        Optional.ofNullable(param.getVerticalStyle()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.DISPLAY_ALIGN, v));
+        // 设置上下左右边距
+        Optional.ofNullable(param.getMargin()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.MARGIN, v));
+        // 设置上边距
+        Optional.ofNullable(param.getMarginTop()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.MARGIN_TOP, v));
+        // 设置下边距
+        Optional.ofNullable(param.getMarginBottom()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.MARGIN_BOTTOM, v));
+        // 设置左边距
+        Optional.ofNullable(param.getMarginLeft()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.MARGIN_LEFT, v));
+        // 设置右边距
+        Optional.ofNullable(param.getMarginRight()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.MARGIN_RIGHT, v));
+        // 设置上下左右填充
+        Optional.ofNullable(param.getPadding()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.PADDING, v));
         // 设置上填充
         Optional.ofNullable(param.getPaddingTop()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.PADDING_TOP, v));
         // 设置下填充

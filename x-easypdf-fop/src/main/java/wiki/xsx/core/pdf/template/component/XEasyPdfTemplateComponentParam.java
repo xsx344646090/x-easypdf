@@ -1,7 +1,6 @@
 package wiki.xsx.core.pdf.template.component;
 
 import lombok.Data;
-import wiki.xsx.core.pdf.template.enums.XEasyPdfTemplatePositionStyle;
 
 /**
  * pdf模板组件公共参数
@@ -24,6 +23,10 @@ import wiki.xsx.core.pdf.template.enums.XEasyPdfTemplatePositionStyle;
 @Data
 public class XEasyPdfTemplateComponentParam {
     /**
+     * 上下左右填充
+     */
+    protected String padding;
+    /**
      * 上填充
      */
     protected String paddingTop;
@@ -40,15 +43,41 @@ public class XEasyPdfTemplateComponentParam {
      */
     protected String paddingRight;
     /**
+     * 上下左右边距
+     */
+    protected String margin;
+    /**
+     * 上边距
+     */
+    protected String marginTop;
+    /**
+     * 下边距
+     */
+    protected String marginBottom;
+    /**
+     * 左边距
+     */
+    protected String marginLeft;
+    /**
+     * 右边距
+     */
+    protected String marginRight;
+    /**
      * 是否包含边框
      */
     protected Boolean hasBorder;
     /**
-     * 水平样式（居左、居中、居右）
+     * 水平样式
+     * <p>LEFT：居左</p>
+     * <p>CENTER：居中</p>
+     * <p>RIGHT：居右</p>
      */
-    protected XEasyPdfTemplatePositionStyle horizontalStyle;
+    protected String horizontalStyle;
     /**
-     * 水平样式（居上、居中、居下）
+     * 垂直样式
+     * <p>BEFORE：居上</p>
+     * <p>CENTER：居中</p>
+     * <p>AFTER：居下</p>
      */
-    protected XEasyPdfTemplatePositionStyle verticalStyle;
+    protected String verticalStyle;
 }
