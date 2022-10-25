@@ -6,7 +6,6 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import lombok.Data;
 import lombok.SneakyThrows;
 import lombok.experimental.Accessors;
-import org.apache.fop.fo.expr.PropertyException;
 import org.apache.fop.util.ColorUtil;
 import org.apache.xmlgraphics.util.UnitConv;
 import org.w3c.dom.NamedNodeMap;
@@ -19,7 +18,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * 条形码配置
@@ -191,127 +189,37 @@ public class XEasyPdfTemplateBarCodeConfig {
      */
     private void initParams(NamedNodeMap attributes) {
         // 初始化类型
-        this.type = this.resolveValue(
-                Optional.ofNullable(attributes.getNamedItem(XEasyPdfTemplateAttributes.TYPE))
-                        .orElseThrow(() -> new IllegalArgumentException("the barcode attribute['type'] can not be null"))
-                        .getNodeValue(),
-                v -> BarcodeFormat.valueOf(v.toUpperCase()),
-                () -> new IllegalArgumentException("the barcode attribute['type'] is unsupported")
-        );
+        this.type = this.resolveValue(attributes, XEasyPdfTemplateAttributes.TYPE, null, BarcodeFormat::valueOf);
         // 初始化缩放比例
-        this.scaleRate = this.resolveValue(
-                this.getValue(attributes.getNamedItem(XEasyPdfTemplateAttributes.SCALE_RATE), "2"),
-                Double::parseDouble,
-                () -> new IllegalArgumentException("the barcode attribute['scale-rate'] is error")
-        );
+        this.scaleRate = this.resolveValue(attributes, XEasyPdfTemplateAttributes.SCALE_RATE, "2", Double::parseDouble);
         // 初始化图像宽度
-        this.width = this.resolveValue(
-                Optional.ofNullable(attributes.getNamedItem(XEasyPdfTemplateAttributes.WIDTH))
-                        .orElseThrow(() -> new IllegalArgumentException("the barcode attribute['width'] can not be null"))
-                        .getNodeValue(),
-                v -> (int) (UnitConv.convert(v) / 1000 * this.scaleRate),
-                () -> new IllegalArgumentException("the barcode attribute['width'] is error")
-        );
+        this.width = this.resolveValue(attributes, XEasyPdfTemplateAttributes.WIDTH, null, this::parseUnit);
         // 初始化图像高度
-        this.height = this.resolveValue(
-                Optional.ofNullable(attributes.getNamedItem(XEasyPdfTemplateAttributes.HEIGHT))
-                        .orElseThrow(() -> new IllegalArgumentException("the barcode attribute['height'] can not be null"))
-                        .getNodeValue(),
-                v -> (int) (UnitConv.convert(v) / 1000 * this.scaleRate),
-                () -> new IllegalArgumentException("the barcode attribute['height'] is error")
-        );
+        this.height = this.resolveValue(attributes, XEasyPdfTemplateAttributes.HEIGHT, null, this::parseUnit);
         // 初始化内容
-        this.content = this.resolveValue(
-                Optional.ofNullable(attributes.getNamedItem(XEasyPdfTemplateAttributes.CONTENT))
-                        .orElseThrow(() -> new IllegalArgumentException("the barcode attribute['content'] can not be null"))
-                        .getNodeValue(),
-                v -> v,
-                null
-        );
+        this.content = this.resolveValue(attributes, XEasyPdfTemplateAttributes.CONTENT, null, v -> v);
         // 初始化条形码边距
-        this.codeMargin = this.resolveValue(
-                this.getValue(attributes.getNamedItem(XEasyPdfTemplateAttributes.CODE_MARGIN), "1"),
-                Integer::parseInt,
-                () -> new IllegalArgumentException("the barcode attribute['code-margin'] is error")
-        );
+        this.codeMargin = this.resolveValue(attributes, XEasyPdfTemplateAttributes.CODE_MARGIN, "1", Integer::parseInt);
         // 初始化纠错级别
-        this.errorLevel = this.resolveValue(
-                this.getValue(attributes.getNamedItem(XEasyPdfTemplateAttributes.ERROR_LEVEL), "M"),
-                v -> ErrorCorrectionLevel.valueOf(v.toUpperCase()),
-                () -> new IllegalArgumentException("the barcode attribute['error-level'] is error")
-        );
+        this.errorLevel = this.resolveValue(attributes, XEasyPdfTemplateAttributes.ERROR_LEVEL, "M", ErrorCorrectionLevel::valueOf);
         // 初始化前景颜色
-        this.onColor = this.resolveValue(
-                this.getValue(attributes.getNamedItem(XEasyPdfTemplateAttributes.ON_COLOR), "BLACK"),
-                v -> {
-                    try {
-                        return ColorUtil.parseColorString(null, v);
-                    } catch (PropertyException e) {
-                        throw new RuntimeException(e);
-                    }
-                },
-                () -> new IllegalArgumentException("the barcode attribute['on-color'] is error")
-        );
+        this.onColor = this.resolveValue(attributes, XEasyPdfTemplateAttributes.ON_COLOR, "BLACK", this::parseColor);
         // 初始化背景颜色
-        this.offColor = this.resolveValue(
-                this.getValue(attributes.getNamedItem(XEasyPdfTemplateAttributes.OFF_COLOR), "WHITE"),
-                v -> {
-                    try {
-                        return ColorUtil.parseColorString(null, v);
-                    } catch (PropertyException e) {
-                        throw new RuntimeException(e);
-                    }
-                },
-                () -> new IllegalArgumentException("the barcode attribute['off-color'] is error")
-        );
+        this.offColor = this.resolveValue(attributes, XEasyPdfTemplateAttributes.OFF_COLOR, "WHITE", this::parseColor);
         // 初始化文字
-        this.words = this.resolveValue(
-                this.getValue(attributes.getNamedItem(XEasyPdfTemplateAttributes.WORDS), null),
-                v -> v,
-                null
-        );
+        this.words = Optional.ofNullable(attributes.getNamedItem(XEasyPdfTemplateAttributes.WORDS)).map(Node::getNodeValue).orElse(null);
         // 初始化文字颜色
-        this.wordsColor = this.resolveValue(
-                this.getValue(attributes.getNamedItem(XEasyPdfTemplateAttributes.WORDS_COLOR), "BLACK"),
-                v -> {
-                    try {
-                        return ColorUtil.parseColorString(null, v);
-                    } catch (PropertyException e) {
-                        throw new RuntimeException(e);
-                    }
-                },
-                () -> new IllegalArgumentException("the barcode attribute['words-color'] is error")
-        );
+        this.wordsColor = this.resolveValue(attributes, XEasyPdfTemplateAttributes.WORDS_COLOR, "BLACK", this::parseColor);
         // 初始化文字样式
-        this.wordsStyle = this.resolveValue(
-                this.getValue(attributes.getNamedItem(XEasyPdfTemplateAttributes.WORDS_STYLE), "NORMAL"),
-                v -> WordsStyle.valueOf(v.toUpperCase()).style,
-                () -> new IllegalArgumentException("the barcode attribute['words-style'] is error")
-        );
+        this.wordsStyle = this.resolveValue(attributes, XEasyPdfTemplateAttributes.WORDS_STYLE, "NORMAL", WordsStyle::getStyle);
         // 初始化文字大小
-        this.wordsSize = this.resolveValue(
-                this.getValue(attributes.getNamedItem(XEasyPdfTemplateAttributes.WORDS_SIZE), "12pt"),
-                v -> (int) (UnitConv.convert(v) / 1000 * this.scaleRate),
-                () -> new IllegalArgumentException("the barcode attribute['words-size'] is error")
-        );
+        this.wordsSize = this.resolveValue(attributes, XEasyPdfTemplateAttributes.WORDS_SIZE, "12pt", this::parseUnit);
         // 初始化文字偏移量-X轴
-        this.wordsOffsetX = this.resolveValue(
-                this.getValue(attributes.getNamedItem(XEasyPdfTemplateAttributes.WORDS_OFFSET_X), "0"),
-                Integer::parseInt,
-                () -> new IllegalArgumentException("the barcode attribute['words-offset-x'] is error")
-        );
+        this.wordsOffsetX = this.resolveValue(attributes, XEasyPdfTemplateAttributes.WORDS_OFFSET_X, "0pt", this::parseUnit);
         // 初始化文字偏移量-Y轴
-        this.wordsOffsetY = this.resolveValue(
-                this.getValue(attributes.getNamedItem(XEasyPdfTemplateAttributes.WORDS_OFFSET_Y), "4"),
-                Integer::parseInt,
-                () -> new IllegalArgumentException("the barcode attribute['words-offset-y'] is error")
-        );
+        this.wordsOffsetY = this.resolveValue(attributes, XEasyPdfTemplateAttributes.WORDS_OFFSET_Y, "2pt", this::parseUnit);
         // 初始化旋转弧度
-        this.radians = this.resolveValue(
-                this.getValue(attributes.getNamedItem(XEasyPdfTemplateAttributes.RADIANS), "0"),
-                Double::parseDouble,
-                () -> new IllegalArgumentException("the barcode attribute['radians'] is error")
-        );
+        this.radians = this.resolveValue(attributes, XEasyPdfTemplateAttributes.RADIANS, "0", Double::parseDouble);
     }
 
     /**
@@ -321,39 +229,15 @@ public class XEasyPdfTemplateBarCodeConfig {
      */
     private void onlyInitRectangleParams(NamedNodeMap attributes) {
         // 初始化图像宽度
-        this.width = this.resolveValue(
-                Optional.ofNullable(attributes.getNamedItem(XEasyPdfTemplateAttributes.WIDTH))
-                        .orElseThrow(() -> new IllegalArgumentException("the barcode attribute['width'] can not be null"))
-                        .getNodeValue(),
-                v -> UnitConv.convert(v) / 1000,
-                () -> new IllegalArgumentException("the barcode attribute['width'] is error")
-        );
+        this.width = this.resolveValue(attributes, XEasyPdfTemplateAttributes.WIDTH, null, v -> UnitConv.convert(v) / 1000);
         // 初始化图像高度
-        this.height = this.resolveValue(
-                Optional.ofNullable(attributes.getNamedItem(XEasyPdfTemplateAttributes.HEIGHT))
-                        .orElseThrow(() -> new IllegalArgumentException("the barcode attribute['height'] can not be null"))
-                        .getNodeValue(),
-                v -> UnitConv.convert(v) / 1000,
-                () -> new IllegalArgumentException("the barcode attribute['height'] is error")
-        );
+        this.height = this.resolveValue(attributes, XEasyPdfTemplateAttributes.HEIGHT, null, v -> UnitConv.convert(v) / 1000);
         // 初始化旋转弧度
-        this.radians = this.resolveValue(
-                this.getValue(attributes.getNamedItem(XEasyPdfTemplateAttributes.RADIANS), "0"),
-                Double::parseDouble,
-                () -> new IllegalArgumentException("the barcode attribute['radians'] is error")
-        );
+        this.radians = this.resolveValue(attributes, XEasyPdfTemplateAttributes.RADIANS, "0", Double::parseDouble);
         // 初始化文字
-        this.words = this.resolveValue(
-                this.getValue(attributes.getNamedItem(XEasyPdfTemplateAttributes.WORDS), null),
-                v -> v,
-                null
-        );
+        this.words = Optional.ofNullable(attributes.getNamedItem(XEasyPdfTemplateAttributes.WORDS)).map(Node::getNodeValue).orElse(null);
         // 初始化文字大小
-        this.wordsSize = this.resolveValue(
-                this.getValue(attributes.getNamedItem(XEasyPdfTemplateAttributes.WORDS_SIZE), "12pt"),
-                v -> UnitConv.convert(v) / 1000,
-                () -> new IllegalArgumentException("the barcode attribute['words-size'] is error")
-        );
+        this.wordsSize = this.resolveValue(attributes, XEasyPdfTemplateAttributes.WORDS_SIZE, "12pt", v -> UnitConv.convert(v) / 1000);
         // 如果旋转，则重置图像宽度与高度
         if (this.isRotate()) {
             // 获取旋转尺寸
@@ -394,33 +278,47 @@ public class XEasyPdfTemplateBarCodeConfig {
     }
 
     /**
-     * 获取值
+     * 解析值
      *
-     * @param node         节点
-     * @param defaultValue 默认值
-     * @return 返回值
+     * @param attributes    节点属性
+     * @param attributeName 属性名
+     * @param defaultValue  默认值
+     * @param function      处理方法
+     * @param <R>           返回值类型
+     * @return 返回属性值
      */
-    private String getValue(Node node, String defaultValue) {
-        return node == null ? defaultValue : node.getNodeValue();
+    private <R> R resolveValue(NamedNodeMap attributes, String attributeName, String defaultValue, Function<String, R> function) {
+        return Optional.ofNullable(
+                Optional.ofNullable(attributes.getNamedItem(attributeName)).map(Node::getNodeValue).orElse(defaultValue)
+        ).map(v -> {
+            try {
+                return function.apply(v.toUpperCase());
+            } catch (Exception e) {
+                throw new IllegalArgumentException("the barcode attribute['" + attributeName + "'] is error");
+            }
+        }).orElseThrow(() -> new IllegalArgumentException("the barcode attribute['" + attributeName + "'] can not be null"));
     }
 
     /**
-     * 解析值
+     * 解析颜色
      *
-     * @param value     值
-     * @param function  处理方法
-     * @param exception 异常信息
-     * @param <X>       异常类型
-     * @param <R>       返回类型
-     * @return 返回处理后的值
+     * @param color 颜色
+     * @return 返回颜色
      */
     @SneakyThrows
-    private <X extends Throwable, R> R resolveValue(String value, Function<String, R> function, Supplier<? extends X> exception) {
-        try {
-            return function.apply(value);
-        } catch (Exception e) {
-            throw exception.get();
-        }
+    private Color parseColor(String color) {
+        return ColorUtil.parseColorString(null, color);
+    }
+
+    /**
+     * 解析单位
+     *
+     * @param unit 单位
+     * @return 返回单位
+     */
+    @SneakyThrows
+    private int parseUnit(String unit) {
+        return (int) (UnitConv.convert(unit) / 1000 * this.scaleRate);
     }
 
     /**
@@ -438,7 +336,7 @@ public class XEasyPdfTemplateBarCodeConfig {
         /**
          * 粗体斜体
          */
-        BOLD_ITALIC(Font.BOLD|Font.ITALIC),
+        BOLD_ITALIC(Font.BOLD | Font.ITALIC),
         /**
          * 斜体
          */
@@ -455,6 +353,16 @@ public class XEasyPdfTemplateBarCodeConfig {
          */
         WordsStyle(int style) {
             this.style = style;
+        }
+
+        /**
+         * 获取样式
+         *
+         * @param name 名称
+         * @return 返回样式
+         */
+        static int getStyle(String name) {
+            return valueOf(name).style;
         }
     }
 }

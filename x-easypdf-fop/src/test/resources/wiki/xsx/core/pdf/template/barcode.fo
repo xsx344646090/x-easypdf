@@ -29,11 +29,11 @@
                                 height="100pt"
                                 content="https://www.x-easypdf.cn"
                                 words="https://www.x-easypdf.cn"
-                                words-size="8pt"
+                                words-size="6pt"
                                 words-style="bold"
                                 words-color="blue"
-                                words-offset-x="1"
-                                words-offset-y="5" />
+                                words-offset-x="1pt"
+                                words-offset-y="2pt" />
                 </fo:instream-foreign-object>
             </fo:block>
             <fo:block text-align="center" margin-top="50pt">
