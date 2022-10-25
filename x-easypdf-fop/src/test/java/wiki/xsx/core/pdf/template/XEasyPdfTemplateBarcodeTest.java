@@ -1,16 +1,12 @@
 package wiki.xsx.core.pdf.template;
 
-import lombok.SneakyThrows;
 import org.junit.Test;
-import org.openjdk.jmh.Main;
-import org.openjdk.jmh.annotations.*;
 import wiki.xsx.core.pdf.template.handler.XEasyPdfTemplateHandler;
 import wiki.xsx.core.pdf.template.template.XEasyPdfTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author xsx
@@ -28,22 +24,9 @@ import java.util.concurrent.TimeUnit;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-@BenchmarkMode(Mode.All)
-@Fork(1)
-@State(Scope.Benchmark)
-@Warmup(iterations = 2, time = 1, timeUnit = TimeUnit.SECONDS)
-@Measurement(iterations = 100, time = 1, timeUnit = TimeUnit.SECONDS)
-@OutputTimeUnit(TimeUnit.MILLISECONDS)
 public class XEasyPdfTemplateBarcodeTest {
 
-    @SneakyThrows
     @Test
-    public void test() {
-        Main.main(new String[0]);
-    }
-
-    @Test
-    @Benchmark
     public void testBarcodeForXML() {
         // 定义xsl-fo模板路径
         String templatePath = "H:\\java_workspace\\my\\x-easypdf\\gitee\\x-easypdf-fop\\src\\test\\resources\\wiki\\xsx\\core\\pdf\\template\\barcode.fo";
