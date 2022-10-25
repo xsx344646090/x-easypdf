@@ -43,7 +43,7 @@ public class XEasyPdfBarCodeTest {
                         ).setWords("QR-CODE")
                                 .setCodeMargin(0)
                                 .enableShowWords()
-                                .setWordsSize(30).setWordsColor(Color.BLUE).setWidth(200).setHeight(200).setMaxWidth(150).setMaxHeight(150).setMarginLeft(230F).setMarginTop(50F)
+                                .setWordsSize(8).setWordsColor(Color.BLUE).setWidth(200).setHeight(200).setMaxWidth(800).setMaxHeight(800).setMarginLeft(230F).setMarginTop(50F)
                 ).setBackgroundColor(Color.GRAY)
         ).setFontPath(FONT_PATH).save(filePath).close();
         System.out.println("finish");
