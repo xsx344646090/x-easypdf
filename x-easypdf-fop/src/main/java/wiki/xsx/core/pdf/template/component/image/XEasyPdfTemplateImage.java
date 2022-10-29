@@ -36,10 +36,120 @@ public class XEasyPdfTemplateImage implements XEasyPdfTemplateComponent {
     private final XEasyPdfTemplateImageParam param = new XEasyPdfTemplateImageParam();
 
     /**
+     * 设置上下左右边距
+     *
+     * @param margin 边距
+     * @return 返回图像组件
+     */
+    public XEasyPdfTemplateImage setMargin(String margin) {
+        this.param.setMargin(margin);
+        return this;
+    }
+
+    /**
+     * 设置上边距
+     *
+     * @param marginTop 上边距
+     * @return 返回图像组件
+     */
+    public XEasyPdfTemplateImage setMarginTop(String marginTop) {
+        this.param.setMarginTop(marginTop);
+        return this;
+    }
+
+    /**
+     * 设置下边距
+     *
+     * @param marginBottom 下边距
+     * @return 返回图像组件
+     */
+    public XEasyPdfTemplateImage setMarginBottom(String marginBottom) {
+        this.param.setMarginBottom(marginBottom);
+        return this;
+    }
+
+    /**
+     * 设置左边距
+     *
+     * @param marginLeft 左边距
+     * @return 返回图像组件
+     */
+    public XEasyPdfTemplateImage setMarginLeft(String marginLeft) {
+        this.param.setMarginLeft(marginLeft);
+        return this;
+    }
+
+    /**
+     * 设置右边距
+     *
+     * @param paddingRight 右边距
+     * @return 返回图像组件
+     */
+    public XEasyPdfTemplateImage setMarginRight(String paddingRight) {
+        this.param.setMarginRight(paddingRight);
+        return this;
+    }
+
+    /**
+     * 设置上下左右填充
+     *
+     * @param padding 填充
+     * @return 返回图像组件
+     */
+    public XEasyPdfTemplateImage setPadding(String padding) {
+        this.param.setPadding(padding);
+        return this;
+    }
+
+    /**
+     * 设置上填充
+     *
+     * @param paddingTop 上填充
+     * @return 返回图像组件
+     */
+    public XEasyPdfTemplateImage setPaddingTop(String paddingTop) {
+        this.param.setPaddingTop(paddingTop);
+        return this;
+    }
+
+    /**
+     * 设置下填充
+     *
+     * @param paddingBottom 下填充
+     * @return 返回图像组件
+     */
+    public XEasyPdfTemplateImage setPaddingBottom(String paddingBottom) {
+        this.param.setPaddingBottom(paddingBottom);
+        return this;
+    }
+
+    /**
+     * 设置左填充
+     *
+     * @param paddingLeft 左填充
+     * @return 返回图像组件
+     */
+    public XEasyPdfTemplateImage setPaddingLeft(String paddingLeft) {
+        this.param.setPaddingLeft(paddingLeft);
+        return this;
+    }
+
+    /**
+     * 设置右填充
+     *
+     * @param paddingRight 右填充
+     * @return 返回图像组件
+     */
+    public XEasyPdfTemplateImage setPaddingRight(String paddingRight) {
+        this.param.setPaddingRight(paddingRight);
+        return this;
+    }
+
+    /**
      * 设置宽度
      *
      * @param width 宽度
-     * @return 返回pdf模板-图像组件
+     * @return 返回图像组件
      */
     public XEasyPdfTemplateImage setWidth(String width) {
         this.param.setWidth(width);
@@ -50,7 +160,7 @@ public class XEasyPdfTemplateImage implements XEasyPdfTemplateComponent {
      * 设置高度
      *
      * @param height 高度
-     * @return 返回pdf模板-图像组件
+     * @return 返回图像组件
      */
     public XEasyPdfTemplateImage setHeight(String height) {
         this.param.setHeight(height);
@@ -62,7 +172,7 @@ public class XEasyPdfTemplateImage implements XEasyPdfTemplateComponent {
      * <p>注：当开启远程时，此路径为网络地址</p>
      *
      * @param path 图像路径
-     * @return 返回pdf模板-图像组件
+     * @return 返回图像组件
      */
     public XEasyPdfTemplateImage setPath(String path) {
         this.param.setPath(path);
@@ -76,7 +186,7 @@ public class XEasyPdfTemplateImage implements XEasyPdfTemplateComponent {
      * <p>RIGHT：居右</p>
      *
      * @param style 水平样式
-     * @return 返回pdf模板-图像组件
+     * @return 返回图像组件
      */
     public XEasyPdfTemplateImage setHorizontalStyle(String style) {
         this.param.setHorizontalStyle(style);
@@ -86,7 +196,7 @@ public class XEasyPdfTemplateImage implements XEasyPdfTemplateComponent {
     /**
      * 开启远程
      *
-     * @return 返回pdf模板-图像组件
+     * @return 返回图像组件
      */
     public XEasyPdfTemplateImage enableRemote() {
         this.param.setIsRemote(Boolean.TRUE);
@@ -96,7 +206,7 @@ public class XEasyPdfTemplateImage implements XEasyPdfTemplateComponent {
     /**
      * 开启边框（调试时使用）
      *
-     * @return 返回pdf模板-图像组件
+     * @return 返回图像组件
      */
     public XEasyPdfTemplateImage enableBorder() {
         this.param.setHasBorder(Boolean.TRUE);
@@ -118,10 +228,8 @@ public class XEasyPdfTemplateImage implements XEasyPdfTemplateComponent {
         }
         // 创建block元素
         Element block = this.createBlockElement(document, this.param);
-        // 创建externalGraphic元素
-        Element externalGraphic = this.createExternalGraphic(document);
         // 添加externalGraphic元素
-        block.appendChild(externalGraphic);
+        block.appendChild(this.createExternalGraphic(document));
         // 返回block元素
         return block;
     }
@@ -135,12 +243,22 @@ public class XEasyPdfTemplateImage implements XEasyPdfTemplateComponent {
     private Element createExternalGraphic(Document document) {
         // 创建externalGraphic元素
         Element externalGraphic = document.createElement(XEasyPdfTemplateTags.EXTERNAL_GRAPHIC);
+        // 设置上下左右填充
+        Optional.ofNullable(param.getPadding()).ifPresent(v -> externalGraphic.setAttribute(XEasyPdfTemplateAttributes.PADDING, v.intern()));
+        // 设置上填充
+        Optional.ofNullable(param.getPaddingTop()).ifPresent(v -> externalGraphic.setAttribute(XEasyPdfTemplateAttributes.PADDING_TOP, v.intern()));
+        // 设置下填充
+        Optional.ofNullable(param.getPaddingBottom()).ifPresent(v -> externalGraphic.setAttribute(XEasyPdfTemplateAttributes.PADDING_BOTTOM, v.intern()));
+        // 设置左填充
+        Optional.ofNullable(param.getPaddingLeft()).ifPresent(v -> externalGraphic.setAttribute(XEasyPdfTemplateAttributes.PADDING_LEFT, v.intern()));
+        // 设置右填充
+        Optional.ofNullable(param.getPaddingRight()).ifPresent(v -> externalGraphic.setAttribute(XEasyPdfTemplateAttributes.PADDING_RIGHT, v.intern()));
         // 设置图像宽度
-        Optional.ofNullable(this.param.getWidth()).ifPresent(v -> externalGraphic.setAttribute(XEasyPdfTemplateAttributes.CONTENT_WIDTH, v));
+        Optional.ofNullable(this.param.getWidth()).ifPresent(v -> externalGraphic.setAttribute(XEasyPdfTemplateAttributes.CONTENT_WIDTH, v.intern()));
         // 设置图像高度
-        Optional.ofNullable(this.param.getHeight()).ifPresent(v -> externalGraphic.setAttribute(XEasyPdfTemplateAttributes.CONTENT_HEIGHT, v));
+        Optional.ofNullable(this.param.getHeight()).ifPresent(v -> externalGraphic.setAttribute(XEasyPdfTemplateAttributes.CONTENT_HEIGHT, v.intern()));
         // 设置图像路径
-        externalGraphic.setAttribute(XEasyPdfTemplateAttributes.SRC, this.param.getIsRemote() != null ? this.param.getPath() : new File(this.param.getPath()).toURI().getPath());
+        externalGraphic.setAttribute(XEasyPdfTemplateAttributes.SRC, this.param.getIsRemote() != null ? this.param.getPath().intern() : new File(this.param.getPath()).toURI().getPath().intern());
         // 返回externalGraphic元素
         return externalGraphic;
     }

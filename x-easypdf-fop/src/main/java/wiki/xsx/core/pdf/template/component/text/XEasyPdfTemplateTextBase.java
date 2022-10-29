@@ -39,9 +39,9 @@ abstract class XEasyPdfTemplateTextBase implements XEasyPdfTemplateComponent {
         // 创建block元素
         Element block = this.createBlockElement(document, param);
         // 设置行间距
-        Optional.ofNullable(param.getLeading()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.LINE_HEIGHT, v));
+        Optional.ofNullable(param.getLeading()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.LINE_HEIGHT, v.intern()));
         // 设置字符间距
-        Optional.ofNullable(param.getLetterSpacing()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.LETTER_SPACING, v));
+        Optional.ofNullable(param.getLetterSpacing()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.LETTER_SPACING, v.intern()));
         // 返回block元素
         return block;
     }

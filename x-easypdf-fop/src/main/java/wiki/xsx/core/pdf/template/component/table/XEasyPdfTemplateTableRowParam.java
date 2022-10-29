@@ -37,7 +37,22 @@ class XEasyPdfTemplateTableRowParam extends XEasyPdfTemplateComponentParam {
     private List<XEasyPdfTemplateTableCell> cells = new ArrayList<>(10);
 
     /**
+     * 边框
+     */
+    protected String border;
+
+    /**
      * 边框样式
+     * <p>NONE：无</p>
+     * <p>HIDDEN：隐藏</p>
+     * <p>DOTTED：点虚线</p>
+     * <p>DASHED：短虚线</p>
+     * <p>SOLID：实线</p>
+     * <p>DOUBLE：双实线</p>
+     * <p>GROOVE：凹线（槽）</p>
+     * <p>RIDGE：凸线（脊）</p>
+     * <p>INSET：嵌入</p>
+     * <p>OUTSET：凸出</p>
      */
     private String borderStyle;
 }

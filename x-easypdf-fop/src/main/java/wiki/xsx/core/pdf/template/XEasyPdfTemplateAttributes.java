@@ -104,6 +104,10 @@ public class XEasyPdfTemplateAttributes {
      */
     public static final String BORDER = "border";
     /**
+     * 下边框
+     */
+    public static final String BORDER_BOTTOM = "border-bottom";
+    /**
      * 边框样式
      */
     public static final String BORDER_STYLE = "border-style";
@@ -147,6 +151,10 @@ public class XEasyPdfTemplateAttributes {
      * 字符间距
      */
     public static final String LETTER_SPACING = "letter-spacing";
+    /**
+     * 文本装饰（删除线）
+     */
+    public static final String TEXT_DECORATION = "text-decoration";
     /**
      * 来源
      */

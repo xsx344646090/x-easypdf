@@ -43,6 +43,17 @@ public class XEasyPdfTemplateTableCell {
     }
 
     /**
+     * 设置高度
+     *
+     * @param height 高度
+     * @return 返回表格单元格组件
+     */
+    public XEasyPdfTemplateTableCell setHeight(String height) {
+        this.param.setHeight(height);
+        return this;
+    }
+
+    /**
      * 设置宽度
      *
      * @param width 宽度
@@ -66,12 +77,50 @@ public class XEasyPdfTemplateTableCell {
 
     /**
      * 设置边框样式
+     * <p>NONE：无</p>
+     * <p>HIDDEN：隐藏</p>
+     * <p>DOTTED：点虚线</p>
+     * <p>DASHED：短虚线</p>
+     * <p>SOLID：实线</p>
+     * <p>DOUBLE：双实线</p>
+     * <p>GROOVE：凹线（槽）</p>
+     * <p>RIDGE：凸线（脊）</p>
+     * <p>INSET：嵌入</p>
+     * <p>OUTSET：凸出</p>
      *
      * @param borderStyle 边框样式
      * @return 返回表格单元格组件
      */
     public XEasyPdfTemplateTableCell setBorderStyle(String borderStyle) {
         this.param.setBorderStyle(borderStyle);
+        return this;
+    }
+
+    /**
+     * 设置文本水平样式
+     * <p>LEFT：居左</p>
+     * <p>CENTER：居中</p>
+     * <p>RIGHT：居右</p>
+     *
+     * @param style 水平样式
+     * @return 返回表格单元格组件
+     */
+    public XEasyPdfTemplateTableCell setHorizontalStyle(String style) {
+        this.param.setHorizontalStyle(style);
+        return this;
+    }
+
+    /**
+     * 设置文本垂直样式
+     * <p>BEFORE：居上</p>
+     * <p>CENTER：居中</p>
+     * <p>AFTER：居下</p>
+     *
+     * @param style 垂直样式
+     * @return 返回表格单元格组件
+     */
+    public XEasyPdfTemplateTableCell setVerticalStyle(String style) {
+        this.param.setVerticalStyle(style);
         return this;
     }
 
@@ -85,32 +134,20 @@ public class XEasyPdfTemplateTableCell {
         // 创建tableCell元素
         Element tableCell = document.createElement(XEasyPdfTemplateTags.TABLE_CELL);
         // 设置宽度
-        Optional.ofNullable(this.param.getWidth()).ifPresent(v -> tableCell.setAttribute(XEasyPdfTemplateAttributes.WIDTH, v));
+        Optional.ofNullable(this.param.getWidth()).ifPresent(v -> tableCell.setAttribute(XEasyPdfTemplateAttributes.WIDTH, v.intern()));
+        // 设置高度
+        Optional.ofNullable(this.param.getHeight()).ifPresent(v -> tableCell.setAttribute(XEasyPdfTemplateAttributes.HEIGHT, v.intern()));
         // 设置边框
-        Optional.ofNullable(this.param.getBorder()).ifPresent(v -> tableCell.setAttribute(XEasyPdfTemplateAttributes.BORDER, v));
+        Optional.ofNullable(this.param.getBorder()).ifPresent(v -> tableCell.setAttribute(XEasyPdfTemplateAttributes.BORDER, v.intern()));
         // 设置边框样式
-        Optional.ofNullable(this.param.getBorderStyle()).ifPresent(v -> tableCell.setAttribute(XEasyPdfTemplateAttributes.BORDER_STYLE, v));
+        Optional.ofNullable(this.param.getBorderStyle()).ifPresent(v -> tableCell.setAttribute(XEasyPdfTemplateAttributes.BORDER_STYLE, v.intern()));
+        // 设置水平样式
+        Optional.ofNullable(this.param.getHorizontalStyle()).ifPresent(v -> tableCell.setAttribute(XEasyPdfTemplateAttributes.TEXT_ALIGN, v.intern()));
+        // 设置垂直样式
+        Optional.ofNullable(this.param.getVerticalStyle()).ifPresent(v -> tableCell.setAttribute(XEasyPdfTemplateAttributes.DISPLAY_ALIGN, v.intern()));
         // 添加组件
         Optional.ofNullable(this.param.getComponent()).ifPresent(v -> tableCell.appendChild(v.createElement(document)));
         // 返回tableCell元素
         return tableCell;
-    }
-
-    /**
-     * 初始化
-     *
-     * @param row 表格行
-     * @return 返回表格单元格组件
-     */
-    XEasyPdfTemplateTableCell init(XEasyPdfTemplateTableRow row) {
-        // 获取表格行参数
-        XEasyPdfTemplateTableRowParam rowParam = row.getParam();
-        // 如果边框样式为空，则初始化边框样式
-        if (this.param.getBorderStyle() == null) {
-            // 初始化边框样式为表格行边框样式
-            this.param.setBorderStyle(rowParam.getBorderStyle());
-        }
-        // 返回表格单元格组件
-        return this;
     }
 }

@@ -31,19 +31,19 @@ class XEasyPdfTemplateRegionBodyParam {
     /**
      * 上边距
      */
-    private String marginTop = "0px";
+    private String marginTop;
     /**
      * 下边距
      */
-    private String marginBottom = "0px";
+    private String marginBottom;
     /**
      * 左边距
      */
-    private String marginLeft = "0px";
+    private String marginLeft;
     /**
      * 右边距
      */
-    private String marginRight = "0px";
+    private String marginRight;
     /**
      * 组件列表
      */

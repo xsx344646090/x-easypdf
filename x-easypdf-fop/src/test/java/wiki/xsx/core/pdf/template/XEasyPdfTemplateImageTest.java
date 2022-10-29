@@ -37,7 +37,26 @@ public class XEasyPdfTemplateImageTest {
                                 .setHeight("100px")
                                 .setHorizontalStyle("center")
                                 .enableBorder()
-                                // .enableRemote()
+                        // .enableRemote()
+                )
+        );
+        // 转换pdf
+        document.transform(outputPath);
+    }
+
+    @Test
+    public void testSvg() {
+        // 定义输出路径
+        String outputPath = "E:\\pdf\\test\\fo\\template-svg.pdf";
+        // 转换pdf
+        XEasyPdfTemplateDocument document = XEasyPdfTemplateHandler.Document.build().addPage(
+                XEasyPdfTemplateHandler.Page.build().addBodyComponent(
+                        XEasyPdfTemplateHandler.Image.build()
+                                .setPath("src/test/resources/wiki/xsx/core/pdf/template/svg/test.svg")
+                                .setWidth("100pt")
+                                .setHeight("100pt")
+                                .setHorizontalStyle("center")
+                        // .enableRemote()
                 )
         );
         // 转换pdf

@@ -1,7 +1,7 @@
 package wiki.xsx.core.pdf.template.page;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
+import org.w3c.dom.Element;
 
 /**
  * pdf模板-页面组件
@@ -24,11 +24,11 @@ import org.w3c.dom.Node;
 public interface XEasyPdfTemplatePageComponent {
 
     /**
-     * 转换
+     * 创建元素
      *
      * @param index    当前索引
      * @param document fo文档
      * @return 返回节点
      */
-    Node transform(int index, Document document);
+    Element createElement(int index, Document document);
 }

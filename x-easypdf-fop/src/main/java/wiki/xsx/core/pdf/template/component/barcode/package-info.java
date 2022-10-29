@@ -1,8 +1,8 @@
 /**
- * pdf模板枚举
+ * pdf模板-条形码组件
  *
  * @author xsx
- * @date 2022/8/27
+ * @date 2022/10/18
  * @since 1.8
  * <p>
  * Copyright (c) 2020-2022 xsx All Rights Reserved.
@@ -16,4 +16,4 @@
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-package wiki.xsx.core.pdf.template.enums;
+package wiki.xsx.core.pdf.template.component.barcode;

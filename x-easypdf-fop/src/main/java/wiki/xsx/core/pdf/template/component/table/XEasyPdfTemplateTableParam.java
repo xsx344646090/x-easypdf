@@ -56,6 +56,10 @@ class XEasyPdfTemplateTableParam extends XEasyPdfTemplateComponentParam {
      */
     protected String border;
     /**
+     * 边框样式
+     */
+    private String borderStyle;
+    /**
      * 表头
      */
     private XEasyPdfTemplateTableHeader header;

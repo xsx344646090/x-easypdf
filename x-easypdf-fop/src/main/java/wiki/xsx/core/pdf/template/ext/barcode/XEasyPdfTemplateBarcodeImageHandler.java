@@ -1,5 +1,6 @@
 package wiki.xsx.core.pdf.template.ext.barcode;
 
+import org.apache.fop.apps.MimeConstants;
 import org.apache.fop.render.ImageHandler;
 import org.apache.fop.render.RenderingContext;
 import org.apache.xmlgraphics.image.loader.Image;
@@ -29,9 +30,13 @@ import java.awt.image.BufferedImage;
 public class XEasyPdfTemplateBarcodeImageHandler implements ImageHandler {
 
     /**
-     * 图像类型名称
+     * 图像类型
      */
     public static final String IMAGE_TYPE = "barcode";
+    /**
+     * mime类型
+     */
+    public static final String MIME_TYPE = MimeConstants.MIME_PNG;
     /**
      * 图像类型
      */
