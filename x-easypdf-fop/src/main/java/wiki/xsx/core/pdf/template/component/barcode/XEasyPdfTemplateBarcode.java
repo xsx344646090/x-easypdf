@@ -8,7 +8,7 @@ import wiki.xsx.core.pdf.template.XEasyPdfTemplateTags;
 import wiki.xsx.core.pdf.template.component.XEasyPdfTemplateComponent;
 import wiki.xsx.core.pdf.template.handler.XEasyPdfTemplateElementHandler;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.Optional;
 
 /**

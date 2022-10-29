@@ -4,7 +4,7 @@ import org.junit.Test;
 import wiki.xsx.core.pdf.component.barcode.XEasyPdfBarCode;
 import wiki.xsx.core.pdf.handler.XEasyPdfHandler;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.IOException;
 
 /**

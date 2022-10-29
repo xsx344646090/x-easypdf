@@ -3,7 +3,6 @@ package wiki.xsx.core.pdf.component.text;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-import wiki.xsx.core.pdf.component.text.XEasyPdfTextScriptParam;
 
 /**
  * pdf文本扩展参数

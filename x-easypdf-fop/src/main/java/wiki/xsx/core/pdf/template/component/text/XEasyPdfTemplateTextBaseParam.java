@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 import wiki.xsx.core.pdf.template.component.XEasyPdfTemplateComponentParam;
 
-import java.awt.*;
+import java.awt.Color;
 
 /**
  * pdf模板-文本基础参数

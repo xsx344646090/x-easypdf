@@ -11,7 +11,7 @@ import wiki.xsx.core.pdf.footer.XEasyPdfFooter;
 import wiki.xsx.core.pdf.header.XEasyPdfHeader;
 import wiki.xsx.core.pdf.mark.XEasyPdfWatermark;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;

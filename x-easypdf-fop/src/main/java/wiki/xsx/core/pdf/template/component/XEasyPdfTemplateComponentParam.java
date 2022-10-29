@@ -2,7 +2,7 @@ package wiki.xsx.core.pdf.template.component;
 
 import lombok.Data;
 
-import java.awt.*;
+import java.awt.Color;
 
 /**
  * pdf模板组件公共参数

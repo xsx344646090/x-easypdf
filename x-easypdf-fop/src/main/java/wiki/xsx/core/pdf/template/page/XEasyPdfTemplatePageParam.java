@@ -3,7 +3,7 @@ package wiki.xsx.core.pdf.template.page;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.awt.*;
+import java.awt.Color;
 
 /**
  * pdf模板-页面参数

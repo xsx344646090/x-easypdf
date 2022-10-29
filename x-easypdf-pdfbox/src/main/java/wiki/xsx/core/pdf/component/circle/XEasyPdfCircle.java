@@ -5,11 +5,10 @@ import lombok.Data;
 import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import wiki.xsx.core.pdf.component.XEasyPdfComponent;
-import wiki.xsx.core.pdf.component.circle.XEasyPdfCircleParam;
 import wiki.xsx.core.pdf.doc.XEasyPdfDocument;
 import wiki.xsx.core.pdf.doc.XEasyPdfPage;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.List;
 
 /**

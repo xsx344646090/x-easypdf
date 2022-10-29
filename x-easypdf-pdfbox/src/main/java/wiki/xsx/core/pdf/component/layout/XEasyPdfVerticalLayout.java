@@ -1,6 +1,5 @@
 package wiki.xsx.core.pdf.component.layout;
 
-import wiki.xsx.core.pdf.component.layout.XEasyPdfLayoutComponent;
 import wiki.xsx.core.pdf.component.table.XEasyPdfCell;
 import wiki.xsx.core.pdf.component.table.XEasyPdfRow;
 import wiki.xsx.core.pdf.component.table.XEasyPdfTable;
