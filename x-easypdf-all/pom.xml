@@ -8,7 +8,6 @@
         <version>2.10.2</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <groupId>wiki.xsx</groupId>
     <artifactId>x-easypdf</artifactId>
     <version>${parent.version}</version>
     <packaging>jar</packaging>

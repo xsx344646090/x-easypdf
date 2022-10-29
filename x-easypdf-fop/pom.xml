@@ -8,7 +8,6 @@
         <version>2.10.2</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <groupId>wiki.xsx</groupId>
     <artifactId>x-easypdf-fop</artifactId>
     <version>${parent.version}</version>
     <packaging>jar</packaging>
@@ -17,13 +16,6 @@
     <description>A framework based on fop</description>
 
     <properties>
-        <java.version>1.8</java.version>
-        <lombok.version>1.18.22</lombok.version>
-        <fop.version>2.7</fop.version>
-        <commons-io.version>2.11.0</commons-io.version>
-        <thymeleaf.version>3.0.15.RELEASE</thymeleaf.version>
-        <junit.version>4.13.2</junit.version>
-
         <skipTests>true</skipTests>
     </properties>
 
