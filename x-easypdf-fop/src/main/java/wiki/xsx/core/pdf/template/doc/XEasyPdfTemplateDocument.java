@@ -10,8 +10,9 @@ import wiki.xsx.core.pdf.template.page.XEasyPdfTemplatePageComponent;
 import wiki.xsx.core.pdf.template.template.XEasyPdfTemplate;
 
 import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -71,7 +72,7 @@ public class XEasyPdfTemplateDocument {
      */
     @SneakyThrows
     public void transform(String outputPath) {
-        try (OutputStream outputStream = new FileOutputStream(outputPath)) {
+        try (OutputStream outputStream = Files.newOutputStream(Paths.get(outputPath))) {
             this.transform(outputStream);
         }
     }
@@ -114,7 +115,7 @@ public class XEasyPdfTemplateDocument {
         // 遍历页面组件
         for (XEasyPdfTemplatePageComponent page : this.param.getPageList()) {
             // 添加页面节点
-            root.appendChild(page.transform(++index, document));
+            root.appendChild(page.createElement(++index, document));
         }
         // 返回文档
         return document;

@@ -4,6 +4,8 @@ import org.junit.Test;
 import wiki.xsx.core.pdf.template.doc.XEasyPdfTemplateDocument;
 import wiki.xsx.core.pdf.template.handler.XEasyPdfTemplateHandler;
 
+import java.awt.*;
+
 /**
  * @author xsx
  * @date 2022/8/6
@@ -30,15 +32,24 @@ public class XEasyPdfTemplateTextTest {
         String outputPath = "E:\\pdf\\test\\fo\\template-text.pdf";
         // 转换pdf
         XEasyPdfTemplateDocument document = XEasyPdfTemplateHandler.Document.build().setConfigPath(configPath).addPage(
-                XEasyPdfTemplateHandler.Page.build().addBodyComponent(
-                        XEasyPdfTemplateHandler.Text.build().setText("加粗")
-                                .setFontFamily("微软雅黑")
-                                .setFontWeight("bold")
-                                .setHorizontalStyle("left"),
-                        XEasyPdfTemplateHandler.Text.build().setText("不加粗")
-                                .setFontFamily("微软雅黑")
-                                .setHorizontalStyle("right")
-                )
+                XEasyPdfTemplateHandler.Page.build()
+                        .setFontSize("30pt")
+                        .setFontColor(Color.BLUE)
+                        .addBodyComponent(
+                                XEasyPdfTemplateHandler.Text.build().setText("加粗")
+                                        .setFontFamily("微软雅黑")
+                                        .setFontWeight("bold")
+                                        .setHorizontalStyle("right")
+                                        .setMarginRight("10pt"),
+                                XEasyPdfTemplateHandler.Text.build().setText("不加粗")
+                                        .setFontFamily("微软雅黑")
+                                        .setFontColor(Color.BLUE)
+                                        .enableDeleteLine()
+                                        .setDeleteLineColor(Color.RED)
+                                        .enableUnderLine()
+                                        .setUnderLineColor(Color.RED)
+                                        .setUnderLineWidth("3pt")
+                        )
         );
         // 转换pdf
         document.transform(outputPath);

@@ -528,6 +528,9 @@ public class XEasyPdfDocumentTest {
             XEasyPdfHandler.Document.build(
                     XEasyPdfHandler.Page.build(
                             XEasyPdfHandler.Text.build("爽爽的贵阳，避暑的天堂").setFontSize(16).setHorizontalStyle(XEasyPdfPositionStyle.CENTER)
+                    ),
+                    XEasyPdfHandler.Page.build(
+                            XEasyPdfHandler.Text.build("爽爽的贵阳，避暑的天堂")
                     )
             ).signer().setSignerInfo(
                     "xsx", "贵阳市", "测试", "qq: 344646090"
@@ -535,7 +538,7 @@ public class XEasyPdfDocumentTest {
                     XEasyPdfDocumentSignAlgorithm.MD5withRSA, XEasyPdfDocumentSignKeyStoreType.PKCS12, new File(certPath), "123456"
             ).setSignImage(
                     XEasyPdfImageUtil.read(new File(imagePath)), 240F, 30F, 50F
-            ).sign(0, outputStream);
+            ).setAccessPermissions(3).sign(outputStream, 0, 1);
         }
         long end = System.currentTimeMillis();
         System.out.println("完成，耗时： " + (end-begin));

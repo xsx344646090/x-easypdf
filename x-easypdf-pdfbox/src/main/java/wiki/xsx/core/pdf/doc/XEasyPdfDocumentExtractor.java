@@ -285,7 +285,7 @@ public class XEasyPdfDocumentExtractor implements Serializable {
      * @return 返回pdf文档
      */
     public XEasyPdfDocument finish() {
-        return this.pdfDocument;
+        return this.pdfDocument.reset();
     }
 
     /**

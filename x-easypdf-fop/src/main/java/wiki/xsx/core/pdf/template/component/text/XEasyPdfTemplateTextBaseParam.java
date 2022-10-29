@@ -32,33 +32,53 @@ class XEasyPdfTemplateTextBaseParam extends XEasyPdfTemplateComponentParam {
     /**
      * 行间距
      */
-    private String leading;
+    protected String leading;
     /**
      * 字符间距
      */
-    private String letterSpacing;
+    protected String letterSpacing;
     /**
      * 字体名称
      */
-    private String fontFamily;
+    protected String fontFamily;
     /**
      * 字体样式
      */
-    private String fontStyle;
+    protected String fontStyle;
     /**
      * 字体大小
      */
-    private String fontSize;
+    protected String fontSize;
     /**
      * 字体大小调整
      */
-    private String fontSizeAdjust;
+    protected String fontSizeAdjust;
     /**
      * 字体重量
      */
-    private String fontWeight;
+    protected String fontWeight;
     /**
      * 字体颜色
      */
-    private Color fontColor;
+    protected Color fontColor;
+    /**
+     * 删除线颜色
+     */
+    protected Color deleteLineColor;
+    /**
+     * 下划线宽度
+     */
+    protected String underLineWidth;
+    /**
+     * 下划线颜色
+     */
+    protected Color underLineColor;
+    /**
+     * 是否包含删除线
+     */
+    protected Boolean hasDeleteLine = Boolean.FALSE;
+    /**
+     * 是否包含下划线
+     */
+    protected Boolean hasUnderLine = Boolean.FALSE;
 }

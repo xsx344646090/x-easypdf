@@ -2,7 +2,6 @@ package wiki.xsx.core.pdf.template;
 
 import org.junit.Test;
 import wiki.xsx.core.pdf.template.doc.XEasyPdfTemplateDocument;
-import wiki.xsx.core.pdf.template.enums.XEasyPdfTemplateBorderStyle;
 import wiki.xsx.core.pdf.template.handler.XEasyPdfTemplateHandler;
 
 /**
@@ -80,7 +79,7 @@ public class XEasyPdfTemplateTableTest {
                                                 XEasyPdfTemplateHandler.Table.Cell.build().setComponent(
                                                         XEasyPdfTemplateHandler.Text.build().setText("NONE").setHorizontalStyle("center")
                                                 )
-                                        ).setBorderStyle(XEasyPdfTemplateBorderStyle.NONE.getValue())
+                                        ).setBorderStyle("NONE")
                                 )
                         ).setBorderCollapse("separate"),
                         XEasyPdfTemplateHandler.Table.build().setBody(
@@ -92,7 +91,7 @@ public class XEasyPdfTemplateTableTest {
                                                 XEasyPdfTemplateHandler.Table.Cell.build().setComponent(
                                                         XEasyPdfTemplateHandler.Text.build().setText("HIDDEN").setHorizontalStyle("center")
                                                 )
-                                        ).setBorderStyle(XEasyPdfTemplateBorderStyle.HIDDEN.getValue())
+                                        ).setBorderStyle("HIDDEN")
                                 )
                         ).setBorderCollapse("separate"),
                         XEasyPdfTemplateHandler.Table.build().setBody(
@@ -104,7 +103,7 @@ public class XEasyPdfTemplateTableTest {
                                                 XEasyPdfTemplateHandler.Table.Cell.build().setComponent(
                                                         XEasyPdfTemplateHandler.Text.build().setText("DOTTED").setHorizontalStyle("center")
                                                 )
-                                        ).setBorderStyle(XEasyPdfTemplateBorderStyle.DOTTED.getValue())
+                                        ).setBorderStyle("DOTTED")
                                 )
                         ).setBorderCollapse("separate"),
                         XEasyPdfTemplateHandler.Table.build().setBody(
@@ -116,7 +115,7 @@ public class XEasyPdfTemplateTableTest {
                                                 XEasyPdfTemplateHandler.Table.Cell.build().setComponent(
                                                         XEasyPdfTemplateHandler.Text.build().setText("DASHED").setHorizontalStyle("center")
                                                 )
-                                        ).setBorderStyle(XEasyPdfTemplateBorderStyle.DASHED.getValue())
+                                        ).setBorderStyle("DASHED")
                                 )
                         ).setBorderCollapse("separate"),
                         XEasyPdfTemplateHandler.Table.build().setBody(
@@ -128,7 +127,7 @@ public class XEasyPdfTemplateTableTest {
                                                 XEasyPdfTemplateHandler.Table.Cell.build().setComponent(
                                                         XEasyPdfTemplateHandler.Text.build().setText("SOLID").setHorizontalStyle("center")
                                                 )
-                                        ).setBorderStyle(XEasyPdfTemplateBorderStyle.SOLID.getValue())
+                                        ).setBorderStyle("SOLID")
                                 )
                         ).setBorderCollapse("separate"),
                         XEasyPdfTemplateHandler.Table.build().setBody(
@@ -140,7 +139,7 @@ public class XEasyPdfTemplateTableTest {
                                                 XEasyPdfTemplateHandler.Table.Cell.build().setComponent(
                                                         XEasyPdfTemplateHandler.Text.build().setText("DOUBLE").setHorizontalStyle("center")
                                                 )
-                                        ).setBorderStyle(XEasyPdfTemplateBorderStyle.DOUBLE.getValue())
+                                        ).setBorderStyle("DOUBLE")
                                 )
                         ).setBorderCollapse("separate"),
                         XEasyPdfTemplateHandler.Table.build().setBody(
@@ -152,7 +151,7 @@ public class XEasyPdfTemplateTableTest {
                                                 XEasyPdfTemplateHandler.Table.Cell.build().setComponent(
                                                         XEasyPdfTemplateHandler.Text.build().setText("GROOVE").setHorizontalStyle("center")
                                                 )
-                                        ).setBorderStyle(XEasyPdfTemplateBorderStyle.GROOVE.getValue())
+                                        ).setBorderStyle("GROOVE")
                                 )
                         ).setBorderCollapse("separate"),
                         XEasyPdfTemplateHandler.Table.build().setBody(
@@ -164,7 +163,7 @@ public class XEasyPdfTemplateTableTest {
                                                 XEasyPdfTemplateHandler.Table.Cell.build().setComponent(
                                                         XEasyPdfTemplateHandler.Text.build().setText("RIDGE").setHorizontalStyle("center")
                                                 )
-                                        ).setBorderStyle(XEasyPdfTemplateBorderStyle.RIDGE.getValue())
+                                        ).setBorderStyle("RIDGE")
                                 )
                         ).setBorderCollapse("separate"),
                         XEasyPdfTemplateHandler.Table.build().setBody(
@@ -176,7 +175,7 @@ public class XEasyPdfTemplateTableTest {
                                                 XEasyPdfTemplateHandler.Table.Cell.build().setComponent(
                                                         XEasyPdfTemplateHandler.Text.build().setText("INSET").setHorizontalStyle("center")
                                                 )
-                                        ).setBorderStyle(XEasyPdfTemplateBorderStyle.INSET.getValue())
+                                        ).setBorderStyle("INSET")
                                 )
                         ).setBorderCollapse("separate"),
                         XEasyPdfTemplateHandler.Table.build().setBody(
@@ -188,7 +187,7 @@ public class XEasyPdfTemplateTableTest {
                                                 XEasyPdfTemplateHandler.Table.Cell.build().setComponent(
                                                         XEasyPdfTemplateHandler.Text.build().setText("OUTSET").setHorizontalStyle("center")
                                                 )
-                                        ).setBorderStyle(XEasyPdfTemplateBorderStyle.OUTSET.getValue())
+                                        ).setBorderStyle("OUTSET")
                                 )
                         ).setBorderCollapse("separate")
                 )

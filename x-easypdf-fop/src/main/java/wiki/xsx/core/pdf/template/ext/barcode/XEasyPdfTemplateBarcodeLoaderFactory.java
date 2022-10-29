@@ -31,7 +31,7 @@ public class XEasyPdfTemplateBarcodeLoaderFactory extends AbstractImageLoaderFac
      */
     @Override
     public String[] getSupportedMIMETypes() {
-        return new String[]{XEasyPdfTemplateBarcodeImageHandler.IMAGE_TYPE};
+        return new String[]{XEasyPdfTemplateBarcodeImageHandler.MIME_TYPE};
     }
 
     /**

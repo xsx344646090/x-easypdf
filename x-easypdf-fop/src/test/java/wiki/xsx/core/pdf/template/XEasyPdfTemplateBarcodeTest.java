@@ -29,7 +29,7 @@ public class XEasyPdfTemplateBarcodeTest {
     @Test
     public void testBarcodeForXML() {
         // 定义xsl-fo模板路径
-        String templatePath = "H:\\java_workspace\\my\\x-easypdf\\gitee\\x-easypdf-fop\\src\\test\\resources\\wiki\\xsx\\core\\pdf\\template\\barcode.fo";
+        String templatePath = "src/test/resources/wiki/xsx/core/pdf/template/barcode/barcode.fo";
         // 定义pdf输出路径
         String outputPath = "E:\\pdf\\test\\fo\\barcode.pdf";
         // 转换pdf
@@ -41,7 +41,7 @@ public class XEasyPdfTemplateBarcodeTest {
     @Test
     public void testBarcodeForXML2() {
         // 定义xsl-fo模板路径
-        String templatePath = "H:\\java_workspace\\my\\x-easypdf\\gitee\\x-easypdf-fop\\src\\test\\resources\\wiki\\xsx\\core\\pdf\\template\\barcode.fo";
+        String templatePath = "src/test/resources/wiki/xsx/core/pdf/template/barcode/barcode.fo";
         // 定义pdf输出路径
         String outputPath = "E:\\pdf\\test\\fo\\";
         // 构建pdf模板
@@ -56,7 +56,7 @@ public class XEasyPdfTemplateBarcodeTest {
     @Test
     public void testBarcodeForXML3() {
         // 定义xsl-fo模板路径
-        String templatePath = "H:\\java_workspace\\my\\x-easypdf\\gitee\\x-easypdf-fop\\src\\test\\resources\\wiki\\xsx\\core\\pdf\\template\\barcode.fo";
+        String templatePath = "src/test/resources/wiki/xsx/core/pdf/template/barcode/barcode.fo";
         // 定义pdf输出路径
         String outputPath = "E:\\pdf\\test\\fo\\";
         // 定义任务列表

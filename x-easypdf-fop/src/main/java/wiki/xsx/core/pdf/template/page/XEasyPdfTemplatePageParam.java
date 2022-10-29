@@ -3,6 +3,8 @@ package wiki.xsx.core.pdf.template.page;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.awt.*;
+
 /**
  * pdf模板-页面参数
  *
@@ -27,27 +29,51 @@ class XEasyPdfTemplatePageParam {
     /**
      * 页面宽度
      */
-    private String pageWidth = "595.27563px";
+    private String width = "21cm";
     /**
      * 页面高度
      */
-    private String pageHeight = "841.8898px";
+    private String height = "29.7cm";
     /**
      * 上边距
      */
-    private String marginTop = "0px";
+    private String marginTop;
     /**
      * 下边距
      */
-    private String marginBottom = "0px";
+    private String marginBottom;
     /**
      * 左边距
      */
-    private String marginLeft = "0px";
+    private String marginLeft;
     /**
      * 右边距
      */
-    private String marginRight = "0px";
+    private String marginRight;
+    /**
+     * 字体名称
+     */
+    private String fontFamily;
+    /**
+     * 字体样式
+     */
+    private String fontStyle;
+    /**
+     * 字体大小
+     */
+    private String fontSize;
+    /**
+     * 字体大小调整
+     */
+    private String fontSizeAdjust;
+    /**
+     * 字体重量
+     */
+    private String fontWeight;
+    /**
+     * 字体颜色
+     */
+    private Color fontColor;
     /**
      * 页面主体参数
      */
@@ -67,11 +93,11 @@ class XEasyPdfTemplatePageParam {
     @SuppressWarnings("all")
     void changeLandscape() {
         // 获取临时页面宽度
-        String tempWidth = this.pageWidth;
+        String tempWidth = this.width;
         // 重置页面宽度 = 页面高度
-        this.pageWidth = this.pageHeight;
+        this.width = this.height;
         // 重置页面高度 = 临时页面宽度
-        this.pageHeight = tempWidth;
+        this.height = tempWidth;
     }
 
     /**

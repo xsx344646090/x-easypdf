@@ -68,49 +68,115 @@ public class XEasyPdfTemplateTable implements XEasyPdfTemplateComponent {
         return this;
     }
 
-    // /**
-    //  * 设置上填充
-    //  *
-    //  * @param paddingTop 上填充
-    //  * @return 返回表格组件
-    //  */
-    // public XEasyPdfTemplateTable setPaddingTop(String paddingTop) {
-    //     this.param.setPaddingTop(paddingTop);
-    //     return this;
-    // }
-    //
-    // /**
-    //  * 设置下填充
-    //  *
-    //  * @param paddingBottom 下填充
-    //  * @return 返回表格组件
-    //  */
-    // public XEasyPdfTemplateTable setPaddingBottom(String paddingBottom) {
-    //     this.param.setPaddingBottom(paddingBottom);
-    //     return this;
-    // }
-    //
-    // /**
-    //  * 设置左填充
-    //  *
-    //  * @param paddingLeft 左填充
-    //  * @return 返回表格组件
-    //  */
-    // public XEasyPdfTemplateTable setPaddingLeft(String paddingLeft) {
-    //     this.param.setPaddingLeft(paddingLeft);
-    //     return this;
-    // }
-    //
-    // /**
-    //  * 设置右填充
-    //  *
-    //  * @param paddingRight 右填充
-    //  * @return 返回表格组件
-    //  */
-    // public XEasyPdfTemplateTable setPaddingRight(String paddingRight) {
-    //     this.param.setPaddingRight(paddingRight);
-    //     return this;
-    // }
+    /**
+     * 设置上下左右边距
+     *
+     * @param margin 边距
+     * @return 返回表格组件
+     */
+    public XEasyPdfTemplateTable setMargin(String margin) {
+        this.param.setMargin(margin);
+        return this;
+    }
+
+    /**
+     * 设置上边距
+     *
+     * @param marginTop 上边距
+     * @return 返回表格组件
+     */
+    public XEasyPdfTemplateTable setMarginTop(String marginTop) {
+        this.param.setMarginTop(marginTop);
+        return this;
+    }
+
+    /**
+     * 设置下边距
+     *
+     * @param marginBottom 下边距
+     * @return 返回表格组件
+     */
+    public XEasyPdfTemplateTable setMarginBottom(String marginBottom) {
+        this.param.setMarginBottom(marginBottom);
+        return this;
+    }
+
+    /**
+     * 设置左边距
+     *
+     * @param marginLeft 左边距
+     * @return 返回表格组件
+     */
+    public XEasyPdfTemplateTable setMarginLeft(String marginLeft) {
+        this.param.setMarginLeft(marginLeft);
+        return this;
+    }
+
+    /**
+     * 设置右边距
+     *
+     * @param paddingRight 右边距
+     * @return 返回表格组件
+     */
+    public XEasyPdfTemplateTable setMarginRight(String paddingRight) {
+        this.param.setMarginRight(paddingRight);
+        return this;
+    }
+
+    /**
+     * 设置上下左右填充
+     *
+     * @param padding 填充
+     * @return 返回表格组件
+     */
+    public XEasyPdfTemplateTable setPadding(String padding) {
+        this.param.setPadding(padding);
+        return this;
+    }
+
+    /**
+     * 设置上填充
+     *
+     * @param paddingTop 上填充
+     * @return 返回表格组件
+     */
+    public XEasyPdfTemplateTable setPaddingTop(String paddingTop) {
+        this.param.setPaddingTop(paddingTop);
+        return this;
+    }
+
+    /**
+     * 设置下填充
+     *
+     * @param paddingBottom 下填充
+     * @return 返回表格组件
+     */
+    public XEasyPdfTemplateTable setPaddingBottom(String paddingBottom) {
+        this.param.setPaddingBottom(paddingBottom);
+        return this;
+    }
+
+    /**
+     * 设置左填充
+     *
+     * @param paddingLeft 左填充
+     * @return 返回表格组件
+     */
+    public XEasyPdfTemplateTable setPaddingLeft(String paddingLeft) {
+        this.param.setPaddingLeft(paddingLeft);
+        return this;
+    }
+
+    /**
+     * 设置右填充
+     *
+     * @param paddingRight 右填充
+     * @return 返回表格组件
+     */
+    public XEasyPdfTemplateTable setPaddingRight(String paddingRight) {
+        this.param.setPaddingRight(paddingRight);
+        return this;
+    }
 
     /**
      * 设置宽度
@@ -142,6 +208,27 @@ public class XEasyPdfTemplateTable implements XEasyPdfTemplateComponent {
      */
     public XEasyPdfTemplateTable setBorder(String border) {
         this.param.setBorder(border);
+        return this;
+    }
+
+    /**
+     * 设置边框样式
+     * <p>NONE：无</p>
+     * <p>HIDDEN：隐藏</p>
+     * <p>DOTTED：点虚线</p>
+     * <p>DASHED：短虚线</p>
+     * <p>SOLID：实线</p>
+     * <p>DOUBLE：双实线</p>
+     * <p>GROOVE：凹线（槽）</p>
+     * <p>RIDGE：凸线（脊）</p>
+     * <p>INSET：嵌入</p>
+     * <p>OUTSET：凸出</p>
+     *
+     * @param borderStyle 边框样式
+     * @return 返回表格组件
+     */
+    public XEasyPdfTemplateTable setBorderStyle(String borderStyle) {
+        this.param.setBorderStyle(borderStyle);
         return this;
     }
 
@@ -182,6 +269,30 @@ public class XEasyPdfTemplateTable implements XEasyPdfTemplateComponent {
     }
 
     /**
+     * 设置文本垂直样式
+     * <p>BEFORE：居上</p>
+     * <p>CENTER：居中</p>
+     * <p>AFTER：居下</p>
+     *
+     * @param style 垂直样式
+     * @return 返回表格组件
+     */
+    public XEasyPdfTemplateTable setVerticalStyle(String style) {
+        this.param.setVerticalStyle(style);
+        return this;
+    }
+
+    /**
+     * 开启边框（调试时使用）
+     *
+     * @return 返回表格组件
+     */
+    public XEasyPdfTemplateTable enableBorder() {
+        this.param.setHasBorder(Boolean.TRUE);
+        return this;
+    }
+
+    /**
      * 创建元素
      *
      * @param document fo文档
@@ -212,18 +323,30 @@ public class XEasyPdfTemplateTable implements XEasyPdfTemplateComponent {
         XEasyPdfTemplateElementHandler.appendChild(table, this.createTableBody(document));
         // 添加表尾
         XEasyPdfTemplateElementHandler.appendChild(table, this.createTableFooter(document));
+        // 设置垂直样式
+        Optional.ofNullable(param.getVerticalStyle()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.DISPLAY_ALIGN, v.intern()));
+        // 设置上下左右填充
+        Optional.ofNullable(param.getPadding()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.PADDING, v.intern()));
         // 设置上填充
-        Optional.ofNullable(this.param.getPaddingTop()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.PADDING_TOP, v));
+        Optional.ofNullable(param.getPaddingTop()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.PADDING_TOP, v.intern()));
+        // 设置下填充
+        Optional.ofNullable(param.getPaddingBottom()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.PADDING_BOTTOM, v.intern()));
+        // 设置左填充
+        Optional.ofNullable(param.getPaddingLeft()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.PADDING_LEFT, v.intern()));
+        // 设置右填充
+        Optional.ofNullable(param.getPaddingRight()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.PADDING_RIGHT, v.intern()));
         // 设置宽度
-        Optional.ofNullable(this.param.getWidth()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.WIDTH, v));
+        Optional.ofNullable(this.param.getWidth()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.WIDTH, v.intern()));
         // 设置高度
-        Optional.ofNullable(this.param.getHeight()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.HEIGHT, v));
+        Optional.ofNullable(this.param.getHeight()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.HEIGHT, v.intern()));
         // 设置边框
-        Optional.ofNullable(this.param.getBorder()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.BORDER, v));
+        Optional.ofNullable(this.param.getBorder()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.BORDER, v.intern()));
+        // 设置边框样式
+        Optional.ofNullable(this.param.getBorderStyle()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.BORDER_STYLE, v.intern()));
         // 设置边框折叠
-        Optional.ofNullable(this.param.getBorderCollapse()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.BORDER_COLLAPSE, v));
+        Optional.ofNullable(this.param.getBorderCollapse()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.BORDER_COLLAPSE, v.intern()));
         // 设置边框间距
-        Optional.ofNullable(this.param.getBorderSpacing()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.BORDER_SPACING, v));
+        Optional.ofNullable(this.param.getBorderSpacing()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.BORDER_SPACING, v.intern()));
         // 返回table元素
         return table;
     }

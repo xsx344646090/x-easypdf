@@ -76,7 +76,7 @@ public class XEasyPdfTemplateBarcodePreloader extends AbstractImagePreloader {
                         config.getContent()
                 ).intern();
                 // 创建图像信息
-                ImageInfo imageInfo = new ImageInfo(uri, XEasyPdfTemplateBarcodeImageHandler.IMAGE_TYPE);
+                ImageInfo imageInfo = new ImageInfo(uri, XEasyPdfTemplateBarcodeImageHandler.MIME_TYPE);
                 // 添加条形码图像
                 imageInfo.getCustomObjects().put(XEasyPdfTemplateBarcodeImageHandler.IMAGE_TYPE, this.getImage(uri, config));
                 // 返回图像信息

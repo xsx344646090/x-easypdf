@@ -2,6 +2,8 @@ package wiki.xsx.core.pdf.template.component;
 
 import lombok.Data;
 
+import java.awt.*;
+
 /**
  * pdf模板组件公共参数
  *
@@ -80,4 +82,8 @@ public class XEasyPdfTemplateComponentParam {
      * <p>AFTER：居下</p>
      */
     protected String verticalStyle;
+    /**
+     * 颜色
+     */
+    protected Color color;
 }

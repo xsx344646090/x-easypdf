@@ -5,8 +5,6 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 import wiki.xsx.core.pdf.template.component.XEasyPdfTemplateComponentParam;
 
-import java.awt.*;
-
 /**
  * pdf模板-分割线参数
  *
@@ -32,13 +30,9 @@ class XEasyPdfTemplateSplitLineParam extends XEasyPdfTemplateComponentParam {
     /**
      * 长度
      */
-    private String length = "100%";
+    private String length;
     /**
      * 样式
      */
-    private String style = "solid";
-    /**
-     * 颜色
-     */
-    private Color color;
+    private String style;
 }

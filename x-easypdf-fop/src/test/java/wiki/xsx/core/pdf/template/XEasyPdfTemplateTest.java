@@ -69,12 +69,18 @@ public class XEasyPdfTemplateTest {
     @Test
     public void testThymeleaf3() {
         // 定义xsl-fo模板路径
-        String templatePath = "H:\\java_workspace\\my\\mutil\\x-easypdf\\x-easypdf-fop\\src\\test\\resources\\thymeleaf\\template.fo";
+        String templatePath = "src/test/resources/wiki/xsx/core/pdf/template/thymeleaf/template2.fo";
         // 定义pdf输出路径
         String outputPath = "E:\\pdf\\test\\fo\\Thymeleaf.pdf";
+        // 定义数据map
+        Map<String, Object> data = new HashMap<>();
+        // 设置值
+        data.put("createTime", "创建时间：2022-10-27 15:35:00");
+        data.put("printTime", "打印时间：2022-10-27 15:36:00");
+        data.put("printUser", "打印人：x-easypdf");
         // 转换pdf
         XEasyPdfTemplateHandler.Template.build()
-                .setDataSource(XEasyPdfTemplateHandler.DataSource.Thymeleaf.build().setTemplatePath(templatePath))
+                .setDataSource(XEasyPdfTemplateHandler.DataSource.Thymeleaf.build().setTemplatePath(templatePath).setTemplateData(data))
                 .transform(outputPath);
     }
 
