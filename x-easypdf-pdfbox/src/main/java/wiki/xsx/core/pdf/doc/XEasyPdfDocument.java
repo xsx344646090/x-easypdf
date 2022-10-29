@@ -26,14 +26,13 @@ import wiki.xsx.core.pdf.util.XEasyPdfFileUtil;
 import wiki.xsx.core.pdf.util.XEasyPdfTextUtil;
 
 import javax.print.PrintServiceLookup;
-import java.awt.*;
+import java.awt.Color;
 import java.awt.print.PageFormat;
 import java.awt.print.PrinterJob;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.List;
 import java.util.*;
 
 /**

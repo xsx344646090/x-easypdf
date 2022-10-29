@@ -3,14 +3,12 @@ package wiki.xsx.core.pdf.component.line;
 import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import wiki.xsx.core.pdf.component.line.XEasyPdfLineCapStyle;
-import wiki.xsx.core.pdf.component.line.XEasyPdfLineParam;
 import wiki.xsx.core.pdf.doc.XEasyPdfDefaultFontStyle;
 import wiki.xsx.core.pdf.doc.XEasyPdfDocument;
 import wiki.xsx.core.pdf.doc.XEasyPdfPage;
 import wiki.xsx.core.pdf.util.XEasyPdfFontUtil;
 
-import java.awt.*;
+import java.awt.Color;
 
 /**
  * pdf基础线条组件

@@ -3,7 +3,7 @@ package wiki.xsx.core.pdf.template.component.text;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;

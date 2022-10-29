@@ -12,7 +12,10 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import wiki.xsx.core.pdf.template.XEasyPdfTemplateAttributes;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Rectangle;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;

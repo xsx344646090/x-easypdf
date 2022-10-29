@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import wiki.xsx.core.pdf.handler.XEasyPdfHandler;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 

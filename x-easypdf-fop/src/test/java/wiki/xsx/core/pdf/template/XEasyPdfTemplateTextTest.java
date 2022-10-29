@@ -4,7 +4,7 @@ import org.junit.Test;
 import wiki.xsx.core.pdf.template.doc.XEasyPdfTemplateDocument;
 import wiki.xsx.core.pdf.template.handler.XEasyPdfTemplateHandler;
 
-import java.awt.*;
+import java.awt.Color;
 
 /**
  * @author xsx
