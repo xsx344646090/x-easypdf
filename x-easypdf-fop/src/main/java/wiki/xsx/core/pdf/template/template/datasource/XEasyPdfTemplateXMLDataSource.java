@@ -14,6 +14,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 /**
  * pdf模板-xml数据源
@@ -45,6 +46,10 @@ public class XEasyPdfTemplateXMLDataSource implements XEasyPdfTemplateDataSource
      * xml路径（绝对路径）
      */
     private String xmlPath;
+    /**
+     * xml数据输入流
+     */
+    private InputStream xmlInputStream;
 
     /**
      * 获取数据源读取器
@@ -57,10 +62,14 @@ public class XEasyPdfTemplateXMLDataSource implements XEasyPdfTemplateDataSource
         // 如果不为空数据，则加载xml数据
         if (this.isNotEmptyData()) {
             try {
-                // 从资源路径加载xml数据
-                InputStream inputStream = this.getClass().getResourceAsStream(this.xmlPath);
-                // // 如果不为空，则返回数据源读取器，否则从绝对路径重新加载模板
-                return inputStream != null ? new InputStreamReader(inputStream, StandardCharsets.UTF_8) : new InputStreamReader(Files.newInputStream(Paths.get(this.xmlPath)), StandardCharsets.UTF_8);
+                // 如果xml数据输入流为空，则从文件读取
+                if (this.xmlInputStream == null) {
+                    // 从资源路径加载xml数据
+                    InputStream inputStream = this.getClass().getResourceAsStream(this.xmlPath);
+                    // 如果不为空，则返回数据源读取器，否则从绝对路径重新加载模板
+                    this.xmlInputStream = inputStream != null ? inputStream : Files.newInputStream(Paths.get(this.xmlPath));
+                }
+                return new InputStreamReader(this.xmlInputStream, StandardCharsets.UTF_8);
             } catch (Exception e) {
                 // 提示错误信息
                 throw new IllegalArgumentException("the xml can not be loaded，the path['" + this.xmlPath + "'] is error");
@@ -81,6 +90,7 @@ public class XEasyPdfTemplateXMLDataSource implements XEasyPdfTemplateDataSource
     @Override
     public void transform(FopFactory fopFactory, FOUserAgent foAgent, OutputStream outputStream) {
         this.domTransform(fopFactory, foAgent, this.templatePath, outputStream);
+        Optional.ofNullable(this.xmlInputStream).ifPresent(InputStream::close);
     }
 
     /**
@@ -133,6 +143,6 @@ public class XEasyPdfTemplateXMLDataSource implements XEasyPdfTemplateDataSource
      * @return 返回布尔值，是为true，否为false
      */
     private boolean isNotEmptyData() {
-        return this.xmlPath != null && this.xmlPath.length() > 0;
+        return (this.xmlPath != null && this.xmlPath.length() > 0) || this.xmlInputStream != null;
     }
 }

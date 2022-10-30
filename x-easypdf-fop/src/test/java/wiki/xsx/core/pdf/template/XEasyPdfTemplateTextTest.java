@@ -64,9 +64,10 @@ public class XEasyPdfTemplateTextTest {
         // 转换pdf
         XEasyPdfTemplateDocument document = XEasyPdfTemplateHandler.Document.build().setConfigPath(configPath).addPage(
                 XEasyPdfTemplateHandler.Page.build().addBodyComponent(
-                        XEasyPdfTemplateHandler.TextExtend.build().addTexts(
+                        XEasyPdfTemplateHandler.TextExtend.build().setFontFamily("微软雅黑").setFontSize("30pt").addTexts(
                                 XEasyPdfTemplateHandler.Text.build().setText("hello"),
-                                XEasyPdfTemplateHandler.Text.build().setText(" my world")
+                                XEasyPdfTemplateHandler.Text.build().setText("上标").setFontSize("12pt").setVerticalStyle("top"),
+                                XEasyPdfTemplateHandler.Text.build().setText(", world")
                         )
                 )
         );

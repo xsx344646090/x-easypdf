@@ -4,6 +4,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -35,10 +36,33 @@ public class XEasyPdfTemplateTextExtend extends XEasyPdfTemplateTextBase {
     private final XEasyPdfTemplateTextExtendParam param = new XEasyPdfTemplateTextExtendParam();
 
     /**
+     * 设置初始化容量
+     *
+     * @param initialCapacity 设置初始化容量
+     * @return 返回文本扩展组件
+     */
+    private XEasyPdfTemplateTextExtend setInitialCapacity(int initialCapacity) {
+        this.param.setTextList(new ArrayList<>(initialCapacity));
+        return this;
+    }
+
+    /**
+     * 设置文本语言
+     *
+     * @param language 语言
+     * @return 返回文本扩展组件
+     * @see <a href="https://www.runoob.com/tags/html-language-codes.html">ISO 639-1 语言代码</a>
+     */
+    public XEasyPdfTemplateTextExtend setLanguage(String language) {
+        this.param.setLanguage(language);
+        return this;
+    }
+
+    /**
      * 设置行间距
      *
      * @param leading 行间距
-     * @return 返回pdf模板-文本扩展组件
+     * @return 返回文本扩展组件
      */
     public XEasyPdfTemplateTextExtend setLeading(String leading) {
         this.param.setLeading(leading);
@@ -49,7 +73,7 @@ public class XEasyPdfTemplateTextExtend extends XEasyPdfTemplateTextBase {
      * 设置字符间距
      *
      * @param letterSpacing 字符间距
-     * @return 返回pdf模板-文本扩展组件
+     * @return 返回文本扩展组件
      */
     public XEasyPdfTemplateTextExtend setLetterSpacing(String letterSpacing) {
         this.param.setLetterSpacing(letterSpacing);
@@ -60,7 +84,7 @@ public class XEasyPdfTemplateTextExtend extends XEasyPdfTemplateTextBase {
      * 设置字体名称
      *
      * @param fontFamily 字体名称
-     * @return 返回pdf模板-文本扩展组件
+     * @return 返回文本扩展组件
      */
     public XEasyPdfTemplateTextExtend setFontFamily(String fontFamily) {
         this.param.setFontFamily(fontFamily);
@@ -71,7 +95,7 @@ public class XEasyPdfTemplateTextExtend extends XEasyPdfTemplateTextBase {
      * 设置字体大小
      *
      * @param fontSize 字体大小
-     * @return 返回pdf模板-文本扩展组件
+     * @return 返回文本扩展组件
      */
     public XEasyPdfTemplateTextExtend setFontSize(String fontSize) {
         this.param.setFontSize(fontSize);
@@ -82,7 +106,7 @@ public class XEasyPdfTemplateTextExtend extends XEasyPdfTemplateTextBase {
      * 设置字体大小调整
      *
      * @param fontSizeAdjust 字体大小调整
-     * @return 返回pdf模板-文本扩展组件
+     * @return 返回文本扩展组件
      */
     public XEasyPdfTemplateTextExtend setFontSizeAdjust(String fontSizeAdjust) {
         this.param.setFontSizeAdjust(fontSizeAdjust);
@@ -93,7 +117,7 @@ public class XEasyPdfTemplateTextExtend extends XEasyPdfTemplateTextBase {
      * 设置字体颜色
      *
      * @param fontColor 字体颜色
-     * @return 返回pdf模板-文本扩展组件
+     * @return 返回文本扩展组件
      */
     public XEasyPdfTemplateTextExtend setFontColor(Color fontColor) {
         this.param.setFontColor(fontColor);
@@ -107,7 +131,7 @@ public class XEasyPdfTemplateTextExtend extends XEasyPdfTemplateTextBase {
      * <p>RIGHT：居右</p>
      *
      * @param style 水平样式
-     * @return 返回pdf模板-文本扩展组件
+     * @return 返回文本扩展组件
      */
     public XEasyPdfTemplateTextExtend setHorizontalStyle(String style) {
         this.param.setHorizontalStyle(style);
@@ -117,7 +141,7 @@ public class XEasyPdfTemplateTextExtend extends XEasyPdfTemplateTextBase {
     /**
      * 开启边框（调试时使用）
      *
-     * @return 返回pdf模板-文本扩展组件
+     * @return 返回文本扩展组件
      */
     public XEasyPdfTemplateTextExtend enableBorder() {
         this.param.setHasBorder(Boolean.TRUE);
@@ -128,7 +152,7 @@ public class XEasyPdfTemplateTextExtend extends XEasyPdfTemplateTextBase {
      * 添加文本扩展组件
      *
      * @param texts 文本组件列表
-     * @return 返回pdf模板-文本扩展组件
+     * @return 返回文本扩展组件
      */
     public XEasyPdfTemplateTextExtend addTexts(XEasyPdfTemplateText... texts) {
         if (texts != null) {
@@ -141,7 +165,7 @@ public class XEasyPdfTemplateTextExtend extends XEasyPdfTemplateTextBase {
      * 添加文本扩展组件
      *
      * @param textList 文本组件列表
-     * @return 返回pdf模板-文本扩展组件
+     * @return 返回文本扩展组件
      */
     public XEasyPdfTemplateTextExtend addTexts(List<XEasyPdfTemplateText> textList) {
         if (textList != null) {

@@ -96,6 +96,10 @@ public class XEasyPdfTemplateAttributes {
      */
     public static final String TEXT_ALIGN = "text-align";
     /**
+     * 垂直对齐
+     */
+    public static final String VERTICAL_ALIGN = "vertical-align";
+    /**
      * 上下对齐
      */
     public static final String DISPLAY_ALIGN = "display-align";
@@ -123,6 +127,10 @@ public class XEasyPdfTemplateAttributes {
      * 颜色
      */
     public static final String COLOR = "color";
+    /**
+     * 文本语言
+     */
+    public static final String LANGUAGE = "language";
     /**
      * 字体家族
      */

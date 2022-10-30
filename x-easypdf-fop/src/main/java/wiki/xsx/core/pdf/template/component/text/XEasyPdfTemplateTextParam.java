@@ -30,6 +30,12 @@ class XEasyPdfTemplateTextParam extends XEasyPdfTemplateTextBaseParam {
      * 文本
      */
     private String text;
+    /**
+     * 垂直对齐
+     * <p>top：上对齐</p>
+     * <p>bottom：下对齐</p>
+     */
+    private String verticalAlign;
 
     /**
      * 初始化
@@ -37,6 +43,9 @@ class XEasyPdfTemplateTextParam extends XEasyPdfTemplateTextBaseParam {
      * @param param 文本基础参数
      */
     void init(XEasyPdfTemplateTextBaseParam param) {
+        if (this.getLanguage() == null) {
+            this.setLanguage(param.getLanguage());
+        }
         if (this.getLeading() == null) {
             this.setLeading(param.getLeading());
         }
