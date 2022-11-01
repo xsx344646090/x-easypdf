@@ -324,17 +324,17 @@ public class XEasyPdfTemplateTable implements XEasyPdfTemplateComponent {
         // 添加表尾
         XEasyPdfTemplateElementHandler.appendChild(table, this.createTableFooter(document));
         // 设置垂直样式
-        Optional.ofNullable(param.getVerticalStyle()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.DISPLAY_ALIGN, v.intern()));
+        Optional.ofNullable(this.param.getVerticalStyle()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.DISPLAY_ALIGN, v.intern()));
         // 设置上下左右填充
-        Optional.ofNullable(param.getPadding()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.PADDING, v.intern()));
+        Optional.ofNullable(this.param.getPadding()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.PADDING, v.intern()));
         // 设置上填充
-        Optional.ofNullable(param.getPaddingTop()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.PADDING_TOP, v.intern()));
+        Optional.ofNullable(this.param.getPaddingTop()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.PADDING_TOP, v.intern()));
         // 设置下填充
-        Optional.ofNullable(param.getPaddingBottom()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.PADDING_BOTTOM, v.intern()));
+        Optional.ofNullable(this.param.getPaddingBottom()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.PADDING_BOTTOM, v.intern()));
         // 设置左填充
-        Optional.ofNullable(param.getPaddingLeft()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.PADDING_LEFT, v.intern()));
+        Optional.ofNullable(this.param.getPaddingLeft()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.PADDING_LEFT, v.intern()));
         // 设置右填充
-        Optional.ofNullable(param.getPaddingRight()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.PADDING_RIGHT, v.intern()));
+        Optional.ofNullable(this.param.getPaddingRight()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.PADDING_RIGHT, v.intern()));
         // 设置宽度
         Optional.ofNullable(this.param.getWidth()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.WIDTH, v.intern()));
         // 设置高度

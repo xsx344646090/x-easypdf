@@ -30,6 +30,12 @@ import java.awt.Color;
 @EqualsAndHashCode(callSuper = true)
 class XEasyPdfTemplateTextBaseParam extends XEasyPdfTemplateComponentParam {
     /**
+     * 语言
+     *
+     * @see <a href="https://www.runoob.com/tags/html-language-codes.html">ISO 639-1 语言代码</a>
+     */
+    protected String language;
+    /**
      * 行间距
      */
     protected String leading;

@@ -146,6 +146,18 @@ public class XEasyPdfTemplateText extends XEasyPdfTemplateTextBase {
     }
 
     /**
+     * 设置文本语言
+     *
+     * @param language 语言
+     * @return 返回文本组件
+     * @see <a href="https://www.runoob.com/tags/html-language-codes.html">ISO 639-1 语言代码</a>
+     */
+    public XEasyPdfTemplateText setLanguage(String language) {
+        this.param.setLanguage(language);
+        return this;
+    }
+
+    /**
      * 设置文本
      *
      * @param text 文本
@@ -255,6 +267,19 @@ public class XEasyPdfTemplateText extends XEasyPdfTemplateTextBase {
      */
     public XEasyPdfTemplateText setHorizontalStyle(String style) {
         this.param.setHorizontalStyle(style);
+        return this;
+    }
+
+    /**
+     * 设置垂直对齐
+     * <p>top：上对齐</p>
+     * <p>bottom：下对齐</p>
+     *
+     * @param style 垂直样式
+     * @return 返回文本组件
+     */
+    public XEasyPdfTemplateText setVerticalStyle(String style) {
+        this.param.setVerticalAlign(style);
         return this;
     }
 
@@ -369,15 +394,17 @@ public class XEasyPdfTemplateText extends XEasyPdfTemplateTextBase {
         // 创建inline元素
         Element inline = document.createElement(XEasyPdfTemplateTags.IN_LINE);
         // 设置上下左右填充
-        Optional.ofNullable(param.getPadding()).ifPresent(v -> inline.setAttribute(XEasyPdfTemplateAttributes.PADDING, v.intern()));
+        Optional.ofNullable(this.param.getPadding()).ifPresent(v -> inline.setAttribute(XEasyPdfTemplateAttributes.PADDING, v.intern()));
         // 设置上填充
-        Optional.ofNullable(param.getPaddingTop()).ifPresent(v -> inline.setAttribute(XEasyPdfTemplateAttributes.PADDING_TOP, v.intern()));
+        Optional.ofNullable(this.param.getPaddingTop()).ifPresent(v -> inline.setAttribute(XEasyPdfTemplateAttributes.PADDING_TOP, v.intern()));
         // 设置下填充
-        Optional.ofNullable(param.getPaddingBottom()).ifPresent(v -> inline.setAttribute(XEasyPdfTemplateAttributes.PADDING_BOTTOM, v.intern()));
+        Optional.ofNullable(this.param.getPaddingBottom()).ifPresent(v -> inline.setAttribute(XEasyPdfTemplateAttributes.PADDING_BOTTOM, v.intern()));
         // 设置左填充
-        Optional.ofNullable(param.getPaddingLeft()).ifPresent(v -> inline.setAttribute(XEasyPdfTemplateAttributes.PADDING_LEFT, v.intern()));
+        Optional.ofNullable(this.param.getPaddingLeft()).ifPresent(v -> inline.setAttribute(XEasyPdfTemplateAttributes.PADDING_LEFT, v.intern()));
         // 设置右填充
-        Optional.ofNullable(param.getPaddingRight()).ifPresent(v -> inline.setAttribute(XEasyPdfTemplateAttributes.PADDING_RIGHT, v.intern()));
+        Optional.ofNullable(this.param.getPaddingRight()).ifPresent(v -> inline.setAttribute(XEasyPdfTemplateAttributes.PADDING_RIGHT, v.intern()));
+        // 设置文本语言
+        Optional.ofNullable(this.param.getLanguage()).ifPresent(v -> inline.setAttribute(XEasyPdfTemplateAttributes.LANGUAGE, v.intern()));
         // 设置字体名称
         Optional.ofNullable(this.param.getFontFamily()).ifPresent(v -> inline.setAttribute(XEasyPdfTemplateAttributes.FONT_FAMILY, v.intern()));
         // 设置字体样式
@@ -390,6 +417,8 @@ public class XEasyPdfTemplateText extends XEasyPdfTemplateTextBase {
         Optional.ofNullable(this.param.getFontWeight()).ifPresent(v -> inline.setAttribute(XEasyPdfTemplateAttributes.FONT_WEIGHT, v.intern()));
         // 设置字体颜色
         Optional.ofNullable(this.param.getFontColor()).ifPresent(v -> XEasyPdfTemplateElementHandler.appendColor(inline, v));
+        // 设置垂直对齐
+        Optional.ofNullable(this.param.getVerticalAlign()).ifPresent(v -> inline.setAttribute(XEasyPdfTemplateAttributes.VERTICAL_ALIGN, v.intern()));
         // 如果包含下划线，则设置下划线
         if (this.param.hasUnderLine) {
             // 获取下划线设置
