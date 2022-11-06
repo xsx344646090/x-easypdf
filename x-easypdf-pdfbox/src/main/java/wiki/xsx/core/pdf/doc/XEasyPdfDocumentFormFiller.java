@@ -4,12 +4,11 @@ import lombok.SneakyThrows;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
+import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.fixup.AcroFormDefaultFixup;
 import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
-import org.apache.pdfbox.pdmodel.interactive.form.PDField;
-import org.apache.pdfbox.pdmodel.interactive.form.PDTextField;
+import org.apache.pdfbox.pdmodel.interactive.form.*;
 import wiki.xsx.core.pdf.util.XEasyPdfFileUtil;
 import wiki.xsx.core.pdf.util.XEasyPdfFontUtil;
 import wiki.xsx.core.pdf.util.XEasyPdfTextUtil;
@@ -21,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -198,6 +198,16 @@ public class XEasyPdfDocumentFormFiller implements Serializable {
                 this.fontSize = null;
             }
         }
+        return this;
+    }
+
+    /**
+     * 清空表单字段
+     *
+     * @return 返回pdf表单
+     */
+    public XEasyPdfDocumentFormFiller clear() {
+        this.form.getFields().forEach(this::clearField);
         return this;
     }
 
@@ -436,5 +446,33 @@ public class XEasyPdfDocumentFormFiller implements Serializable {
         }
         // 设置新值
         field.setValue(newValue);
+    }
+
+    /**
+     * 清空表单字段
+     *
+     * @param field 表单字段
+     */
+    private void clearField(PDField field) {
+        // 如果为终端字段，则删除页面注释
+        if (field instanceof PDTerminalField) {
+            // 删除页面注释
+            field.getWidgets().forEach(v -> Optional.ofNullable(v.getPage()).ifPresent(this::clearAnnotations));
+        }
+        // 如果为非终端字段，则递归清空
+        else if (field instanceof PDNonTerminalField) {
+            // 递归清空
+            ((PDNonTerminalField) field).getChildren().forEach(this::clearField);
+        }
+    }
+
+    /**
+     * 清空注解
+     *
+     * @param page pdfbox页面
+     */
+    @SneakyThrows
+    private void clearAnnotations(PDPage page) {
+        page.getAnnotations().clear();
     }
 }

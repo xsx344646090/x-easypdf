@@ -584,6 +584,30 @@ public class XEasyPdfTableTest {
     }
 
     @Test
+    public void testTable13() {
+        XEasyPdfHandler.Document.build(
+                XEasyPdfHandler.Page.build(
+                        XEasyPdfHandler.Table.build(
+                                XEasyPdfHandler.Table.Row.build(
+                                        XEasyPdfHandler.Table.Row.Cell.build(12F*4).addContent(
+                                                XEasyPdfHandler.Text.build("田田田田")
+                                        ),
+                                        XEasyPdfHandler.Table.Row.Cell.build(12F*2).setFontSize(6F).addContent(
+                                                XEasyPdfHandler.Text.build("上标")
+                                        ).disableBorder(),
+                                        XEasyPdfHandler.Table.Row.Cell.build(12F*2).setFontSize(6F).addContent(
+                                                XEasyPdfHandler.Text.build("下标")
+                                        ).setMarginLeft(-(12F*2)).setMarginTop(8F),
+                                        XEasyPdfHandler.Table.Row.Cell.build(12F*4).addContent(
+                                                XEasyPdfHandler.Text.build("田田田田")
+                                        )
+                                )
+                        ).disableBorder()
+                )
+        ).save("E:\\pdf\\test\\component\\image\\test.pdf").close();
+    }
+
+    @Test
     public void testTable12() {
         TestDemo.testWritePdf();
     }
