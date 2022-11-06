@@ -1,13 +1,8 @@
-package wiki.xsx.core.pdf.template.page;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 /**
- * pdf模板-页面组件
+ * pdf模板-块组件
  *
  * @author xsx
- * @date 2022/8/5
+ * @date 2022/11/6
  * @since 1.8
  * <p>
  * Copyright (c) 2020-2022 xsx All Rights Reserved.
@@ -21,15 +16,4 @@ import org.w3c.dom.Element;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public interface XEasyPdfTemplatePageComponent {
-
-    /**
-     * 创建元素
-     *
-     * @param index    当前索引
-     * @param document fo文档
-     * @param bookmark 书签元素
-     * @return 返回节点
-     */
-    Element createElement(int index, Document document, Element bookmark);
-}
+package wiki.xsx.core.pdf.template.component.block;

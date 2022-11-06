@@ -8,7 +8,7 @@ import wiki.xsx.core.pdf.template.XEasyPdfTemplateTags;
 import wiki.xsx.core.pdf.template.component.XEasyPdfTemplateComponent;
 import wiki.xsx.core.pdf.template.handler.XEasyPdfTemplateElementHandler;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.Optional;
 
 /**
@@ -89,6 +89,72 @@ public class XEasyPdfTemplateBarcode implements XEasyPdfTemplateComponent {
      */
     public XEasyPdfTemplateBarcode setMarginRight(String paddingRight) {
         this.param.setMarginRight(paddingRight);
+        return this;
+    }
+
+    /**
+     * 设置上下左右填充
+     *
+     * @param padding 填充
+     * @return 返回条形码组件
+     */
+    public XEasyPdfTemplateBarcode setPadding(String padding) {
+        this.param.setPadding(padding);
+        return this;
+    }
+
+    /**
+     * 设置上填充
+     *
+     * @param paddingTop 上填充
+     * @return 返回条形码组件
+     */
+    public XEasyPdfTemplateBarcode setPaddingTop(String paddingTop) {
+        this.param.setPaddingTop(paddingTop);
+        return this;
+    }
+
+    /**
+     * 设置下填充
+     *
+     * @param paddingBottom 下填充
+     * @return 返回条形码组件
+     */
+    public XEasyPdfTemplateBarcode setPaddingBottom(String paddingBottom) {
+        this.param.setPaddingBottom(paddingBottom);
+        return this;
+    }
+
+    /**
+     * 设置左填充
+     *
+     * @param paddingLeft 左填充
+     * @return 返回条形码组件
+     */
+    public XEasyPdfTemplateBarcode setPaddingLeft(String paddingLeft) {
+        this.param.setPaddingLeft(paddingLeft);
+        return this;
+    }
+
+    /**
+     * 设置右填充
+     *
+     * @param paddingRight 右填充
+     * @return 返回条形码组件
+     */
+    public XEasyPdfTemplateBarcode setPaddingRight(String paddingRight) {
+        this.param.setPaddingRight(paddingRight);
+        return this;
+    }
+
+    /**
+     * 设置id
+     *
+     * @param id id
+     * @return 返回条形码组件
+     */
+    public XEasyPdfTemplateBarcode setId(String id) {
+        this.param.setId(id);
         return this;
     }
 
@@ -245,10 +311,10 @@ public class XEasyPdfTemplateBarcode implements XEasyPdfTemplateComponent {
 
     /**
      * 设置条形码文字样式
-     * <p>NORMAL：正常</p>
-     * <p>BOLD：粗体</p>
-     * <p>BOLD_ITALIC：粗体斜体</p>
-     * <p>ITALIC：斜体</p>
+     * <p>normal：正常</p>
+     * <p>bold：粗体</p>
+     * <p>bold_italic：粗体斜体</p>
+     * <p>italic：斜体</p>
      *
      * @param wordsStyle 文字样式
      * @return 返回条形码组件
@@ -293,15 +359,77 @@ public class XEasyPdfTemplateBarcode implements XEasyPdfTemplateComponent {
 
     /**
      * 设置文本水平样式
-     * <p>LEFT：居左</p>
-     * <p>CENTER：居中</p>
-     * <p>RIGHT：居右</p>
+     * <p>left：居左</p>
+     * <p>center：居中</p>
+     * <p>right：居右</p>
      *
      * @param style 水平样式
      * @return 返回条形码组件
      */
     public XEasyPdfTemplateBarcode setHorizontalStyle(String style) {
         this.param.setHorizontalStyle(style);
+        return this;
+    }
+
+    /**
+     * 设置分页符-前
+     * <p>auto：自动</p>
+     * <p>column：分列</p>
+     * <p>page：分页</p>
+     * <p>even-page：在元素之前强制分页一次或两个，以便下一页将成为偶数页</p>
+     * <p>odd-page：在元素之前强制分页一次或两个，以便下一页将成为奇数页</p>
+     *
+     * @param breakBefore 分页符
+     * @return 返回条形码组件
+     */
+    public XEasyPdfTemplateBarcode setBreakBefore(String breakBefore) {
+        this.param.setBreakBefore(breakBefore);
+        return this;
+    }
+
+    /**
+     * 设置分页符-后
+     * <p>auto：自动</p>
+     * <p>column：分列</p>
+     * <p>page：分页</p>
+     * <p>even-page：在元素之后强制分页一次或两个，以便下一页将成为偶数页</p>
+     * <p>odd-page：在元素之后强制分页一次或两个，以便下一页将成为奇数页</p>
+     *
+     * @param breakAfter 分页符
+     * @return 返回条形码组件
+     */
+    public XEasyPdfTemplateBarcode setBreakAfter(String breakAfter) {
+        this.param.setBreakAfter(breakAfter);
+        return this;
+    }
+
+    /**
+     * 开启分页时保持
+     *
+     * @return 返回条形码组件
+     */
+    public XEasyPdfTemplateBarcode enableKeepTogether() {
+        this.param.setKeepTogether("always");
+        return this;
+    }
+
+    /**
+     * 开启分页时与上一个元素保持
+     *
+     * @return 返回条形码组件
+     */
+    public XEasyPdfTemplateBarcode enableKeepWithPrevious() {
+        this.param.setKeepWithPrevious("always");
+        return this;
+    }
+
+    /**
+     * 开启分页时与下一个元素保持
+     *
+     * @return 返回条形码组件
+     */
+    public XEasyPdfTemplateBarcode enableKeepWithNext() {
+        this.param.setKeepWithNext("always");
         return this;
     }
 
@@ -355,19 +483,19 @@ public class XEasyPdfTemplateBarcode implements XEasyPdfTemplateComponent {
         // 设置元素命名空间
         barcode.setAttribute(XEasyPdfTemplateAttributes.NAMESPACE, XEasyPdfTemplateConstants.NAMESPACE);
         // 设置条形码类型
-        Optional.ofNullable(this.param.getType()).ifPresent(v -> barcode.setAttribute(XEasyPdfTemplateAttributes.TYPE, v.intern()));
+        Optional.ofNullable(this.param.getType()).ifPresent(v -> barcode.setAttribute(XEasyPdfTemplateAttributes.TYPE, v.intern().toLowerCase()));
         // 设置条形码缩放比例
-        Optional.ofNullable(this.param.getScaleRate()).ifPresent(v -> barcode.setAttribute(XEasyPdfTemplateAttributes.SCALE_RATE, v.intern()));
+        Optional.ofNullable(this.param.getScaleRate()).ifPresent(v -> barcode.setAttribute(XEasyPdfTemplateAttributes.SCALE_RATE, v.intern().toLowerCase()));
         // 设置条形码旋转弧度
-        Optional.ofNullable(this.param.getRadians()).ifPresent(v -> barcode.setAttribute(XEasyPdfTemplateAttributes.RADIANS, v.intern()));
+        Optional.ofNullable(this.param.getRadians()).ifPresent(v -> barcode.setAttribute(XEasyPdfTemplateAttributes.RADIANS, v.intern().toLowerCase()));
         // 设置条形码边距
-        Optional.ofNullable(this.param.getCodeMargin()).ifPresent(v -> barcode.setAttribute(XEasyPdfTemplateAttributes.CODE_MARGIN, v.intern()));
+        Optional.ofNullable(this.param.getCodeMargin()).ifPresent(v -> barcode.setAttribute(XEasyPdfTemplateAttributes.CODE_MARGIN, v.intern().toLowerCase()));
         // 设置条形码纠错级别
-        Optional.ofNullable(this.param.getErrorLevel()).ifPresent(v -> barcode.setAttribute(XEasyPdfTemplateAttributes.ERROR_LEVEL, v.intern()));
+        Optional.ofNullable(this.param.getErrorLevel()).ifPresent(v -> barcode.setAttribute(XEasyPdfTemplateAttributes.ERROR_LEVEL, v.intern().toLowerCase()));
         // 设置条形码图像宽度
-        Optional.ofNullable(this.param.getWidth()).ifPresent(v -> barcode.setAttribute(XEasyPdfTemplateAttributes.WIDTH, v.intern()));
+        Optional.ofNullable(this.param.getWidth()).ifPresent(v -> barcode.setAttribute(XEasyPdfTemplateAttributes.WIDTH, v.intern().toLowerCase()));
         // 设置条形码图像高度
-        Optional.ofNullable(this.param.getHeight()).ifPresent(v -> barcode.setAttribute(XEasyPdfTemplateAttributes.HEIGHT, v.intern()));
+        Optional.ofNullable(this.param.getHeight()).ifPresent(v -> barcode.setAttribute(XEasyPdfTemplateAttributes.HEIGHT, v.intern().toLowerCase()));
         // 设置条形码内容
         Optional.ofNullable(this.param.getContent()).ifPresent(v -> barcode.setAttribute(XEasyPdfTemplateAttributes.CONTENT, v.intern()));
         // 设置条形码前景颜色
@@ -379,13 +507,13 @@ public class XEasyPdfTemplateBarcode implements XEasyPdfTemplateComponent {
         // 设置条形码文字颜色
         Optional.ofNullable(this.param.getWordsColor()).ifPresent(v -> XEasyPdfTemplateElementHandler.appendColor(barcode, XEasyPdfTemplateAttributes.WORDS_COLOR, v));
         // 设置条形码文字样式
-        Optional.ofNullable(this.param.getWordsStyle()).ifPresent(v -> barcode.setAttribute(XEasyPdfTemplateAttributes.WORDS_STYLE, v.intern()));
+        Optional.ofNullable(this.param.getWordsStyle()).ifPresent(v -> barcode.setAttribute(XEasyPdfTemplateAttributes.WORDS_STYLE, v.intern().toLowerCase()));
         // 设置条形码文字大小
-        Optional.ofNullable(this.param.getWordsSize()).ifPresent(v -> barcode.setAttribute(XEasyPdfTemplateAttributes.WORDS_SIZE, v.intern()));
+        Optional.ofNullable(this.param.getWordsSize()).ifPresent(v -> barcode.setAttribute(XEasyPdfTemplateAttributes.WORDS_SIZE, v.intern().toLowerCase()));
         // 设置条形码文字偏移量-X轴
-        Optional.ofNullable(this.param.getWordsOffsetX()).ifPresent(v -> barcode.setAttribute(XEasyPdfTemplateAttributes.WORDS_OFFSET_X, v.intern()));
+        Optional.ofNullable(this.param.getWordsOffsetX()).ifPresent(v -> barcode.setAttribute(XEasyPdfTemplateAttributes.WORDS_OFFSET_X, v.intern().toLowerCase()));
         // 设置条形码文字偏移量-Y轴
-        Optional.ofNullable(this.param.getWordsOffsetY()).ifPresent(v -> barcode.setAttribute(XEasyPdfTemplateAttributes.WORDS_OFFSET_Y, v.intern()));
+        Optional.ofNullable(this.param.getWordsOffsetY()).ifPresent(v -> barcode.setAttribute(XEasyPdfTemplateAttributes.WORDS_OFFSET_Y, v.intern().toLowerCase()));
         // 添加barcode元素
         foreignObject.appendChild(barcode);
         // 返回foreignObject元素

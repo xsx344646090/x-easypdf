@@ -3,7 +3,7 @@ package wiki.xsx.core.pdf.template.page;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.awt.Color;
+import java.awt.*;
 
 /**
  * pdf模板-页面参数
@@ -51,11 +51,19 @@ class XEasyPdfTemplatePageParam {
      */
     private String marginRight;
     /**
+     * id
+     */
+    private String id;
+    /**
      * 字体名称
      */
     private String fontFamily;
     /**
      * 字体样式
+     * <p>normal：正常</p>
+     * <p>oblique：斜体</p>
+     * <p>italic：斜体</p>
+     * <p>backslant：斜体</p>
      */
     private String fontStyle;
     /**
@@ -68,6 +76,10 @@ class XEasyPdfTemplatePageParam {
     private String fontSizeAdjust;
     /**
      * 字体重量
+     * <p>normal：正常（400）</p>
+     * <p>bold：粗体（700）</p>
+     * <p>bolder：加粗（900）</p>
+     * <p>lighter：细体（100）</p>
      */
     private String fontWeight;
     /**

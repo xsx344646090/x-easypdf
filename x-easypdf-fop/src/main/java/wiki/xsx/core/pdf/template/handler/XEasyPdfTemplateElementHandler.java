@@ -3,7 +3,7 @@ package wiki.xsx.core.pdf.template.handler;
 import org.w3c.dom.Element;
 import wiki.xsx.core.pdf.template.XEasyPdfTemplateAttributes;
 
-import java.awt.Color;
+import java.awt.*;
 
 /**
  * pdf模板元素助手

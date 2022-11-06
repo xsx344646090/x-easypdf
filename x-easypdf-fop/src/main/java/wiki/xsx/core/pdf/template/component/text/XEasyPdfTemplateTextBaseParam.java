@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 import wiki.xsx.core.pdf.template.component.XEasyPdfTemplateComponentParam;
 
-import java.awt.Color;
+import java.awt.*;
 
 /**
  * pdf模板-文本基础参数
@@ -29,44 +29,17 @@ import java.awt.Color;
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 class XEasyPdfTemplateTextBaseParam extends XEasyPdfTemplateComponentParam {
+
     /**
-     * 语言
-     *
-     * @see <a href="https://www.runoob.com/tags/html-language-codes.html">ISO 639-1 语言代码</a>
+     * 内部地址
+     * <p>注：标签id</p>
      */
-    protected String language;
+    private String linkInternalDestination;
     /**
-     * 行间距
+     * 外部地址
+     * <p>注：url</p>
      */
-    protected String leading;
-    /**
-     * 字符间距
-     */
-    protected String letterSpacing;
-    /**
-     * 字体名称
-     */
-    protected String fontFamily;
-    /**
-     * 字体样式
-     */
-    protected String fontStyle;
-    /**
-     * 字体大小
-     */
-    protected String fontSize;
-    /**
-     * 字体大小调整
-     */
-    protected String fontSizeAdjust;
-    /**
-     * 字体重量
-     */
-    protected String fontWeight;
-    /**
-     * 字体颜色
-     */
-    protected Color fontColor;
+    private String linkExternalDestination;
     /**
      * 删除线颜色
      */
@@ -87,4 +60,8 @@ class XEasyPdfTemplateTextBaseParam extends XEasyPdfTemplateComponentParam {
      * 是否包含下划线
      */
     protected Boolean hasUnderLine = Boolean.FALSE;
+    /**
+     * 是否包含超链接
+     */
+    protected Boolean hasLink = Boolean.FALSE;
 }

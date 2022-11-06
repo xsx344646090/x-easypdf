@@ -4,7 +4,7 @@ import org.junit.Test;
 import wiki.xsx.core.pdf.template.doc.XEasyPdfTemplateDocument;
 import wiki.xsx.core.pdf.template.handler.XEasyPdfTemplateHandler;
 
-import java.awt.Color;
+import java.awt.*;
 
 /**
  * @author xsx
@@ -64,7 +64,7 @@ public class XEasyPdfTemplateTextTest {
         // 转换pdf
         XEasyPdfTemplateDocument document = XEasyPdfTemplateHandler.Document.build().setConfigPath(configPath).addPage(
                 XEasyPdfTemplateHandler.Page.build().addBodyComponent(
-                        XEasyPdfTemplateHandler.TextExtend.build().setFontFamily("微软雅黑").setFontSize("30pt").addTexts(
+                        XEasyPdfTemplateHandler.TextExtend.build().setFontFamily("微软雅黑").setFontSize("30pt").addText(
                                 XEasyPdfTemplateHandler.Text.build().setText("hello"),
                                 XEasyPdfTemplateHandler.Text.build().setText("上标").setFontSize("12pt").setVerticalStyle("top"),
                                 XEasyPdfTemplateHandler.Text.build().setText(", world")

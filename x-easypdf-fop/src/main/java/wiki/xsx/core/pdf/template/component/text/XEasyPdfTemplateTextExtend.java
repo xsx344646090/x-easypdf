@@ -3,7 +3,7 @@ package wiki.xsx.core.pdf.template.component.text;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -38,11 +38,77 @@ public class XEasyPdfTemplateTextExtend extends XEasyPdfTemplateTextBase {
     /**
      * 设置初始化容量
      *
-     * @param initialCapacity 设置初始化容量
+     * @param initialCapacity 初始化容量
      * @return 返回文本扩展组件
      */
     private XEasyPdfTemplateTextExtend setInitialCapacity(int initialCapacity) {
         this.param.setTextList(new ArrayList<>(initialCapacity));
+        return this;
+    }
+
+    /**
+     * 设置上下左右边距
+     *
+     * @param margin 边距
+     * @return 返回文本扩展组件
+     */
+    public XEasyPdfTemplateTextExtend setMargin(String margin) {
+        this.param.setMargin(margin);
+        return this;
+    }
+
+    /**
+     * 设置上边距
+     *
+     * @param marginTop 上边距
+     * @return 返回文本扩展组件
+     */
+    public XEasyPdfTemplateTextExtend setMarginTop(String marginTop) {
+        this.param.setMarginTop(marginTop);
+        return this;
+    }
+
+    /**
+     * 设置下边距
+     *
+     * @param marginBottom 下边距
+     * @return 返回文本扩展组件
+     */
+    public XEasyPdfTemplateTextExtend setMarginBottom(String marginBottom) {
+        this.param.setMarginBottom(marginBottom);
+        return this;
+    }
+
+    /**
+     * 设置左边距
+     *
+     * @param marginLeft 左边距
+     * @return 返回文本扩展组件
+     */
+    public XEasyPdfTemplateTextExtend setMarginLeft(String marginLeft) {
+        this.param.setMarginLeft(marginLeft);
+        return this;
+    }
+
+    /**
+     * 设置右边距
+     *
+     * @param paddingRight 右边距
+     * @return 返回文本扩展组件
+     */
+    public XEasyPdfTemplateTextExtend setMarginRight(String paddingRight) {
+        this.param.setMarginRight(paddingRight);
+        return this;
+    }
+
+    /**
+     * 设置id
+     *
+     * @param id id
+     * @return 返回文本扩展组件
+     */
+    public XEasyPdfTemplateTextExtend setId(String id) {
+        this.param.setId(id);
         return this;
     }
 
@@ -81,6 +147,86 @@ public class XEasyPdfTemplateTextExtend extends XEasyPdfTemplateTextBase {
     }
 
     /**
+     * 设置单词间距
+     *
+     * @param spacing 单词间距
+     * @return 返回文本扩展组件
+     */
+    public XEasyPdfTemplateTextExtend setWordSpacing(String spacing) {
+        this.param.setWordSpacing(spacing);
+        return this;
+    }
+
+    /**
+     * 设置单词间距
+     * <p>normal：正常</p>
+     * <p>break-all：字符换行</p>
+     * <p>keep-all：整词换行</p>
+     *
+     * @param wordBreak 单词换行
+     * @return 返回文本扩展组件
+     */
+    public XEasyPdfTemplateTextExtend setWordBreak(String wordBreak) {
+        this.param.setWordBreak(wordBreak);
+        return this;
+    }
+
+    /**
+     * 设置文本缩进
+     *
+     * @param indent 缩进值
+     * @return 返回文本扩展组件
+     */
+    public XEasyPdfTemplateTextExtend setTextIndent(String indent) {
+        this.param.setTextIndent(indent);
+        return this;
+    }
+
+    /**
+     * 设置段前缩进
+     *
+     * @param indent 缩进值
+     * @return 返回文本扩展组件
+     */
+    public XEasyPdfTemplateTextExtend setStartIndent(String indent) {
+        this.param.setStartIndent(indent);
+        return this;
+    }
+
+    /**
+     * 设置段后缩进
+     *
+     * @param indent 缩进值
+     * @return 返回文本扩展组件
+     */
+    public XEasyPdfTemplateTextExtend setEndIndent(String indent) {
+        this.param.setEndIndent(indent);
+        return this;
+    }
+
+    /**
+     * 设置段前空白
+     *
+     * @param space 空白值
+     * @return 返回文本扩展组件
+     */
+    public XEasyPdfTemplateTextExtend setSpaceBefore(String space) {
+        this.param.setSpaceBefore(space);
+        return this;
+    }
+
+    /**
+     * 设置段后空白
+     *
+     * @param space 空白值
+     * @return 返回文本扩展组件
+     */
+    public XEasyPdfTemplateTextExtend setSpaceAfter(String space) {
+        this.param.setSpaceAfter(space);
+        return this;
+    }
+
+    /**
      * 设置字体名称
      *
      * @param fontFamily 字体名称
@@ -88,6 +234,36 @@ public class XEasyPdfTemplateTextExtend extends XEasyPdfTemplateTextBase {
      */
     public XEasyPdfTemplateTextExtend setFontFamily(String fontFamily) {
         this.param.setFontFamily(fontFamily);
+        return this;
+    }
+
+    /**
+     * 设置字体样式
+     * <p>normal：正常</p>
+     * <p>oblique：斜体</p>
+     * <p>italic：斜体</p>
+     * <p>backslant：斜体</p>
+     *
+     * @param fontStyle 字体样式
+     * @return 返回文本扩展组件
+     */
+    public XEasyPdfTemplateTextExtend setFontStyle(String fontStyle) {
+        this.param.setFontStyle(fontStyle);
+        return this;
+    }
+
+    /**
+     * 设置字体重量
+     * <p>normal：正常（400）</p>
+     * <p>bold：粗体（700）</p>
+     * <p>bolder：加粗（900）</p>
+     * <p>lighter：细体（100）</p>
+     *
+     * @param fontWeight 字体重量
+     * @return 返回文本扩展组件
+     */
+    public XEasyPdfTemplateTextExtend setFontWeight(String fontWeight) {
+        this.param.setFontWeight(fontWeight);
         return this;
     }
 
@@ -120,21 +296,84 @@ public class XEasyPdfTemplateTextExtend extends XEasyPdfTemplateTextBase {
      * @return 返回文本扩展组件
      */
     public XEasyPdfTemplateTextExtend setFontColor(Color fontColor) {
-        this.param.setFontColor(fontColor);
+        this.param.setColor(fontColor);
         return this;
     }
 
     /**
      * 设置水平样式
-     * <p>LEFT：居左</p>
-     * <p>CENTER：居中</p>
-     * <p>RIGHT：居右</p>
+     * <p>left：居左</p>
+     * <p>center：居中</p>
+     * <p>right：居右</p>
+     * <p>justify：两端对齐</p>
      *
      * @param style 水平样式
      * @return 返回文本扩展组件
      */
     public XEasyPdfTemplateTextExtend setHorizontalStyle(String style) {
         this.param.setHorizontalStyle(style);
+        return this;
+    }
+
+    /**
+     * 设置分页符-前
+     * <p>auto：自动</p>
+     * <p>column：分列</p>
+     * <p>page：分页</p>
+     * <p>even-page：在元素之前强制分页一次或两个，以便下一页将成为偶数页</p>
+     * <p>odd-page：在元素之前强制分页一次或两个，以便下一页将成为奇数页</p>
+     *
+     * @param breakBefore 分页符
+     * @return 返回文本扩展组件
+     */
+    public XEasyPdfTemplateTextExtend setBreakBefore(String breakBefore) {
+        this.param.setBreakBefore(breakBefore);
+        return this;
+    }
+
+    /**
+     * 设置分页符-后
+     * <p>auto：自动</p>
+     * <p>column：分列</p>
+     * <p>page：分页</p>
+     * <p>even-page：在元素之后强制分页一次或两个，以便下一页将成为偶数页</p>
+     * <p>odd-page：在元素之后强制分页一次或两个，以便下一页将成为奇数页</p>
+     *
+     * @param breakAfter 分页符
+     * @return 返回文本扩展组件
+     */
+    public XEasyPdfTemplateTextExtend setBreakAfter(String breakAfter) {
+        this.param.setBreakAfter(breakAfter);
+        return this;
+    }
+
+    /**
+     * 开启分页时保持
+     *
+     * @return 返回文本扩展组件
+     */
+    public XEasyPdfTemplateTextExtend enableKeepTogether() {
+        this.param.setKeepTogether("always");
+        return this;
+    }
+
+    /**
+     * 开启分页时与上一个元素保持
+     *
+     * @return 返回文本扩展组件
+     */
+    public XEasyPdfTemplateTextExtend enableKeepWithPrevious() {
+        this.param.setKeepWithPrevious("always");
+        return this;
+    }
+
+    /**
+     * 开启分页时与下一个元素保持
+     *
+     * @return 返回文本扩展组件
+     */
+    public XEasyPdfTemplateTextExtend enableKeepWithNext() {
+        this.param.setKeepWithNext("always");
         return this;
     }
 
@@ -149,28 +388,24 @@ public class XEasyPdfTemplateTextExtend extends XEasyPdfTemplateTextBase {
     }
 
     /**
-     * 添加文本扩展组件
+     * 添加文本组件
      *
      * @param texts 文本组件列表
      * @return 返回文本扩展组件
      */
-    public XEasyPdfTemplateTextExtend addTexts(XEasyPdfTemplateText... texts) {
-        if (texts != null) {
-            Collections.addAll(this.param.getTextList(), texts);
-        }
+    public XEasyPdfTemplateTextExtend addText(XEasyPdfTemplateText... texts) {
+        Optional.ofNullable(texts).ifPresent(v -> Collections.addAll(this.param.getTextList(), v));
         return this;
     }
 
     /**
-     * 添加文本扩展组件
+     * 添加文本组件
      *
-     * @param textList 文本组件列表
+     * @param texts 文本组件列表
      * @return 返回文本扩展组件
      */
-    public XEasyPdfTemplateTextExtend addTexts(List<XEasyPdfTemplateText> textList) {
-        if (textList != null) {
-            this.param.getTextList().addAll(textList);
-        }
+    public XEasyPdfTemplateTextExtend addText(List<XEasyPdfTemplateText> texts) {
+        Optional.ofNullable(texts).ifPresent(this.param.getTextList()::addAll);
         return this;
     }
 
@@ -189,8 +424,9 @@ public class XEasyPdfTemplateTextExtend extends XEasyPdfTemplateTextBase {
         }
         // 初始化block元素
         Element block = this.initBlock(document, this.param);
-        // 添加遍历子元素
+        // 添加子元素
         this.param.getTextList().forEach(
+                // 遍历元素
                 v -> Optional.ofNullable(v.init(this.param).createElement(document)).ifPresent(
                         // 添加元素
                         e -> block.appendChild(e.getFirstChild())

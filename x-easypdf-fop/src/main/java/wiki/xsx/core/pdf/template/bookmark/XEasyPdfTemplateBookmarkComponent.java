@@ -1,21 +1,17 @@
-package wiki.xsx.core.pdf.template.component.table;
+package wiki.xsx.core.pdf.template.bookmark;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.experimental.Accessors;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
- * pdf模板-表格行参数
+ * pdf模板-书签组件
  *
  * @author xsx
- * @date 2022/8/23
+ * @date 2022/8/5
  * @since 1.8
  * <p>
  * Copyright (c) 2020-2022 xsx All Rights Reserved.
- * x-easypdf is licensed under the Mulan PSL v2.
+ * x-easypdf is licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  * http://license.coscl.org.cn/MulanPSL2
@@ -25,13 +21,13 @@ import java.util.List;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-@Data
-@Accessors(chain = true)
-@EqualsAndHashCode(callSuper = true)
-class XEasyPdfTemplateTableRowParam extends XEasyPdfTemplateTableParam {
+public interface XEasyPdfTemplateBookmarkComponent {
 
     /**
-     * 单元格列表
+     * 创建元素
+     *
+     * @param document fo文档
+     * @return 返回元素
      */
-    private List<XEasyPdfTemplateTableCell> cells = new ArrayList<>(10);
+    Element createElement(Document document);
 }

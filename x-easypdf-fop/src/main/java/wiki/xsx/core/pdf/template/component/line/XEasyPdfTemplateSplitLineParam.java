@@ -27,6 +27,7 @@ import wiki.xsx.core.pdf.template.component.XEasyPdfTemplateComponentParam;
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 class XEasyPdfTemplateSplitLineParam extends XEasyPdfTemplateComponentParam {
+
     /**
      * 长度
      */
