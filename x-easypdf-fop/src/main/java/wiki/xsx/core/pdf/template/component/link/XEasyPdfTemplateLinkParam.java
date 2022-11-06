@@ -1,21 +1,20 @@
-package wiki.xsx.core.pdf.template.component.table;
+package wiki.xsx.core.pdf.template.component.link;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-
-import java.util.ArrayList;
-import java.util.List;
+import wiki.xsx.core.pdf.template.component.XEasyPdfTemplateComponent;
+import wiki.xsx.core.pdf.template.component.XEasyPdfTemplateComponentParam;
 
 /**
- * pdf模板-表格行参数
+ * pdf模板-超链接参数
  *
  * @author xsx
- * @date 2022/8/23
+ * @date 2022/11/2
  * @since 1.8
  * <p>
  * Copyright (c) 2020-2022 xsx All Rights Reserved.
- * x-easypdf is licensed under the Mulan PSL v2.
+ * x-easypdf is licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  * http://license.coscl.org.cn/MulanPSL2
@@ -28,10 +27,21 @@ import java.util.List;
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
-class XEasyPdfTemplateTableRowParam extends XEasyPdfTemplateTableParam {
+class XEasyPdfTemplateLinkParam extends XEasyPdfTemplateComponentParam {
 
     /**
-     * 单元格列表
+     * pdf模板组件
      */
-    private List<XEasyPdfTemplateTableCell> cells = new ArrayList<>(10);
+    private XEasyPdfTemplateComponent component;
+
+    /**
+     * 内部地址
+     * <p>注：标签id</p>
+     */
+    private String internalDestination;
+    /**
+     * 外部地址
+     * <p>注：url</p>
+     */
+    private String externalDestination;
 }

@@ -90,7 +90,15 @@ public class XEasyPdfTemplateXMLDataSource implements XEasyPdfTemplateDataSource
     @Override
     public void transform(FopFactory fopFactory, FOUserAgent foAgent, OutputStream outputStream) {
         this.domTransform(fopFactory, foAgent, this.templatePath, outputStream);
-        Optional.ofNullable(this.xmlInputStream).ifPresent(InputStream::close);
+        Optional.ofNullable(this.xmlInputStream).ifPresent(
+                v -> {
+                    try {
+                        v.close();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+        );
     }
 
     /**

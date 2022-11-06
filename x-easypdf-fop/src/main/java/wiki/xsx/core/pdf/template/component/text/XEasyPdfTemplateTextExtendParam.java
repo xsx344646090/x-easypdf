@@ -29,6 +29,7 @@ import java.util.List;
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 class XEasyPdfTemplateTextExtendParam extends XEasyPdfTemplateTextBaseParam {
+
     /**
      * 文本组件列表
      */

@@ -5,6 +5,8 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 import wiki.xsx.core.pdf.template.component.XEasyPdfTemplateComponentParam;
 
+import java.awt.*;
+
 /**
  * pdf模板-表格参数
  *
@@ -27,22 +29,41 @@ import wiki.xsx.core.pdf.template.component.XEasyPdfTemplateComponentParam;
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 class XEasyPdfTemplateTableParam extends XEasyPdfTemplateComponentParam {
+
     /**
      * 宽度
      */
-    private String width;
+    protected String width;
     /**
      * 高度
      */
-    private String height;
+    protected String height;
     /**
-     * 最小列宽
+     * 边框
      */
-    private String minColumnWidth;
+    protected String border;
     /**
-     * 最小行高
+     * 边框样式
+     * <p>none：无</p>
+     * <p>hidden：隐藏</p>
+     * <p>dotted：点虚线</p>
+     * <p>dashed：短虚线</p>
+     * <p>solid：实线</p>
+     * <p>double：双实线</p>
+     * <p>groove：凹线（槽）</p>
+     * <p>ridge：凸线（脊）</p>
+     * <p>inset：嵌入</p>
+     * <p>outset：凸出</p>
      */
-    private String minRowHeight;
+    protected String borderStyle;
+    /**
+     * 边框颜色
+     */
+    protected Color borderColor;
+    /**
+     * 边框宽度
+     */
+    protected String borderWidth;
     /**
      * 边框折叠
      */
@@ -52,13 +73,13 @@ class XEasyPdfTemplateTableParam extends XEasyPdfTemplateComponentParam {
      */
     protected String borderSpacing;
     /**
-     * 边框
+     * 最小列宽
      */
-    protected String border;
+    protected String minColumnWidth;
     /**
-     * 边框样式
+     * 最小行高
      */
-    private String borderStyle;
+    protected String minRowHeight;
     /**
      * 表头
      */
@@ -71,4 +92,14 @@ class XEasyPdfTemplateTableParam extends XEasyPdfTemplateComponentParam {
      * 表尾
      */
     private XEasyPdfTemplateTableFooter footer;
+    /**
+     * 是否自动省略表头
+     * <p>默认：false</p>
+     */
+    private Boolean isAutoOmitHeader;
+    /**
+     * 是否自动省略表尾
+     * <p>默认：false</p>
+     */
+    private Boolean isAutoOmitFooter;
 }

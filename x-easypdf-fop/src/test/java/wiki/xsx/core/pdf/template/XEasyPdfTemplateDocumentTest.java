@@ -39,6 +39,7 @@ public class XEasyPdfTemplateDocumentTest {
         String outputPath = "E:\\pdf\\test\\fo\\template-document.pdf";
         // 转换pdf
         XEasyPdfTemplateHandler.Document.build().setConfigPath(configPath).addPage(
+                XEasyPdfTemplateHandler.Page.build(),
                 XEasyPdfTemplateHandler.Page.build()
         ).transform(outputPath);
     }
@@ -50,6 +51,45 @@ public class XEasyPdfTemplateDocumentTest {
                         XEasyPdfTemplateHandler.Text.build().setText("你好贵阳")
                                 .setHorizontalStyle("center")
                                 .setFontFamily("微软雅黑")
+                )
+        ).transform("E:\\pdf\\test\\fo\\document.pdf");
+    }
+
+    @Test
+    public void testTemp() {
+        XEasyPdfTemplateHandler.Document.build().addPage(
+                XEasyPdfTemplateHandler.Page.build().addBodyComponent(
+                        XEasyPdfTemplateHandler.Table.build().setFontFamily("微软雅黑").setBody(
+                                XEasyPdfTemplateHandler.Table.Body.build().addRow(
+                                        XEasyPdfTemplateHandler.Table.Row.build().addCell(
+                                                XEasyPdfTemplateHandler.Table.Cell.build().addComponent(
+                                                        XEasyPdfTemplateHandler.TextExtend.build().addText(
+                                                                XEasyPdfTemplateHandler.Text.build().setText("正"),
+                                                                XEasyPdfTemplateHandler.Text.build().setFontSize("6pt").setVerticalStyle("top").setText("上标")
+                                                        ),
+                                                        XEasyPdfTemplateHandler.Text.build().setFontSize("6pt").setText("下标").setMarginLeft("50px").setMarginTop("-10px")
+                                                ),
+                                                XEasyPdfTemplateHandler.Table.Cell.build().addComponent(
+                                                        XEasyPdfTemplateHandler.TextExtend.build().addText(
+                                                                XEasyPdfTemplateHandler.Text.build().setText("正正"),
+                                                                XEasyPdfTemplateHandler.Text.build().setFontSize("6pt").setVerticalStyle("top").setText("上标")
+                                                        )
+                                                )
+                                        ),
+                                        XEasyPdfTemplateHandler.Table.Row.build().addCell(
+                                                XEasyPdfTemplateHandler.Table.Cell.build().addComponent(
+                                                        XEasyPdfTemplateHandler.TextExtend.build().addText(
+                                                                XEasyPdfTemplateHandler.Text.build().setText("正正正")
+                                                        )
+                                                ),
+                                                XEasyPdfTemplateHandler.Table.Cell.build().addComponent(
+                                                        XEasyPdfTemplateHandler.TextExtend.build().addText(
+                                                                XEasyPdfTemplateHandler.Text.build().setText("正正正")
+                                                        )
+                                                )
+                                        )
+                                )
+                        )
                 )
         ).transform("E:\\pdf\\test\\fo\\document.pdf");
     }

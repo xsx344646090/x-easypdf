@@ -36,9 +36,19 @@ public class XEasyPdfTemplateTableBody {
     private List<XEasyPdfTemplateTableRow> rows = new ArrayList<>(10);
 
     /**
+     * 最小列宽
+     */
+    private String minColumnWidth;
+
+    /**
+     * 最小行高
+     */
+    private String minRowHeight;
+
+    /**
      * 设置初始化容量
      *
-     * @param initialCapacity 设置初始化容量
+     * @param initialCapacity 初始化容量
      * @return 返回表格体组件
      */
     private XEasyPdfTemplateTableBody setInitialCapacity(int initialCapacity) {
@@ -89,9 +99,31 @@ public class XEasyPdfTemplateTableBody {
         // 遍历表格行列表
         for (XEasyPdfTemplateTableRow row : this.rows) {
             // 添加表格行
-            tableBody.appendChild(row.createElement(document));
+            tableBody.appendChild(row.setMinColumnWidth(this.minColumnWidth).setMinRowHeight(this.minRowHeight).createElement(document));
         }
         // 返回tableBody元素
         return tableBody;
+    }
+
+    /**
+     * 设置最小行高
+     *
+     * @param minRowHeight 最小行高
+     * @return 返回表格体组件
+     */
+    XEasyPdfTemplateTableBody setMinRowHeight(String minRowHeight) {
+        this.minRowHeight = minRowHeight;
+        return this;
+    }
+
+    /**
+     * 设置最小列宽
+     *
+     * @param minColumnWidth 最小列宽
+     * @return 返回表格体组件
+     */
+    XEasyPdfTemplateTableBody setMinColumnWidth(String minColumnWidth) {
+        this.minColumnWidth = minColumnWidth;
+        return this;
     }
 }

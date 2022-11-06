@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 import wiki.xsx.core.pdf.template.component.XEasyPdfTemplateComponentParam;
 
-import java.awt.Color;
+import java.awt.*;
 
 /**
  * pdf模板-条形码参数
@@ -80,10 +80,10 @@ class XEasyPdfTemplateBarcodeParam extends XEasyPdfTemplateComponentParam {
     private Color wordsColor;
     /**
      * 条形码文字样式
-     * <p>NORMAL：正常</p>
-     * <p>BOLD：粗体</p>
-     * <p>BOLD_ITALIC：粗体斜体</p>
-     * <p>ITALIC：斜体</p>
+     * <p>normal：正常</p>
+     * <p>bold：粗体</p>
+     * <p>bold_italic：粗体斜体</p>
+     * <p>italic：斜体</p>
      */
     private String wordsStyle;
     /**

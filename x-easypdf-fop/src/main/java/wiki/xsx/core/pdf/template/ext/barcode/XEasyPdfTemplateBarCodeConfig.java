@@ -12,10 +12,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import wiki.xsx.core.pdf.template.XEasyPdfTemplateAttributes;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Rectangle;
+import java.awt.*;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
@@ -93,6 +90,7 @@ public class XEasyPdfTemplateBarCodeConfig {
      * <p>正常：Font.PLAIN</p>
      * <p>粗体：Font.BOLD</p>
      * <p>斜体：Font.ITALIC</p>
+     * <p>粗体斜体：Font.BOLD|Font.ITALIC</p>
      */
     private Integer wordsStyle;
     /**
@@ -192,7 +190,7 @@ public class XEasyPdfTemplateBarCodeConfig {
      */
     private void initParams(NamedNodeMap attributes) {
         // 初始化类型
-        this.type = this.resolveValue(attributes, XEasyPdfTemplateAttributes.TYPE, null, BarcodeFormat::valueOf);
+        this.type = this.resolveValue(attributes, XEasyPdfTemplateAttributes.TYPE, null, v -> BarcodeFormat.valueOf(v.toUpperCase()));
         // 初始化缩放比例
         this.scaleRate = this.resolveValue(attributes, XEasyPdfTemplateAttributes.SCALE_RATE, "2", Double::parseDouble);
         // 初始化图像宽度
@@ -365,7 +363,7 @@ public class XEasyPdfTemplateBarCodeConfig {
          * @return 返回样式
          */
         static int getStyle(String name) {
-            return valueOf(name).style;
+            return valueOf(name.toUpperCase()).style;
         }
     }
 }

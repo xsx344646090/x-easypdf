@@ -146,6 +146,17 @@ public class XEasyPdfTemplateImage implements XEasyPdfTemplateComponent {
     }
 
     /**
+     * 设置id
+     *
+     * @param id id
+     * @return 返回图像组件
+     */
+    public XEasyPdfTemplateImage setId(String id) {
+        this.param.setId(id);
+        return this;
+    }
+
+    /**
      * 设置宽度
      *
      * @param width 宽度
@@ -181,15 +192,77 @@ public class XEasyPdfTemplateImage implements XEasyPdfTemplateComponent {
 
     /**
      * 设置水平样式
-     * <p>LEFT：居左</p>
-     * <p>CENTER：居中</p>
-     * <p>RIGHT：居右</p>
+     * <p>left：居左</p>
+     * <p>center：居中</p>
+     * <p>right：居右</p>
      *
      * @param style 水平样式
      * @return 返回图像组件
      */
     public XEasyPdfTemplateImage setHorizontalStyle(String style) {
         this.param.setHorizontalStyle(style);
+        return this;
+    }
+
+    /**
+     * 设置分页符-前
+     * <p>auto：自动</p>
+     * <p>column：分列</p>
+     * <p>page：分页</p>
+     * <p>even-page：在元素之前强制分页一次或两个，以便下一页将成为偶数页</p>
+     * <p>odd-page：在元素之前强制分页一次或两个，以便下一页将成为奇数页</p>
+     *
+     * @param breakBefore 分页符
+     * @return 返回图像组件
+     */
+    public XEasyPdfTemplateImage setBreakBefore(String breakBefore) {
+        this.param.setBreakBefore(breakBefore);
+        return this;
+    }
+
+    /**
+     * 设置分页符-后
+     * <p>auto：自动</p>
+     * <p>column：分列</p>
+     * <p>page：分页</p>
+     * <p>even-page：在元素之后强制分页一次或两个，以便下一页将成为偶数页</p>
+     * <p>odd-page：在元素之后强制分页一次或两个，以便下一页将成为奇数页</p>
+     *
+     * @param breakAfter 分页符
+     * @return 返回图像组件
+     */
+    public XEasyPdfTemplateImage setBreakAfter(String breakAfter) {
+        this.param.setBreakAfter(breakAfter);
+        return this;
+    }
+
+    /**
+     * 开启分页时保持
+     *
+     * @return 返回图像组件
+     */
+    public XEasyPdfTemplateImage enableKeepTogether() {
+        this.param.setKeepTogether("always");
+        return this;
+    }
+
+    /**
+     * 开启分页时与上一个元素保持
+     *
+     * @return 返回图像组件
+     */
+    public XEasyPdfTemplateImage enableKeepWithPrevious() {
+        this.param.setKeepWithPrevious("always");
+        return this;
+    }
+
+    /**
+     * 开启分页时与下一个元素保持
+     *
+     * @return 返回图像组件
+     */
+    public XEasyPdfTemplateImage enableKeepWithNext() {
+        this.param.setKeepWithNext("always");
         return this;
     }
 
@@ -243,20 +316,10 @@ public class XEasyPdfTemplateImage implements XEasyPdfTemplateComponent {
     private Element createExternalGraphic(Document document) {
         // 创建externalGraphic元素
         Element externalGraphic = document.createElement(XEasyPdfTemplateTags.EXTERNAL_GRAPHIC);
-        // 设置上下左右填充
-        Optional.ofNullable(param.getPadding()).ifPresent(v -> externalGraphic.setAttribute(XEasyPdfTemplateAttributes.PADDING, v.intern()));
-        // 设置上填充
-        Optional.ofNullable(param.getPaddingTop()).ifPresent(v -> externalGraphic.setAttribute(XEasyPdfTemplateAttributes.PADDING_TOP, v.intern()));
-        // 设置下填充
-        Optional.ofNullable(param.getPaddingBottom()).ifPresent(v -> externalGraphic.setAttribute(XEasyPdfTemplateAttributes.PADDING_BOTTOM, v.intern()));
-        // 设置左填充
-        Optional.ofNullable(param.getPaddingLeft()).ifPresent(v -> externalGraphic.setAttribute(XEasyPdfTemplateAttributes.PADDING_LEFT, v.intern()));
-        // 设置右填充
-        Optional.ofNullable(param.getPaddingRight()).ifPresent(v -> externalGraphic.setAttribute(XEasyPdfTemplateAttributes.PADDING_RIGHT, v.intern()));
         // 设置图像宽度
-        Optional.ofNullable(this.param.getWidth()).ifPresent(v -> externalGraphic.setAttribute(XEasyPdfTemplateAttributes.CONTENT_WIDTH, v.intern()));
+        Optional.ofNullable(this.param.getWidth()).ifPresent(v -> externalGraphic.setAttribute(XEasyPdfTemplateAttributes.CONTENT_WIDTH, v.intern().toLowerCase()));
         // 设置图像高度
-        Optional.ofNullable(this.param.getHeight()).ifPresent(v -> externalGraphic.setAttribute(XEasyPdfTemplateAttributes.CONTENT_HEIGHT, v.intern()));
+        Optional.ofNullable(this.param.getHeight()).ifPresent(v -> externalGraphic.setAttribute(XEasyPdfTemplateAttributes.CONTENT_HEIGHT, v.intern().toLowerCase()));
         // 设置图像路径
         externalGraphic.setAttribute(XEasyPdfTemplateAttributes.SRC, this.param.getIsRemote() != null ? this.param.getPath().intern() : new File(this.param.getPath()).toURI().getPath().intern());
         // 返回externalGraphic元素

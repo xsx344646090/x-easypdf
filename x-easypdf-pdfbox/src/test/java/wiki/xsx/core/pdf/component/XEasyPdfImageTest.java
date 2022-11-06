@@ -54,8 +54,8 @@ public class XEasyPdfImageTest {
     @Test
     public void test() throws IOException {
         long begin = System.currentTimeMillis();
-        String sourcePath = OUTPUT_PATH + "testImage2.pdf";
-        String filePath = OUTPUT_PATH + "testImageWatermark.pdf";
+        String sourcePath = OUTPUT_PATH + "111.pdf";
+        String filePath = OUTPUT_PATH + "testImageWatermark2.pdf";
         XEasyPdfDocument document = XEasyPdfHandler.Document.load(sourcePath);
         document.setGlobalWatermark(
                 XEasyPdfHandler.Watermark.build("贵阳")

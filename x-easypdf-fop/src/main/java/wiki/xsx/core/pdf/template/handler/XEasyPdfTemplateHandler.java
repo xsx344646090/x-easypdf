@@ -1,8 +1,13 @@
 package wiki.xsx.core.pdf.template.handler;
 
+import wiki.xsx.core.pdf.template.bookmark.XEasyPdfTemplateBookmark;
 import wiki.xsx.core.pdf.template.component.barcode.XEasyPdfTemplateBarcode;
+import wiki.xsx.core.pdf.template.component.block.XEasyPdfTemplateBlock;
 import wiki.xsx.core.pdf.template.component.image.XEasyPdfTemplateImage;
 import wiki.xsx.core.pdf.template.component.line.XEasyPdfTemplateSplitLine;
+import wiki.xsx.core.pdf.template.component.link.XEasyPdfTemplateLink;
+import wiki.xsx.core.pdf.template.component.page.XEasyPdfTemplateCurrentPageNumber;
+import wiki.xsx.core.pdf.template.component.page.XEasyPdfTemplateTotalPageNumber;
 import wiki.xsx.core.pdf.template.component.table.*;
 import wiki.xsx.core.pdf.template.component.text.XEasyPdfTemplateText;
 import wiki.xsx.core.pdf.template.component.text.XEasyPdfTemplateTextExtend;
@@ -119,6 +124,34 @@ public class XEasyPdfTemplateHandler {
          */
         public static XEasyPdfTemplatePage build() {
             return new XEasyPdfTemplatePage();
+        }
+    }
+
+    /**
+     * pdf模板当前页码
+     */
+    public static class CurrentPageNumber {
+        /**
+         * 构建当前页码
+         *
+         * @return 返回pdf模板-当前页码
+         */
+        public static XEasyPdfTemplateCurrentPageNumber build() {
+            return new XEasyPdfTemplateCurrentPageNumber();
+        }
+    }
+
+    /**
+     * pdf模板总页码
+     */
+    public static class TotalPageNumber {
+        /**
+         * 构建总页码
+         *
+         * @return 返回pdf模板-总页码
+         */
+        public static XEasyPdfTemplateTotalPageNumber build() {
+            return new XEasyPdfTemplateTotalPageNumber();
         }
     }
 
@@ -264,6 +297,34 @@ public class XEasyPdfTemplateHandler {
     }
 
     /**
+     * pdf模板超链接
+     */
+    public static class Link {
+        /**
+         * 构建超链接
+         *
+         * @return 返回pdf模板-超链接
+         */
+        public static XEasyPdfTemplateLink build() {
+            return new XEasyPdfTemplateLink();
+        }
+    }
+
+    /**
+     * pdf模板块
+     */
+    public static class Block {
+        /**
+         * 构建块
+         *
+         * @return 返回pdf模板-块
+         */
+        public static XEasyPdfTemplateBlock build() {
+            return new XEasyPdfTemplateBlock();
+        }
+    }
+
+    /**
      * pdf模板条形码
      */
     public static class Barcode {
@@ -274,6 +335,20 @@ public class XEasyPdfTemplateHandler {
          */
         public static XEasyPdfTemplateBarcode build() {
             return new XEasyPdfTemplateBarcode();
+        }
+    }
+
+    /**
+     * pdf模板书签
+     */
+    public static class Bookmark {
+        /**
+         * 构建书签
+         *
+         * @return 返回pdf模板-书签
+         */
+        public static XEasyPdfTemplateBookmark build() {
+            return new XEasyPdfTemplateBookmark();
         }
     }
 

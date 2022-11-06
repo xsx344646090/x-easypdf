@@ -2,6 +2,7 @@ package wiki.xsx.core.pdf.template.doc;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
+import wiki.xsx.core.pdf.template.bookmark.XEasyPdfTemplateBookmarkComponent;
 import wiki.xsx.core.pdf.template.page.XEasyPdfTemplatePageComponent;
 
 import java.util.ArrayList;
@@ -36,4 +37,8 @@ class XEasyPdfTemplateDocumentParam {
      * pdf模板页面列表
      */
     private final List<XEasyPdfTemplatePageComponent> pageList = new ArrayList<>(10);
+    /**
+     * pdf模板书签列表
+     */
+    private List<XEasyPdfTemplateBookmarkComponent> bookmarkList = new ArrayList<>(10);
 }
