@@ -2,7 +2,6 @@ package wiki.xsx.core.pdf.template;
 
 import org.junit.Test;
 import wiki.xsx.core.pdf.template.handler.XEasyPdfTemplateHandler;
-import wiki.xsx.core.pdf.template.template.XEasyPdfTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +28,7 @@ public class XEasyPdfTemplateBarcodeTest {
     @Test
     public void testBarcodeForXML() {
         // 定义xsl-fo模板路径
-        String templatePath = "src/test/resources/wiki/xsx/core/pdf/template/barcode/barcode.fo";
+        String templatePath = "src/test/resources/wiki/xsx/core/pdf/template/barcode/template.fo";
         // 定义pdf输出路径
         String outputPath = "E:\\pdf\\test\\fo\\barcode.pdf";
         // 转换pdf
@@ -41,7 +40,7 @@ public class XEasyPdfTemplateBarcodeTest {
     @Test
     public void testBarcodeForXML2() {
         // 定义xsl-fo模板路径
-        String templatePath = "src/test/resources/wiki/xsx/core/pdf/template/barcode/barcode.fo";
+        String templatePath = "src/test/resources/wiki/xsx/core/pdf/template/barcode/template.fo";
         // 定义pdf输出路径
         String outputPath = "E:\\pdf\\test\\fo\\";
         // 构建pdf模板
@@ -56,7 +55,7 @@ public class XEasyPdfTemplateBarcodeTest {
     @Test
     public void testBarcodeForXML3() {
         // 定义xsl-fo模板路径
-        String templatePath = "src/test/resources/wiki/xsx/core/pdf/template/barcode/barcode.fo";
+        String templatePath = "src/test/resources/wiki/xsx/core/pdf/template/barcode/template.fo";
         // 定义pdf输出路径
         String outputPath = "E:\\pdf\\test\\fo\\";
         // 定义任务列表

@@ -136,6 +136,10 @@ public class XEasyPdfTemplateAttributes {
      */
     public static final String BORDER_SPACING = "border-spacing";
     /**
+     * 边框圆角
+     */
+    public static final String BORDER_RADIUS = "border-radius";
+    /**
      * 上边框
      */
     public static final String BORDER_TOP = "border-top";
@@ -151,6 +155,10 @@ public class XEasyPdfTemplateAttributes {
      * 上边框宽度
      */
     public static final String BORDER_TOP_WIDTH = "border-top-width";
+    /**
+     * 上边框圆角
+     */
+    public static final String BORDER_TOP_RADIUS = "border-top-radius";
     /**
      * 下边框
      */
@@ -168,6 +176,10 @@ public class XEasyPdfTemplateAttributes {
      */
     public static final String BORDER_BOTTOM_WIDTH = "border-bottom-width";
     /**
+     * 下边框圆角
+     */
+    public static final String BORDER_BOTTOM_RADIUS = "border-bottom-radius";
+    /**
      * 左边框
      */
     public static final String BORDER_LEFT = "border-left";
@@ -184,6 +196,10 @@ public class XEasyPdfTemplateAttributes {
      */
     public static final String BORDER_LEFT_WIDTH = "border-left-width";
     /**
+     * 左边框圆角
+     */
+    public static final String BORDER_LEFT_RADIUS = "border-left-radius";
+    /**
      * 右边框
      */
     public static final String BORDER_RIGHT = "border-right";
@@ -199,6 +215,10 @@ public class XEasyPdfTemplateAttributes {
      * 右边框宽度
      */
     public static final String BORDER_RIGHT_WIDTH = "border-right-width";
+    /**
+     * 右边框圆角
+     */
+    public static final String BORDER_RIGHT_RADIUS = "border-right-radius";
     /**
      * 合并行
      */
@@ -312,6 +332,10 @@ public class XEasyPdfTemplateAttributes {
      */
     public static final String WORDS_COLOR = "words-color";
     /**
+     * 文字名称
+     */
+    public static final String WORDS_FAMILY = "words-family";
+    /**
      * 文字样式
      */
     public static final String WORDS_STYLE = "words-style";
@@ -405,4 +429,54 @@ public class XEasyPdfTemplateAttributes {
      * <p>always：总是</p>
      */
     public static final String KEEP_WITH_NEXT = "keep-with-next";
+    /**
+     * 背景
+     */
+    public static final String BACKGROUND = "background";
+    /**
+     * 背景图片
+     */
+    public static final String BACKGROUND_IMAGE = "background-image";
+    /**
+     * 背景图片宽度
+     */
+    public static final String BACKGROUND_IMAGE_WIDTH = "fox:background-image-width";
+    /**
+     * 背景图片高度
+     */
+    public static final String BACKGROUND_IMAGE_HEIGHT = "fox:background-image-height";
+    /**
+     * 背景附件
+     * <p>scroll：滚动</p>
+     * <p>fixed：固定</p>
+     */
+    public static final String BACKGROUND_ATTACHMENT = "background-attachment";
+    /**
+     * 背景颜色
+     * <p>color：颜色（名称或16进制颜色）</p>
+     * <p>transparent：透明</p>
+     */
+    public static final String BACKGROUND_COLOR = "background-color";
+    /**
+     * 背景图片定位
+     * <p>第一个参数为X轴</p>
+     * <p>第二个参数为Y轴</p>
+     */
+    public static final String BACKGROUND_POSITION = "background-position";
+    /**
+     * 背景图片水平定位
+     */
+    public static final String BACKGROUND_POSITION_HORIZONTAL = "background-position-horizontal";
+    /**
+     * 背景图片垂直定位
+     */
+    public static final String BACKGROUND_POSITION_VERTICAL = "background-position-vertical";
+    /**
+     * 背景图片重复
+     * <p>repeat：水平垂直重复</p>
+     * <p>repeat-x：水平重复</p>
+     * <p>repeat-y：垂直重复</p>
+     * <p>no-repeat：不重复</p>
+     */
+    public static final String BACKGROUND_REPEAT = "background-repeat";
 }

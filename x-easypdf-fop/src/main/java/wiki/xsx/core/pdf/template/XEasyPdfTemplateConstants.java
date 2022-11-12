@@ -48,4 +48,8 @@ public final class XEasyPdfTemplateConstants {
      * 命名空间
      */
     public static final String NAMESPACE = "http://www.x-easypdf.cn/ns";
+    /**
+     * freemarker模板路径key
+     */
+    public static final String FREEMARKER_TEMPLATE_PATH_KEY = "x-easypdf.freemarker.dir";
 }
