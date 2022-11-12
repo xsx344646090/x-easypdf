@@ -46,6 +46,16 @@ public class XEasyPdfTemplateTags {
      */
     public static final String REGION_AFTER = "fo:region-after";
     /**
+     * 左侧栏
+     * <p>标签："fo:region-start"</p>
+     */
+    public static final String REGION_START = "fo:region-start";
+    /**
+     * 右侧栏
+     * <p>标签："fo:region-end"</p>
+     */
+    public static final String REGION_END = "fo:region-end";
+    /**
      * 页面序列
      * <p>标签："fo:page-sequence"</p>
      */
@@ -75,6 +85,11 @@ public class XEasyPdfTemplateTags {
      * <p>标签："fo:block"</p>
      */
     public static final String BLOCK = "fo:block";
+    /**
+     * 块容器
+     * <p>标签："fo:block-container"</p>
+     */
+    public static final String BLOCK_CONTAINER = "fo:block-container";
     /**
      * 内联
      * <p>标签："fo:inline"</p>

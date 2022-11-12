@@ -8,13 +8,14 @@ import org.apache.xmlgraphics.image.loader.ImageContext;
 import org.apache.xmlgraphics.image.loader.ImageInfo;
 import org.apache.xmlgraphics.image.loader.impl.AbstractImagePreloader;
 import org.w3c.dom.Node;
+import wiki.xsx.core.pdf.template.util.XEasyPdfTemplateImageUtil;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 条形码预加载器
@@ -39,7 +40,7 @@ public class XEasyPdfTemplateBarcodePreloader extends AbstractImagePreloader {
     /**
      * 图像缓存
      */
-    private final Map<String, BufferedImage> cache = new ConcurrentHashMap<>(16);
+    private static final Map<String, BufferedImage> CACHE = new HashMap<>(10);
     /**
      * 缓存锁
      */
@@ -96,19 +97,19 @@ public class XEasyPdfTemplateBarcodePreloader extends AbstractImagePreloader {
      */
     private BufferedImage getImage(String uri, XEasyPdfTemplateBarCodeConfig config) {
         // 获取图像
-        BufferedImage barcodeImage = this.cache.get(uri);
+        BufferedImage barcodeImage = CACHE.get(uri);
         // 如果图像为空，则创建图像
         if (barcodeImage == null) {
             // 加锁
             synchronized (LOCK) {
-                // 二次获取图像
-                barcodeImage = this.cache.get(uri);
+                // 再次获取图像
+                barcodeImage = CACHE.get(uri);
                 // 如果图像为空，则创建图像
                 if (barcodeImage == null) {
                     // 创建图像
                     barcodeImage = this.createBarCodeImage(config);
                     // 添加缓存
-                    this.cache.put(uri, barcodeImage);
+                    CACHE.put(uri, barcodeImage);
                 }
             }
         }
@@ -143,7 +144,7 @@ public class XEasyPdfTemplateBarcodePreloader extends AbstractImagePreloader {
         // 如果需要旋转，则重置图像为旋转后的图像
         if (config.isRotate()) {
             // 重置图像为旋转后的图像
-            barCodeImage = this.rotate(barCodeImage, config.getRotateRectangle(), config.getRadians());
+            barCodeImage = XEasyPdfTemplateImageUtil.rotate(barCodeImage, config.getRotateRectangle(), config.getRadians());
         }
         // 返回图像
         return barCodeImage;
@@ -222,7 +223,7 @@ public class XEasyPdfTemplateBarcodePreloader extends AbstractImagePreloader {
         // 设置图像
         graphics.drawImage(image, 0, 0, width, height, null);
         // 设置字体
-        graphics.setFont(new Font(null, config.getWordsStyle(), config.getWordsSize()));
+        graphics.setFont(new Font(config.getWordsFamily(), config.getWordsStyle(), config.getWordsSize()));
         // 文字长度
         int strWidth = graphics.getFontMetrics().stringWidth(config.getWords());
         // 定义X轴开始坐标（居中显示）
@@ -237,49 +238,5 @@ public class XEasyPdfTemplateBarcodePreloader extends AbstractImagePreloader {
         image.flush();
         // 返回转换图像
         return out;
-    }
-
-    /**
-     * 旋转图片
-     *
-     * @param sourceImage 源图片
-     * @param rectangle   旋转尺寸
-     * @param radians     旋转弧度
-     * @return 返回旋转后的图片对象
-     */
-    private BufferedImage rotate(BufferedImage sourceImage, Rectangle rectangle, double radians) {
-        // 如果源图片为空，则提示错误信息
-        if (sourceImage == null) {
-            // 提示错误信息
-            throw new IllegalArgumentException("Image can not be null");
-        }
-        // 获取图片宽度
-        int imageWidth = sourceImage.getWidth();
-        // 获取图片高度
-        int imageHeight = sourceImage.getHeight();
-        // 创建图片
-        BufferedImage image = new BufferedImage(rectangle.width, rectangle.height, sourceImage.getType());
-        // 创建2d图像
-        Graphics2D graphics = image.createGraphics();
-        // 设置插值
-        graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
-        // 设置图像抗锯齿
-        graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        // 设置文本抗锯齿
-        graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        // 设置笔划规范化控制参数
-        graphics.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
-        // 转换
-        graphics.translate((rectangle.width - imageWidth) / 2D, (rectangle.height - imageHeight) / 2D);
-        // 旋转
-        graphics.rotate(Math.toRadians(radians), imageWidth / 2D, imageHeight / 2D);
-        // 绘制图像
-        graphics.drawImage(sourceImage, 0, 0, null);
-        // 关闭资源
-        graphics.dispose();
-        // 刷新图片
-        sourceImage.flush();
-        // 返回图片
-        return image;
     }
 }

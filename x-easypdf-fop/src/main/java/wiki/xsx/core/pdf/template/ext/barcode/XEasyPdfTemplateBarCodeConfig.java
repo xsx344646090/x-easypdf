@@ -11,6 +11,8 @@ import org.apache.xmlgraphics.util.UnitConv;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import wiki.xsx.core.pdf.template.XEasyPdfTemplateAttributes;
+import wiki.xsx.core.pdf.template.util.XEasyPdfTemplateFontStyleUtil;
+import wiki.xsx.core.pdf.template.doc.page.XEasyPdfTemplatePageRectangle;
 
 import java.awt.*;
 import java.nio.charset.StandardCharsets;
@@ -86,6 +88,10 @@ public class XEasyPdfTemplateBarCodeConfig {
      */
     private Color wordsColor;
     /**
+     * 条形码文字名称
+     */
+    private String wordsFamily;
+    /**
      * 条形码文字样式
      * <p>正常：Font.PLAIN</p>
      * <p>粗体：Font.BOLD</p>
@@ -152,7 +158,7 @@ public class XEasyPdfTemplateBarCodeConfig {
      * @return 返回布尔值，是为true，否为false
      */
     boolean isRotate() {
-        return this.radians != null && this.radians % 360 != 0;
+        return this.radians != null;
     }
 
     /**
@@ -161,26 +167,7 @@ public class XEasyPdfTemplateBarCodeConfig {
      * @return 返回旋转后的尺寸
      */
     Rectangle getRotateRectangle() {
-        Rectangle src = new Rectangle(new Dimension(this.width, this.words == null ? this.height : this.height + wordsSize));
-        final int angle = 90;
-        final int num = 2;
-        if (this.radians < 0) {
-            this.radians += 360;
-        }
-        if (this.radians >= angle) {
-            if (this.radians / angle % num == 1) {
-                return new Rectangle((int) src.getHeight(), (int) src.getWidth());
-            }
-            this.radians = this.radians % angle;
-        }
-        double radius = Math.sqrt(src.height * src.height + src.width * src.width) / num;
-        double len = num * Math.sin(Math.toRadians(this.radians) / num) * radius;
-        double radiansAlpha = (Math.PI - Math.toRadians(this.radians)) / num;
-        double radiansWidth = Math.atan(src.height / (double) src.width);
-        double radiansHeight = Math.atan(src.width / (double) src.height);
-        int lenWidth = Math.abs((int) (len * Math.cos(Math.PI - radiansAlpha - radiansWidth)));
-        int lenHeight = Math.abs((int) (len * Math.cos(Math.PI - radiansAlpha - radiansHeight)));
-        return new Rectangle((src.width + lenWidth * num), (src.height + lenHeight * num));
+        return XEasyPdfTemplatePageRectangle.getRotateRectangle(this.width, this.height, this.radians);
     }
 
     /**
@@ -211,8 +198,10 @@ public class XEasyPdfTemplateBarCodeConfig {
         this.words = Optional.ofNullable(attributes.getNamedItem(XEasyPdfTemplateAttributes.WORDS)).map(Node::getNodeValue).orElse(null);
         // 初始化文字颜色
         this.wordsColor = this.resolveValue(attributes, XEasyPdfTemplateAttributes.WORDS_COLOR, "BLACK", this::parseColor);
+        // 初始化文字名称
+        this.wordsFamily = Optional.ofNullable(attributes.getNamedItem(XEasyPdfTemplateAttributes.WORDS_FAMILY)).map(Node::getNodeValue).orElse(null);
         // 初始化文字样式
-        this.wordsStyle = this.resolveValue(attributes, XEasyPdfTemplateAttributes.WORDS_STYLE, "NORMAL", WordsStyle::getStyle);
+        this.wordsStyle = this.resolveValue(attributes, XEasyPdfTemplateAttributes.WORDS_STYLE, "NORMAL", XEasyPdfTemplateFontStyleUtil::getStyle);
         // 初始化文字大小
         this.wordsSize = this.resolveValue(attributes, XEasyPdfTemplateAttributes.WORDS_SIZE, "12pt", this::parseUnit);
         // 初始化文字偏移量-X轴
@@ -320,50 +309,5 @@ public class XEasyPdfTemplateBarCodeConfig {
     @SneakyThrows
     private int parseUnit(String unit) {
         return (int) (UnitConv.convert(unit) / 1000 * this.scaleRate);
-    }
-
-    /**
-     * 文字样式
-     */
-    private enum WordsStyle {
-        /**
-         * 正常
-         */
-        NORMAL(Font.PLAIN),
-        /**
-         * 粗体
-         */
-        BOLD(Font.BOLD),
-        /**
-         * 粗体斜体
-         */
-        BOLD_ITALIC(Font.BOLD | Font.ITALIC),
-        /**
-         * 斜体
-         */
-        ITALIC(Font.ITALIC);
-        /**
-         * 样式
-         */
-        final int style;
-
-        /**
-         * 有参构造
-         *
-         * @param style 样式
-         */
-        WordsStyle(int style) {
-            this.style = style;
-        }
-
-        /**
-         * 获取样式
-         *
-         * @param name 名称
-         * @return 返回样式
-         */
-        static int getStyle(String name) {
-            return valueOf(name.toUpperCase()).style;
-        }
     }
 }

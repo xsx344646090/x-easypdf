@@ -2,8 +2,8 @@ package wiki.xsx.core.pdf.template.doc;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
-import wiki.xsx.core.pdf.template.bookmark.XEasyPdfTemplateBookmarkComponent;
-import wiki.xsx.core.pdf.template.page.XEasyPdfTemplatePageComponent;
+import wiki.xsx.core.pdf.template.doc.bookmark.XEasyPdfTemplateBookmarkComponent;
+import wiki.xsx.core.pdf.template.doc.page.XEasyPdfTemplatePageComponent;
 
 import java.util.ArrayList;
 import java.util.List;

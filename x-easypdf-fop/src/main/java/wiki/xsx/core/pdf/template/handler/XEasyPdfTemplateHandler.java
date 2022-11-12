@@ -1,22 +1,22 @@
 package wiki.xsx.core.pdf.template.handler;
 
-import wiki.xsx.core.pdf.template.bookmark.XEasyPdfTemplateBookmark;
-import wiki.xsx.core.pdf.template.component.barcode.XEasyPdfTemplateBarcode;
-import wiki.xsx.core.pdf.template.component.block.XEasyPdfTemplateBlock;
-import wiki.xsx.core.pdf.template.component.image.XEasyPdfTemplateImage;
-import wiki.xsx.core.pdf.template.component.line.XEasyPdfTemplateSplitLine;
-import wiki.xsx.core.pdf.template.component.link.XEasyPdfTemplateLink;
-import wiki.xsx.core.pdf.template.component.page.XEasyPdfTemplateCurrentPageNumber;
-import wiki.xsx.core.pdf.template.component.page.XEasyPdfTemplateTotalPageNumber;
-import wiki.xsx.core.pdf.template.component.table.*;
-import wiki.xsx.core.pdf.template.component.text.XEasyPdfTemplateText;
-import wiki.xsx.core.pdf.template.component.text.XEasyPdfTemplateTextExtend;
+import wiki.xsx.core.pdf.template.XEasyPdfTemplate;
+import wiki.xsx.core.pdf.template.XEasyPdfTemplateConstants;
+import wiki.xsx.core.pdf.template.datasource.*;
 import wiki.xsx.core.pdf.template.doc.XEasyPdfTemplateDocument;
-import wiki.xsx.core.pdf.template.page.XEasyPdfTemplatePage;
-import wiki.xsx.core.pdf.template.template.XEasyPdfTemplate;
-import wiki.xsx.core.pdf.template.template.datasource.XEasyPdfTemplateDocumentDataSource;
-import wiki.xsx.core.pdf.template.template.datasource.XEasyPdfTemplateThymeleafDataSource;
-import wiki.xsx.core.pdf.template.template.datasource.XEasyPdfTemplateXMLDataSource;
+import wiki.xsx.core.pdf.template.doc.bookmark.XEasyPdfTemplateBookmark;
+import wiki.xsx.core.pdf.template.doc.component.barcode.XEasyPdfTemplateBarcode;
+import wiki.xsx.core.pdf.template.doc.component.block.XEasyPdfTemplateBlockContainer;
+import wiki.xsx.core.pdf.template.doc.component.image.XEasyPdfTemplateImage;
+import wiki.xsx.core.pdf.template.doc.component.line.XEasyPdfTemplateSplitLine;
+import wiki.xsx.core.pdf.template.doc.component.link.XEasyPdfTemplateLink;
+import wiki.xsx.core.pdf.template.doc.component.page.XEasyPdfTemplateCurrentPageNumber;
+import wiki.xsx.core.pdf.template.doc.component.page.XEasyPdfTemplateTotalPageNumber;
+import wiki.xsx.core.pdf.template.doc.component.table.*;
+import wiki.xsx.core.pdf.template.doc.component.text.XEasyPdfTemplateText;
+import wiki.xsx.core.pdf.template.doc.component.text.XEasyPdfTemplateTextExtend;
+import wiki.xsx.core.pdf.template.doc.page.XEasyPdfTemplatePage;
+import wiki.xsx.core.pdf.template.doc.watermark.XEasyPdfTemplateWatermark;
 
 /**
  * pdf模板助手
@@ -58,6 +58,8 @@ public class XEasyPdfTemplateHandler {
     public static class DataSource {
         /**
          * xml数据源
+         *
+         * @see <a href="https://www.runoob.com/xsl/xsl-tutorial.html">XSLT</a>
          */
         public static class XML {
             /**
@@ -72,6 +74,8 @@ public class XEasyPdfTemplateHandler {
 
         /**
          * thymeleaf数据源
+         *
+         * @see <a href="https://www.thymeleaf.org/doc/articles/standarddialect5minutes.html">Thymeleaf</a>
          */
         public static class Thymeleaf {
             /**
@@ -81,6 +85,47 @@ public class XEasyPdfTemplateHandler {
              */
             public static XEasyPdfTemplateThymeleafDataSource build() {
                 return new XEasyPdfTemplateThymeleafDataSource();
+            }
+        }
+
+        /**
+         * jte数据源
+         *
+         * @see <a href="https://gitee.com/qcrud/jte/blob/main/DOCUMENTATION.md">Jte</a>
+         */
+        public static class Jte {
+            /**
+             * 构建jte数据源
+             *
+             * @return 返回jte数据源
+             */
+            public static XEasyPdfTemplateJteDataSource build() {
+                return new XEasyPdfTemplateJteDataSource();
+            }
+        }
+
+        /**
+         * freemarker数据源
+         *
+         * @see <a href="https://freemarker.apache.org/docs/dgui_quickstart.html">Freemarker</a>
+         */
+        public static class Freemarker {
+            /**
+             * 构建freemarker数据源
+             *
+             * @return 返回freemarker数据源
+             */
+            public static XEasyPdfTemplateFreemarkerDataSource build() {
+                return new XEasyPdfTemplateFreemarkerDataSource();
+            }
+
+            /**
+             * 设置模板路径（目录）
+             *
+             * @param templatePath 模板路径（目录）
+             */
+            public static void setTemplatePath(String templatePath) {
+                System.setProperty(XEasyPdfTemplateConstants.FREEMARKER_TEMPLATE_PATH_KEY, templatePath);
             }
         }
 
@@ -286,7 +331,6 @@ public class XEasyPdfTemplateHandler {
      */
     public static class SplitLine {
         /**
-         *
          * 构建分割线
          *
          * @return 返回pdf模板-分割线
@@ -311,16 +355,16 @@ public class XEasyPdfTemplateHandler {
     }
 
     /**
-     * pdf模板块
+     * pdf模板块容器
      */
-    public static class Block {
+    public static class BlockContainer {
         /**
-         * 构建块
+         * 构建块容器
          *
-         * @return 返回pdf模板-块
+         * @return 返回pdf模板-块容器
          */
-        public static XEasyPdfTemplateBlock build() {
-            return new XEasyPdfTemplateBlock();
+        public static XEasyPdfTemplateBlockContainer build() {
+            return new XEasyPdfTemplateBlockContainer();
         }
     }
 
@@ -349,6 +393,20 @@ public class XEasyPdfTemplateHandler {
          */
         public static XEasyPdfTemplateBookmark build() {
             return new XEasyPdfTemplateBookmark();
+        }
+    }
+
+    /**
+     * pdf模板水印（文本）
+     */
+    public static class Watermark {
+        /**
+         * 构建水印（文本）
+         *
+         * @return 返回pdf模板-水印（文本）
+         */
+        public static XEasyPdfTemplateWatermark build() {
+            return new XEasyPdfTemplateWatermark();
         }
     }
 

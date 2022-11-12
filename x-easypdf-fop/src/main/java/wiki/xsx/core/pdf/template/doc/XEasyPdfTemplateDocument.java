@@ -3,18 +3,15 @@ package wiki.xsx.core.pdf.template.doc;
 import lombok.SneakyThrows;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import wiki.xsx.core.pdf.doc.XEasyPdfDocument;
+import wiki.xsx.core.pdf.template.XEasyPdfTemplate;
 import wiki.xsx.core.pdf.template.XEasyPdfTemplateConstants;
 import wiki.xsx.core.pdf.template.XEasyPdfTemplateTags;
-import wiki.xsx.core.pdf.template.bookmark.XEasyPdfTemplateBookmarkComponent;
+import wiki.xsx.core.pdf.template.doc.bookmark.XEasyPdfTemplateBookmarkComponent;
+import wiki.xsx.core.pdf.template.doc.page.XEasyPdfTemplatePageComponent;
 import wiki.xsx.core.pdf.template.handler.XEasyPdfTemplateHandler;
-import wiki.xsx.core.pdf.template.page.XEasyPdfTemplatePageComponent;
-import wiki.xsx.core.pdf.template.template.XEasyPdfTemplate;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -37,7 +34,7 @@ import java.util.Optional;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public class XEasyPdfTemplateDocument {
+public class XEasyPdfTemplateDocument implements XEasyPdfTemplateDocumentComponent {
 
     /**
      * pdf模板文档参数
@@ -93,13 +90,11 @@ public class XEasyPdfTemplateDocument {
     /**
      * 转换
      *
-     * @param outputPath 输出路径
+     * @return 返回pdf文档
      */
     @SneakyThrows
-    public void transform(String outputPath) {
-        try (OutputStream outputStream = Files.newOutputStream(Paths.get(outputPath))) {
-            this.transform(outputStream);
-        }
+    public wiki.xsx.core.pdf.doc.XEasyPdfDocument transform() {
+        return this.initTemplate().transform();
     }
 
     /**
@@ -108,18 +103,9 @@ public class XEasyPdfTemplateDocument {
      * @param outputStream 输出流
      */
     @SneakyThrows
+    @Override
     public void transform(OutputStream outputStream) {
         this.initTemplate().transform(outputStream);
-    }
-
-    /**
-     * 转换
-     *
-     * @return 返回pdf文档
-     */
-    @SneakyThrows
-    public XEasyPdfDocument transform() {
-        return this.initTemplate().transform();
     }
 
     /**
@@ -128,6 +114,7 @@ public class XEasyPdfTemplateDocument {
      * @return 返回xsl-fo文档
      */
     @SneakyThrows
+    @Override
     public Document getDocument() {
         // 定义文档
         Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(
@@ -146,7 +133,7 @@ public class XEasyPdfTemplateDocument {
      */
     @SneakyThrows
     public String getContent() {
-        return XEasyPdfTemplateHandler.DataSource.Document.build().setDocument(this.getDocument()).getDocumentContent();
+        return XEasyPdfTemplateHandler.DataSource.Document.build().setDocument(this).getDocumentContent();
     }
 
     /**
@@ -157,7 +144,7 @@ public class XEasyPdfTemplateDocument {
     private XEasyPdfTemplate initTemplate() {
         return XEasyPdfTemplateHandler.Template.build()
                 .setConfigPath(this.param.getConfigPath())
-                .setDataSource(XEasyPdfTemplateHandler.DataSource.Document.build().setDocument(this.getDocument()));
+                .setDataSource(XEasyPdfTemplateHandler.DataSource.Document.build().setDocument(this));
     }
 
     /**

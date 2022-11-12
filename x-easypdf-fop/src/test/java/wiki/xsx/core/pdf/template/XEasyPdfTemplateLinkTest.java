@@ -1,12 +1,11 @@
 package wiki.xsx.core.pdf.template;
 
 import org.junit.Test;
-import wiki.xsx.core.pdf.template.bookmark.XEasyPdfTemplateBookmark;
-import wiki.xsx.core.pdf.template.component.table.XEasyPdfTemplateTableRow;
+import wiki.xsx.core.pdf.template.doc.bookmark.XEasyPdfTemplateBookmark;
+import wiki.xsx.core.pdf.template.doc.component.table.XEasyPdfTemplateTableRow;
 import wiki.xsx.core.pdf.template.doc.XEasyPdfTemplateDocument;
 import wiki.xsx.core.pdf.template.handler.XEasyPdfTemplateHandler;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +37,7 @@ public class XEasyPdfTemplateLinkTest {
                         XEasyPdfTemplateHandler.Link.build().setText(
                                 XEasyPdfTemplateHandler.Text.build()
                                         .setText("https://www.x-easypdf.cn")
-                                        .setUnderLineColor(Color.BLUE)
+                                        .setUnderLineColor("blue")
                                         .enableUnderLine()
                                         .setHorizontalStyle("center")
                         ).setExternalDestination("https://www.x-easypdf.cn")
@@ -55,7 +54,7 @@ public class XEasyPdfTemplateLinkTest {
         // 转换pdf
         XEasyPdfTemplateDocument document = XEasyPdfTemplateHandler.Document.build().addPage(
                 XEasyPdfTemplateHandler.Page.build().setId("test").setFontFamily("微软雅黑").addBodyComponent(
-                        XEasyPdfTemplateHandler.Block.build().setHorizontalStyle("center").addComponent(
+                        XEasyPdfTemplateHandler.BlockContainer.build().setHorizontalStyle("center").addComponent(
                                 XEasyPdfTemplateHandler.Text.build().setText("当前页码："),
                                 XEasyPdfTemplateHandler.CurrentPageNumber.build(),
                                 XEasyPdfTemplateHandler.Text.build().setText("，总页码："),

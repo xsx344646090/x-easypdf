@@ -21,6 +21,8 @@
         <fop.version>2.7</fop.version>
         <commons-io.version>2.11.0</commons-io.version>
         <thymeleaf.version>3.0.15.RELEASE</thymeleaf.version>
+        <jte.version>2.2.3</jte.version>
+        <freemarker.version>2.3.31</freemarker.version>
 
         <junit.version>4.13.2</junit.version>
 
@@ -224,6 +226,18 @@
                 <groupId>org.thymeleaf</groupId>
                 <artifactId>thymeleaf</artifactId>
                 <version>${thymeleaf.version}</version>
+                <optional>true</optional>
+            </dependency>
+            <dependency>
+                <groupId>gg.jte</groupId>
+                <artifactId>jte</artifactId>
+                <version>${jte.version}</version>
+                <optional>true</optional>
+            </dependency>
+            <dependency>
+                <groupId>org.freemarker</groupId>
+                <artifactId>freemarker</artifactId>
+                <version>${freemarker.version}</version>
                 <optional>true</optional>
             </dependency>
 

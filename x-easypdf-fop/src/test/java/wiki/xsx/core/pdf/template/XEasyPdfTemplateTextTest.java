@@ -4,8 +4,6 @@ import org.junit.Test;
 import wiki.xsx.core.pdf.template.doc.XEasyPdfTemplateDocument;
 import wiki.xsx.core.pdf.template.handler.XEasyPdfTemplateHandler;
 
-import java.awt.*;
-
 /**
  * @author xsx
  * @date 2022/8/6
@@ -34,7 +32,7 @@ public class XEasyPdfTemplateTextTest {
         XEasyPdfTemplateDocument document = XEasyPdfTemplateHandler.Document.build().setConfigPath(configPath).addPage(
                 XEasyPdfTemplateHandler.Page.build()
                         .setFontSize("30pt")
-                        .setFontColor(Color.BLUE)
+                        .setFontColor("BLUE")
                         .addBodyComponent(
                                 XEasyPdfTemplateHandler.Text.build().setText("加粗")
                                         .setFontFamily("微软雅黑")
@@ -43,11 +41,11 @@ public class XEasyPdfTemplateTextTest {
                                         .setMarginRight("10pt"),
                                 XEasyPdfTemplateHandler.Text.build().setText("不加粗")
                                         .setFontFamily("微软雅黑")
-                                        .setFontColor(Color.BLUE)
+                                        .setFontColor("BLUE")
                                         .enableDeleteLine()
-                                        .setDeleteLineColor(Color.RED)
+                                        .setDeleteLineColor("RED")
                                         .enableUnderLine()
-                                        .setUnderLineColor(Color.RED)
+                                        .setUnderLineColor("RED")
                                         .setUnderLineWidth("3pt")
                         )
         );

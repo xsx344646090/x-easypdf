@@ -31,6 +31,7 @@ public class XEasyPdfTemplateDocumentTest {
         System.out.println(XEasyPdfTemplateHandler.Document.build().addPage(XEasyPdfTemplateHandler.Page.build()).getContent());
     }
 
+
     @Test
     public void testBlankPage() {
         // 定义fop配置文件路径
@@ -39,7 +40,15 @@ public class XEasyPdfTemplateDocumentTest {
         String outputPath = "E:\\pdf\\test\\fo\\template-document.pdf";
         // 转换pdf
         XEasyPdfTemplateHandler.Document.build().setConfigPath(configPath).addPage(
-                XEasyPdfTemplateHandler.Page.build(),
+                XEasyPdfTemplateHandler.Page.build()
+                        .setBodyBackgroundImage("url('/E:\\pdf\\test\\fo\\a-test.png')")
+                        .setBodyBackgroundImageWidth("100pt")
+                        .setBodyBackgroundImageHeight("100pt")
+                        .setFooterHeight("20pt")
+                        .setFooterBackgroundImage("url('/E:\\pdf\\test\\fo\\test.png')")
+                        .addFooterComponent(
+                                XEasyPdfTemplateHandler.Text.build().setText("111")
+                        ),
                 XEasyPdfTemplateHandler.Page.build()
         ).transform(outputPath);
     }
