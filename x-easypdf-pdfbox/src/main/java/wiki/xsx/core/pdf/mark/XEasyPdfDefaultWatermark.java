@@ -14,7 +14,8 @@ import wiki.xsx.core.pdf.doc.XEasyPdfDocument;
 import wiki.xsx.core.pdf.doc.XEasyPdfPage;
 import wiki.xsx.core.pdf.util.XEasyPdfFontUtil;
 
-import java.awt.Color;
+import java.awt.*;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -50,8 +51,8 @@ public class XEasyPdfDefaultWatermark implements XEasyPdfWatermark {
      *
      * @param text 水印文本
      */
-    public XEasyPdfDefaultWatermark(String text) {
-        this.param.setText(text);
+    public XEasyPdfDefaultWatermark(String... text) {
+        this.param.setTexts(Arrays.asList(text));
     }
 
     /**
@@ -60,8 +61,8 @@ public class XEasyPdfDefaultWatermark implements XEasyPdfWatermark {
      * @param fontSize 字体大小
      * @param text     水印文本
      */
-    public XEasyPdfDefaultWatermark(float fontSize, String text) {
-        this.param.setFontSize(Math.abs(fontSize)).setText(text);
+    public XEasyPdfDefaultWatermark(float fontSize, String... text) {
+        this.param.setFontSize(Math.abs(fontSize)).setTexts(Arrays.asList(text));
     }
 
     /**
@@ -142,8 +143,8 @@ public class XEasyPdfDefaultWatermark implements XEasyPdfWatermark {
      * @param text 水印文本
      * @return 返回页面水印组件
      */
-    public XEasyPdfDefaultWatermark setText(String text) {
-        this.param.setText(text);
+    public XEasyPdfDefaultWatermark setText(String... text) {
+        this.param.setTexts(Arrays.asList(text));
         return this;
     }
 
@@ -386,7 +387,7 @@ public class XEasyPdfDefaultWatermark implements XEasyPdfWatermark {
             // 重置X轴起始坐标为0
             this.param.setBeginX(0F);
             // 重置Y轴起始坐标为Y轴起始坐标-字体大小-行间距
-            this.param.setBeginY(this.param.getBeginY() - this.param.getFontSize() - this.param.getLeading());
+            this.param.setBeginY(this.param.getBeginY() - this.param.getFontSize() * this.param.getTexts().size() - this.param.getLeading());
         }
     }
 
@@ -411,7 +412,7 @@ public class XEasyPdfDefaultWatermark implements XEasyPdfWatermark {
             // 重置X轴起始坐标为0
             this.param.setBeginX(0F);
             // 重置Y轴起始坐标为Y轴起始坐标-字体大小-行间距
-            this.param.setBeginY(this.param.getBeginY() - this.param.getFontSize() - this.param.getLeading());
+            this.param.setBeginY(this.param.getBeginY() - this.param.getFontSize() * this.param.getTexts().size() - this.param.getLeading());
         }
     }
 
@@ -420,17 +421,37 @@ public class XEasyPdfDefaultWatermark implements XEasyPdfWatermark {
      *
      * @param cs 内容流
      */
-    @SneakyThrows
     private void writeText(PDPageContentStream cs) {
+        // 获取当前Y轴坐标
+        float beginY = this.param.getBeginY();
+        // 文本输入
+        for (String text : this.param.getTexts()) {
+            // 写入文本并重置当前Y轴坐标
+            beginY = this.writeText(cs, text, beginY);
+        }
+    }
+
+    /**
+     * 写入文本
+     *
+     * @param cs     内容流
+     * @param text   待写入文本
+     * @param beginY 当前Y轴起始坐标
+     * @return 返回当前Y轴起始坐标
+     */
+    @SneakyThrows
+    private float writeText(PDPageContentStream cs, String text, float beginY) {
         // 开启文本输入
         cs.beginText();
         // 设置文本弧度
         cs.setTextMatrix(Matrix.getRotateInstance(Math.toRadians(this.param.getRadians()), 0F, 0F));
         // 设置文本坐标
-        cs.newLineAtOffset(this.param.getBeginX(), this.param.getBeginY());
+        cs.newLineAtOffset(this.param.getBeginX(), beginY);
         // 文本输入
-        cs.showText(this.param.getText());
+        cs.showText(text);
         // 结束文本写入
         cs.endText();
+        // 返回当前Y轴坐标
+        return beginY - this.param.getFontSize();
     }
 }

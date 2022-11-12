@@ -6,8 +6,9 @@ import wiki.xsx.core.pdf.component.XEasyPdfComponent;
 import wiki.xsx.core.pdf.doc.XEasyPdfDocument;
 import wiki.xsx.core.pdf.doc.XEasyPdfPage;
 
-import java.awt.Color;
+import java.awt.*;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * pdf页面水印参数
@@ -64,7 +65,7 @@ class XEasyPdfWatermarkParam implements Serializable {
     /**
      * 水印文本
      */
-    private String text;
+    private List<String> texts;
     /**
      * 文本间隔
      */
