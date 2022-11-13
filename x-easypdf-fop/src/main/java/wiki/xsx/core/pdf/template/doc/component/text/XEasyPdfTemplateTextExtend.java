@@ -2,6 +2,8 @@ package wiki.xsx.core.pdf.template.doc.component.text;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import wiki.xsx.core.pdf.template.XEasyPdfTemplateAttributes;
+import wiki.xsx.core.pdf.template.XEasyPdfTemplateTags;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -349,6 +351,17 @@ public class XEasyPdfTemplateTextExtend extends XEasyPdfTemplateTextBase {
     }
 
     /**
+     * 设置文本间隔
+     *
+     * @param spacing 间隔
+     * @return 返回文本扩展组件
+     */
+    public XEasyPdfTemplateTextExtend setTextSpacing(String spacing) {
+        this.param.setTextSpacing(spacing);
+        return this;
+    }
+
+    /**
      * 设置背景颜色
      * <p>color：颜色（名称或16进制颜色）</p>
      * <p>transparent：透明</p>
@@ -438,14 +451,36 @@ public class XEasyPdfTemplateTextExtend extends XEasyPdfTemplateTextBase {
         }
         // 初始化block元素
         Element block = this.initBlock(document, this.param);
-        // 添加子元素
-        this.param.getTextList().forEach(
-                // 遍历元素
-                v -> Optional.ofNullable(v.init(this.param).createElement(document)).ifPresent(
+        // 获取文本列表
+        List<XEasyPdfTemplateText> textList = this.param.getTextList();
+        // 获取最后索引
+        int lastIndex = textList.size() - 1;
+        // 遍历文本列表
+        for (int i = 0, size = textList.size(); i < size; i++) {
+            // 定义当前索引
+            final int index = i;
+            // 添加元素
+            Optional.ofNullable(textList.get(i).init(this.param).createElement(document)).ifPresent(
+                    e -> {
                         // 添加元素
-                        e -> block.appendChild(e.getFirstChild())
-                )
-        );
+                        block.appendChild(e.getFirstChild());
+                        // 如果当前索引小于最后索引，则设置文本间隔
+                        if (index < lastIndex) {
+                            // 设置文本间隔
+                            Optional.ofNullable(this.param.getTextSpacing()).ifPresent(
+                                    l -> {
+                                        // 创建leader元素
+                                        Element leader = document.createElement(XEasyPdfTemplateTags.LEADER);
+                                        // 设置间隔长度
+                                        leader.setAttribute(XEasyPdfTemplateAttributes.LEADER_LENGTH, l.intern().toLowerCase());
+                                        // 添加leader元素
+                                        block.appendChild(leader);
+                                    }
+                            );
+                        }
+                    }
+            );
+        }
         // 返回block元素
         return block;
     }

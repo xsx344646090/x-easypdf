@@ -943,7 +943,7 @@ public class XEasyPdfTemplateBlockContainer implements XEasyPdfTemplateComponent
         // 创建blockContainer元素
         Element blockContainer = document.createElement(XEasyPdfTemplateTags.BLOCK_CONTAINER);
         // 创建block元素
-        Element block = this.createEmptyElement(document);
+        Element block = this.createBlockElement(document, this.param);
         // 设置宽度
         Optional.ofNullable(this.param.getWidth()).ifPresent(v -> blockContainer.setAttribute(XEasyPdfTemplateAttributes.WIDTH, v.intern().toLowerCase()));
         // 设置高度

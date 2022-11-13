@@ -47,6 +47,14 @@ class XEasyPdfTemplateWatermarkParam {
      */
     private String height;
     /**
+     * 显示宽度
+     */
+    private String showWidth;
+    /**
+     * 显示高度
+     */
+    private String showHeight;
+    /**
      * 文字名称
      */
     private String fontFamily;
@@ -103,6 +111,10 @@ class XEasyPdfTemplateWatermarkParam {
      * 旋转弧度
      */
     private String radians = "0";
+    /**
+     * 是否覆盖
+     */
+    private Boolean isOverwrite = Boolean.FALSE;
     /**
      * 文本列表
      */

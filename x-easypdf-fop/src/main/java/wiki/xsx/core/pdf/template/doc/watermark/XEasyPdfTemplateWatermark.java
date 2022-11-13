@@ -95,6 +95,28 @@ public class XEasyPdfTemplateWatermark implements XEasyPdfTemplateWatermarkCompo
     }
 
     /**
+     * 设置图像显示宽度
+     *
+     * @param width 图像显示宽度
+     * @return 返回水印（文字）组件
+     */
+    public XEasyPdfTemplateWatermark setShowWidth(String width) {
+        this.param.setShowWidth(width);
+        return this;
+    }
+
+    /**
+     * 设置图像显示高度
+     *
+     * @param height 图像显示高度
+     * @return 返回水印（文字）组件
+     */
+    public XEasyPdfTemplateWatermark setShowHeight(String height) {
+        this.param.setShowHeight(height);
+        return this;
+    }
+
+    /**
      * 设置字体名称
      *
      * @param fontFamily 字体名称
@@ -218,6 +240,16 @@ public class XEasyPdfTemplateWatermark implements XEasyPdfTemplateWatermarkCompo
     }
 
     /**
+     * 开启覆盖
+     *
+     * @return 返回水印（文字）组件
+     */
+    public XEasyPdfTemplateWatermark enableOverwrite() {
+        this.param.setIsOverwrite(Boolean.TRUE);
+        return this;
+    }
+
+    /**
      * 设置文本列表
      *
      * @param texts 文本列表
@@ -266,6 +298,10 @@ public class XEasyPdfTemplateWatermark implements XEasyPdfTemplateWatermarkCompo
         }
         // 设置背景图片
         element.setAttribute(XEasyPdfTemplateAttributes.BACKGROUND_IMAGE, this.getImageUrl().intern());
+        // 设置背景图片宽度
+        Optional.ofNullable(this.param.getShowWidth()).ifPresent(v -> element.setAttribute(XEasyPdfTemplateAttributes.BACKGROUND_IMAGE_WIDTH, v.intern().toLowerCase()));
+        // 设置背景图片高度
+        Optional.ofNullable(this.param.getShowHeight()).ifPresent(v -> element.setAttribute(XEasyPdfTemplateAttributes.BACKGROUND_IMAGE_HEIGHT, v.intern().toLowerCase()));
         // 设置背景图片定位
         Optional.ofNullable(this.param.getPosition()).ifPresent(v -> element.setAttribute(XEasyPdfTemplateAttributes.BACKGROUND_POSITION, v.intern().toLowerCase()));
         // 设置背景图片水平定位
@@ -326,8 +362,8 @@ public class XEasyPdfTemplateWatermark implements XEasyPdfTemplateWatermarkCompo
     private File getImageFile() {
         // 创建文件
         File file = new File(this.param.getTempDir(), this.param.getId() + ".png");
-        // 如果文件不存在，则创建新图像
-        if (!file.exists()) {
+        // 如果文件不存在或开启文件覆盖，则创建新图像
+        if (!file.exists()||this.param.getIsOverwrite()) {
             // 如果水印id为空，则提示信息
             Optional.ofNullable(this.param.getId()).orElseThrow(() -> new IllegalArgumentException("the watermark id can not be null"));
             // 如果宽度为空，则提示信息
