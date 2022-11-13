@@ -302,19 +302,6 @@ public class XEasyPdfTemplateTableRow {
     }
 
     /**
-     * 设置背景颜色
-     * <p>color：颜色（名称或16进制颜色）</p>
-     * <p>transparent：透明</p>
-     *
-     * @param color 颜色
-     * @return 返回表格行组件
-     */
-    public XEasyPdfTemplateTableRow setBackgroundColor(String color) {
-        this.param.setBackgroundColor(color);
-        return this;
-    }
-
-    /**
      * 开启分页时保持
      *
      * @return 返回表格行组件
@@ -415,8 +402,6 @@ public class XEasyPdfTemplateTableRow {
         Optional.ofNullable(this.param.getKeepWithPrevious()).ifPresent(v -> tableRow.setAttribute(XEasyPdfTemplateAttributes.KEEP_WITH_PREVIOUS, v.intern().toLowerCase()));
         // 设置分页时与下一个保持一起
         Optional.ofNullable(this.param.getKeepWithNext()).ifPresent(v -> tableRow.setAttribute(XEasyPdfTemplateAttributes.KEEP_WITH_NEXT, v.intern().toLowerCase()));
-        // 设置背景颜色
-        Optional.ofNullable(param.getBackgroundColor()).ifPresent(v -> tableRow.setAttribute(XEasyPdfTemplateAttributes.BACKGROUND_COLOR, v.intern().toLowerCase()));
         // 遍历单元格列表
         this.param.getCells().forEach(
                 // 添加单元格

@@ -34,4 +34,8 @@ class XEasyPdfTemplateTextExtendParam extends XEasyPdfTemplateTextBaseParam {
      * 文本组件列表
      */
     private List<XEasyPdfTemplateText> textList = new ArrayList<>(10);
+    /**
+     * 文本间隔
+     */
+    private String textSpacing;
 }

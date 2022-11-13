@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--定义转义字符-->
 <!--根标签-->
-<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
+<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:fox="http://xmlgraphics.apache.org/fop/extensions">
     <!--页面模板-->
     <fo:layout-master-set></fo:layout-master-set>
 </fo:root>

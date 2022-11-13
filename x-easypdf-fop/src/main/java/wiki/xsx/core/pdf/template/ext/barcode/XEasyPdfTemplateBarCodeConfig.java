@@ -189,7 +189,7 @@ public class XEasyPdfTemplateBarCodeConfig {
         // 初始化条形码边距
         this.codeMargin = this.resolveValue(attributes, XEasyPdfTemplateAttributes.CODE_MARGIN, "1", Integer::parseInt);
         // 初始化纠错级别
-        this.errorLevel = this.resolveValue(attributes, XEasyPdfTemplateAttributes.ERROR_LEVEL, "M", ErrorCorrectionLevel::valueOf);
+        this.errorLevel = this.resolveValue(attributes, XEasyPdfTemplateAttributes.ERROR_LEVEL, "M", v -> ErrorCorrectionLevel.valueOf(v.toUpperCase()));
         // 初始化前景颜色
         this.onColor = this.resolveValue(attributes, XEasyPdfTemplateAttributes.ON_COLOR, "BLACK", this::parseColor);
         // 初始化背景颜色
@@ -282,7 +282,7 @@ public class XEasyPdfTemplateBarCodeConfig {
                 Optional.ofNullable(attributes.getNamedItem(attributeName)).map(Node::getNodeValue).orElse(defaultValue)
         ).map(v -> {
             try {
-                return function.apply(v.toUpperCase());
+                return function.apply(v);
             } catch (Exception e) {
                 throw new IllegalArgumentException("the barcode attribute['" + attributeName + "'] is error");
             }
