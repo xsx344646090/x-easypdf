@@ -3,17 +3,17 @@ package wiki.xsx.core.pdf.template.doc;
 import lombok.SneakyThrows;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import wiki.xsx.core.pdf.doc.XEasyPdfDocument;
+import wiki.xsx.core.pdf.template.XEasyPdfTemplate;
 import wiki.xsx.core.pdf.template.XEasyPdfTemplateConstants;
+import wiki.xsx.core.pdf.template.XEasyPdfTemplateTags;
+import wiki.xsx.core.pdf.template.doc.bookmark.XEasyPdfTemplateBookmarkComponent;
+import wiki.xsx.core.pdf.template.doc.page.XEasyPdfTemplatePageComponent;
 import wiki.xsx.core.pdf.template.handler.XEasyPdfTemplateHandler;
-import wiki.xsx.core.pdf.template.page.XEasyPdfTemplatePageComponent;
-import wiki.xsx.core.pdf.template.template.XEasyPdfTemplate;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -34,7 +34,7 @@ import java.util.Optional;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public class XEasyPdfTemplateDocument {
+public class XEasyPdfTemplateDocument implements XEasyPdfTemplateDocumentComponent {
 
     /**
      * pdf模板文档参数
@@ -66,25 +66,25 @@ public class XEasyPdfTemplateDocument {
     }
 
     /**
-     * 转换
+     * 添加书签组件
      *
-     * @param outputPath 输出路径
+     * @param bookmarks 书签组件列表
+     * @return 返回pdf模板-文档
      */
-    @SneakyThrows
-    public void transform(String outputPath) {
-        try (OutputStream outputStream = Files.newOutputStream(Paths.get(outputPath))) {
-            this.transform(outputStream);
-        }
+    public XEasyPdfTemplateDocument addBookmark(XEasyPdfTemplateBookmarkComponent... bookmarks) {
+        Optional.ofNullable(bookmarks).ifPresent(v -> Collections.addAll(this.param.getBookmarkList(), v));
+        return this;
     }
 
     /**
-     * 转换
+     * 添加书签组件
      *
-     * @param outputStream 输出流
+     * @param bookmarks 书签组件列表
+     * @return 返回pdf模板-文档
      */
-    @SneakyThrows
-    public void transform(OutputStream outputStream) {
-        this.initTemplate().transform(outputStream);
+    public XEasyPdfTemplateDocument addBookmark(List<XEasyPdfTemplateBookmarkComponent> bookmarks) {
+        Optional.ofNullable(bookmarks).ifPresent(this.param.getBookmarkList()::addAll);
+        return this;
     }
 
     /**
@@ -93,8 +93,19 @@ public class XEasyPdfTemplateDocument {
      * @return 返回pdf文档
      */
     @SneakyThrows
-    public XEasyPdfDocument transform() {
+    public wiki.xsx.core.pdf.doc.XEasyPdfDocument transform() {
         return this.initTemplate().transform();
+    }
+
+    /**
+     * 转换
+     *
+     * @param outputStream 输出流
+     */
+    @SneakyThrows
+    @Override
+    public void transform(OutputStream outputStream) {
+        this.initTemplate().transform(outputStream);
     }
 
     /**
@@ -103,20 +114,14 @@ public class XEasyPdfTemplateDocument {
      * @return 返回xsl-fo文档
      */
     @SneakyThrows
+    @Override
     public Document getDocument() {
         // 定义文档
         Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(
                 this.getClass().getResourceAsStream(XEasyPdfTemplateConstants.DEFAULT_TEMPLATE_PATH)
         );
-        // 获取根元素
-        Element root = document.getDocumentElement();
-        // 定义页面索引
-        int index = 0;
-        // 遍历页面组件
-        for (XEasyPdfTemplatePageComponent page : this.param.getPageList()) {
-            // 添加页面节点
-            root.appendChild(page.createElement(++index, document));
-        }
+        // 添加页面
+        this.addPage(document);
         // 返回文档
         return document;
     }
@@ -128,7 +133,7 @@ public class XEasyPdfTemplateDocument {
      */
     @SneakyThrows
     public String getContent() {
-        return XEasyPdfTemplateHandler.DataSource.Document.build().setDocument(this.getDocument()).getDocumentContent();
+        return XEasyPdfTemplateHandler.DataSource.Document.build().setDocument(this).getDocumentContent();
     }
 
     /**
@@ -139,6 +144,51 @@ public class XEasyPdfTemplateDocument {
     private XEasyPdfTemplate initTemplate() {
         return XEasyPdfTemplateHandler.Template.build()
                 .setConfigPath(this.param.getConfigPath())
-                .setDataSource(XEasyPdfTemplateHandler.DataSource.Document.build().setDocument(this.getDocument()));
+                .setDataSource(XEasyPdfTemplateHandler.DataSource.Document.build().setDocument(this));
+    }
+
+    /**
+     * 添加页面
+     *
+     * @param document fo文档
+     */
+    private void addPage(Document document) {
+        // 获取根元素
+        Element root = document.getDocumentElement();
+        // 定义页面索引
+        int index = 0;
+        // 获取页面列表
+        List<XEasyPdfTemplatePageComponent> pageList = this.param.getPageList();
+        // 遍历页面组件
+        for (XEasyPdfTemplatePageComponent page : pageList) {
+            // 添加页面节点
+            root.appendChild(page.createElement(++index, document, this.createBookmark(document, index)));
+        }
+    }
+
+    /**
+     * 创建书签元素
+     *
+     * @param document fo文档
+     * @param index    当前索引
+     * @return 返回书签元素
+     */
+    private Element createBookmark(Document document, int index) {
+        // 如果当前索引大于1，则返回空
+        if (index > 1) {
+            // 返回空
+            return null;
+        }
+        // 如果书签列表不为空，则返回书签
+        if (!this.param.getBookmarkList().isEmpty()) {
+            // 创建bookmark-tree元素
+            Element tree = document.createElement(XEasyPdfTemplateTags.BOOKMARK_TREE);
+            // 添加书签
+            this.param.getBookmarkList().forEach(v -> tree.appendChild(v.createElement(document)));
+            // 返回bookmark-tree元素
+            return tree;
+        }
+        // 返回空
+        return null;
     }
 }

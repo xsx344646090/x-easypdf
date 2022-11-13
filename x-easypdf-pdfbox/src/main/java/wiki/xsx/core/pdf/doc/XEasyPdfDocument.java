@@ -94,7 +94,7 @@ public class XEasyPdfDocument implements Closeable, Serializable {
     @SneakyThrows
     public XEasyPdfDocument(String filePath, String password) {
         // 读取文件流
-        try (InputStream inputStream = new BufferedInputStream(new FileInputStream(filePath))) {
+        try (InputStream inputStream = new BufferedInputStream(Files.newInputStream(Paths.get(filePath)))) {
             this.param.init(inputStream, password, this);
         }
     }
@@ -110,7 +110,7 @@ public class XEasyPdfDocument implements Closeable, Serializable {
     @SneakyThrows
     public XEasyPdfDocument(String filePath, String password, InputStream keyStore, String alias) {
         // 读取文件流
-        try (InputStream inputStream = new BufferedInputStream(new FileInputStream(filePath))) {
+        try (InputStream inputStream = new BufferedInputStream(Files.newInputStream(Paths.get(filePath)))) {
             this.param.init(inputStream, password, keyStore, alias, this);
         }
     }

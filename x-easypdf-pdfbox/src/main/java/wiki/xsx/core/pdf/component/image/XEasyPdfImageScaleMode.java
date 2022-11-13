@@ -37,7 +37,7 @@ public enum XEasyPdfImageScaleMode {
     /**
      * 编码
      */
-    int code;
+    final int code;
 
     /**
      * 有参构造

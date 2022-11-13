@@ -32,12 +32,13 @@ public class XEasyPdfTemplateImageTest {
         XEasyPdfTemplateDocument document = XEasyPdfTemplateHandler.Document.build().setConfigPath(configPath).addPage(
                 XEasyPdfTemplateHandler.Page.build().addBodyComponent(
                         XEasyPdfTemplateHandler.Image.build()
-                                .setPath("E:\\pdf\\test\\fo\\test.jpg")
+                                // 绝对路径
+                                .setPath("/E:\\pdf\\test\\fo\\test.png")
+                                // .setPath("http://tiebapic.baidu.com/forum/w%3D580/sign=70bb6037c8b1cb133e693c1bed5556da/4c2955fbb2fb4316293171a265a4462308f7d384.jpg")
                                 .setWidth("100px")
                                 .setHeight("100px")
                                 .setHorizontalStyle("center")
                                 .enableBorder()
-                        // .enableRemote()
                 )
         );
         // 转换pdf
@@ -52,11 +53,11 @@ public class XEasyPdfTemplateImageTest {
         XEasyPdfTemplateDocument document = XEasyPdfTemplateHandler.Document.build().addPage(
                 XEasyPdfTemplateHandler.Page.build().addBodyComponent(
                         XEasyPdfTemplateHandler.Image.build()
+                                // 相对路径
                                 .setPath("src/test/resources/wiki/xsx/core/pdf/template/svg/test.svg")
                                 .setWidth("100pt")
                                 .setHeight("100pt")
                                 .setHorizontalStyle("center")
-                        // .enableRemote()
                 )
         );
         // 转换pdf

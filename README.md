@@ -16,12 +16,12 @@
 ---
 
 #### 项目概述
-> <font size=3>x-easypdf基于pdfbox/fop二次封装，拥有两大模块：pdfbox模块极大降低pdfbox的使用门槛，以组件化的形式进行pdf的构建；fop模块采用数据源的方式对xsl-fo模板进行转换。两个模块均可单独使用，也可以结合使用，帮助开发者快速生成pdf文档。</font>
+> <font size=3>x-easypdf是一个基于pdfbox/fop二次封装的框架，目前拥有两大模块：【pdfbox模块】与【fop模块】。【pdfbox模块】主打pdf编辑功能，以组件化的形式进行pdf的构建；【fop模块】主打pdf导出功能，采用数据源的方式对xsl-fo模板进行转换，同时提供java对象的方式构建dom模板文档，即使完全不懂xsl-fo的语法，也能轻松上手写出对应的模板。两个模块均可单独使用，也可以结合使用，帮助开发者快速生成pdf文档。</font>
 
 ---
 
 #### 当前版本
-> <font size=3>v2.10.2</font>
+> <font size=3>v2.11.0</font>
 
 ---
 
@@ -50,7 +50,7 @@
 
   - 文档替换
 
-  > 内置文档替换器（可替换文档中的文本与图片）
+  > 内置文档替换器（可替换文档中的图片）
 
   - 文档分析
 
@@ -74,7 +74,8 @@
 
 - ##### fop模块
   - 基于模板生成
-  - 内置数据源（xml 数据源、thymeleaf 数据源、document 数据源）
+  - 内置多种数据源（xml 数据源、thymeleaf 数据源、freemarker 数据源、jte 数据源、document 数据源）
+  - 提供面向对象的方式生成模板（document 数据源）
   - 灵活的扩展性
 
 ---
@@ -100,7 +101,7 @@
 <dependency>
     <groupId>wiki.xsx</groupId>
     <artifactId>x-easypdf</artifactId>
-    <version>2.10.2</version>
+    <version>2.11.0</version>
 </dependency>
 ```
 
@@ -109,7 +110,7 @@
 <dependency>
     <groupId>wiki.xsx</groupId>
     <artifactId>x-easypdf-pdfbox</artifactId>
-    <version>2.10.2</version>
+    <version>2.11.0</version>
 </dependency>
 ```
 
@@ -118,7 +119,7 @@
 <dependency>
     <groupId>wiki.xsx</groupId>
     <artifactId>x-easypdf-fop</artifactId>
-    <version>2.10.2</version>
+    <version>2.11.0</version>
 </dependency>
 ```
 

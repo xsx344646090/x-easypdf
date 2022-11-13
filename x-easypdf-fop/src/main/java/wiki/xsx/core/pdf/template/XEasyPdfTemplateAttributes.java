@@ -44,6 +44,14 @@ public class XEasyPdfTemplateAttributes {
      */
     public static final String EXTENT = "extent";
     /**
+     * id
+     */
+    public static final String ID = "id";
+    /**
+     * 引用id
+     */
+    public static final String REF_ID = "ref-id";
+    /**
      * 边距（上下左右）
      */
     public static final String MARGIN = "margin";
@@ -96,6 +104,10 @@ public class XEasyPdfTemplateAttributes {
      */
     public static final String TEXT_ALIGN = "text-align";
     /**
+     * 垂直对齐
+     */
+    public static final String VERTICAL_ALIGN = "vertical-align";
+    /**
      * 上下对齐
      */
     public static final String DISPLAY_ALIGN = "display-align";
@@ -104,13 +116,17 @@ public class XEasyPdfTemplateAttributes {
      */
     public static final String BORDER = "border";
     /**
-     * 下边框
-     */
-    public static final String BORDER_BOTTOM = "border-bottom";
-    /**
      * 边框样式
      */
     public static final String BORDER_STYLE = "border-style";
+    /**
+     * 边框颜色
+     */
+    public static final String BORDER_COLOR = "border-color";
+    /**
+     * 边框宽度
+     */
+    public static final String BORDER_WIDTH = "border-width";
     /**
      * 边框折叠
      */
@@ -120,9 +136,105 @@ public class XEasyPdfTemplateAttributes {
      */
     public static final String BORDER_SPACING = "border-spacing";
     /**
+     * 边框圆角
+     */
+    public static final String BORDER_RADIUS = "border-radius";
+    /**
+     * 上边框
+     */
+    public static final String BORDER_TOP = "border-top";
+    /**
+     * 上边框样式
+     */
+    public static final String BORDER_TOP_STYLE = "border-top-style";
+    /**
+     * 上边框颜色
+     */
+    public static final String BORDER_TOP_COLOR = "border-top-color";
+    /**
+     * 上边框宽度
+     */
+    public static final String BORDER_TOP_WIDTH = "border-top-width";
+    /**
+     * 上边框圆角
+     */
+    public static final String BORDER_TOP_RADIUS = "border-top-radius";
+    /**
+     * 下边框
+     */
+    public static final String BORDER_BOTTOM = "border-bottom";
+    /**
+     * 下边框样式
+     */
+    public static final String BORDER_BOTTOM_STYLE = "border-bottom-style";
+    /**
+     * 下边框颜色
+     */
+    public static final String BORDER_BOTTOM_COLOR = "border-bottom-color";
+    /**
+     * 下边框宽度
+     */
+    public static final String BORDER_BOTTOM_WIDTH = "border-bottom-width";
+    /**
+     * 下边框圆角
+     */
+    public static final String BORDER_BOTTOM_RADIUS = "border-bottom-radius";
+    /**
+     * 左边框
+     */
+    public static final String BORDER_LEFT = "border-left";
+    /**
+     * 左边框样式
+     */
+    public static final String BORDER_LEFT_STYLE = "border-left-style";
+    /**
+     * 左边框颜色
+     */
+    public static final String BORDER_LEFT_COLOR = "border-left-color";
+    /**
+     * 左边框宽度
+     */
+    public static final String BORDER_LEFT_WIDTH = "border-left-width";
+    /**
+     * 左边框圆角
+     */
+    public static final String BORDER_LEFT_RADIUS = "border-left-radius";
+    /**
+     * 右边框
+     */
+    public static final String BORDER_RIGHT = "border-right";
+    /**
+     * 右边框样式
+     */
+    public static final String BORDER_RIGHT_STYLE = "border-right-style";
+    /**
+     * 右边框颜色
+     */
+    public static final String BORDER_RIGHT_COLOR = "border-right-color";
+    /**
+     * 右边框宽度
+     */
+    public static final String BORDER_RIGHT_WIDTH = "border-right-width";
+    /**
+     * 右边框圆角
+     */
+    public static final String BORDER_RIGHT_RADIUS = "border-right-radius";
+    /**
+     * 合并行
+     */
+    public static final String NUMBER_ROWS_SPANNED = "number-rows-spanned";
+    /**
+     * 合并列
+     */
+    public static final String NUMBER_COLUMNS_SPANNED = "number-columns-spanned";
+    /**
      * 颜色
      */
     public static final String COLOR = "color";
+    /**
+     * 文本语言
+     */
+    public static final String LANGUAGE = "language";
     /**
      * 字体家族
      */
@@ -151,6 +263,18 @@ public class XEasyPdfTemplateAttributes {
      * 字符间距
      */
     public static final String LETTER_SPACING = "letter-spacing";
+    /**
+     * 单词间距
+     */
+    public static final String WORD_SPACING = "word-spacing";
+    /**
+     * 单词换行
+     */
+    public static final String WORD_BREAK = "word-break";
+    /**
+     * 空白空间
+     */
+    public static final String WHITE_SPACE = "white-space";
     /**
      * 文本装饰（删除线）
      */
@@ -208,6 +332,10 @@ public class XEasyPdfTemplateAttributes {
      */
     public static final String WORDS_COLOR = "words-color";
     /**
+     * 文字名称
+     */
+    public static final String WORDS_FAMILY = "words-family";
+    /**
      * 文字样式
      */
     public static final String WORDS_STYLE = "words-style";
@@ -239,4 +367,116 @@ public class XEasyPdfTemplateAttributes {
      * 缩放比例
      */
     public static final String SCALE_RATE = "scale-rate";
+    /**
+     * 内部地址
+     */
+    public static final String INTERNAL_DESTINATION = "internal-destination";
+    /**
+     * 外部地址
+     */
+    public static final String EXTERNAL_DESTINATION = "external-destination";
+    /**
+     * 文本缩进
+     */
+    public static final String TEXT_INDENT = "text-indent";
+    /**
+     * 段前缩进
+     */
+    public static final String START_INDENT = "start-indent";
+    /**
+     * 段后缩进
+     */
+    public static final String END_INDENT = "end-indent";
+    /**
+     * 段前空白
+     */
+    public static final String SPACE_BEFORE = "space-before";
+    /**
+     * 段后空白
+     */
+    public static final String SPACE_AFTER = "space-after";
+    /**
+     * 分页表头
+     */
+    public static final String TABLE_OMIT_HEADER_AT_BREAK = "table-omit-header-at-break";
+    /**
+     * 分页表尾
+     */
+    public static final String TABLE_OMIT_FOOTER_AT_BREAK = "table-omit-footer-at-break";
+    /**
+     * 分页符-前
+     */
+    public static final String BREAK_BEFORE = "break-before";
+    /**
+     * 分页符-后
+     */
+    public static final String BREAK_AFTER = "break-after";
+    /**
+     * 分页时保持一起
+     * <p>auto：自动</p>
+     * <p>always：总是</p>
+     */
+    public static final String KEEP_TOGETHER = "keep-together";
+    /**
+     * 分页时与上一个保持一起
+     * <p>auto：自动</p>
+     * <p>always：总是</p>
+     */
+    public static final String KEEP_WITH_PREVIOUS = "keep-with-previous";
+    /**
+     * 分页时与下一个保持一起
+     * <p>auto：自动</p>
+     * <p>always：总是</p>
+     */
+    public static final String KEEP_WITH_NEXT = "keep-with-next";
+    /**
+     * 背景
+     */
+    public static final String BACKGROUND = "background";
+    /**
+     * 背景图片
+     */
+    public static final String BACKGROUND_IMAGE = "background-image";
+    /**
+     * 背景图片宽度
+     */
+    public static final String BACKGROUND_IMAGE_WIDTH = "fox:background-image-width";
+    /**
+     * 背景图片高度
+     */
+    public static final String BACKGROUND_IMAGE_HEIGHT = "fox:background-image-height";
+    /**
+     * 背景附件
+     * <p>scroll：滚动</p>
+     * <p>fixed：固定</p>
+     */
+    public static final String BACKGROUND_ATTACHMENT = "background-attachment";
+    /**
+     * 背景颜色
+     * <p>color：颜色（名称或16进制颜色）</p>
+     * <p>transparent：透明</p>
+     */
+    public static final String BACKGROUND_COLOR = "background-color";
+    /**
+     * 背景图片定位
+     * <p>第一个参数为X轴</p>
+     * <p>第二个参数为Y轴</p>
+     */
+    public static final String BACKGROUND_POSITION = "background-position";
+    /**
+     * 背景图片水平定位
+     */
+    public static final String BACKGROUND_POSITION_HORIZONTAL = "background-position-horizontal";
+    /**
+     * 背景图片垂直定位
+     */
+    public static final String BACKGROUND_POSITION_VERTICAL = "background-position-vertical";
+    /**
+     * 背景图片重复
+     * <p>repeat：水平垂直重复</p>
+     * <p>repeat-x：水平重复</p>
+     * <p>repeat-y：垂直重复</p>
+     * <p>no-repeat：不重复</p>
+     */
+    public static final String BACKGROUND_REPEAT = "background-repeat";
 }
