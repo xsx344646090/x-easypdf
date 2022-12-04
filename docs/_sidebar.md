@@ -20,6 +20,7 @@
       * [pdf图片](/md/pdfbox/图片组件说明.md)
     * [参考示例](/md/pdfbox/参考示例.md)
   * [fop模块](/md/fop/fop模块说明.md)
+    * [XSL-FO](md/fop/xsl-fo介绍.md)
     * [API文档](/md/fop/api文档.md)
     * [配置文件](/md/fop/配置文件.md)
     * [数据源](/md/fop/数据源.md)
