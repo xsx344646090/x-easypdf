@@ -3,15 +3,16 @@ package wiki.xsx.core.pdf.template.datasource;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.experimental.Accessors;
-import org.apache.fop.apps.FOUserAgent;
-import org.apache.fop.apps.FopFactory;
 import wiki.xsx.core.pdf.template.doc.XEasyPdfTemplateDocumentComponent;
 
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.*;
-import java.nio.charset.StandardCharsets;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.util.Collections;
 
 /**
  * pdf模板-document数据源
@@ -33,7 +34,7 @@ import java.nio.charset.StandardCharsets;
  */
 @Setter
 @Accessors(chain = true)
-public class XEasyPdfTemplateDocumentDataSource implements XEasyPdfTemplateDataSource {
+public class XEasyPdfTemplateDocumentDataSource extends XEasyPdfTemplateAbstractDataSource {
 
     /**
      * 文档组件
@@ -41,37 +42,21 @@ public class XEasyPdfTemplateDocumentDataSource implements XEasyPdfTemplateDataS
     private XEasyPdfTemplateDocumentComponent document;
 
     /**
-     * 获取数据源读取器
-     *
-     * @return 返回数据源读取器
+     * 无参构造
      */
-    @SneakyThrows
-    @Override
-    public Reader getSourceReader() {
-        // 创建数据源
-        return new InputStreamReader(this.getInputStream(), StandardCharsets.UTF_8);
+    public XEasyPdfTemplateDocumentDataSource() {
+        // 初始化模板数据
+        this.templateData = Collections.singletonMap("", "");
     }
 
     /**
-     * 转换
+     * 处理模板
      *
-     * @param fopFactory   fop工厂
-     * @param foAgent      fo代理
-     * @param outputStream 输出流
+     * @return 返回模板输入流
      */
     @SneakyThrows
     @Override
-    public void transform(FopFactory fopFactory, FOUserAgent foAgent, OutputStream outputStream) {
-        this.saxTransform(fopFactory, foAgent, outputStream);
-    }
-
-    /**
-     * 获取输入流
-     *
-     * @return 返回输入流
-     */
-    @SneakyThrows
-    private InputStream getInputStream() {
+    protected InputStream processTemplate() {
         // 如果模板数据不为空，则处理模板
         if (this.document == null) {
             // 提示错误信息

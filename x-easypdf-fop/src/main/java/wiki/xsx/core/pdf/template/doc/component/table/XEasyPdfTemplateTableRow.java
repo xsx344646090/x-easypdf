@@ -125,20 +125,6 @@ public class XEasyPdfTemplateTableRow {
     }
 
     /**
-     * 设置单词间距
-     * <p>normal：正常</p>
-     * <p>break-all：字符换行</p>
-     * <p>keep-all：整词换行</p>
-     *
-     * @param wordBreak 单词换行
-     * @return 返回表格行组件
-     */
-    public XEasyPdfTemplateTableRow setWordBreak(String wordBreak) {
-        this.param.setWordBreak(wordBreak);
-        return this;
-    }
-
-    /**
      * 设置字体名称
      *
      * @param fontFamily 字体名称
@@ -390,8 +376,6 @@ public class XEasyPdfTemplateTableRow {
         Optional.ofNullable(this.param.getLetterSpacing()).ifPresent(v -> tableRow.setAttribute(XEasyPdfTemplateAttributes.LETTER_SPACING, v.intern().toLowerCase()));
         // 设置单词间距
         Optional.ofNullable(this.param.getWordSpacing()).ifPresent(v -> tableRow.setAttribute(XEasyPdfTemplateAttributes.WORD_SPACING, v.intern().toLowerCase()));
-        // 设置单词换行
-        Optional.ofNullable(this.param.getWordBreak()).ifPresent(v -> tableRow.setAttribute(XEasyPdfTemplateAttributes.WORD_BREAK, v.intern().toLowerCase()));
         // 设置分页符-前
         Optional.ofNullable(this.param.getBreakBefore()).ifPresent(v -> tableRow.setAttribute(XEasyPdfTemplateAttributes.BREAK_BEFORE, v.intern().toLowerCase()));
         // 设置分页符-后
@@ -402,11 +386,8 @@ public class XEasyPdfTemplateTableRow {
         Optional.ofNullable(this.param.getKeepWithPrevious()).ifPresent(v -> tableRow.setAttribute(XEasyPdfTemplateAttributes.KEEP_WITH_PREVIOUS, v.intern().toLowerCase()));
         // 设置分页时与下一个保持一起
         Optional.ofNullable(this.param.getKeepWithNext()).ifPresent(v -> tableRow.setAttribute(XEasyPdfTemplateAttributes.KEEP_WITH_NEXT, v.intern().toLowerCase()));
-        // 遍历单元格列表
-        this.param.getCells().forEach(
-                // 添加单元格
-                v -> tableRow.appendChild(v.setWidth(this.param.getMinColumnWidth()).setHeight(this.param.getMinRowHeight()).createElement(document))
-        );
+        // 遍历并添加单元格
+        this.param.getCells().forEach(v -> tableRow.appendChild(v.setWidth(this.param.getMinColumnWidth()).setHeight(this.param.getMinRowHeight()).createElement(document)));
         // 返回tableRow元素
         return tableRow;
     }

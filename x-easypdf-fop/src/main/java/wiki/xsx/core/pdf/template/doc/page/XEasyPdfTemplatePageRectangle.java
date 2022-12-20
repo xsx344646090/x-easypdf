@@ -2,6 +2,7 @@ package wiki.xsx.core.pdf.template.doc.page;
 
 import java.awt.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * pdf模板-页面尺寸
@@ -217,15 +218,15 @@ public class XEasyPdfTemplatePageRectangle implements Serializable {
     }
 
     /**
-     * 切换横向
+     * 设置dpi
      *
      * @param dpi 每英寸像素点
      * @return 返回页面尺寸
      */
     public XEasyPdfTemplatePageRectangle setDpi(int dpi) {
         this.dpi = Math.abs(dpi);
-        this.width = this.width / DEFAULT_DPI * this.dpi;
-        this.height = this.height / DEFAULT_DPI * this.dpi;
+        this.width = this.width * this.dpi / DEFAULT_DPI;
+        this.height = this.height * this.dpi / DEFAULT_DPI;
         return this;
     }
 
@@ -245,7 +246,10 @@ public class XEasyPdfTemplatePageRectangle implements Serializable {
      * @return 返回每毫米像素点
      */
     public float getUnit() {
-        return POINTS_PER_MM / DEFAULT_DPI * this.dpi;
+        if (Objects.equals(this.dpi, DEFAULT_DPI)) {
+            return POINTS_PER_MM;
+        }
+        return POINTS_PER_MM * this.dpi / DEFAULT_DPI;
     }
 
     /**

@@ -268,17 +268,6 @@ public class XEasyPdfTemplateTable implements XEasyPdfTemplateComponent {
     }
 
     /**
-     * 设置边框圆角
-     *
-     * @param borderRadius 边框圆角
-     * @return 返回表格组件
-     */
-    public XEasyPdfTemplateTable setBorderRadius(String borderRadius) {
-        this.param.setBorderRadius(borderRadius);
-        return this;
-    }
-
-    /**
      * 设置文本语言
      *
      * @param language 语言
@@ -320,20 +309,6 @@ public class XEasyPdfTemplateTable implements XEasyPdfTemplateComponent {
      */
     public XEasyPdfTemplateTable setWordSpacing(String spacing) {
         this.param.setWordSpacing(spacing);
-        return this;
-    }
-
-    /**
-     * 设置单词换行
-     * <p>normal：正常</p>
-     * <p>break-all：字符换行</p>
-     * <p>keep-all：整词换行</p>
-     *
-     * @param wordBreak 单词换行
-     * @return 返回表格组件
-     */
-    public XEasyPdfTemplateTable setWordBreak(String wordBreak) {
-        this.param.setWordBreak(wordBreak);
         return this;
     }
 
@@ -620,8 +595,6 @@ public class XEasyPdfTemplateTable implements XEasyPdfTemplateComponent {
         Optional.ofNullable(this.param.getBorderCollapse()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.BORDER_COLLAPSE, v.intern().toLowerCase()));
         // 设置边框间距
         Optional.ofNullable(this.param.getBorderSpacing()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.BORDER_SPACING, v.intern().toLowerCase()));
-        // 设置边框圆角
-        Optional.ofNullable(this.param.getBorderRadius()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.BORDER_RADIUS, v.intern().toLowerCase()));
         // 设置文本语言
         Optional.ofNullable(this.param.getLanguage()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.LANGUAGE, v.intern().toLowerCase()));
         // 设置字体名称
@@ -642,8 +615,6 @@ public class XEasyPdfTemplateTable implements XEasyPdfTemplateComponent {
         Optional.ofNullable(param.getLetterSpacing()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.LETTER_SPACING, v.intern().toLowerCase()));
         // 设置单词间距
         Optional.ofNullable(param.getWordSpacing()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.WORD_SPACING, v.intern().toLowerCase()));
-        // 设置单词换行
-        Optional.ofNullable(param.getWordBreak()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.WORD_BREAK, v.intern().toLowerCase()));
         // 设置空白空间
         Optional.ofNullable(param.getWhiteSpace()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.WHITE_SPACE, v.intern().toLowerCase()));
         // 设置是否自动省略表头
@@ -652,6 +623,8 @@ public class XEasyPdfTemplateTable implements XEasyPdfTemplateComponent {
         Optional.ofNullable(param.getIsAutoOmitFooter()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.TABLE_OMIT_FOOTER_AT_BREAK, v.toString().intern().toLowerCase()));
         // 设置背景颜色
         Optional.ofNullable(param.getBackgroundColor()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.BACKGROUND_COLOR, v.intern().toLowerCase()));
+        // 设置表格布局
+        table.setAttribute(XEasyPdfTemplateAttributes.TABLE_LAYOUT, "fixed");
         // 返回table元素
         return table;
     }

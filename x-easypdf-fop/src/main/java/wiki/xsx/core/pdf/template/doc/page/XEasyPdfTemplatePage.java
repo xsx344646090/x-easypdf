@@ -946,50 +946,6 @@ public class XEasyPdfTemplatePage implements XEasyPdfTemplatePageComponent {
     }
 
     /**
-     * 添加页面左侧栏组件
-     *
-     * @param components 组件列表
-     * @return 返回页面
-     */
-    public XEasyPdfTemplatePage addStartComponent(XEasyPdfTemplateComponent... components) {
-        Optional.ofNullable(components).ifPresent(v -> Collections.addAll(this.param.getRegionStartParam().getComponents(), v));
-        return this;
-    }
-
-    /**
-     * 添加页面左侧栏组件
-     *
-     * @param components 组件列表
-     * @return 返回页面
-     */
-    public XEasyPdfTemplatePage addStartComponent(List<XEasyPdfTemplateComponent> components) {
-        Optional.ofNullable(components).ifPresent(this.param.getRegionStartParam().getComponents()::addAll);
-        return this;
-    }
-
-    /**
-     * 添加页面右侧栏组件
-     *
-     * @param components 组件列表
-     * @return 返回页面
-     */
-    public XEasyPdfTemplatePage addEndComponent(XEasyPdfTemplateComponent... components) {
-        Optional.ofNullable(components).ifPresent(v -> Collections.addAll(this.param.getRegionEndParam().getComponents(), v));
-        return this;
-    }
-
-    /**
-     * 添加页面右侧栏组件
-     *
-     * @param components 组件列表
-     * @return 返回页面
-     */
-    public XEasyPdfTemplatePage addEndComponent(List<XEasyPdfTemplateComponent> components) {
-        Optional.ofNullable(components).ifPresent(this.param.getRegionEndParam().getComponents()::addAll);
-        return this;
-    }
-
-    /**
      * 添加页眉组件
      *
      * @param components 组件列表
@@ -1271,16 +1227,6 @@ public class XEasyPdfTemplatePage implements XEasyPdfTemplatePageComponent {
         }
         // 添加页面主体区域
         pageSequence.appendChild(this.addRegionBody(document));
-        // 如果包含左侧栏，则添加左侧栏
-        if (this.param.hasStart()) {
-            // 添加左侧栏
-            pageSequence.appendChild(this.addRegionStart(document));
-        }
-        // 如果包含右侧栏，则添加右侧栏
-        if (this.param.hasEnd()) {
-            // 添加右侧栏
-            pageSequence.appendChild(this.addRegionEnd(document));
-        }
         // 返回页面序列
         return pageSequence;
     }

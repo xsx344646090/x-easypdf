@@ -136,10 +136,6 @@ public class XEasyPdfTemplateAttributes {
      */
     public static final String BORDER_SPACING = "border-spacing";
     /**
-     * 边框圆角
-     */
-    public static final String BORDER_RADIUS = "border-radius";
-    /**
      * 上边框
      */
     public static final String BORDER_TOP = "border-top";
@@ -155,10 +151,6 @@ public class XEasyPdfTemplateAttributes {
      * 上边框宽度
      */
     public static final String BORDER_TOP_WIDTH = "border-top-width";
-    /**
-     * 上边框圆角
-     */
-    public static final String BORDER_TOP_RADIUS = "border-top-radius";
     /**
      * 下边框
      */
@@ -176,10 +168,6 @@ public class XEasyPdfTemplateAttributes {
      */
     public static final String BORDER_BOTTOM_WIDTH = "border-bottom-width";
     /**
-     * 下边框圆角
-     */
-    public static final String BORDER_BOTTOM_RADIUS = "border-bottom-radius";
-    /**
      * 左边框
      */
     public static final String BORDER_LEFT = "border-left";
@@ -196,10 +184,6 @@ public class XEasyPdfTemplateAttributes {
      */
     public static final String BORDER_LEFT_WIDTH = "border-left-width";
     /**
-     * 左边框圆角
-     */
-    public static final String BORDER_LEFT_RADIUS = "border-left-radius";
-    /**
      * 右边框
      */
     public static final String BORDER_RIGHT = "border-right";
@@ -215,10 +199,6 @@ public class XEasyPdfTemplateAttributes {
      * 右边框宽度
      */
     public static final String BORDER_RIGHT_WIDTH = "border-right-width";
-    /**
-     * 右边框圆角
-     */
-    public static final String BORDER_RIGHT_RADIUS = "border-right-radius";
     /**
      * 合并行
      */
@@ -267,10 +247,6 @@ public class XEasyPdfTemplateAttributes {
      * 单词间距
      */
     public static final String WORD_SPACING = "word-spacing";
-    /**
-     * 单词换行
-     */
-    public static final String WORD_BREAK = "word-break";
     /**
      * 空白空间
      */
@@ -395,6 +371,10 @@ public class XEasyPdfTemplateAttributes {
      * 段后空白
      */
     public static final String SPACE_AFTER = "space-after";
+    /**
+     * 表格样式
+     */
+    public static final String TABLE_LAYOUT = "table-layout";
     /**
      * 分页表头
      */

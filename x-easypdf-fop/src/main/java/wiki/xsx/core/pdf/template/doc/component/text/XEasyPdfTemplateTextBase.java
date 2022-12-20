@@ -44,8 +44,6 @@ abstract class XEasyPdfTemplateTextBase implements XEasyPdfTemplateComponent {
         Optional.ofNullable(param.getLetterSpacing()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.LETTER_SPACING, v.intern().toLowerCase()));
         // 设置单词间距
         Optional.ofNullable(param.getWordSpacing()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.WORD_SPACING, v.intern().toLowerCase()));
-        // 设置单词换行
-        Optional.ofNullable(param.getWordBreak()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.WORD_BREAK, v.intern().toLowerCase()));
         // 设置空白空间
         Optional.ofNullable(param.getWhiteSpace()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.WHITE_SPACE, v.intern().toLowerCase()));
         // 设置文本缩进

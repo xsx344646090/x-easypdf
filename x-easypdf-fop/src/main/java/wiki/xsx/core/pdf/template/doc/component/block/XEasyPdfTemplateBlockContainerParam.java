@@ -85,10 +85,6 @@ class XEasyPdfTemplateBlockContainerParam extends XEasyPdfTemplateComponentParam
      */
     private String borderCollapse;
     /**
-     * 边框圆角
-     */
-    private String borderRadius;
-    /**
      * 上边框
      */
     private String borderTop;
@@ -116,10 +112,6 @@ class XEasyPdfTemplateBlockContainerParam extends XEasyPdfTemplateComponentParam
      * 上边框宽度
      */
     private String borderTopWidth;
-    /**
-     * 上边框圆角
-     */
-    private String borderTopRadius;
     /**
      * 下边框
      */
@@ -149,10 +141,6 @@ class XEasyPdfTemplateBlockContainerParam extends XEasyPdfTemplateComponentParam
      */
     private String borderBottomWidth;
     /**
-     * 下边框圆角
-     */
-    private String borderBottomRadius;
-    /**
      * 左边框
      */
     private String borderLeft;
@@ -181,10 +169,6 @@ class XEasyPdfTemplateBlockContainerParam extends XEasyPdfTemplateComponentParam
      */
     private String borderLeftWidth;
     /**
-     * 左边框圆角
-     */
-    private String borderLeftRadius;
-    /**
      * 右边框
      */
     private String borderRight;
@@ -212,8 +196,4 @@ class XEasyPdfTemplateBlockContainerParam extends XEasyPdfTemplateComponentParam
      * 右边框宽度
      */
     private String borderRightWidth;
-    /**
-     * 右边框圆角
-     */
-    private String borderRightRadius;
 }

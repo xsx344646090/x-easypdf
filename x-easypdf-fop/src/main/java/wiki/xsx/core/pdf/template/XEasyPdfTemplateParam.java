@@ -7,6 +7,7 @@ import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.FopFactoryBuilder;
 import org.apache.fop.configuration.DefaultConfigurationBuilder;
 import wiki.xsx.core.pdf.template.datasource.XEasyPdfTemplateDataSource;
+import wiki.xsx.core.pdf.template.ext.layout.XEasyPdfTemplateLayoutManagerMapping;
 
 import java.io.File;
 import java.io.InputStream;
@@ -72,6 +73,10 @@ class XEasyPdfTemplateParam {
      */
     private FOUserAgent userAgent;
     /**
+     * 布局管理器
+     */
+    private XEasyPdfTemplateLayoutManagerMapping layoutManagerMaker = new XEasyPdfTemplateLayoutManagerMapping();
+    /**
      * 数据源
      */
     private XEasyPdfTemplateDataSource dataSource;
@@ -86,7 +91,11 @@ class XEasyPdfTemplateParam {
     /**
      * 是否开启错误定位信息
      */
-    private Boolean isErrorInfo = Boolean.FALSE;
+    private Boolean isErrorInfo = Boolean.TRUE;
+    /**
+     * 是否开启保留内存
+     */
+    private Boolean isConserveMemory = Boolean.FALSE;
 
     /**
      * 初始化参数
@@ -112,6 +121,8 @@ class XEasyPdfTemplateParam {
             // 初始化用户代理
             this.userAgent = this.initUserAgent();
         }
+        // 初始化布局管理器
+        this.layoutManagerMaker.initialize(this.userAgent);
     }
 
     /**
@@ -121,31 +132,29 @@ class XEasyPdfTemplateParam {
      */
     @SneakyThrows
     FopFactory initFopFactory() {
-        // 定义fop工厂
-        FopFactory factory;
-        try (
-                // 创建配置输入流（从资源路径读取）
-                InputStream inputStream = this.getClass().getResourceAsStream(this.configPath)
-        ) {
-            // 创建fop工厂
-            factory = new FopFactoryBuilder(
+        // 定义输入流
+        InputStream inputStream = null;
+        try {
+            // 创建配置输入流（从资源路径读取）
+            inputStream = this.getClass().getResourceAsStream(this.configPath);
+            // 如果
+            if (inputStream == null) {
+                // 创建配置输入流（从绝对路径读取）
+                inputStream = Files.newInputStream(Paths.get(this.configPath));
+            }
+            // 返回fop工厂
+            return new FopFactoryBuilder(
                     new File(".").toURI()
             ).setConfiguration(
                     new DefaultConfigurationBuilder().build(inputStream)
+            ).setLayoutManagerMakerOverride(
+                    this.layoutManagerMaker
             ).build();
-        } catch (Exception e) {
-            // 创建配置输入流（从绝对路径读取）
-            try (InputStream inputStream = Files.newInputStream(Paths.get(this.configPath))) {
-                // 创建fop工厂
-                factory = new FopFactoryBuilder(
-                        new File(this.configPath).toURI()
-                ).setConfiguration(
-                        new DefaultConfigurationBuilder().build(inputStream)
-                ).build();
+        } finally {
+            if (inputStream != null) {
+                inputStream.close();
             }
         }
-        // 返回fop工厂
-        return factory;
     }
 
     /**
@@ -176,6 +185,8 @@ class XEasyPdfTemplateParam {
         userAgent.setKeepEmptyTags(this.isKeepEmptyTags);
         // 设置开启错误定位信息
         userAgent.setLocatorEnabled(this.isErrorInfo);
+        // 设置开启保留内存
+        userAgent.setConserveMemoryPolicy(this.isConserveMemory);
         // 返回代理
         return userAgent;
     }
