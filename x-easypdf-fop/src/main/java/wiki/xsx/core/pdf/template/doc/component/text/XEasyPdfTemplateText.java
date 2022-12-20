@@ -211,20 +211,6 @@ public class XEasyPdfTemplateText extends XEasyPdfTemplateTextBase {
     }
 
     /**
-     * 设置单词换行
-     * <p>normal：正常</p>
-     * <p>break-all：字符换行</p>
-     * <p>keep-all：整词换行</p>
-     *
-     * @param wordBreak 单词换行
-     * @return 返回文本组件
-     */
-    public XEasyPdfTemplateText setWordBreak(String wordBreak) {
-        this.param.setWordBreak(wordBreak);
-        return this;
-    }
-
-    /**
      * 设置空白空间
      * <p>normal：正常</p>
      * <p>pre：保留空格</p>

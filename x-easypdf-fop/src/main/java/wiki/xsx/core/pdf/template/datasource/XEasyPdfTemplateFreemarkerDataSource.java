@@ -1,5 +1,6 @@
 package wiki.xsx.core.pdf.template.datasource;
 
+import freemarker.cache.ClassTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateExceptionHandler;
 import lombok.Setter;
@@ -110,7 +111,7 @@ public class XEasyPdfTemplateFreemarkerDataSource extends XEasyPdfTemplateAbstra
         // 否则为资源目录
         else {
             // 设置资源解析器
-            config.setClassForTemplateLoading(XEasyPdfTemplateFreemarkerDataSource.class, templatePath);
+            config.setTemplateLoader(new ClassTemplateLoader(XEasyPdfTemplateFreemarkerDataSource.class, "/" + templatePath));
         }
         // 返回配置
         return config;

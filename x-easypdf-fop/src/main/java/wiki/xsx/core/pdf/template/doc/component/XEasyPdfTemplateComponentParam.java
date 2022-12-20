@@ -105,13 +105,6 @@ public class XEasyPdfTemplateComponentParam {
      */
     protected String wordSpacing;
     /**
-     * 单词换行
-     * <p>normal：正常</p>
-     * <p>break-all：字符换行</p>
-     * <p>keep-all：整词换行</p>
-     */
-    protected String wordBreak;
-    /**
      * 空白空间
      * <p>normal：正常</p>
      * <p>pre：保留空格</p>

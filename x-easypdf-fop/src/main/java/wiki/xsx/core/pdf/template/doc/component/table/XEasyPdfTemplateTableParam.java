@@ -75,10 +75,6 @@ class XEasyPdfTemplateTableParam extends XEasyPdfTemplateComponentParam {
      */
     protected String borderSpacing;
     /**
-     * 边框圆角
-     */
-    protected String borderRadius;
-    /**
      * 最小列宽
      */
     protected String minColumnWidth;

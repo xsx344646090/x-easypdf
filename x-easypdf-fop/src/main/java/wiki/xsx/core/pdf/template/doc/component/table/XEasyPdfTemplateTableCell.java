@@ -411,20 +411,6 @@ public class XEasyPdfTemplateTableCell {
     }
 
     /**
-     * 设置单词换行
-     * <p>normal：正常</p>
-     * <p>break-all：字符换行</p>
-     * <p>keep-all：整词换行</p>
-     *
-     * @param wordBreak 单词换行
-     * @return 返回表格单元格组件
-     */
-    public XEasyPdfTemplateTableCell setWordBreak(String wordBreak) {
-        this.param.setWordBreak(wordBreak);
-        return this;
-    }
-
-    /**
      * 设置空白空间
      * <p>normal：正常</p>
      * <p>pre：保留空格</p>
@@ -762,8 +748,6 @@ public class XEasyPdfTemplateTableCell {
         Optional.ofNullable(this.param.getLetterSpacing()).ifPresent(v -> tableCell.setAttribute(XEasyPdfTemplateAttributes.LETTER_SPACING, v.intern().toLowerCase()));
         // 设置单词间距
         Optional.ofNullable(this.param.getWordSpacing()).ifPresent(v -> tableCell.setAttribute(XEasyPdfTemplateAttributes.WORD_SPACING, v.intern().toLowerCase()));
-        // 设置单词换行
-        Optional.ofNullable(this.param.getWordBreak()).ifPresent(v -> tableCell.setAttribute(XEasyPdfTemplateAttributes.WORD_BREAK, v.intern().toLowerCase()));
         // 设置空白空间
         Optional.ofNullable(this.param.getWhiteSpace()).ifPresent(v -> tableCell.setAttribute(XEasyPdfTemplateAttributes.WHITE_SPACE, v.intern().toLowerCase()));
         // 设置合并行数
