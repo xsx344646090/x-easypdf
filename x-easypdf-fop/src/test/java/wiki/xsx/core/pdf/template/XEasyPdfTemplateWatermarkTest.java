@@ -42,7 +42,6 @@ public class XEasyPdfTemplateWatermarkTest {
         );
         XEasyPdfTemplateHandler.Template.build().setDataSource(
                 XEasyPdfTemplateHandler.DataSource.Document.build().setDocument(document)
-        ).save(outputPath);
-        document.transform(pdfPath);
+        ).transform(pdfPath);
     }
 }
