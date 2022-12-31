@@ -159,20 +159,6 @@ public class XEasyPdfTemplateTextExtend extends XEasyPdfTemplateTextBase {
     }
 
     /**
-     * 设置单词间距
-     * <p>normal：正常</p>
-     * <p>break-all：字符换行</p>
-     * <p>keep-all：整词换行</p>
-     *
-     * @param wordBreak 单词换行
-     * @return 返回文本扩展组件
-     */
-    public XEasyPdfTemplateTextExtend setWordBreak(String wordBreak) {
-        this.param.setWordBreak(wordBreak);
-        return this;
-    }
-
-    /**
      * 设置文本缩进
      *
      * @param indent 缩进值

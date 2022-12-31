@@ -2,7 +2,14 @@ package wiki.xsx.core.pdf.template;
 
 import org.junit.Test;
 import wiki.xsx.core.pdf.template.doc.XEasyPdfTemplateDocument;
+import wiki.xsx.core.pdf.template.doc.component.image.XEasyPdfTemplateImage;
+import wiki.xsx.core.pdf.template.doc.component.text.XEasyPdfTemplateText;
+import wiki.xsx.core.pdf.template.doc.component.text.XEasyPdfTemplateTextExtend;
+import wiki.xsx.core.pdf.template.doc.page.XEasyPdfTemplatePage;
 import wiki.xsx.core.pdf.template.handler.XEasyPdfTemplateHandler;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author xsx
@@ -29,26 +36,7 @@ public class XEasyPdfTemplateTextTest {
         // 定义输出路径
         String outputPath = "E:\\pdf\\test\\fo\\template-text.pdf";
         // 转换pdf
-        XEasyPdfTemplateDocument document = XEasyPdfTemplateHandler.Document.build().setConfigPath(configPath).addPage(
-                XEasyPdfTemplateHandler.Page.build()
-                        .setFontSize("30pt")
-                        .setFontColor("BLUE")
-                        .addBodyComponent(
-                                XEasyPdfTemplateHandler.Text.build().setText("加粗")
-                                        .setFontFamily("微软雅黑")
-                                        .setFontWeight("bold")
-                                        .setHorizontalStyle("right")
-                                        .setMarginRight("10pt"),
-                                XEasyPdfTemplateHandler.Text.build().setText("不加粗")
-                                        .setFontFamily("微软雅黑")
-                                        .setFontColor("BLUE")
-                                        .enableDeleteLine()
-                                        .setDeleteLineColor("RED")
-                                        .enableUnderLine()
-                                        .setUnderLineColor("RED")
-                                        .setUnderLineWidth("3pt")
-                        )
-        );
+        XEasyPdfTemplateDocument document = XEasyPdfTemplateHandler.Document.build().setConfigPath(configPath).addPage(XEasyPdfTemplateHandler.Page.build().setFontSize("30pt").setFontColor("BLUE").addBodyComponent(XEasyPdfTemplateHandler.Text.build().setText("加粗").setFontFamily("仿宋").setFontWeight("bold").setHorizontalStyle("right").setMarginRight("10pt"), XEasyPdfTemplateHandler.Text.build().setText("不加粗").setFontFamily("仿宋").setFontColor("BLUE").enableDeleteLine().setDeleteLineColor("RED").enableUnderLine().setUnderLineColor("RED").setUnderLineWidth("3pt")));
         // 转换pdf
         document.transform(outputPath);
     }
@@ -60,16 +48,69 @@ public class XEasyPdfTemplateTextTest {
         // 定义输出路径
         String outputPath = "E:\\pdf\\test\\fo\\template-textExtend.pdf";
         // 转换pdf
-        XEasyPdfTemplateDocument document = XEasyPdfTemplateHandler.Document.build().setConfigPath(configPath).addPage(
-                XEasyPdfTemplateHandler.Page.build().addBodyComponent(
-                        XEasyPdfTemplateHandler.TextExtend.build().setFontFamily("微软雅黑").setFontSize("30pt").addText(
-                                XEasyPdfTemplateHandler.Text.build().setText("hello"),
-                                XEasyPdfTemplateHandler.Text.build().setText("上标").setFontSize("12pt").setVerticalStyle("top"),
-                                XEasyPdfTemplateHandler.Text.build().setText(", world")
-                        )
-                )
-        );
+        XEasyPdfTemplateDocument document = XEasyPdfTemplateHandler.Document.build().setConfigPath(configPath).addPage(XEasyPdfTemplateHandler.Page.build().addBodyComponent(XEasyPdfTemplateHandler.TextExtend.build().setFontFamily("微软雅黑").setFontSize("30pt").addText(XEasyPdfTemplateHandler.Text.build().setText("hello"), XEasyPdfTemplateHandler.Text.build().setText("上标").setFontSize("12pt").setVerticalStyle("top"), XEasyPdfTemplateHandler.Text.build().setText(", world"))));
         // 转换pdf
         document.transform(outputPath);
+    }
+
+    @Test
+    public void test() {
+        // 定义输出路径
+        String outputPath = "E:\\pdf\\test\\fo\\test.pdf";
+        // 创建文档
+        XEasyPdfTemplateDocument document = XEasyPdfTemplateHandler.Document.build();
+        // 创建页面
+        XEasyPdfTemplatePage page = XEasyPdfTemplateHandler.Page.build().setFontFamily("微软雅黑");
+        // 创建title
+        XEasyPdfTemplateText title = XEasyPdfTemplateHandler.Text.build().setText("贵阳").setFontSize("30pt").setHorizontalStyle("center");
+        // 创建文本1
+        XEasyPdfTemplateText text1 = XEasyPdfTemplateHandler.Text.build().setText("贵阳，简称“筑”，别称林城、筑城，贵州省辖地级市、省会、Ⅰ型大城市，中国");
+        // 创建文本2，特殊配置
+        XEasyPdfTemplateText text2 = XEasyPdfTemplateHandler.Text.build().setText("西南地区").setFontColor("blue").setUnderLineColor("blue").setLinkExternalDestination("https://baike.baidu.com/item/%E8%A5%BF%E5%8D%97%E5%9C%B0%E5%8C%BA/4465918?fromModule=lemma_inlink").enableLink().enableUnderLine();
+        // 创建文本3
+        XEasyPdfTemplateText text3 = XEasyPdfTemplateHandler.Text.build().setText("重要的中心城市之一、重要的区域创新中心和全国重要的生态休闲度假旅游城市。");
+        // 创建扩展文本
+        XEasyPdfTemplateTextExtend textExtend = XEasyPdfTemplateHandler.TextExtend.build().addText(text1, text2, text3).setMarginTop("12pt").setTextIndent("24pt");
+        // 添加文本
+        page.addBodyComponent(title, textExtend);
+        // 添加页面
+        document.addPage(page);
+        // 转换pdf
+        document.transform(outputPath);
+    }
+
+    @Test
+    public void test2() {
+        // 定义输出路径
+        String outputPath = "E:\\pdf\\test\\fo\\test.pdf";
+        // 创建文档
+        XEasyPdfTemplateDocument document = XEasyPdfTemplateHandler.Document.build();
+        // 创建页面
+        XEasyPdfTemplatePage page = XEasyPdfTemplateHandler.Page.build();
+        // 创建图像
+        XEasyPdfTemplateImage image = XEasyPdfTemplateHandler.Image.build().setPath("wiki/xsx/core/pdf/template/svg/test.svg");
+        // 添加图像
+        page.addBodyComponent(image);
+        // 添加页面
+        document.addPage(page);
+        // 转换pdf
+        document.transform(outputPath);
+    }
+
+    @Test
+    public void test3() {
+        // 定义xsl-fo模板路径
+        String templatePath = "/wiki/xsx/core/pdf/template/xml/test.fo";
+        // 定义pdf输出路径
+        String outputPath = "E:\\pdf\\test\\fo\\Thymeleaf.pdf";
+        // 定义数据map
+        Map<String, Object> data = new HashMap<>();
+        // 设置值
+        data.put("data", "hello world");
+        // 转换pdf
+        XEasyPdfTemplateHandler.Template.build()
+                // .setConfigPath(configPath)
+                .setDataSource(XEasyPdfTemplateHandler.DataSource.Thymeleaf.build().setTemplatePath(templatePath))
+                .transform(outputPath);
     }
 }

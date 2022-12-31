@@ -237,20 +237,6 @@ public class XEasyPdfTemplateBlockContainer implements XEasyPdfTemplateComponent
     }
 
     /**
-     * 设置单词间距
-     * <p>normal：正常</p>
-     * <p>break-all：字符换行</p>
-     * <p>keep-all：整词换行</p>
-     *
-     * @param wordBreak 单词换行
-     * @return 返回块容器组件
-     */
-    public XEasyPdfTemplateBlockContainer setWordBreak(String wordBreak) {
-        this.param.setWordBreak(wordBreak);
-        return this;
-    }
-
-    /**
      * 设置空白空间
      * <p>normal：正常</p>
      * <p>pre：保留空格</p>
@@ -636,17 +622,6 @@ public class XEasyPdfTemplateBlockContainer implements XEasyPdfTemplateComponent
     }
 
     /**
-     * 设置边框圆角
-     *
-     * @param borderRadius 边框圆角
-     * @return 返回块容器组件
-     */
-    public XEasyPdfTemplateBlockContainer setBorderRadius(String borderRadius) {
-        this.param.setBorderRadius(borderRadius);
-        return this;
-    }
-
-    /**
      * 设置上边框
      *
      * @param border 边框
@@ -688,17 +663,6 @@ public class XEasyPdfTemplateBlockContainer implements XEasyPdfTemplateComponent
      */
     public XEasyPdfTemplateBlockContainer setBorderTopStyle(String borderStyle) {
         this.param.setBorderTopStyle(borderStyle);
-        return this;
-    }
-
-    /**
-     * 设置上边框圆角
-     *
-     * @param borderRadius 边框圆角
-     * @return 返回块容器组件
-     */
-    public XEasyPdfTemplateBlockContainer setBorderTopRadius(String borderRadius) {
-        this.param.setBorderTopRadius(borderRadius);
         return this;
     }
 
@@ -748,17 +712,6 @@ public class XEasyPdfTemplateBlockContainer implements XEasyPdfTemplateComponent
     }
 
     /**
-     * 设置下边框圆角
-     *
-     * @param borderRadius 边框圆角
-     * @return 返回块容器组件
-     */
-    public XEasyPdfTemplateBlockContainer setBorderBottomRadius(String borderRadius) {
-        this.param.setBorderBottomRadius(borderRadius);
-        return this;
-    }
-
-    /**
      * 设置左边框
      *
      * @param border 边框
@@ -804,17 +757,6 @@ public class XEasyPdfTemplateBlockContainer implements XEasyPdfTemplateComponent
     }
 
     /**
-     * 设置左边框圆角
-     *
-     * @param borderRadius 边框圆角
-     * @return 返回块容器组件
-     */
-    public XEasyPdfTemplateBlockContainer setBorderLeftRadius(String borderRadius) {
-        this.param.setBorderLeftRadius(borderRadius);
-        return this;
-    }
-
-    /**
      * 设置右边框
      *
      * @param border 边框
@@ -856,17 +798,6 @@ public class XEasyPdfTemplateBlockContainer implements XEasyPdfTemplateComponent
      */
     public XEasyPdfTemplateBlockContainer setBorderRightStyle(String borderStyle) {
         this.param.setBorderRightStyle(borderStyle);
-        return this;
-    }
-
-    /**
-     * 设置右边框圆角
-     *
-     * @param borderRadius 边框圆角
-     * @return 返回块容器组件
-     */
-    public XEasyPdfTemplateBlockContainer setBorderRightRadius(String borderRadius) {
-        this.param.setBorderRightRadius(borderRadius);
         return this;
     }
 
@@ -954,8 +885,6 @@ public class XEasyPdfTemplateBlockContainer implements XEasyPdfTemplateComponent
         Optional.ofNullable(this.param.getLetterSpacing()).ifPresent(v -> blockContainer.setAttribute(XEasyPdfTemplateAttributes.LETTER_SPACING, v.intern().toLowerCase()));
         // 设置单词间距
         Optional.ofNullable(this.param.getWordSpacing()).ifPresent(v -> blockContainer.setAttribute(XEasyPdfTemplateAttributes.WORD_SPACING, v.intern().toLowerCase()));
-        // 设置单词换行
-        Optional.ofNullable(this.param.getWordBreak()).ifPresent(v -> blockContainer.setAttribute(XEasyPdfTemplateAttributes.WORD_BREAK, v.intern().toLowerCase()));
         // 设置文本缩进
         Optional.ofNullable(this.param.getTextIndent()).ifPresent(v -> blockContainer.setAttribute(XEasyPdfTemplateAttributes.TEXT_INDENT, v.intern().toLowerCase()));
         // 设置端前缩进
@@ -1010,8 +939,6 @@ public class XEasyPdfTemplateBlockContainer implements XEasyPdfTemplateComponent
         Optional.ofNullable(this.param.getBorderWidth()).ifPresent(v -> blockContainer.setAttribute(XEasyPdfTemplateAttributes.BORDER_WIDTH, v.intern().toLowerCase()));
         // 设置边框折叠
         Optional.ofNullable(this.param.getBorderCollapse()).ifPresent(v -> blockContainer.setAttribute(XEasyPdfTemplateAttributes.BORDER_COLLAPSE, v.intern().toLowerCase()));
-        // 设置边框圆角
-        Optional.ofNullable(this.param.getBorderRadius()).ifPresent(v -> blockContainer.setAttribute(XEasyPdfTemplateAttributes.BORDER_RADIUS, v.intern().toLowerCase()));
         // 设置上边框
         Optional.ofNullable(this.param.getBorderTop()).ifPresent(v -> blockContainer.setAttribute(XEasyPdfTemplateAttributes.BORDER_TOP, v.intern().toLowerCase()));
         // 设置上边框样式
@@ -1020,8 +947,6 @@ public class XEasyPdfTemplateBlockContainer implements XEasyPdfTemplateComponent
         Optional.ofNullable(this.param.getBorderTopColor()).ifPresent(v -> blockContainer.setAttribute(XEasyPdfTemplateAttributes.BORDER_TOP_COLOR, v.intern().toLowerCase()));
         // 设置上边框宽度
         Optional.ofNullable(this.param.getBorderTopWidth()).ifPresent(v -> blockContainer.setAttribute(XEasyPdfTemplateAttributes.BORDER_TOP_WIDTH, v.intern().toLowerCase()));
-        // 设置上边框圆角
-        Optional.ofNullable(this.param.getBorderTopRadius()).ifPresent(v -> blockContainer.setAttribute(XEasyPdfTemplateAttributes.BORDER_TOP_RADIUS, v.intern().toLowerCase()));
         // 设置下边框
         Optional.ofNullable(this.param.getBorderBottom()).ifPresent(v -> blockContainer.setAttribute(XEasyPdfTemplateAttributes.BORDER_BOTTOM, v.intern().toLowerCase()));
         // 设置下边框样式
@@ -1030,8 +955,6 @@ public class XEasyPdfTemplateBlockContainer implements XEasyPdfTemplateComponent
         Optional.ofNullable(this.param.getBorderBottomColor()).ifPresent(v -> blockContainer.setAttribute(XEasyPdfTemplateAttributes.BORDER_BOTTOM_COLOR, v.intern().toLowerCase()));
         // 设置下边框宽度
         Optional.ofNullable(this.param.getBorderBottomWidth()).ifPresent(v -> blockContainer.setAttribute(XEasyPdfTemplateAttributes.BORDER_BOTTOM_WIDTH, v.intern().toLowerCase()));
-        // 设置下边框圆角
-        Optional.ofNullable(this.param.getBorderBottomRadius()).ifPresent(v -> blockContainer.setAttribute(XEasyPdfTemplateAttributes.BORDER_BOTTOM_RADIUS, v.intern().toLowerCase()));
         // 设置左边框
         Optional.ofNullable(this.param.getBorderLeft()).ifPresent(v -> blockContainer.setAttribute(XEasyPdfTemplateAttributes.BORDER_LEFT, v.intern().toLowerCase()));
         // 设置左边框样式
@@ -1040,8 +963,6 @@ public class XEasyPdfTemplateBlockContainer implements XEasyPdfTemplateComponent
         Optional.ofNullable(this.param.getBorderLeftColor()).ifPresent(v -> blockContainer.setAttribute(XEasyPdfTemplateAttributes.BORDER_LEFT_COLOR, v.intern().toLowerCase()));
         // 设置左边框宽度
         Optional.ofNullable(this.param.getBorderLeftWidth()).ifPresent(v -> blockContainer.setAttribute(XEasyPdfTemplateAttributes.BORDER_LEFT_WIDTH, v.intern().toLowerCase()));
-        // 设置左边框圆角
-        Optional.ofNullable(this.param.getBorderLeftRadius()).ifPresent(v -> blockContainer.setAttribute(XEasyPdfTemplateAttributes.BORDER_LEFT_RADIUS, v.intern().toLowerCase()));
         // 设置右边框
         Optional.ofNullable(this.param.getBorderRight()).ifPresent(v -> blockContainer.setAttribute(XEasyPdfTemplateAttributes.BORDER_RIGHT, v.intern().toLowerCase()));
         // 设置右边框样式
@@ -1050,8 +971,6 @@ public class XEasyPdfTemplateBlockContainer implements XEasyPdfTemplateComponent
         Optional.ofNullable(this.param.getBorderRightColor()).ifPresent(v -> blockContainer.setAttribute(XEasyPdfTemplateAttributes.BORDER_RIGHT_COLOR, v.intern().toLowerCase()));
         // 设置右边框宽度
         Optional.ofNullable(this.param.getBorderRightWidth()).ifPresent(v -> blockContainer.setAttribute(XEasyPdfTemplateAttributes.BORDER_RIGHT_WIDTH, v.intern().toLowerCase()));
-        // 设置右边框圆角
-        Optional.ofNullable(this.param.getBorderRightRadius()).ifPresent(v -> blockContainer.setAttribute(XEasyPdfTemplateAttributes.BORDER_RIGHT_RADIUS, v.intern().toLowerCase()));
         // 添加组件
         this.param.getComponents().forEach(v -> this.appendChild(block, v.createElement(document)));
         // 添加block元素

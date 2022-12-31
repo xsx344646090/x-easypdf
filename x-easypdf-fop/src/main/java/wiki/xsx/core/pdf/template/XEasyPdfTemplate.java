@@ -63,28 +63,6 @@ public class XEasyPdfTemplate {
     }
 
     /**
-     * 设置作者
-     *
-     * @param author 作者
-     * @return 返回pdf模板
-     */
-    public XEasyPdfTemplate setAuthor(String author) {
-        this.param.setAuthor(author);
-        return this;
-    }
-
-    /**
-     * 设置创建者
-     *
-     * @param creator 创建者
-     * @return 返回pdf模板
-     */
-    public XEasyPdfTemplate setCreator(String creator) {
-        this.param.setCreator(creator);
-        return this;
-    }
-
-    /**
      * 设置标题
      *
      * @param title 标题
@@ -92,6 +70,17 @@ public class XEasyPdfTemplate {
      */
     public XEasyPdfTemplate setTitle(String title) {
         this.param.setTitle(title);
+        return this;
+    }
+
+    /**
+     * 设置作者
+     *
+     * @param author 作者
+     * @return 返回pdf模板
+     */
+    public XEasyPdfTemplate setAuthor(String author) {
+        this.param.setAuthor(author);
         return this;
     }
 
@@ -118,6 +107,17 @@ public class XEasyPdfTemplate {
     }
 
     /**
+     * 设置创建者
+     *
+     * @param creator 创建者
+     * @return 返回pdf模板
+     */
+    public XEasyPdfTemplate setCreator(String creator) {
+        this.param.setCreator(creator);
+        return this;
+    }
+
+    /**
      * 设置创建时间
      *
      * @param date 创建时间
@@ -140,6 +140,16 @@ public class XEasyPdfTemplate {
     }
 
     /**
+     * 开启保留内存
+     *
+     * @return 返回pdf模板
+     */
+    public XEasyPdfTemplate enableConserveMemory() {
+        this.param.setIsConserveMemory(Boolean.TRUE);
+        return this;
+    }
+
+    /**
      * 关闭空标签（将耗费更多内存）
      *
      * @return 返回pdf模板
@@ -150,35 +160,13 @@ public class XEasyPdfTemplate {
     }
 
     /**
-     * 保存模板
+     * 关闭错误定位信息
      *
-     * @param path 保存路径
+     * @return 返回pdf模板
      */
-    @SneakyThrows
-    public void save(String path) {
-        // 创建输出流
-        try (OutputStream outputStream = Files.newOutputStream(Paths.get(path))) {
-            // 保存模板
-            this.save(outputStream);
-        }
-    }
-
-    /**
-     * 保存模板
-     *
-     * @param outputStream 输出流
-     */
-    @SneakyThrows
-    public void save(OutputStream outputStream) {
-        // 获取模板内容
-        String content = this.param.getDataSource().getDocumentContent();
-        // 如果开启日志，则打印xsl-fo内容
-        if (log.isInfoEnabled()) {
-            // 打印xsl-fo内容
-            log.info("XSL-FO ==> \n" + content);
-        }
-        // 写入内容
-        outputStream.write(content.getBytes());
+    public XEasyPdfTemplate disableErrorInfo() {
+        this.param.setIsErrorInfo(Boolean.FALSE);
+        return this;
     }
 
     /**

@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>wiki.xsx</groupId>
     <artifactId>x-easypdf-parent</artifactId>
-    <version>2.11.0</version>
+    <version>2.11.1</version>
     <packaging>pom</packaging>
     <name>x-easypdf-parent</name>
     <url>https://www.x-easypdf.cn</url>
@@ -16,12 +16,11 @@
         <pdfbox.version>2.0.27</pdfbox.version>
         <zxing.core.version>3.5.1</zxing.core.version>
         <bouncycastle.version>1.72</bouncycastle.version>
-        <batik.version>1.15</batik.version>
-        <xmlgraphics-commons.version>2.7</xmlgraphics-commons.version>
-        <fop.version>2.7</fop.version>
-        <commons-io.version>2.11.0</commons-io.version>
-        <thymeleaf.version>3.0.15.RELEASE</thymeleaf.version>
-        <jte.version>2.2.3</jte.version>
+        <batik.version>1.16</batik.version>
+        <xmlgraphics-commons.version>2.8</xmlgraphics-commons.version>
+        <fop.version>2.8</fop.version>
+        <thymeleaf.version>3.1.0.RELEASE</thymeleaf.version>
+        <jte.version>2.2.4</jte.version>
         <freemarker.version>2.3.31</freemarker.version>
 
         <junit.version>4.13.2</junit.version>
@@ -208,18 +207,6 @@
                 <groupId>org.apache.xmlgraphics</groupId>
                 <artifactId>fop</artifactId>
                 <version>${fop.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <artifactId>commons-io</artifactId>
-                        <groupId>commons-io</groupId>
-                    </exclusion>
-                </exclusions>
-                <optional>true</optional>
-            </dependency>
-            <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>${commons-io.version}</version>
                 <optional>true</optional>
             </dependency>
             <dependency>
