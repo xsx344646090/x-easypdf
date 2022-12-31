@@ -23,4 +23,4 @@
 |     pdfbox     | 2.0.27 |
 |     zxing      | 3.5.1  |
 | bcpkix-jdk18on |  1.72  |
-|  batik-codec   |  1.15  |
+|  batik-codec   |  1.16  |
