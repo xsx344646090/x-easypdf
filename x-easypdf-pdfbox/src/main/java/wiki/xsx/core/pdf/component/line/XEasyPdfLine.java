@@ -1,10 +1,9 @@
 package wiki.xsx.core.pdf.component.line;
 
 import wiki.xsx.core.pdf.component.XEasyPdfComponent;
-import wiki.xsx.core.pdf.component.line.XEasyPdfLineCapStyle;
 import wiki.xsx.core.pdf.doc.XEasyPdfDefaultFontStyle;
 
-import java.awt.*;
+import java.awt.Color;
 
 /**
  * pdf线条组件

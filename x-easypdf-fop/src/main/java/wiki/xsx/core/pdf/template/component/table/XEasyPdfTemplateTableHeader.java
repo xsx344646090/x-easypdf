@@ -7,9 +7,11 @@ import wiki.xsx.core.pdf.template.XEasyPdfTemplateTags;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * pdf模板-表头组件
+ * <p>fo:table-header标签</p>
  *
  * @author xsx
  * @date 2022/8/23
@@ -34,9 +36,19 @@ public class XEasyPdfTemplateTableHeader {
     private List<XEasyPdfTemplateTableRow> rows = new ArrayList<>(10);
 
     /**
+     * 最小列宽
+     */
+    private String minColumnWidth;
+
+    /**
+     * 最小行高
+     */
+    private String minRowHeight;
+
+    /**
      * 设置初始化容量
      *
-     * @param initialCapacity 设置初始化容量
+     * @param initialCapacity 初始化容量
      * @return 返回表头组件
      */
     private XEasyPdfTemplateTableHeader setInitialCapacity(int initialCapacity) {
@@ -51,9 +63,7 @@ public class XEasyPdfTemplateTableHeader {
      * @return 返回表头组件
      */
     public XEasyPdfTemplateTableHeader addRow(XEasyPdfTemplateTableRow... rows) {
-        if (rows != null) {
-            Collections.addAll(this.rows, rows);
-        }
+        Optional.ofNullable(rows).ifPresent(v -> Collections.addAll(this.rows, v));
         return this;
     }
 
@@ -64,9 +74,7 @@ public class XEasyPdfTemplateTableHeader {
      * @return 返回表头组件
      */
     public XEasyPdfTemplateTableHeader addRow(List<XEasyPdfTemplateTableRow> rows) {
-        if (rows != null) {
-            this.rows.addAll(rows);
-        }
+        Optional.ofNullable(rows).ifPresent(this.rows::addAll);
         return this;
     }
 
@@ -91,9 +99,31 @@ public class XEasyPdfTemplateTableHeader {
         // 遍历表格行列表
         for (XEasyPdfTemplateTableRow row : this.rows) {
             // 添加表格行
-            tableHeader.appendChild(row.createElement(document));
+            tableHeader.appendChild(row.setMinColumnWidth(this.minColumnWidth).setMinRowHeight(this.minRowHeight).createElement(document));
         }
         // 返回tableHeader元素
         return tableHeader;
+    }
+
+    /**
+     * 设置最小行高
+     *
+     * @param minRowHeight 最小行高
+     * @return 返回表格行组件
+     */
+    XEasyPdfTemplateTableHeader setMinRowHeight(String minRowHeight) {
+        this.minRowHeight = minRowHeight;
+        return this;
+    }
+
+    /**
+     * 设置最小列宽
+     *
+     * @param minColumnWidth 最小列宽
+     * @return 返回表格行组件
+     */
+    XEasyPdfTemplateTableHeader setMinColumnWidth(String minColumnWidth) {
+        this.minColumnWidth = minColumnWidth;
+        return this;
     }
 }

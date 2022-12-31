@@ -11,7 +11,7 @@ import wiki.xsx.core.pdf.component.table.XEasyPdfTable;
 import wiki.xsx.core.pdf.doc.*;
 import wiki.xsx.core.pdf.handler.XEasyPdfHandler;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.ElementType;
@@ -19,11 +19,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author xsx
@@ -585,6 +581,30 @@ public class XEasyPdfTableTest {
                         ).setMarginLeft(50F)
                 )
         ).save(filePath).close();
+    }
+
+    @Test
+    public void testTable13() {
+        XEasyPdfHandler.Document.build(
+                XEasyPdfHandler.Page.build(
+                        XEasyPdfHandler.Table.build(
+                                XEasyPdfHandler.Table.Row.build(
+                                        XEasyPdfHandler.Table.Row.Cell.build(12F*4).addContent(
+                                                XEasyPdfHandler.Text.build("田田田田")
+                                        ),
+                                        XEasyPdfHandler.Table.Row.Cell.build(12F*2).setFontSize(6F).addContent(
+                                                XEasyPdfHandler.Text.build("上标")
+                                        ).disableBorder(),
+                                        XEasyPdfHandler.Table.Row.Cell.build(12F*2).setFontSize(6F).addContent(
+                                                XEasyPdfHandler.Text.build("下标")
+                                        ).setMarginLeft(-(12F*2)).setMarginTop(8F),
+                                        XEasyPdfHandler.Table.Row.Cell.build(12F*4).addContent(
+                                                XEasyPdfHandler.Text.build("田田田田")
+                                        )
+                                )
+                        ).disableBorder()
+                )
+        ).save("E:\\pdf\\test\\component\\image\\test.pdf").close();
     }
 
     @Test

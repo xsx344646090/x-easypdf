@@ -46,10 +46,30 @@ public class XEasyPdfTemplateTags {
      */
     public static final String REGION_AFTER = "fo:region-after";
     /**
+     * 左侧栏
+     * <p>标签："fo:region-start"</p>
+     */
+    public static final String REGION_START = "fo:region-start";
+    /**
+     * 右侧栏
+     * <p>标签："fo:region-end"</p>
+     */
+    public static final String REGION_END = "fo:region-end";
+    /**
      * 页面序列
      * <p>标签："fo:page-sequence"</p>
      */
     public static final String PAGE_SEQUENCE = "fo:page-sequence";
+    /**
+     * 页码
+     * <p>标签："fo:page-number"</p>
+     */
+    public static final String PAGE_NUMBER = "fo:page-number";
+    /**
+     * 总页码
+     * <p>标签："fo:page-number-citation-last"</p>
+     */
+    public static final String PAGE_NUMBER_CITATION_LAST = "fo:page-number-citation-last";
     /**
      * 静态内容
      * <p>标签："fo:static-content"</p>
@@ -65,6 +85,11 @@ public class XEasyPdfTemplateTags {
      * <p>标签："fo:block"</p>
      */
     public static final String BLOCK = "fo:block";
+    /**
+     * 块容器
+     * <p>标签："fo:block-container"</p>
+     */
+    public static final String BLOCK_CONTAINER = "fo:block-container";
     /**
      * 内联
      * <p>标签："fo:inline"</p>
@@ -110,4 +135,39 @@ public class XEasyPdfTemplateTags {
      * <p>标签："fo:table-cell"</p>
      */
     public static final String TABLE_CELL = "fo:table-cell";
+    /**
+     * 分割线
+     * <p>标签："fo:leader"</p>
+     */
+    public static final String LEADER = "fo:leader";
+    /**
+     * 外部对象
+     * <p>标签："fo:instream-foreign-object"</p>
+     */
+    public static final String INSTREAM_FOREIGN_OBJECT = "fo:instream-foreign-object";
+    /**
+     * 条形码
+     * <p>标签："fo:barcode"</p>
+     */
+    public static final String BARCODE = "fo:barcode";
+    /**
+     * 超链接
+     * <p>标签："fo:basic-link"</p>
+     */
+    public static final String BASIC_LINK = "fo:basic-link";
+    /**
+     * 书签树
+     * <p>标签："fo:bookmark-tree"</p>
+     */
+    public static final String BOOKMARK_TREE = "fo:bookmark-tree";
+    /**
+     * 书签
+     * <p>标签："fo:bookmark"</p>
+     */
+    public static final String BOOKMARK = "fo:bookmark";
+    /**
+     * 书签标题
+     * <p>标签："fo:bookmark-title"</p>
+     */
+    public static final String BOOKMARK_TITLE = "fo:bookmark-title";
 }

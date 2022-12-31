@@ -1,7 +1,6 @@
 package wiki.xsx.core.pdf.component.layout;
 
 import lombok.Data;
-import wiki.xsx.core.pdf.component.layout.XEasyPdfLayoutComponent;
 import wiki.xsx.core.pdf.component.table.XEasyPdfTable;
 
 import java.io.Serializable;

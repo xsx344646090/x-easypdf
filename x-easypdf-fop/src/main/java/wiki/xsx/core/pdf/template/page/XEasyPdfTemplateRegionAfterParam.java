@@ -31,7 +31,7 @@ class XEasyPdfTemplateRegionAfterParam {
     /**
      * 高度
      */
-    private String height = "0px";
+    private String height;
     /**
      * 组件列表
      */

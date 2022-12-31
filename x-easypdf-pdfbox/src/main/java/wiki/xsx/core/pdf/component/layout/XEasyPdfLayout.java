@@ -1,7 +1,6 @@
 package wiki.xsx.core.pdf.component.layout;
 
 import wiki.xsx.core.pdf.component.XEasyPdfComponent;
-import wiki.xsx.core.pdf.component.layout.XEasyPdfLayoutComponent;
 
 import java.util.List;
 

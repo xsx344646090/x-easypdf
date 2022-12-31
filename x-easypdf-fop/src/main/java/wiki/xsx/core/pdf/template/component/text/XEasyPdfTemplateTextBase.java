@@ -4,6 +4,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import wiki.xsx.core.pdf.template.XEasyPdfTemplateAttributes;
 import wiki.xsx.core.pdf.template.component.XEasyPdfTemplateComponent;
+import wiki.xsx.core.pdf.template.handler.XEasyPdfTemplateElementHandler;
+
+import java.util.Optional;
 
 /**
  * pdf模板-文本基础组件
@@ -36,15 +39,28 @@ abstract class XEasyPdfTemplateTextBase implements XEasyPdfTemplateComponent {
     Element initBlock(Document document, XEasyPdfTemplateTextBaseParam param) {
         // 创建block元素
         Element block = this.createBlockElement(document, param);
-        // 如果行间距不为空，则设置行间距
-        if (param.getLeading() != null) {
-            // 设置行间距
-            block.setAttribute(XEasyPdfTemplateAttributes.LINE_HEIGHT, param.getLeading());
-        }
-        // 如果字符间距不为空，则设置字符间距
-        if (param.getLetterSpacing() != null) {
-            // 设置字符间距
-            block.setAttribute(XEasyPdfTemplateAttributes.LETTER_SPACING, param.getLetterSpacing());
+        // 设置行间距
+        Optional.ofNullable(param.getLeading()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.LINE_HEIGHT, v.intern().toLowerCase()));
+        // 设置字符间距
+        Optional.ofNullable(param.getLetterSpacing()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.LETTER_SPACING, v.intern().toLowerCase()));
+        // 设置单词间距
+        Optional.ofNullable(param.getWordSpacing()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.WORD_SPACING, v.intern().toLowerCase()));
+        // 设置单词换行
+        Optional.ofNullable(param.getWordBreak()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.WORD_BREAK, v.intern().toLowerCase()));
+        // 设置空白空间
+        Optional.ofNullable(param.getWhiteSpace()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.WHITE_SPACE, v.intern().toLowerCase()));
+        // 设置文本缩进
+        Optional.ofNullable(param.getTextIndent()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.TEXT_INDENT, v.intern().toLowerCase()));
+        // 设置端前缩进
+        Optional.ofNullable(param.getStartIndent()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.START_INDENT, v.intern().toLowerCase()));
+        // 设置端后缩进
+        Optional.ofNullable(param.getEndIndent()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.END_INDENT, v.intern().toLowerCase()));
+        // 如果包含删除线，则设置删除线
+        if (param.getHasDeleteLine()) {
+            // 设置文本装饰（删除线）
+            block.setAttribute(XEasyPdfTemplateAttributes.TEXT_DECORATION, "line-through");
+            // 设置删除线颜色
+            Optional.ofNullable(param.getDeleteLineColor()).ifPresent(c -> XEasyPdfTemplateElementHandler.appendColor(block, c));
         }
         // 返回block元素
         return block;

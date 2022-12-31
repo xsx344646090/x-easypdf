@@ -26,14 +26,13 @@ import wiki.xsx.core.pdf.util.XEasyPdfFileUtil;
 import wiki.xsx.core.pdf.util.XEasyPdfTextUtil;
 
 import javax.print.PrintServiceLookup;
-import java.awt.*;
+import java.awt.Color;
 import java.awt.print.PageFormat;
 import java.awt.print.PrinterJob;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.List;
 import java.util.*;
 
 /**
@@ -95,7 +94,7 @@ public class XEasyPdfDocument implements Closeable, Serializable {
     @SneakyThrows
     public XEasyPdfDocument(String filePath, String password) {
         // 读取文件流
-        try (InputStream inputStream = new BufferedInputStream(new FileInputStream(filePath))) {
+        try (InputStream inputStream = new BufferedInputStream(Files.newInputStream(Paths.get(filePath)))) {
             this.param.init(inputStream, password, this);
         }
     }
@@ -111,7 +110,7 @@ public class XEasyPdfDocument implements Closeable, Serializable {
     @SneakyThrows
     public XEasyPdfDocument(String filePath, String password, InputStream keyStore, String alias) {
         // 读取文件流
-        try (InputStream inputStream = new BufferedInputStream(new FileInputStream(filePath))) {
+        try (InputStream inputStream = new BufferedInputStream(Files.newInputStream(Paths.get(filePath)))) {
             this.param.init(inputStream, password, keyStore, alias, this);
         }
     }
@@ -771,6 +770,7 @@ public class XEasyPdfDocument implements Closeable, Serializable {
      * 打印文档（默认打印机）
      *
      * @param count 打印数量
+     * @return 返回pdf文档
      */
     public XEasyPdfDocument print(int count) {
         return this.print(count, XEasyPdfPrintStyle.PORTRAIT, Scaling.ACTUAL_SIZE);
@@ -782,6 +782,7 @@ public class XEasyPdfDocument implements Closeable, Serializable {
      * @param count   打印数量
      * @param style   打印形式（横向、纵向、反向横向）
      * @param scaling 缩放比例
+     * @return 返回pdf文档
      */
     @SneakyThrows
     public XEasyPdfDocument print(int count, XEasyPdfPrintStyle style, Scaling scaling) {
@@ -850,6 +851,16 @@ public class XEasyPdfDocument implements Closeable, Serializable {
         this.param.setTarget(null);
         // 清空页面列表
         this.param.getPageList().clear();
+    }
+
+    /**
+     * 重置
+     *
+     * @return 返回pdf文档
+     */
+    XEasyPdfDocument reset() {
+        this.param.setIsReset(Boolean.TRUE);
+        return this;
     }
 
     /**

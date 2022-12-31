@@ -29,36 +29,39 @@ import java.awt.*;
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 class XEasyPdfTemplateTextBaseParam extends XEasyPdfTemplateComponentParam {
+
     /**
-     * 行间距
+     * 内部地址
+     * <p>注：标签id</p>
      */
-    private String leading;
+    private String linkInternalDestination;
     /**
-     * 字符间距
+     * 外部地址
+     * <p>注：url</p>
      */
-    private String letterSpacing;
+    private String linkExternalDestination;
     /**
-     * 字体名称
+     * 删除线颜色
      */
-    private String fontFamily;
+    protected Color deleteLineColor;
     /**
-     * 字体样式
+     * 下划线宽度
      */
-    private String fontStyle;
+    protected String underLineWidth;
     /**
-     * 字体大小
+     * 下划线颜色
      */
-    private String fontSize;
+    protected Color underLineColor;
     /**
-     * 字体大小调整
+     * 是否包含删除线
      */
-    private String fontSizeAdjust;
+    protected Boolean hasDeleteLine = Boolean.FALSE;
     /**
-     * 字体重量
+     * 是否包含下划线
      */
-    private String fontWeight;
+    protected Boolean hasUnderLine = Boolean.FALSE;
     /**
-     * 字体颜色
+     * 是否包含超链接
      */
-    private Color fontColor;
+    protected Boolean hasLink = Boolean.FALSE;
 }

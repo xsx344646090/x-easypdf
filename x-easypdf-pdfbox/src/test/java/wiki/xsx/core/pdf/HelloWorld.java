@@ -23,8 +23,8 @@ public class HelloWorld {
 
     @Test
     public void test() {
-        // 设置加载系统字体
-        System.setProperty(XEasyPdfHandler.FontMappingPolicy.key(), XEasyPdfHandler.FontMappingPolicy.ALL.name());
+        // 开启系统字体映射
+        XEasyPdfHandler.Font.enableSystemFontMapping();
         // 构建pdf
         XEasyPdfHandler.Document.build(XEasyPdfHandler.Page.build(XEasyPdfHandler.Text.build("Hello World"))).save("E:\\pdf\\hello-world.pdf").close();
     }

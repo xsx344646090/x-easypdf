@@ -4,7 +4,7 @@ import wiki.xsx.core.pdf.doc.XEasyPdfDefaultFontStyle;
 import wiki.xsx.core.pdf.doc.XEasyPdfDocument;
 import wiki.xsx.core.pdf.doc.XEasyPdfPage;
 
-import java.awt.*;
+import java.awt.Color;
 
 /**
  * 虚线分割线组件

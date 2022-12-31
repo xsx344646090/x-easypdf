@@ -13,7 +13,7 @@ import wiki.xsx.core.pdf.doc.XEasyPdfPage;
 import wiki.xsx.core.pdf.doc.XEasyPdfPositionStyle;
 import wiki.xsx.core.pdf.handler.XEasyPdfHandler;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.Serializable;
 
 /**

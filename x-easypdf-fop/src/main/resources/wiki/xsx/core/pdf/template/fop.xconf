@@ -18,6 +18,7 @@
     <!-- Uses renderer mime type for renderers -->
     <renderers>
         <renderer mime="application/pdf">
+            <version>1.5</version>
             <filterList>
                 <!-- provides compression using zlib flate (default is on) -->
                 <value>flate</value>

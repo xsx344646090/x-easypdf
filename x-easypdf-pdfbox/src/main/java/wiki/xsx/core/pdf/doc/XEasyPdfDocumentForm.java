@@ -1,8 +1,5 @@
 package wiki.xsx.core.pdf.doc;
 
-import wiki.xsx.core.pdf.doc.XEasyPdfDocumentFormFiller;
-import wiki.xsx.core.pdf.doc.XEasyPdfDocumentFormTextField;
-
 import java.io.Serializable;
 
 /**

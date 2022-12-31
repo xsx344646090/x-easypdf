@@ -5,7 +5,8 @@ import org.w3c.dom.Element;
 import wiki.xsx.core.pdf.template.XEasyPdfTemplateAttributes;
 import wiki.xsx.core.pdf.template.XEasyPdfTemplateConstants;
 import wiki.xsx.core.pdf.template.XEasyPdfTemplateTags;
-import wiki.xsx.core.pdf.template.enums.XEasyPdfTemplatePositionStyle;
+
+import java.util.Optional;
 
 /**
  * pdf模板组件
@@ -55,51 +56,46 @@ public interface XEasyPdfTemplateComponent {
     default Element createBlockElement(Document document, XEasyPdfTemplateComponentParam param) {
         // 创建block元素
         Element block = this.createEmptyElement(document);
-        // 如果开启边框，则添加边框
-        if (param.getHasBorder() != null) {
-            // 添加边框
-            block.setAttribute(XEasyPdfTemplateAttributes.BORDER, XEasyPdfTemplateConstants.DEFAULT_BORDER_VALUE);
-        }
-        // 如果水平样式不为空，则设置水平样式
-        if (param.getHorizontalStyle() != null) {
-            // 获取水平样式
-            XEasyPdfTemplatePositionStyle style = param.getHorizontalStyle();
-            // 如果为水平样式，则设置水平样式
-            if (style.isHorizontalStyle()) {
-                // 设置水平样式
-                block.setAttribute(style.getKey(), style.getValue());
-            }
-        }
-        // 如果垂直样式不为空，则设置垂直样式
-        if (param.getVerticalStyle() != null) {
-            // 获取垂直样式
-            XEasyPdfTemplatePositionStyle style = param.getVerticalStyle();
-            // 如果为垂直样式，则设置垂直样式
-            if (style.isVerticalStyle()) {
-                // 设置垂直样式
-                block.setAttribute(style.getKey(), style.getValue());
-            }
-        }
-        // 如果上填充不为空，则设置上填充
-        if (param.getPaddingTop() != null) {
-            // 设置上填充
-            block.setAttribute(XEasyPdfTemplateAttributes.PADDING_TOP, param.getPaddingTop());
-        }
-        // 如果下填充不为空，则设置下填充
-        if (param.getPaddingBottom() != null) {
-            // 设置下填充
-            block.setAttribute(XEasyPdfTemplateAttributes.PADDING_BOTTOM, param.getPaddingBottom());
-        }
-        // 如果左填充不为空，则设置左填充
-        if (param.getPaddingLeft() != null) {
-            // 设置左填充
-            block.setAttribute(XEasyPdfTemplateAttributes.PADDING_LEFT, param.getPaddingLeft());
-        }
-        // 如果右填充不为空，则设置右填充
-        if (param.getPaddingRight() != null) {
-            // 设置右填充
-            block.setAttribute(XEasyPdfTemplateAttributes.PADDING_RIGHT, param.getPaddingRight());
-        }
+        // 添加id
+        Optional.ofNullable(param.getId()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.ID, v.intern()));
+        // 添加边框
+        Optional.ofNullable(param.getHasBorder()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.BORDER, XEasyPdfTemplateConstants.DEFAULT_BORDER_VALUE));
+        // 设置水平样式
+        Optional.ofNullable(param.getHorizontalStyle()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.TEXT_ALIGN, v.intern().toLowerCase()));
+        // 设置上下左右边距
+        Optional.ofNullable(param.getMargin()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.MARGIN, v.intern().toLowerCase()));
+        // 设置上边距
+        Optional.ofNullable(param.getMarginTop()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.MARGIN_TOP, v.intern().toLowerCase()));
+        // 设置下边距
+        Optional.ofNullable(param.getMarginBottom()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.MARGIN_BOTTOM, v.intern().toLowerCase()));
+        // 设置左边距
+        Optional.ofNullable(param.getMarginLeft()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.MARGIN_LEFT, v.intern().toLowerCase()));
+        // 设置右边距
+        Optional.ofNullable(param.getMarginRight()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.MARGIN_RIGHT, v.intern().toLowerCase()));
+        // 设置上下左右填充
+        Optional.ofNullable(param.getPadding()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.PADDING, v.intern().toLowerCase()));
+        // 设置上填充
+        Optional.ofNullable(param.getPaddingTop()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.PADDING_TOP, v.intern().toLowerCase()));
+        // 设置下填充
+        Optional.ofNullable(param.getPaddingBottom()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.PADDING_BOTTOM, v.intern().toLowerCase()));
+        // 设置左填充
+        Optional.ofNullable(param.getPaddingLeft()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.PADDING_LEFT, v.intern().toLowerCase()));
+        // 设置右填充
+        Optional.ofNullable(param.getPaddingRight()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.PADDING_RIGHT, v.intern().toLowerCase()));
+        // 设置段前空白
+        Optional.ofNullable(param.getSpaceBefore()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.SPACE_BEFORE, v.intern().toLowerCase()));
+        // 设置段后空白
+        Optional.ofNullable(param.getSpaceAfter()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.SPACE_AFTER, v.intern().toLowerCase()));
+        // 设置分页符-前
+        Optional.ofNullable(param.getBreakBefore()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.BREAK_BEFORE, v.intern().toLowerCase()));
+        // 设置分页符-后
+        Optional.ofNullable(param.getBreakAfter()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.BREAK_AFTER, v.intern().toLowerCase()));
+        // 设置分页时保持一起
+        Optional.ofNullable(param.getKeepTogether()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.KEEP_TOGETHER, v.intern().toLowerCase()));
+        // 设置分页时与上一个保持一起
+        Optional.ofNullable(param.getKeepWithPrevious()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.KEEP_WITH_PREVIOUS, v.intern().toLowerCase()));
+        // 设置分页时与下一个保持一起
+        Optional.ofNullable(param.getKeepWithNext()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.KEEP_WITH_NEXT, v.intern().toLowerCase()));
         // 返回block元素
         return block;
     }
@@ -111,7 +107,9 @@ public interface XEasyPdfTemplateComponent {
      * @return 返回元素
      */
     default Element transform(Document document) {
+        // 创建元素
         Element element = this.createElement(document);
+        // 如果元素不为空，则返回元素，否则返回空元素
         return element != null ? element : this.createEmptyElement(document);
     }
 }

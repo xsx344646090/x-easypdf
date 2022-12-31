@@ -10,9 +10,8 @@ import wiki.xsx.core.pdf.doc.XEasyPdfPage;
 import wiki.xsx.core.pdf.doc.XEasyPdfPositionStyle;
 import wiki.xsx.core.pdf.util.XEasyPdfConvertUtil;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.Serializable;
-import java.util.List;
 import java.util.*;
 
 /**

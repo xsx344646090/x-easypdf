@@ -3,11 +3,10 @@ package wiki.xsx.core.pdf.component.rect;
 import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import wiki.xsx.core.pdf.component.XEasyPdfComponent;
-import wiki.xsx.core.pdf.component.rect.XEasyPdfRectParam;
 import wiki.xsx.core.pdf.doc.XEasyPdfDocument;
 import wiki.xsx.core.pdf.doc.XEasyPdfPage;
 
-import java.awt.*;
+import java.awt.Color;
 
 /**
  * pdf矩形组件

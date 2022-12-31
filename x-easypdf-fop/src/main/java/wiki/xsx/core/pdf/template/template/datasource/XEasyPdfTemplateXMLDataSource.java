@@ -5,16 +5,16 @@ import lombok.SneakyThrows;
 import lombok.experimental.Accessors;
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.FopFactory;
-import org.apache.xmlgraphics.util.MimeConstants;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 /**
  * pdf模板-xml数据源
@@ -46,6 +46,10 @@ public class XEasyPdfTemplateXMLDataSource implements XEasyPdfTemplateDataSource
      * xml路径（绝对路径）
      */
     private String xmlPath;
+    /**
+     * xml数据输入流
+     */
+    private InputStream xmlInputStream;
 
     /**
      * 获取数据源读取器
@@ -58,10 +62,14 @@ public class XEasyPdfTemplateXMLDataSource implements XEasyPdfTemplateDataSource
         // 如果不为空数据，则加载xml数据
         if (this.isNotEmptyData()) {
             try {
-                // 从资源路径加载xml数据
-                InputStream inputStream = this.getClass().getResourceAsStream(this.xmlPath);
-                // // 如果不为空，则返回数据源读取器，否则从绝对路径重新加载模板
-                return inputStream != null ? new InputStreamReader(inputStream, StandardCharsets.UTF_8) : new InputStreamReader(Files.newInputStream(Paths.get(this.xmlPath)), StandardCharsets.UTF_8);
+                // 如果xml数据输入流为空，则从文件读取
+                if (this.xmlInputStream == null) {
+                    // 从资源路径加载xml数据
+                    InputStream inputStream = this.getClass().getResourceAsStream(this.xmlPath);
+                    // 如果不为空，则返回数据源读取器，否则从绝对路径重新加载模板
+                    this.xmlInputStream = inputStream != null ? inputStream : Files.newInputStream(Paths.get(this.xmlPath));
+                }
+                return new InputStreamReader(this.xmlInputStream, StandardCharsets.UTF_8);
             } catch (Exception e) {
                 // 提示错误信息
                 throw new IllegalArgumentException("the xml can not be loaded，the path['" + this.xmlPath + "'] is error");
@@ -81,11 +89,34 @@ public class XEasyPdfTemplateXMLDataSource implements XEasyPdfTemplateDataSource
     @SneakyThrows
     @Override
     public void transform(FopFactory fopFactory, FOUserAgent foAgent, OutputStream outputStream) {
-        // 定义转换器
-        Transformer transformer;
-        // 加载模板（从资源路径读取）
-        InputStream inputStream = this.getClass().getResourceAsStream(this.templatePath);
-        try {
+        this.domTransform(fopFactory, foAgent, this.templatePath, outputStream);
+        Optional.ofNullable(this.xmlInputStream).ifPresent(
+                v -> {
+                    try {
+                        v.close();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+        );
+    }
+
+    /**
+     * 获取xsl-fo文档内容
+     *
+     * @return 返回文档内容
+     */
+    @SneakyThrows
+    @Override
+    public String getDocumentContent() {
+        try (
+                // 创建输出流
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream(8192);
+                // 获取数据源读取器
+                Reader reader = this.getSourceReader()
+        ) {
+            // 加载模板（从资源路径读取）
+            InputStream inputStream = this.getClass().getResourceAsStream(this.templatePath);
             try {
                 // 如果输入流为空，则从绝对路径读取
                 if (inputStream == null) {
@@ -99,19 +130,18 @@ public class XEasyPdfTemplateXMLDataSource implements XEasyPdfTemplateDataSource
             // 创建输入流读取器
             try (InputStreamReader streamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
                 // 创建转换器
-                transformer = TransformerFactory.newInstance().newTransformer(new StreamSource(streamReader));
-                // 获取数据源读取器
-                try (Reader reader = this.getSourceReader()) {
-                    // 转换文件
-                    transformer.transform(new StreamSource(reader), new SAXResult(fopFactory.newFop(MimeConstants.MIME_PDF, foAgent, outputStream).getDefaultHandler()));
-                }
-            }
-        } finally {
-            // 如果输入流不为空，则关闭输入流
-            if (inputStream != null) {
+                Transformer transformer = TransformerFactory.newInstance().newTransformer(new StreamSource(streamReader));
+                // 设置编码类型
+                transformer.setOutputProperty("encoding", StandardCharsets.UTF_8.toString());
+                // 转换
+                transformer.transform(new StreamSource(reader), new StreamResult(outputStream));
+                // 返回字符串
+                return outputStream.toString(StandardCharsets.UTF_8.toString());
+            } finally {
                 // 关闭输入流
                 inputStream.close();
             }
+
         }
     }
 
@@ -121,6 +151,6 @@ public class XEasyPdfTemplateXMLDataSource implements XEasyPdfTemplateDataSource
      * @return 返回布尔值，是为true，否为false
      */
     private boolean isNotEmptyData() {
-        return this.xmlPath != null && this.xmlPath.length() > 0;
+        return (this.xmlPath != null && this.xmlPath.length() > 0) || this.xmlInputStream != null;
     }
 }

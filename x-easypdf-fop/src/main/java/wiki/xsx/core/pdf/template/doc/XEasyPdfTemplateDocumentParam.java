@@ -2,9 +2,11 @@ package wiki.xsx.core.pdf.template.doc;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
-import wiki.xsx.core.pdf.template.page.XEasyPdfTemplatePageComponent;
+import wiki.xsx.core.pdf.template.doc.bookmark.XEasyPdfTemplateBookmarkComponent;
+import wiki.xsx.core.pdf.template.doc.page.XEasyPdfTemplatePageComponent;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -33,7 +35,35 @@ class XEasyPdfTemplateDocumentParam {
      */
     private String configPath;
     /**
+     * 标题
+     */
+    private String title;
+    /**
+     * 作者
+     */
+    private String author;
+    /**
+     * 主题
+     */
+    private String subject;
+    /**
+     * 关键词
+     */
+    private String keywords;
+    /**
+     * 创建者
+     */
+    private String creator;
+    /**
+     * 创建时间
+     */
+    private Date creationDate;
+    /**
      * pdf模板页面列表
      */
     private final List<XEasyPdfTemplatePageComponent> pageList = new ArrayList<>(10);
+    /**
+     * pdf模板书签列表
+     */
+    private List<XEasyPdfTemplateBookmarkComponent> bookmarkList = new ArrayList<>(10);
 }

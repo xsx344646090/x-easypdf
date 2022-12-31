@@ -36,4 +36,20 @@ public final class XEasyPdfTemplateConstants {
      * 默认边框参数
      */
     public static final String DEFAULT_BORDER_VALUE = "1px solid black";
+    /**
+     * 默认分割线样式
+     */
+    public static final String DEFAULT_SPLIT_LINE_STYLE_VALUE = "rule";
+    /**
+     * 默认虚线分割线样式
+     */
+    public static final String DEFAULT_DOTTED_SPLIT_LINE_STYLE_VALUE = "dots";
+    /**
+     * 命名空间
+     */
+    public static final String NAMESPACE = "http://www.x-easypdf.cn/ns";
+    /**
+     * freemarker模板路径key
+     */
+    public static final String FREEMARKER_TEMPLATE_PATH_KEY = "x-easypdf.freemarker.dir";
 }

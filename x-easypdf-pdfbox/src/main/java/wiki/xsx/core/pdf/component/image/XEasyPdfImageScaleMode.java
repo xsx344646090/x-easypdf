@@ -1,6 +1,6 @@
 package wiki.xsx.core.pdf.component.image;
 
-import java.awt.*;
+import java.awt.Image;
 
 /**
  * 图片压缩模式枚举
@@ -37,7 +37,7 @@ public enum XEasyPdfImageScaleMode {
     /**
      * 编码
      */
-    int code;
+    final int code;
 
     /**
      * 有参构造

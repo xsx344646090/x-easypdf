@@ -8,20 +8,16 @@ import org.apache.pdfbox.pdmodel.*;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import wiki.xsx.core.pdf.component.XEasyPdfComponent;
 import wiki.xsx.core.pdf.component.image.XEasyPdfImage;
-import wiki.xsx.core.pdf.doc.XEasyPdfDefaultFontStyle;
-import wiki.xsx.core.pdf.doc.XEasyPdfDocumentBookmark;
-import wiki.xsx.core.pdf.doc.XEasyPdfDocumentPermission;
 import wiki.xsx.core.pdf.footer.XEasyPdfFooter;
 import wiki.xsx.core.pdf.header.XEasyPdfHeader;
 import wiki.xsx.core.pdf.mark.XEasyPdfWatermark;
 import wiki.xsx.core.pdf.util.XEasyPdfFontUtil;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.File;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.util.List;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -218,7 +214,7 @@ class XEasyPdfDocumentParam implements Serializable {
             this.pageList.add(new XEasyPdfPage(page));
         }
         // 设置总页数
-        this.initTotalPage(pages.getCount());
+        // this.initTotalPage(pages.getCount());
         // 初始化文档信息
         this.initInfo(document);
     }

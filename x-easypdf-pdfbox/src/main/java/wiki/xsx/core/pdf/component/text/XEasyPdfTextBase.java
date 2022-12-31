@@ -12,13 +12,12 @@ import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationText;
 import wiki.xsx.core.pdf.component.XEasyPdfComponent;
 import wiki.xsx.core.pdf.component.XEasyPdfComponentEvent;
 import wiki.xsx.core.pdf.component.XEasyPdfPagingCondition;
-import wiki.xsx.core.pdf.component.text.XEasypdfTextRenderingMode;
 import wiki.xsx.core.pdf.doc.XEasyPdfDocument;
 import wiki.xsx.core.pdf.doc.XEasyPdfPage;
 import wiki.xsx.core.pdf.util.XEasyPdfFontUtil;
 import wiki.xsx.core.pdf.util.XEasyPdfTextUtil;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.UUID;

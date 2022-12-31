@@ -2,18 +2,14 @@ package wiki.xsx.core.pdf.component.text;
 
 import wiki.xsx.core.pdf.component.XEasyPdfComponent;
 import wiki.xsx.core.pdf.component.XEasyPdfPagingCondition;
-import wiki.xsx.core.pdf.component.text.XEasyPdfTextExtendParam;
-import wiki.xsx.core.pdf.component.text.XEasyPdfTextScript;
-import wiki.xsx.core.pdf.component.text.XEasyPdfTextScriptType;
-import wiki.xsx.core.pdf.component.text.XEasypdfTextRenderingMode;
 import wiki.xsx.core.pdf.doc.XEasyPdfDefaultFontStyle;
 import wiki.xsx.core.pdf.doc.XEasyPdfDocument;
 import wiki.xsx.core.pdf.doc.XEasyPdfPage;
 import wiki.xsx.core.pdf.doc.XEasyPdfPositionStyle;
 
-import java.awt.*;
-import java.util.List;
+import java.awt.Color;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**

@@ -7,14 +7,16 @@ import org.junit.runners.MethodSorters;
 import wiki.xsx.core.pdf.component.image.XEasyPdfImageType;
 import wiki.xsx.core.pdf.component.text.XEasypdfTextRenderingMode;
 import wiki.xsx.core.pdf.handler.XEasyPdfHandler;
+import wiki.xsx.core.pdf.util.XEasyPdfFileUtil;
+import wiki.xsx.core.pdf.util.XEasyPdfImageUtil;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Rectangle;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.*;
 
 /**
@@ -516,6 +518,33 @@ public class XEasyPdfDocumentTest {
     }
 
     @Test
+    public void test28() throws IOException {
+        long begin = System.currentTimeMillis();
+        // 定义保存路径
+        final String outputPath = OUTPUT_PATH + "sign.pdf";
+        final String imagePath = OUTPUT_PATH + "2022010115431859.gif";
+        final String certPath = OUTPUT_PATH + "file.p12";
+        try (OutputStream outputStream = Files.newOutputStream(XEasyPdfFileUtil.createDirectories(Paths.get(outputPath)))) {
+            XEasyPdfHandler.Document.build(
+                    XEasyPdfHandler.Page.build(
+                            XEasyPdfHandler.Text.build("爽爽的贵阳，避暑的天堂").setFontSize(16).setHorizontalStyle(XEasyPdfPositionStyle.CENTER)
+                    ),
+                    XEasyPdfHandler.Page.build(
+                            XEasyPdfHandler.Text.build("爽爽的贵阳，避暑的天堂")
+                    )
+            ).signer().setSignerInfo(
+                    "xsx", "贵阳市", "测试", "qq: 344646090"
+            ).setCertificate(
+                    XEasyPdfDocumentSignAlgorithm.MD5withRSA, XEasyPdfDocumentSignKeyStoreType.PKCS12, new File(certPath), "123456"
+            ).setSignImage(
+                    XEasyPdfImageUtil.read(new File(imagePath)), 240F, 30F, 50F
+            ).setAccessPermissions(3).sign(outputStream, 0, 1);
+        }
+        long end = System.currentTimeMillis();
+        System.out.println("完成，耗时： " + (end-begin));
+    }
+
+    @Test
     public void test29() throws IOException {
         long begin = System.currentTimeMillis();
         final String fontPath = "C:\\Windows\\Fonts\\simsun.ttc,0";
@@ -578,9 +607,13 @@ public class XEasyPdfDocumentTest {
 
     @Test
     public void test32() {
+        // XEasyPdfHandler.Font.addFont("C:\\Windows\\Fonts\\times.ttf");
+        // 设置加载系统字体
+        XEasyPdfHandler.Font.enableSystemFontMapping();
         final String sourcePath = OUTPUT_PATH + "doc3.pdf";
         XEasyPdfHandler.Document.load(sourcePath)
                 .imager()
+                .enableOptimization()
                 .enableGray()
                 .enableHorizontalMerge()
                 .setDpi(144F)

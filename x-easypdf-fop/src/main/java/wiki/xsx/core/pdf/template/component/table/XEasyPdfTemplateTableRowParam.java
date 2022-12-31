@@ -3,7 +3,6 @@ package wiki.xsx.core.pdf.template.component.table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-import wiki.xsx.core.pdf.template.component.XEasyPdfTemplateComponentParam;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,15 +28,10 @@ import java.util.List;
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
-class XEasyPdfTemplateTableRowParam extends XEasyPdfTemplateComponentParam {
+class XEasyPdfTemplateTableRowParam extends XEasyPdfTemplateTableParam {
 
     /**
      * 单元格列表
      */
     private List<XEasyPdfTemplateTableCell> cells = new ArrayList<>(10);
-
-    /**
-     * 边框样式
-     */
-    private String borderStyle;
 }

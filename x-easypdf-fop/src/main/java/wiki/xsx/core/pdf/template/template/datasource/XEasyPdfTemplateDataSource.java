@@ -9,12 +9,13 @@ import org.xml.sax.InputSource;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
-import java.io.Reader;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * pdf模板数据源
@@ -73,6 +74,43 @@ public interface XEasyPdfTemplateDataSource {
     }
 
     /**
+     * dom转换
+     *
+     * @param fopFactory   fop工厂
+     * @param foAgent      fo代理
+     * @param templatePath 模板路径
+     * @param outputStream 输出流
+     */
+    @SneakyThrows
+    default void domTransform(FopFactory fopFactory, FOUserAgent foAgent, String templatePath, OutputStream outputStream) {
+        // 加载模板（从资源路径读取）
+        InputStream inputStream = this.getClass().getResourceAsStream(templatePath);
+        try {
+            // 如果输入流为空，则从绝对路径读取
+            if (inputStream == null) {
+                // 加载模板（从绝对路径读取）
+                inputStream = Files.newInputStream(Paths.get(templatePath));
+            }
+        } catch (Exception e) {
+            // 提示错误信息
+            throw new IllegalArgumentException("the template can not be loaded，the path['" + templatePath + "'] is error");
+        }
+        // 创建输入流读取器
+        try (InputStreamReader streamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
+            // 创建转换器
+            Transformer transformer = TransformerFactory.newInstance().newTransformer(new StreamSource(streamReader));
+            // 获取数据源读取器
+            try (Reader reader = this.getSourceReader()) {
+                // 转换文件
+                transformer.transform(new StreamSource(reader), new SAXResult(fopFactory.newFop(MimeConstants.MIME_PDF, foAgent, outputStream).getDefaultHandler()));
+            }
+        } finally {
+            // 关闭输入流
+            inputStream.close();
+        }
+    }
+
+    /**
      * 获取xsl-fo文档内容
      *
      * @return 返回文档内容
@@ -96,5 +134,3 @@ public interface XEasyPdfTemplateDataSource {
         }
     }
 }
-
-

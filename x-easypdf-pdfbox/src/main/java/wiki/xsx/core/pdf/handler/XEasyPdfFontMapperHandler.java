@@ -11,6 +11,9 @@ import wiki.xsx.core.pdf.doc.XEasyPdfDefaultFontStyle;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -74,8 +77,9 @@ public class XEasyPdfFontMapperHandler implements FontMapper {
      * @param font     字体
      */
     @SneakyThrows
-    public void addFont(String fontPath, FontBoxFont font) {
+    public void addFont(String fontPath, TrueTypeFont font) {
         FONT_NAME_MAPPING.putIfAbsent(font.getName(), font);
+        Optional.ofNullable(this.getFontAliases(font.getName())).ifPresent(name -> FONT_NAME_MAPPING.putIfAbsent(name, font));
         FONT_PATH_MAPPING.putIfAbsent(fontPath, font);
     }
 
@@ -229,7 +233,39 @@ public class XEasyPdfFontMapperHandler implements FontMapper {
             return info;
         }
         // 重新获取字体（替换字体名称，添加“-Regular”）
-        return this.getFont(postScriptName + "-Regular");
+        info = this.getFont(postScriptName + "-Regular");
+        // 如果字体不为空，则返回字体
+        if (info != null) {
+            // 返回字体
+            return info;
+        }
+        // 替换字体名称，去除空格
+        String finalName = postScriptName.replaceAll(" ", "");
+        // 重新获取字体（替换字体名称，去除空格）
+        info = this.getFont(finalName);
+        // 如果字体不为空，则返回字体
+        if (info != null) {
+            // 返回字体
+            return info;
+        }
+        // 返回字体
+        return FONT_NAME_MAPPING.get(Standard14Fonts.getMappedName(finalName));
+    }
+
+    /**
+     * 查找字体名称
+     *
+     * @param postScriptName 字体名称
+     * @return 返回字体名称
+     */
+    private String getFontAliases(String postScriptName) {
+        // 如果字体名称为空，则返回空
+        if (postScriptName == null) {
+            // 返回空
+            return null;
+        }
+        // 返回字体名称
+        return Standard14Fonts.getMappedName(postScriptName.replaceAll(" ", ""));
     }
 
     /**
@@ -246,5 +282,159 @@ public class XEasyPdfFontMapperHandler implements FontMapper {
         }
         // 获取字体
         return FONT_NAME_MAPPING.get(postScriptName);
+    }
+
+    /**
+     * 14种标准字体
+     */
+    private static class Standard14Fonts {
+
+        /**
+         * 别名
+         */
+        private static final Map<String, String> ALIASES = new HashMap<>(100);
+
+        static {
+            mapName("Courier-Bold");
+            mapName("Courier-BoldOblique");
+            mapName("Courier");
+            mapName("Courier-Oblique");
+            mapName("Helvetica");
+            mapName("Helvetica-Bold");
+            mapName("Helvetica-BoldOblique");
+            mapName("Helvetica-Oblique");
+            mapName("Symbol");
+            mapName("Times-Bold");
+            mapName("Times-BoldItalic");
+            mapName("Times-Italic");
+            mapName("Times-Roman");
+            mapName("ZapfDingbats");
+
+            mapName("CourierCourierNew", "Courier");
+            mapName("CourierNew", "Courier");
+            mapName("CourierNewPSMT", "Courier");
+            mapName("LiberationMono", "Courier");
+            mapName("NimbusMonL-Regu", "Courier");
+
+            mapName("CourierNew,Italic", "Courier-Oblique");
+            mapName("CourierNewPS-ItalicMT", "Courier-Oblique");
+            mapName("CourierNew-Italic", "Courier-Oblique");
+            mapName("LiberationMono-Italic", "Courier-Oblique");
+            mapName("NimbusMonL-ReguObli", "Courier-Oblique");
+
+            mapName("CourierNew,Bold", "Courier-Bold");
+            mapName("CourierNewPS-BoldMT", "Courier-Bold");
+            mapName("CourierNew-Bold", "Courier-Bold");
+            mapName("LiberationMono-Bold", "Courier-Bold");
+            mapName("NimbusMonL-Bold", "Courier-Bold");
+
+            mapName("CourierNew,BoldItalic", "Courier-BoldOblique");
+            mapName("CourierNewPS-BoldItalicMT", "Courier-BoldOblique");
+            mapName("LiberationMono-BoldItalic", "Courier-BoldOblique");
+            mapName("NimbusMonL-BoldObli", "Courier-BoldOblique");
+
+            mapName("Arial", "Helvetica");
+            mapName("ArialMT", "Helvetica");
+            mapName("LiberationSans", "Helvetica");
+            mapName("NimbusSanL-Regu", "Helvetica");
+
+            mapName("Arial,Italic", "Helvetica-Oblique");
+            mapName("Arial-ItalicMT", "Helvetica-Oblique");
+            mapName("Arial-Italic", "Helvetica-Oblique");
+            mapName("Helvetica-Italic", "Helvetica-Oblique");
+            mapName("LiberationSans-Italic", "Helvetica-Oblique");
+            mapName("NimbusSanL-ReguItal", "Helvetica-Oblique");
+
+            mapName("Arial,Bold", "Helvetica-Bold");
+            mapName("Arial-BoldMT", "Helvetica-Bold");
+            mapName("Arial-Bold", "Helvetica-Bold");
+            mapName("LiberationSans-Bold", "Helvetica-Bold");
+            mapName("NimbusSanL-Bold", "Helvetica-Bold");
+
+            mapName("Arial,BoldItalic", "Helvetica-BoldOblique");
+            mapName("Arial-BoldItalicMT", "Helvetica-BoldOblique");
+            mapName("Helvetica-BoldItalic", "Helvetica-BoldOblique");
+            mapName("LiberationSans-BoldItalic", "Helvetica-BoldOblique");
+            mapName("NimbusSanL-BoldItal", "Helvetica-BoldOblique");
+
+            mapName("TimesNewRoman", "Times-Roman");
+            mapName("TimesNewRomanPSMT", "Times-Roman");
+            mapName("TimesNewRoman", "Times-Roman");
+            mapName("TimesNewRomanPS", "Times-Roman");
+            mapName("LiberationSerif", "Times-Roman");
+            mapName("NimbusRomNo9L-Regu", "Times-Roman");
+
+            mapName("TimesNewRoman,Italic", "Times-Italic");
+            mapName("TimesNewRomanPS-ItalicMT", "Times-Italic");
+            mapName("TimesNewRomanPS-Italic", "Times-Italic");
+            mapName("TimesNewRoman-Italic", "Times-Italic");
+            mapName("LiberationSerif-Italic", "Times-Italic");
+            mapName("NimbusRomNo9L-ReguItal", "Times-Italic");
+
+            mapName("TimesNewRoman,Bold", "Times-Bold");
+            mapName("TimesNewRomanPS-BoldMT", "Times-Bold");
+            mapName("TimesNewRomanPS-Bold", "Times-Bold");
+            mapName("TimesNewRoman-Bold", "Times-Bold");
+            mapName("LiberationSerif-Bold", "Times-Bold");
+            mapName("NimbusRomNo9L-Medi", "Times-Bold");
+
+            mapName("TimesNewRoman,BoldItalic", "Times-BoldItalic");
+            mapName("TimesNewRomanPS-BoldItalicMT", "Times-BoldItalic");
+            mapName("TimesNewRomanPS-BoldItalic", "Times-BoldItalic");
+            mapName("TimesNewRoman-BoldItalic", "Times-BoldItalic");
+            mapName("LiberationSerif-BoldItalic", "Times-BoldItalic");
+            mapName("NimbusRomNo9L-MediItal", "Times-BoldItalic");
+
+            mapName("Symbol,Italic", "Symbol");
+            mapName("Symbol,Bold", "Symbol");
+            mapName("Symbol,BoldItalic", "Symbol");
+            mapName("Symbol", "Symbol");
+            mapName("SymbolMT", "Symbol");
+            mapName("StandardSymL", "Symbol");
+
+            mapName("ZapfDingbatsITCbyBT-Regular", "ZapfDingbats");
+            mapName("ZapfDingbatsITC", "ZapfDingbats");
+            mapName("Dingbats", "ZapfDingbats");
+            mapName("MS-Gothic", "ZapfDingbats");
+
+            mapName("Times", "Times-Roman");
+            mapName("Times,Italic", "Times-Italic");
+            mapName("Times,Bold", "Times-Bold");
+            mapName("Times,BoldItalic", "Times-BoldItalic");
+
+            mapName("ArialMT", "Helvetica");
+            mapName("Arial-ItalicMT", "Helvetica-Oblique");
+            mapName("Arial-BoldMT", "Helvetica-Bold");
+            mapName("Arial-BoldItalicMT", "Helvetica-BoldOblique");
+        }
+
+        /**
+         * 映射名称
+         *
+         * @param baseName 基础名称
+         */
+        private static void mapName(String baseName) {
+            ALIASES.put(baseName, baseName);
+        }
+
+        /**
+         * 映射名称
+         *
+         * @param alias    别名
+         * @param baseName 基础名称
+         */
+        private static void mapName(String alias, String baseName) {
+            ALIASES.put(alias, baseName);
+        }
+
+        /**
+         * 获取映射名称
+         *
+         * @param fontName 字体名称
+         * @return 返回映射名称
+         */
+        public static String getMappedName(String fontName) {
+            return ALIASES.get(fontName);
+        }
     }
 }
