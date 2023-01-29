@@ -15,7 +15,7 @@ import wiki.xsx.core.pdf.handler.XEasyPdfHandler;
  * @date 2020/6/7
  * @since 1.8
  * <p>
- * Copyright (c) 2020-2022 xsx All Rights Reserved.
+ * Copyright (c) 2020-2023 xsx All Rights Reserved.
  * x-easypdf is licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
@@ -164,11 +164,8 @@ public class XEasyPdfDefaultFooter implements XEasyPdfFooter {
      */
     @Override
     public float getHeight(XEasyPdfDocument document, XEasyPdfPage page) {
-        // 如果高度未初始化，则初始化参数
-        if (this.param.getHeight() == null) {
-            // 初始化参数
-            this.param.init(document, page);
-        }
+        // 初始化参数
+        this.param.init(document, page);
         // 返回高度
         return this.param.getHeight();
     }
