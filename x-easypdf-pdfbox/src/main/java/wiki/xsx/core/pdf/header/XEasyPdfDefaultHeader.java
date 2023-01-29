@@ -19,7 +19,7 @@ import java.util.List;
  * @date 2020/6/7
  * @since 1.8
  * <p>
- * Copyright (c) 2020-2022 xsx All Rights Reserved.
+ * Copyright (c) 2020-2023 xsx All Rights Reserved.
  * x-easypdf is licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
@@ -30,14 +30,14 @@ import java.util.List;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public class XEasyPdfDefaultHeader implements wiki.xsx.core.pdf.header.XEasyPdfHeader {
+public class XEasyPdfDefaultHeader implements XEasyPdfHeader {
 
     private static final long serialVersionUID = -7390695218795028439L;
 
     /**
      * 页眉参数
      */
-    private final wiki.xsx.core.pdf.header.XEasyPdfHeaderParam param = new wiki.xsx.core.pdf.header.XEasyPdfHeaderParam();
+    private final XEasyPdfHeaderParam param = new XEasyPdfHeaderParam();
 
     /**
      * 无参构造
@@ -114,7 +114,7 @@ public class XEasyPdfDefaultHeader implements wiki.xsx.core.pdf.header.XEasyPdfH
      * @return 返回页眉组件
      */
     @Override
-    public wiki.xsx.core.pdf.header.XEasyPdfHeader addComponent(XEasyPdfComponent component) {
+    public XEasyPdfDefaultHeader addComponent(XEasyPdfComponent component) {
         this.param.setComponent(component);
         return this;
     }

@@ -9,7 +9,7 @@ import wiki.xsx.core.pdf.template.handler.XEasyPdfTemplateHandler;
  * @date 2022/9/3
  * @since 1.8
  * <p>
- * Copyright (c) 2020-2022 xsx All Rights Reserved.
+ * Copyright (c) 2020-2023 xsx All Rights Reserved.
  * x-easypdf is licensed under the Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
@@ -31,7 +31,12 @@ public class XEasyPdfTemplateSplitLineTest {
         // 转换pdf
         XEasyPdfTemplateDocument document = XEasyPdfTemplateHandler.Document.build().setConfigPath(configPath).addPage(
                 XEasyPdfTemplateHandler.Page.build().addBodyComponent(
-                        XEasyPdfTemplateHandler.SplitLine.build()
+                        XEasyPdfTemplateHandler.SplitLine.build().setStyle("dotted").setLength("100%"),
+                        XEasyPdfTemplateHandler.SplitLine.build().setStyle("dashed").setLength("100%"),
+                        XEasyPdfTemplateHandler.SplitLine.build().setStyle("solid").setLength("100%"),
+                        XEasyPdfTemplateHandler.SplitLine.build().setStyle("double").setLength("100%"),
+                        XEasyPdfTemplateHandler.SplitLine.build().setStyle("groove").setLength("100%"),
+                        XEasyPdfTemplateHandler.SplitLine.build().setStyle("ridge").setLength("100%")
                 )
         );
         // 转换pdf

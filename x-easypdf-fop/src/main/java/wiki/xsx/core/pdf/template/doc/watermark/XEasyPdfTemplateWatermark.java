@@ -24,7 +24,7 @@ import java.util.List;
  * @date 2022/11/10
  * @since 1.8
  * <p>
- * Copyright (c) 2020-2022 xsx All Rights Reserved.
+ * Copyright (c) 2020-2023 xsx All Rights Reserved.
  * x-easypdf is licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
@@ -363,7 +363,7 @@ public class XEasyPdfTemplateWatermark implements XEasyPdfTemplateWatermarkCompo
         // 创建文件
         File file = new File(this.param.getTempDir(), this.param.getId() + ".png");
         // 如果文件不存在或开启文件覆盖，则创建新图像
-        if (!file.exists()||this.param.getIsOverwrite()) {
+        if (!file.exists() || this.param.getIsOverwrite()) {
             // 如果水印id为空，则提示信息
             Optional.ofNullable(this.param.getId()).orElseThrow(() -> new IllegalArgumentException("the watermark id can not be null"));
             // 如果宽度为空，则提示信息

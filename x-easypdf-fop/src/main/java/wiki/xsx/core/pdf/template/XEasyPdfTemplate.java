@@ -17,7 +17,7 @@ import java.util.Date;
  * @date 2022/7/31
  * @since 1.8
  * <p>
- * Copyright (c) 2020-2022 xsx All Rights Reserved.
+ * Copyright (c) 2020-2023 xsx All Rights Reserved.
  * x-easypdf is licensed under the Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
