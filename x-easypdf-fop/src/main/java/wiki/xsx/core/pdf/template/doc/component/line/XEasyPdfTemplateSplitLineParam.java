@@ -12,7 +12,7 @@ import wiki.xsx.core.pdf.template.doc.component.XEasyPdfTemplateComponentParam;
  * @date 2022/9/3
  * @since 1.8
  * <p>
- * Copyright (c) 2020-2022 xsx All Rights Reserved.
+ * Copyright (c) 2020-2023 xsx All Rights Reserved.
  * x-easypdf is licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
@@ -34,6 +34,13 @@ class XEasyPdfTemplateSplitLineParam extends XEasyPdfTemplateComponentParam {
     private String length;
     /**
      * 样式
+     * <p>none：无</p>
+     * <p>dotted：点线</p>
+     * <p>dashed：虚线</p>
+     * <p>solid：实线</p>
+     * <p>double：双实线</p>
+     * <p>groove：槽线</p>
+     * <p>ridge：脊线</p>
      */
     private String style;
 }

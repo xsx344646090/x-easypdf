@@ -12,7 +12,7 @@ import wiki.xsx.core.pdf.template.doc.component.XEasyPdfTemplateComponent;
  * @date 2022/11/6
  * @since 1.8
  * <p>
- * Copyright (c) 2020-2022 xsx All Rights Reserved.
+ * Copyright (c) 2020-2023 xsx All Rights Reserved.
  * gitee is licensed under the Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
