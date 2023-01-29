@@ -2,7 +2,7 @@ package wiki.xsx.core.pdf.template;
 
 import org.junit.Test;
 import wiki.xsx.core.pdf.template.doc.XEasyPdfTemplateDocument;
-import wiki.xsx.core.pdf.template.doc.component.image.XEasyPdfTemplateImage;
+import wiki.xsx.core.pdf.template.doc.component.line.XEasyPdfTemplateSplitLine;
 import wiki.xsx.core.pdf.template.doc.component.text.XEasyPdfTemplateText;
 import wiki.xsx.core.pdf.template.doc.component.text.XEasyPdfTemplateTextExtend;
 import wiki.xsx.core.pdf.template.doc.page.XEasyPdfTemplatePage;
@@ -16,7 +16,7 @@ import java.util.Map;
  * @date 2022/8/6
  * @since 1.8
  * <p>
- * Copyright (c) 2020-2022 xsx All Rights Reserved.
+ * Copyright (c) 2020-2023 xsx All Rights Reserved.
  * x-easypdf is licensed under the Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
@@ -87,10 +87,20 @@ public class XEasyPdfTemplateTextTest {
         XEasyPdfTemplateDocument document = XEasyPdfTemplateHandler.Document.build();
         // 创建页面
         XEasyPdfTemplatePage page = XEasyPdfTemplateHandler.Page.build();
-        // 创建图像
-        XEasyPdfTemplateImage image = XEasyPdfTemplateHandler.Image.build().setPath("wiki/xsx/core/pdf/template/svg/test.svg");
-        // 添加图像
-        page.addBodyComponent(image);
+        // 创建点线
+        XEasyPdfTemplateSplitLine dotted = XEasyPdfTemplateHandler.SplitLine.build().setStyle("dotted").setLength("100%");
+        // 创建虚线
+        XEasyPdfTemplateSplitLine dashed = XEasyPdfTemplateHandler.SplitLine.build().setStyle("dashed").setLength("100%");
+        // 创建实线
+        XEasyPdfTemplateSplitLine solid = XEasyPdfTemplateHandler.SplitLine.build().setStyle("solid").setLength("100%");
+        // 创建双实线
+        XEasyPdfTemplateSplitLine doubled = XEasyPdfTemplateHandler.SplitLine.build().setStyle("double").setLength("100%");
+        // 创建槽线
+        XEasyPdfTemplateSplitLine groove = XEasyPdfTemplateHandler.SplitLine.build().setStyle("groove").setLength("100%");
+        // 创建脊线
+        XEasyPdfTemplateSplitLine ridge = XEasyPdfTemplateHandler.SplitLine.build().setStyle("ridge").setLength("100%");
+        // 添加分割线
+        page.addBodyComponent(dotted, dashed, solid, doubled, groove, ridge);
         // 添加页面
         document.addPage(page);
         // 转换pdf
