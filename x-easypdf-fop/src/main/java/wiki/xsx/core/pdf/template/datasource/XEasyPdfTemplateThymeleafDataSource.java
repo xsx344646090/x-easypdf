@@ -5,6 +5,8 @@ import lombok.SneakyThrows;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.templatemode.TemplateMode;
+import org.thymeleaf.templateresolver.AbstractConfigurableTemplateResolver;
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
 
 import java.io.*;
@@ -34,9 +36,17 @@ import java.util.Map;
 public class XEasyPdfTemplateThymeleafDataSource extends XEasyPdfTemplateAbstractDataSource {
 
     /**
-     * 模板引擎
+     * 文件路径模板引擎
      */
-    private static final TemplateEngine TEMPLATE_ENGINE = initTemplateEngine();
+    private static final TemplateEngine FILEPATH_TEMPLATE_ENGINE = initTemplateEngine(new FileTemplateResolver());
+    /**
+     * 类路径模板引擎
+     */
+    private static final TemplateEngine CLASSPATH_TEMPLATE_ENGINE = initTemplateEngine(new ClassLoaderTemplateResolver());
+    /**
+     * 类路径前缀
+     */
+    private static final String CLASSPATH_PREFIX = "classpath:";
     /**
      * 所在区域
      */
@@ -44,6 +54,7 @@ public class XEasyPdfTemplateThymeleafDataSource extends XEasyPdfTemplateAbstrac
 
     /**
      * 设置模板路径
+     * <p>注：资源路径以“classpath:”作为前缀</p>
      *
      * @param templatePath 模板路径
      * @return 返回thymeleaf数据源
@@ -94,8 +105,16 @@ public class XEasyPdfTemplateThymeleafDataSource extends XEasyPdfTemplateAbstrac
                 // 创建写入器
                 Writer writer = new OutputStreamWriter(outputStream)
         ) {
-            // 处理模板
-            TEMPLATE_ENGINE.process(this.templatePath, context, writer);
+            // 如果模板路径为类路径前缀，则使用类路径模板引擎
+            if (this.templatePath.startsWith(CLASSPATH_PREFIX) || this.templatePath.startsWith(CLASSPATH_PREFIX.toLowerCase().intern())) {
+                // 使用类路径模板引擎处理
+                CLASSPATH_TEMPLATE_ENGINE.process(this.templatePath, context, writer);
+            }
+            // 否则文件类路径模板引擎
+            else {
+                // 使用文件路径模板引擎处理
+                FILEPATH_TEMPLATE_ENGINE.process(this.templatePath, context, writer);
+            }
             // 返回输入流
             return new BufferedInputStream(new ByteArrayInputStream(outputStream.toByteArray()));
         }
@@ -104,13 +123,12 @@ public class XEasyPdfTemplateThymeleafDataSource extends XEasyPdfTemplateAbstrac
     /**
      * 初始化模板引擎
      *
+     * @param resolver 解析器
      * @return 返回模板引擎
      */
-    private static TemplateEngine initTemplateEngine() {
+    private static TemplateEngine initTemplateEngine(AbstractConfigurableTemplateResolver resolver) {
         // 创建模板引擎
         TemplateEngine templateEngine = new TemplateEngine();
-        // 创建文件解析器
-        FileTemplateResolver resolver = new FileTemplateResolver();
         // 设置字符编码
         resolver.setCharacterEncoding(StandardCharsets.UTF_8.name());
         // 设置模板模式
