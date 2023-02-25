@@ -108,7 +108,7 @@ public class XEasyPdfTemplateThymeleafDataSource extends XEasyPdfTemplateAbstrac
             // 如果模板路径为类路径前缀，则使用类路径模板引擎
             if (this.templatePath.startsWith(CLASSPATH_PREFIX) || this.templatePath.startsWith(CLASSPATH_PREFIX.toLowerCase().intern())) {
                 // 使用类路径模板引擎处理
-                CLASSPATH_TEMPLATE_ENGINE.process(this.templatePath, context, writer);
+                CLASSPATH_TEMPLATE_ENGINE.process(this.templatePath.substring(CLASSPATH_PREFIX.length()).intern(), context, writer);
             }
             // 否则文件类路径模板引擎
             else {

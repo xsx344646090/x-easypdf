@@ -72,6 +72,12 @@ class XEasyPdfTemplateBookmarkParam {
      */
     private String fontColor;
     /**
+     * 开始状态
+     * <p>show：展开</p>
+     * <p>hide：折叠</p>
+     */
+    private String startingState;
+    /**
      * 子书签列表
      */
     private List<XEasyPdfTemplateBookmark> children = new ArrayList<>(10);

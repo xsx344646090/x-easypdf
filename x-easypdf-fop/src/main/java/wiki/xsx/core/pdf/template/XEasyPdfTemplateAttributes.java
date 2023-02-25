@@ -252,7 +252,11 @@ public class XEasyPdfTemplateAttributes {
      */
     public static final String WHITE_SPACE = "white-space";
     /**
-     * 文本装饰（删除线）
+     * 空白空间折叠
+     */
+    public static final String WHITE_SPACE_COLLAPSE = "white-space-collapse";
+    /**
+     * 文本装饰
      */
     public static final String TEXT_DECORATION = "text-decoration";
     /**
@@ -283,6 +287,10 @@ public class XEasyPdfTemplateAttributes {
      * 命名空间
      */
     public static final String NAMESPACE = "xmlns:fo";
+    /**
+     * 开始状态
+     */
+    public static final String STARTING_STATE = "starting-state";
     /**
      * 类型
      */

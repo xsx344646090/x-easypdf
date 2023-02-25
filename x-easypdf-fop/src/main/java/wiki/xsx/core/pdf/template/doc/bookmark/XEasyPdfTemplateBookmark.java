@@ -145,6 +145,19 @@ public class XEasyPdfTemplateBookmark implements XEasyPdfTemplateBookmarkCompone
     }
 
     /**
+     * 设置开始状态
+     * <p>show：展开</p>
+     * <p>hide：折叠</p>
+     *
+     * @param state 开始状态
+     * @return 返回书签组件
+     */
+    public XEasyPdfTemplateBookmark setStartingState(String state) {
+        this.param.setStartingState(state);
+        return this;
+    }
+
+    /**
      * 添加子书签
      *
      * @param bookmarks 书签
@@ -180,6 +193,8 @@ public class XEasyPdfTemplateBookmark implements XEasyPdfTemplateBookmarkCompone
         Optional.ofNullable(this.param.getInternalDestination()).ifPresent(v -> bookmark.setAttribute(XEasyPdfTemplateAttributes.INTERNAL_DESTINATION, v.intern()));
         // 添加标题
         Optional.ofNullable(this.param.getTitle()).ifPresent(v -> bookmark.appendChild(this.createTitle(document)));
+        // 添加开始状态
+        Optional.ofNullable(this.param.getStartingState()).ifPresent(v -> bookmark.setAttribute(XEasyPdfTemplateAttributes.STARTING_STATE, v.intern()));
         // 添加组件
         Optional.ofNullable(this.param.getChildren()).ifPresent(v -> v.forEach(e -> bookmark.appendChild(e.createElement(document))));
         // 返回bookmark元素

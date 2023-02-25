@@ -731,7 +731,7 @@ public class XEasyPdfTemplateTableCell {
         // 设置文本语言
         Optional.ofNullable(this.param.getLanguage()).ifPresent(v -> tableCell.setAttribute(XEasyPdfTemplateAttributes.LANGUAGE, v.intern().toLowerCase()));
         // 设置字体名称
-        Optional.ofNullable(this.param.getFontFamily()).ifPresent(v -> tableCell.setAttribute(XEasyPdfTemplateAttributes.FONT_FAMILY, v.intern().toLowerCase()));
+        Optional.ofNullable(this.param.getFontFamily()).ifPresent(v -> tableCell.setAttribute(XEasyPdfTemplateAttributes.FONT_FAMILY, v.intern()));
         // 设置字体样式
         Optional.ofNullable(this.param.getFontStyle()).ifPresent(v -> tableCell.setAttribute(XEasyPdfTemplateAttributes.FONT_STYLE, v.intern().toLowerCase()));
         // 设置字体大小

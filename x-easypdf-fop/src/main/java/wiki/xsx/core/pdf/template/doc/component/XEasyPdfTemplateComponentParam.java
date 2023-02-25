@@ -112,6 +112,12 @@ public class XEasyPdfTemplateComponentParam {
      */
     protected String whiteSpace;
     /**
+     * 空白空间折叠
+     * <p>true：是</p>
+     * <p>false：否</p>
+     */
+    protected String whiteSpaceCollapse;
+    /**
      * 文本缩进
      */
     protected String textIndent;

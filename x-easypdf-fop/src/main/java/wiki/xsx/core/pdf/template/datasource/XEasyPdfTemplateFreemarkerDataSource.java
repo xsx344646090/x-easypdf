@@ -3,7 +3,6 @@ package wiki.xsx.core.pdf.template.datasource;
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateExceptionHandler;
-import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.experimental.Accessors;
 import wiki.xsx.core.pdf.template.XEasyPdfTemplateConstants;
@@ -31,7 +30,6 @@ import java.util.Map;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-@Setter
 @Accessors(chain = true)
 public class XEasyPdfTemplateFreemarkerDataSource extends XEasyPdfTemplateAbstractDataSource {
 

@@ -55,7 +55,7 @@ public class XEasyPdfTemplateTest {
         // 定义fop配置文件路径
         String configPath = "H:\\java_workspace\\my\\mutil\\x-easypdf\\x-easypdf-fop\\src\\main\\resources\\wiki\\xsx\\core\\pdf\\template\\fop.xconf";
         // 定义xsl-fo模板路径
-        String templatePath = "E:\\workspace\\my\\x-easypdf\\x-easypdf-fop\\src\\test\\resources\\wiki\\xsx\\core\\pdf\\template\\thymeleaf\\template2.fo";
+        String templatePath = "classpath:wiki/xsx/core/pdf/template/thymeleaf/template2.html";
         // 定义pdf输出路径
         String outputPath = "E:\\pdf\\test\\fo\\Thymeleaf.pdf";
         // 定义数据map
@@ -102,7 +102,7 @@ public class XEasyPdfTemplateTest {
         // 定义fop配置文件路径
         String configPath = "H:\\java_workspace\\my\\mutil\\x-easypdf\\x-easypdf-fop\\src\\main\\resources\\wiki\\xsx\\core\\pdf\\template\\fop.xconf";
         // 定义xsl-fo模板路径
-        String templatePath = "H:\\java_workspace\\my\\mutil\\x-easypdf\\x-easypdf-fop\\src\\test\\resources\\xml\\template.fo";
+        String templatePath = "H:\\java_workspace\\my\\mutil\\x-easypdf\\x-easypdf-fop\\src\\test\\resources\\xml\\template.html";
         // 定义xml数据路径
         String xmlPath = "H:\\java_workspace\\my\\mutil\\x-easypdf\\x-easypdf-fop\\src\\test\\resources\\xml\\data.xml";
         // 定义pdf输出路径
@@ -122,7 +122,7 @@ public class XEasyPdfTemplateTest {
         // 定义fop配置文件路径
         String configPath = "E:\\workspace\\my\\x-easypdf\\x-easypdf-fop\\src\\main\\resources\\wiki\\xsx\\core\\pdf\\template\\fop.xconf";
         // 定义xsl-fo模板路径
-        String templatePath1 = "E:\\workspace\\my\\x-easypdf\\x-easypdf-fop\\src\\test\\resources\\wiki\\xsx\\core\\pdf\\template\\jte\\template.fo";
+        String templatePath1 = "E:\\workspace\\my\\x-easypdf\\x-easypdf-fop\\src\\test\\resources\\wiki\\xsx\\core\\pdf\\template\\jte\\template.html";
         // 定义xsl-fo模板路径
         String templatePath2 = "E:\\workspace\\my\\x-easypdf\\x-easypdf-fop\\src\\test\\resources\\wiki\\xsx\\core\\pdf\\template\\barcode\\barcode.fo";
         // 定义pdf输出路径
@@ -204,7 +204,7 @@ public class XEasyPdfTemplateTest {
                             () -> XEasyPdfTemplateHandler.Template.build()
                                     .setConfigPath(configPath)
                                     .setDataSource(
-                                            XEasyPdfTemplateHandler.DataSource.Freemarker.build().setTemplateName("template.fo").setTemplateData(data)
+                                            XEasyPdfTemplateHandler.DataSource.Freemarker.build().setTemplateName("template.html").setTemplateData(data)
                                     ).transform(outputPath + index)
                     )
             );
