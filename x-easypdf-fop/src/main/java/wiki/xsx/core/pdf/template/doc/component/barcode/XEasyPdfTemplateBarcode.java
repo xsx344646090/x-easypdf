@@ -3,7 +3,6 @@ package wiki.xsx.core.pdf.template.doc.component.barcode;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import wiki.xsx.core.pdf.template.XEasyPdfTemplateAttributes;
-import wiki.xsx.core.pdf.template.XEasyPdfTemplateConstants;
 import wiki.xsx.core.pdf.template.XEasyPdfTemplateTags;
 import wiki.xsx.core.pdf.template.doc.component.XEasyPdfTemplateComponent;
 
@@ -495,8 +494,6 @@ public class XEasyPdfTemplateBarcode implements XEasyPdfTemplateComponent {
         Element foreignObject = document.createElement(XEasyPdfTemplateTags.INSTREAM_FOREIGN_OBJECT);
         // 创建barcode元素
         Element barcode = document.createElement(XEasyPdfTemplateTags.BARCODE);
-        // 设置元素命名空间
-        barcode.setAttribute(XEasyPdfTemplateAttributes.NAMESPACE, XEasyPdfTemplateConstants.NAMESPACE);
         // 设置条形码类型
         Optional.ofNullable(this.param.getType()).ifPresent(v -> barcode.setAttribute(XEasyPdfTemplateAttributes.TYPE, v.intern().toLowerCase()));
         // 设置条形码缩放比例

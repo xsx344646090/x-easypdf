@@ -225,6 +225,19 @@ public class XEasyPdfTemplateText extends XEasyPdfTemplateTextBase {
     }
 
     /**
+     * 设置空白空间折叠
+     * <p>true：是</p>
+     * <p>false：否</p>
+     *
+     * @param whiteSpaceCollapse 折叠
+     * @return 返回文本组件
+     */
+    public XEasyPdfTemplateText setWhiteSpaceCollapse(String whiteSpaceCollapse) {
+        this.param.setWhiteSpaceCollapse(whiteSpaceCollapse);
+        return this;
+    }
+
+    /**
      * 设置文本缩进
      *
      * @param indent 缩进值
@@ -643,7 +656,7 @@ public class XEasyPdfTemplateText extends XEasyPdfTemplateTextBase {
         // 设置文本语言
         Optional.ofNullable(this.param.getLanguage()).ifPresent(v -> inline.setAttribute(XEasyPdfTemplateAttributes.LANGUAGE, v.intern().toLowerCase()));
         // 设置字体名称
-        Optional.ofNullable(this.param.getFontFamily()).ifPresent(v -> inline.setAttribute(XEasyPdfTemplateAttributes.FONT_FAMILY, v.intern().toLowerCase()));
+        Optional.ofNullable(this.param.getFontFamily()).ifPresent(v -> inline.setAttribute(XEasyPdfTemplateAttributes.FONT_FAMILY, v.intern()));
         // 设置字体样式
         Optional.ofNullable(this.param.getFontStyle()).ifPresent(v -> inline.setAttribute(XEasyPdfTemplateAttributes.FONT_STYLE, v.intern().toLowerCase()));
         // 设置字体大小

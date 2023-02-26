@@ -149,7 +149,7 @@ public class XEasyPdfTemplateTags {
      * 条形码
      * <p>标签："fo:barcode"</p>
      */
-    public static final String BARCODE = "fo:barcode";
+    public static final String BARCODE = "xe:barcode";
     /**
      * 超链接
      * <p>标签："fo:basic-link"</p>
