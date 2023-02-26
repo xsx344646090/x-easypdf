@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="http://xmlgraphics.apache.org/fop/extensions"
+        elementFormDefault="qualified">
+
+    <!--background-image-width属性-->
+    <attribute name="background-image-width"/>
+    <!--background-image-height属性-->
+    <attribute name="background-image-height"/>
+</schema>

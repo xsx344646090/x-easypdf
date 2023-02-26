@@ -21,7 +21,7 @@
 ---
 
 #### 当前版本
-> v2.11.2
+> v2.11.3
 
 ---
 
@@ -101,7 +101,7 @@
 <dependency>
     <groupId>wiki.xsx</groupId>
     <artifactId>x-easypdf</artifactId>
-    <version>2.11.2</version>
+    <version>2.11.3</version>
 </dependency>
 ```
 
@@ -110,7 +110,7 @@
 <dependency>
     <groupId>wiki.xsx</groupId>
     <artifactId>x-easypdf-pdfbox</artifactId>
-    <version>2.11.2</version>
+    <version>2.11.3</version>
 </dependency>
 ```
 
@@ -119,7 +119,7 @@
 <dependency>
     <groupId>wiki.xsx</groupId>
     <artifactId>x-easypdf-fop</artifactId>
-    <version>2.11.2</version>
+    <version>2.11.3</version>
 </dependency>
 ```
 

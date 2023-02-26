@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+        xmlns:xe="http://www.x-easypdf.cn/ns"
+        targetNamespace="http://www.x-easypdf.cn/ns"
+        elementFormDefault="qualified">
+
+    <!--条码元素-->
+    <element name="barcode" type="xe:barcode-wrapper"/>
+
+    <!--条码元素类型-->
+    <complexType name="barcode-wrapper">
+        <!--type属性-->
+        <attribute name="type" type="xe:barcode-type-value" use="required"/>
+        <!--宽度属性-->
+        <attribute name="width" use="required"/>
+        <!--高度属性-->
+        <attribute name="height" use="required"/>
+        <!--缩放比例属性-->
+        <attribute name="scale-rate"/>
+        <!--旋转弧度属性-->
+        <attribute name="radians"/>
+        <!--条码边距属性-->
+        <attribute name="code-margin"/>
+        <!--纠错级别属性-->
+        <attribute name="error-level" type="xe:barcode-error-level-value"/>
+        <!--条码内容属性-->
+        <attribute name="content" use="required"/>
+        <!--前景颜色（css颜色）属性-->
+        <attribute name="on-color"/>
+        <!--背景颜色（css颜色属性-->
+        <attribute name="off-color"/>
+        <!--条码文字属性-->
+        <attribute name="words"/>
+        <!--条码文字颜色（css颜色）属性-->
+        <attribute name="words-color"/>
+        <!--条码文字名称属性-->
+        <attribute name="words-family"/>
+        <!--条码文字样式属性-->
+        <attribute name="words-style" type="xe:barcode-words-style-value"/>
+        <!--条码文字大小-->
+        <attribute name="words-size"/>
+        <!--条码文字偏移量-X轴-->
+        <attribute name="words-offset-x"/>
+        <!--条码文字偏移量-Y轴-->
+        <attribute name="words-offset-y"/>
+    </complexType>
+
+    <!--barcode-type-value-->
+    <simpleType name="barcode-type-value">
+        <restriction base="string">
+            <!--库德巴码-->
+            <enumeration value="codabar"/>
+            <!--标准39码-->
+            <enumeration value="code_39"/>
+            <!--标准93码-->
+            <enumeration value="code_93"/>
+            <!--标准128码-->
+            <enumeration value="code_128"/>
+            <!--缩短版国际商品条码-->
+            <enumeration value="ean_8"/>
+            <!--标准版国际商品条码-->
+            <enumeration value="ean_13"/>
+            <!--交叉码-->
+            <enumeration value="itf"/>
+            <!--美国商品码a-->
+            <enumeration value="upc_a"/>
+            <!--美国商品码e-->
+            <enumeration value="upc_e"/>
+            <!--美国商品码扩展码-->
+            <enumeration value="upc_ean_extension"/>
+            <!--qr码-->
+            <enumeration value="qr_code"/>
+            <!--阿兹特克码-->
+            <enumeration value="aztec"/>
+            <!--dm码-->
+            <enumeration value="data_matrix"/>
+            <!--maxi码-->
+            <enumeration value="maxi_code"/>
+            <!--pdf-417码-->
+            <enumeration value="pdf_417"/>
+            <!--rss-14码-->
+            <enumeration value="rss_14"/>
+            <!--rss扩展码-->
+            <enumeration value="rss_expanded"/>
+        </restriction>
+    </simpleType>
+
+    <!--barcode-error-level-value-->
+    <simpleType name="barcode-error-level-value">
+        <restriction base="string">
+            <!--低-->
+            <enumeration value="L"/>
+            <!--中等-->
+            <enumeration value="M"/>
+            <!--较高-->
+            <enumeration value="Q"/>
+            <!--最高-->
+            <enumeration value="H"/>
+        </restriction>
+    </simpleType>
+
+    <!--barcode-words-style-value-->
+    <simpleType name="barcode-words-style-value">
+        <restriction base="string">
+            <!--正常-->
+            <enumeration value="normal"/>
+            <!--粗体-->
+            <enumeration value="bold"/>
+            <!--粗体斜体-->
+            <enumeration value="bold_italic"/>
+            <!--斜体-->
+            <enumeration value="italic"/>
+        </restriction>
+    </simpleType>
+</schema>

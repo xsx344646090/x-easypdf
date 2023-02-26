@@ -28,7 +28,7 @@ public class XEasyPdfTemplateBarcodeTest {
     @Test
     public void testBarcodeForXML() {
         // 定义xsl-fo模板路径
-        String templatePath = "src/test/resources/wiki/xsx/core/pdf/template/barcode/template.fo";
+        String templatePath = "src/test/resources/wiki/xsx/core/pdf/template/barcode/template.html";
         // 定义pdf输出路径
         String outputPath = "E:\\pdf\\test\\fo\\barcode.pdf";
         // 转换pdf
@@ -40,7 +40,7 @@ public class XEasyPdfTemplateBarcodeTest {
     @Test
     public void testBarcodeForXML2() {
         // 定义xsl-fo模板路径
-        String templatePath = "src/test/resources/wiki/xsx/core/pdf/template/barcode/template.fo";
+        String templatePath = "src/test/resources/wiki/xsx/core/pdf/template/barcode/template.html";
         // 定义pdf输出路径
         String outputPath = "E:\\pdf\\test\\fo\\";
         // 构建pdf模板
@@ -55,7 +55,7 @@ public class XEasyPdfTemplateBarcodeTest {
     @Test
     public void testBarcodeForXML3() {
         // 定义xsl-fo模板路径
-        String templatePath = "src/test/resources/wiki/xsx/core/pdf/template/barcode/template.fo";
+        String templatePath = "src/test/resources/wiki/xsx/core/pdf/template/barcode/template.html";
         // 定义pdf输出路径
         String outputPath = "E:\\pdf\\test\\fo\\";
         // 定义任务列表
@@ -90,12 +90,12 @@ public class XEasyPdfTemplateBarcodeTest {
                 .addPage(
                         XEasyPdfTemplateHandler.Page.build().addBodyComponent(
                                 XEasyPdfTemplateHandler.Barcode.build()
-                                        .setType("CODABAR")
+                                        .setType("codabar")
                                         .setWidth("150px")
                                         .setHeight("50px")
                                         .setContent("11223344"),
                                 XEasyPdfTemplateHandler.Barcode.build()
-                                        .setType("QR_CODE")
+                                        .setType("qr_code")
                                         .setWidth("100px")
                                         .setHeight("100px")
                                         .setContent("https://www.x-easypdf.cn")

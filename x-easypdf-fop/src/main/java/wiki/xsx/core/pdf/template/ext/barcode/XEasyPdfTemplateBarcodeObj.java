@@ -48,6 +48,6 @@ public class XEasyPdfTemplateBarcodeObj extends XMLObj {
      * @return 返回命名空间前缀
      */
     public String getNormalNamespacePrefix() {
-        return "fo";
+        return "xe";
     }
 }

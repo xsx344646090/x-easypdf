@@ -69,35 +69,26 @@ public class XEasyPdfTemplateDocumentTest {
         XEasyPdfTemplateHandler.Document.build().addPage(
                 XEasyPdfTemplateHandler.Page.build().addBodyComponent(
                         XEasyPdfTemplateHandler.Table.build().setFontFamily("微软雅黑").setBody(
-                                XEasyPdfTemplateHandler.Table.Body.build().addRow(
-                                        XEasyPdfTemplateHandler.Table.Row.build().addCell(
-                                                XEasyPdfTemplateHandler.Table.Cell.build().addComponent(
-                                                        XEasyPdfTemplateHandler.TextExtend.build().addText(
-                                                                XEasyPdfTemplateHandler.Text.build().setText("正"),
-                                                                XEasyPdfTemplateHandler.Text.build().setFontSize("6pt").setVerticalStyle("top").setText("上标")
-                                                        ),
-                                                        XEasyPdfTemplateHandler.Text.build().setFontSize("6pt").setText("下标").setMarginLeft("50px").setMarginTop("-10px")
-                                                ),
-                                                XEasyPdfTemplateHandler.Table.Cell.build().addComponent(
-                                                        XEasyPdfTemplateHandler.TextExtend.build().addText(
-                                                                XEasyPdfTemplateHandler.Text.build().setText("正正"),
-                                                                XEasyPdfTemplateHandler.Text.build().setFontSize("6pt").setVerticalStyle("top").setText("上标")
-                                                        )
-                                                )
-                                        ),
-                                        XEasyPdfTemplateHandler.Table.Row.build().addCell(
-                                                XEasyPdfTemplateHandler.Table.Cell.build().addComponent(
-                                                        XEasyPdfTemplateHandler.TextExtend.build().addText(
-                                                                XEasyPdfTemplateHandler.Text.build().setText("正正正")
-                                                        )
-                                                ),
-                                                XEasyPdfTemplateHandler.Table.Cell.build().addComponent(
-                                                        XEasyPdfTemplateHandler.TextExtend.build().addText(
-                                                                XEasyPdfTemplateHandler.Text.build().setText("正正正")
-                                                        )
+                                XEasyPdfTemplateHandler.Table.Body.build()
+                                        .addRow(
+                                                XEasyPdfTemplateHandler.Table.Row.build().addCell(
+                                                        XEasyPdfTemplateHandler.Table.Cell.build().addComponent(
+                                                                XEasyPdfTemplateHandler.Text.build().setText("姓名：张三")
+                                                                // XEasyPdfTemplateHandler.Image.build()
+                                                                //         .setPath("/".concat("")).setWidth("100px").setHeight("100px")
+                                                        ).setBorder("1").setBorderStyle("solid").setRowSpan(2),
+                                                        XEasyPdfTemplateHandler.Table.Cell.build().addComponent(
+                                                                XEasyPdfTemplateHandler.Text.build().setText("姓名：张三").setHorizontalStyle("left")
+                                                        ).setBorder("1 solid")
                                                 )
                                         )
-                                )
+                                        .addRow(
+                                                XEasyPdfTemplateHandler.Table.Row.build().addCell(
+                                                        XEasyPdfTemplateHandler.Table.Cell.build().addComponent(
+                                                                XEasyPdfTemplateHandler.Text.build().setText("电话：15123456789").setHorizontalStyle("left")
+                                                        ).setBorder("1 solid")
+                                                )
+                                        )
                         )
                 )
         ).transform("E:\\pdf\\test\\fo\\document.pdf");

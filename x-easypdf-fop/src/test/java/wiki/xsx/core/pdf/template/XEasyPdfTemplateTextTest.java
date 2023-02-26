@@ -36,7 +36,31 @@ public class XEasyPdfTemplateTextTest {
         // 定义输出路径
         String outputPath = "E:\\pdf\\test\\fo\\template-text.pdf";
         // 转换pdf
-        XEasyPdfTemplateDocument document = XEasyPdfTemplateHandler.Document.build().setConfigPath(configPath).addPage(XEasyPdfTemplateHandler.Page.build().setFontSize("30pt").setFontColor("BLUE").addBodyComponent(XEasyPdfTemplateHandler.Text.build().setText("加粗").setFontFamily("仿宋").setFontWeight("bold").setHorizontalStyle("right").setMarginRight("10pt"), XEasyPdfTemplateHandler.Text.build().setText("不加粗").setFontFamily("仿宋").setFontColor("BLUE").enableDeleteLine().setDeleteLineColor("RED").enableUnderLine().setUnderLineColor("RED").setUnderLineWidth("3pt")));
+        XEasyPdfTemplateDocument document = XEasyPdfTemplateHandler.Document.build()
+                .setConfigPath(configPath)
+                .addPage(
+                        XEasyPdfTemplateHandler.Page.build()
+                                .setFontSize("30pt")
+                                .setFontColor("BLUE")
+                                .addBodyComponent(
+                                        XEasyPdfTemplateHandler.Text.build()
+                                                .setText("加粗需要字体支持")
+                                                .setFontFamily("仿宋_GB2312")
+                                                .setFontWeight("bold")
+                                                .setHorizontalStyle("right")
+                                                .setMarginRight("10pt"),
+                                        XEasyPdfTemplateHandler.Text.build()
+                                                .setText("不加粗            文本间隔")
+                                                .setFontFamily("仿宋_GB2312")
+                                                .setFontColor("BLUE")
+                                                .setWhiteSpaceCollapse("false")
+                                                .enableDeleteLine()
+                                                .setDeleteLineColor("RED")
+                                                .enableUnderLine()
+                                                .setUnderLineColor("RED")
+                                                .setUnderLineWidth("3pt")
+                                )
+                );
         // 转换pdf
         document.transform(outputPath);
     }

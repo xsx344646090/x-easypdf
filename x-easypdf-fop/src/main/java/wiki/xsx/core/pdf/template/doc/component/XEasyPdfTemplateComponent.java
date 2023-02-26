@@ -89,6 +89,8 @@ public interface XEasyPdfTemplateComponent {
         Optional.ofNullable(param.getSpaceAfter()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.SPACE_AFTER, v.intern().toLowerCase()));
         // 设置空白空间
         Optional.ofNullable(param.getWhiteSpace()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.WHITE_SPACE, v.intern().toLowerCase()));
+        // 设置空白空间折叠
+        Optional.ofNullable(param.getWhiteSpaceCollapse()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.WHITE_SPACE_COLLAPSE, v.intern().toLowerCase()));
         // 设置分页符-前
         Optional.ofNullable(param.getBreakBefore()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.BREAK_BEFORE, v.intern().toLowerCase()));
         // 设置分页符-后

@@ -1,0 +1,1116 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+        xmlns:fo="http://www.w3.org/1999/XSL/Format"
+        xmlns:fox="http://xmlgraphics.apache.org/fop/extensions"
+        xmlns:xe="http://www.x-easypdf.cn/ns"
+        xmlns:svg="http://www.w3.org/2000/svg"
+        targetNamespace="http://www.w3.org/1999/XSL/Format"
+        elementFormDefault="qualified">
+    <!--导入fox-->
+    <import namespace="http://xmlgraphics.apache.org/fop/extensions" schemaLocation="xsl-fo-fox-schema.xsd"/>
+    <!--导入xe-->
+    <import namespace="http://www.x-easypdf.cn/ns" schemaLocation="xsl-fo-barcode-schema.xsd"/>
+    <!--导入svg-->
+    <import namespace="http://www.w3.org/2000/svg" schemaLocation="xsl-fo-svg-schema.xsd"/>
+
+    <!--根元素-->
+    <element name="root" type="fo:root-wrapper"/>
+    <!--页面模板元素-->
+    <element name="layout-master-set" type="fo:layout-master-set-wrapper"/>
+    <!--单页面模板元素-->
+    <element name="simple-page-master" type="fo:simple-page-master-wrapper"/>
+    <!--页面序列元素-->
+    <element name="page-sequence" type="fo:page-sequence-wrapper"/>
+    <!--页面流元素-->
+    <element name="flow" type="fo:flow-wrapper"/>
+    <!--当前页码元素-->
+    <element name="page-number" type="element"/>
+    <!--总页码元素-->
+    <element name="page-number-citation-last" type="fo:page-number-citation-last-wrapper"/>
+    <!--静态内容元素-->
+    <element name="static-content" type="fo:static-content-wrapper"/>
+    <!--块元素-->
+    <element name="block" type="fo:block-wrapper"/>
+    <!--块容器元素-->
+    <element name="block-container" type="fo:block-container-wrapper"/>
+    <!--内联元素-->
+    <element name="inline" type="fo:inline-wrapper"/>
+    <!--超链接元素-->
+    <element name="basic-link" type="fo:basic-link-wrapper"/>
+    <!--外部图形元素-->
+    <element name="external-graphic" type="fo:external-graphic-wrapper"/>
+    <!--内联图形元素-->
+    <element name="instream-foreign-object" type="fo:instream-foreign-object-wrapper"/>
+    <!--分隔符元素-->
+    <element name="leader" type="fo:leader-wrapper"/>
+    <!--表格元素-->
+    <element name="table" type="fo:table-wrapper"/>
+    <!--表格头元素-->
+    <element name="table-header" type="fo:table-header-wrapper"/>
+    <!--表格体元素-->
+    <element name="table-body" type="fo:table-body-wrapper"/>
+    <!--表格尾元素-->
+    <element name="table-footer" type="fo:table-footer-wrapper"/>
+    <!--表格行元素-->
+    <element name="table-row" type="fo:table-row-wrapper"/>
+    <!--表格单元格元素-->
+    <element name="table-cell" type="fo:table-cell-wrapper"/>
+    <!--书签树元素-->
+    <element name="bookmark-tree" type="fo:bookmark-tree-wrapper"/>
+    <!--书签元素-->
+    <element name="bookmark" type="fo:bookmark-wrapper"/>
+    <!--书签标题元素-->
+    <element name="bookmark-title" type="fo:bookmark-title-wrapper"/>
+
+    <!--根元素类型-->
+    <complexType name="root-wrapper">
+        <sequence>
+            <!--页面模板元素-->
+            <element ref="fo:layout-master-set"/>
+            <!--页面序列元素-->
+            <element ref="fo:page-sequence" maxOccurs="unbounded"/>
+            <!--书签树元素-->
+            <element ref="fo:bookmark-tree" minOccurs="0"/>
+        </sequence>
+        <!--写入模式-->
+        <attribute name="writing-mode" type="fo:writing-mode-value"/>
+        <!--font属性-->
+        <attributeGroup ref="fo:font-attributes"/>
+    </complexType>
+
+    <!--页面模板类型-->
+    <complexType name="layout-master-set-wrapper">
+        <sequence>
+            <!--单页面模板元素-->
+            <element ref="fo:simple-page-master"/>
+        </sequence>
+    </complexType>
+
+    <!--单页面模板类型-->
+    <complexType name="simple-page-master-wrapper">
+        <sequence>
+            <!--区域元素组-->
+            <group ref="fo:region-group"/>
+        </sequence>
+        <!--页面名称-->
+        <attribute name="master-name" use="required"/>
+        <!--页面宽度-->
+        <attribute name="page-width"/>
+        <!--页面高度-->
+        <attribute name="page-height"/>
+        <!--margin属性-->
+        <attributeGroup ref="fo:margin-attributes"/>
+    </complexType>
+
+    <!--页面序列类型-->
+    <complexType name="page-sequence-wrapper">
+        <sequence>
+            <!--静态内容元素-->
+            <element ref="fo:static-content" maxOccurs="unbounded" minOccurs="0"/>
+            <!--页面流元素-->
+            <element ref="fo:flow" maxOccurs="unbounded"/>
+        </sequence>
+        <!--id-->
+        <attribute name="id"/>
+        <!--页面指向（master-name的值）-->
+        <attribute name="master-reference" use="required"/>
+        <!--font属性-->
+        <attributeGroup ref="fo:font-attributes"/>
+    </complexType>
+
+    <!--页面流类型-->
+    <complexType name="flow-wrapper">
+        <choice maxOccurs="unbounded">
+            <!--块元素-->
+            <element ref="fo:block"/>
+            <!--块容器元素-->
+            <element ref="fo:block-container"/>
+            <!--表格元素-->
+            <element ref="fo:table"/>
+        </choice>
+        <!--页面流名称-->
+        <attribute name="flow-name" type="fo:flow-name-value" use="required"/>
+    </complexType>
+
+    <!--总页码元素类型-->
+    <complexType name="page-number-citation-last-wrapper">
+        <!--页面指向id（page-sequence的id值）-->
+        <attribute name="ref-id" use="required"/>
+    </complexType>
+
+    <!--静态内容元素类型-->
+    <complexType name="static-content-wrapper">
+        <choice maxOccurs="unbounded" minOccurs="0">
+            <!--块元素-->
+            <element ref="fo:block"/>
+            <!--块容器元素-->
+            <element ref="fo:block-container"/>
+            <!--表格元素-->
+            <element ref="fo:table"/>
+        </choice>
+        <!--id-->
+        <attribute name="id"/>
+        <!--页面流名称-->
+        <attribute name="flow-name" type="fo:flow-name-value" use="required"/>
+    </complexType>
+
+    <!--块元素类型-->
+    <complexType name="block-wrapper" mixed="true">
+        <choice maxOccurs="unbounded" minOccurs="0">
+            <!--基础元素组-->
+            <group ref="fo:basic-elements-inline-group"/>
+        </choice>
+        <!--id-->
+        <attribute name="id"/>
+        <!--垂直对齐-->
+        <attribute name="vertical-align" type="fo:vertical-align-value"/>
+        <!--margin属性-->
+        <attributeGroup ref="fo:margin-attributes"/>
+        <!--padding属性-->
+        <attributeGroup ref="fo:padding-attributes"/>
+        <!--text属性-->
+        <attributeGroup ref="fo:text-attributes"/>
+        <!--text-align属性-->
+        <attributeGroup ref="fo:text-align-attributes"/>
+        <!--font属性-->
+        <attributeGroup ref="fo:font-attributes"/>
+        <!--border属性-->
+        <attributeGroup ref="fo:border-attributes"/>
+        <!--background属性-->
+        <attributeGroup ref="fo:background-attributes"/>
+        <!--keep and break属性-->
+        <attributeGroup ref="fo:keep-break-attributes"/>
+    </complexType>
+
+    <!--块容器元素类型-->
+    <complexType name="block-container-wrapper" mixed="true">
+        <choice maxOccurs="unbounded">
+            <!--基础元素组-->
+            <group ref="fo:basic-elements-group"/>
+        </choice>
+        <!--id-->
+        <attribute name="id"/>
+        <!--宽度-->
+        <attribute name="width"/>
+        <!--高度-->
+        <attribute name="height"/>
+        <!--垂直对齐-->
+        <attribute name="vertical-align" type="fo:vertical-align-value"/>
+        <!--margin属性-->
+        <attributeGroup ref="fo:margin-attributes"/>
+        <!--padding属性-->
+        <attributeGroup ref="fo:padding-attributes"/>
+        <!--text属性-->
+        <attributeGroup ref="fo:text-attributes"/>
+        <!--text-align属性-->
+        <attributeGroup ref="fo:text-align-attributes"/>
+        <!--font属性-->
+        <attributeGroup ref="fo:font-attributes"/>
+        <!--border属性-->
+        <attributeGroup ref="fo:border-attributes"/>
+        <!--background属性-->
+        <attributeGroup ref="fo:background-attributes"/>
+        <!--keep and break属性-->
+        <attributeGroup ref="fo:keep-break-attributes"/>
+    </complexType>
+
+    <!--内联元素类型-->
+    <complexType name="inline-wrapper" mixed="true">
+        <choice maxOccurs="unbounded">
+            <!--基础元素组-->
+            <group ref="fo:basic-elements-inline-group"/>
+        </choice>
+        <!--id-->
+        <attribute name="id"/>
+        <!--垂直对齐-->
+        <attribute name="vertical-align" type="fo:vertical-align-value"/>
+        <!--margin属性-->
+        <attributeGroup ref="fo:margin-attributes"/>
+        <!--padding属性-->
+        <attributeGroup ref="fo:padding-attributes"/>
+        <!--text属性-->
+        <attributeGroup ref="fo:text-attributes"/>
+        <!--text-align属性-->
+        <attributeGroup ref="fo:text-align-attributes"/>
+        <!--font属性-->
+        <attributeGroup ref="fo:font-attributes"/>
+        <!--border属性-->
+        <attributeGroup ref="fo:border-attributes"/>
+        <!--background属性-->
+        <attributeGroup ref="fo:background-attributes"/>
+        <!--keep and break属性-->
+        <attributeGroup ref="fo:keep-break-attributes"/>
+    </complexType>
+
+    <!--超链接元素类型-->
+    <complexType name="basic-link-wrapper" mixed="true">
+        <choice maxOccurs="unbounded">
+            <!--基础元素组-->
+            <group ref="fo:basic-elements-inline-group"/>
+        </choice>
+        <!--id-->
+        <attribute name="id"/>
+        <!--内部地址（元素id）-->
+        <attribute name="internal-destination"/>
+        <!--外部地址-->
+        <attribute name="external-destination"/>
+        <!--垂直对齐-->
+        <attribute name="vertical-align" type="fo:vertical-align-value"/>
+        <!--margin属性-->
+        <attributeGroup ref="fo:margin-attributes"/>
+        <!--padding属性-->
+        <attributeGroup ref="fo:padding-attributes"/>
+        <!--text属性-->
+        <attributeGroup ref="fo:text-attributes"/>
+        <!--text-align属性-->
+        <attributeGroup ref="fo:text-align-attributes"/>
+        <!--font属性-->
+        <attributeGroup ref="fo:font-attributes"/>
+        <!--border属性-->
+        <attributeGroup ref="fo:border-attributes"/>
+        <!--background属性-->
+        <attributeGroup ref="fo:background-attributes"/>
+        <!--keep and break属性-->
+        <attributeGroup ref="fo:keep-break-attributes"/>
+    </complexType>
+
+    <!--外部图形元素类型-->
+    <complexType name="external-graphic-wrapper">
+        <!--id-->
+        <attribute name="id"/>
+        <!--数据源形式-->
+        <attribute name="src" use="required"/>
+        <!--宽度-->
+        <attribute name="content-width"/>
+        <!--高度-->
+        <attribute name="content-height"/>
+        <!--文本对齐-->
+        <attribute name="text-align" type="fo:text-align-value"/>
+        <!--margin属性-->
+        <attributeGroup ref="fo:margin-attributes"/>
+        <!--padding属性-->
+        <attributeGroup ref="fo:padding-attributes"/>
+        <!--border属性-->
+        <attributeGroup ref="fo:border-attributes"/>
+        <!--background属性-->
+        <attributeGroup ref="fo:background-attributes"/>
+        <!--keep and break属性-->
+        <attributeGroup ref="fo:keep-break-attributes"/>
+    </complexType>
+
+    <!--内联图形元素类型-->
+    <complexType name="instream-foreign-object-wrapper">
+        <choice>
+            <!--条码元素-->
+            <element ref="xe:barcode"/>
+            <!--svg元素-->
+            <element ref="svg:svg"/>
+        </choice>
+        <!--id-->
+        <attribute name="id"/>
+        <!--宽度-->
+        <attribute name="content-width"/>
+        <!--高度-->
+        <attribute name="content-height"/>
+        <!--margin属性-->
+        <attributeGroup ref="fo:margin-attributes"/>
+        <!--padding属性-->
+        <attributeGroup ref="fo:padding-attributes"/>
+        <!--border属性-->
+        <attributeGroup ref="fo:border-attributes"/>
+        <!--background属性-->
+        <attributeGroup ref="fo:background-attributes"/>
+        <!--keep and break属性-->
+        <attributeGroup ref="fo:keep-break-attributes"/>
+    </complexType>
+
+    <!--分隔符元素类型-->
+    <complexType name="leader-wrapper" mixed="true">
+        <choice maxOccurs="unbounded">
+            <!--当前页码元素-->
+            <element ref="fo:page-number"/>
+            <!--总页码元素-->
+            <element ref="fo:page-number-citation-last"/>
+            <!--超链接元素-->
+            <element ref="fo:basic-link"/>
+            <!--内联元素-->
+            <element ref="fo:inline"/>
+            <!--外部图形元素-->
+            <element ref="fo:external-graphic"/>
+            <!--内联图形元素-->
+            <element ref="fo:instream-foreign-object"/>
+        </choice>
+        <!--id-->
+        <attribute name="id"/>
+        <!--对准-->
+        <attribute name="leader-alignment" type="fo:leader-alignment-value"/>
+        <!--规则-->
+        <attribute name="leader-pattern" type="fo:leader-pattern-value"/>
+        <!--规则样式（leader-pattern=rule时生效）-->
+        <attribute name="rule-style" type="fo:rule-style-value"/>
+        <!--规则厚度（leader-pattern=rule时生效）-->
+        <attribute name="rule-thickness"/>
+        <!--规则宽度-->
+        <attribute name="leader-pattern-width"/>
+        <!--长度-->
+        <attribute name="leader-length"/>
+        <!--显示（上下）对齐-->
+        <attribute name="display-align" type="fo:display-align-value"/>
+        <!--margin属性-->
+        <attributeGroup ref="fo:margin-attributes"/>
+        <!--padding属性-->
+        <attributeGroup ref="fo:padding-attributes"/>
+        <!--text属性-->
+        <attributeGroup ref="fo:text-attributes"/>
+        <!--text-align属性-->
+        <attributeGroup ref="fo:text-align-attributes"/>
+        <!--font属性-->
+        <attributeGroup ref="fo:font-attributes"/>
+        <!--border属性-->
+        <attributeGroup ref="fo:border-attributes"/>
+        <!--background属性-->
+        <attributeGroup ref="fo:background-attributes"/>
+        <!--keep and break属性-->
+        <attributeGroup ref="fo:keep-break-attributes"/>
+    </complexType>
+
+    <!--表格元素类型-->
+    <complexType name="table-wrapper">
+        <sequence>
+            <!--表格列元素-->
+            <element name="table-column" minOccurs="0">
+                <complexType>
+                    <!--列宽-->
+                    <attribute name="column-width"/>
+                    <!--border属性-->
+                    <attributeGroup ref="fo:border-attributes"/>
+                    <!--background属性-->
+                    <attributeGroup ref="fo:background-attributes"/>
+                </complexType>
+            </element>
+            <!--表格头元素-->
+            <element ref="fo:table-header" minOccurs="0"/>
+            <!--表格体元素-->
+            <element ref="fo:table-body"/>
+            <!--表格尾元素-->
+            <element ref="fo:table-footer" minOccurs="0"/>
+        </sequence>
+        <!--table属性-->
+        <attributeGroup ref="fo:table-attributes"/>
+    </complexType>
+
+    <!--表格头元素类型-->
+    <complexType name="table-header-wrapper">
+        <sequence>
+            <!--表格行元素-->
+            <element ref="fo:table-row"/>
+        </sequence>
+        <!--id-->
+        <attribute name="id"/>
+        <!--border属性-->
+        <attributeGroup ref="fo:border-attributes"/>
+        <!--background属性-->
+        <attributeGroup ref="fo:background-attributes"/>
+    </complexType>
+
+    <!--表格体元素类型-->
+    <complexType name="table-body-wrapper">
+        <sequence>
+            <!--表格行元素-->
+            <element ref="fo:table-row" maxOccurs="unbounded"/>
+        </sequence>
+        <!--id-->
+        <attribute name="id"/>
+        <!--border属性-->
+        <attributeGroup ref="fo:border-attributes"/>
+        <!--background属性-->
+        <attributeGroup ref="fo:background-attributes"/>
+    </complexType>
+
+    <!--表格尾元素类型-->
+    <complexType name="table-footer-wrapper">
+        <sequence>
+            <!--表格行元素-->
+            <element ref="fo:table-row"/>
+        </sequence>
+        <!--id-->
+        <attribute name="id"/>
+        <!--border属性-->
+        <attributeGroup ref="fo:border-attributes"/>
+        <!--background属性-->
+        <attributeGroup ref="fo:background-attributes"/>
+    </complexType>
+
+    <!--表格行元素类型-->
+    <complexType name="table-row-wrapper">
+        <sequence maxOccurs="unbounded">
+            <!--表格单元格元素-->
+            <element ref="fo:table-cell"/>
+        </sequence>
+        <!--id-->
+        <attribute name="id"/>
+        <!--border属性-->
+        <attributeGroup ref="fo:border-attributes"/>
+        <!--background属性-->
+        <attributeGroup ref="fo:background-attributes"/>
+        <!--keep and break属性-->
+        <attributeGroup ref="fo:keep-break-attributes"/>
+    </complexType>
+
+    <!--表格单元格元素类型-->
+    <complexType name="table-cell-wrapper">
+        <choice maxOccurs="unbounded">
+            <!--当前页码元素-->
+            <element ref="fo:page-number"/>
+            <!--总页码元素-->
+            <element ref="fo:page-number-citation-last"/>
+            <!--块元素-->
+            <element ref="fo:block"/>
+            <!--块容器元素-->
+            <element ref="fo:block-container"/>
+            <!--表格元素-->
+            <element ref="fo:table"/>
+        </choice>
+        <!--table-cell属性-->
+        <attributeGroup ref="fo:table-cell-attributes"/>
+    </complexType>
+
+    <!--书签树元素类型-->
+    <complexType name="bookmark-tree-wrapper">
+        <sequence>
+            <!--书签元素-->
+            <element ref="fo:bookmark"/>
+        </sequence>
+    </complexType>
+
+    <!--书签元素类型-->
+    <complexType name="bookmark-wrapper">
+        <sequence>
+            <!--书签标题元素-->
+            <element ref="fo:bookmark-title"/>
+            <!--书签元素-->
+            <element ref="fo:bookmark" maxOccurs="unbounded" minOccurs="0"/>
+        </sequence>
+        <!--内部地址（元素id）-->
+        <attribute name="internal-destination" use="required"/>
+        <!--开始状态-->
+        <attribute name="starting-state" type="fo:starting-state-value"/>
+    </complexType>
+
+    <!--书签元素类型-->
+    <complexType name="bookmark-title-wrapper" mixed="true">
+        <!--font属性-->
+        <attributeGroup ref="fo:font-attributes"/>
+    </complexType>
+
+    <!--区域元素组-->
+    <group name="region-group">
+        <sequence>
+            <!--页面主体-->
+            <element name="region-body">
+                <complexType>
+                    <!--margin属性-->
+                    <attributeGroup ref="fo:margin-attributes"/>
+                    <!--background属性-->
+                    <attributeGroup ref="fo:background-attributes"/>
+                </complexType>
+            </element>
+            <!--页眉-->
+            <element name="region-before" minOccurs="0">
+                <complexType>
+                    <!--高度-->
+                    <attribute name="extent" use="required"/>
+                    <!--background属性-->
+                    <attributeGroup ref="fo:background-attributes"/>
+                </complexType>
+            </element>
+            <!--页脚-->
+            <element name="region-after" minOccurs="0">
+                <complexType>
+                    <!--高度-->
+                    <attribute name="extent" use="required"/>
+                    <!--background属性-->
+                    <attributeGroup ref="fo:background-attributes"/>
+                </complexType>
+            </element>
+            <!--左侧栏-->
+            <element name="region-start" minOccurs="0">
+                <complexType>
+                    <!--宽度-->
+                    <attribute name="extent" use="required"/>
+                    <!--background属性-->
+                    <attributeGroup ref="fo:background-attributes"/>
+                </complexType>
+            </element>
+            <!--右侧栏-->
+            <element name="region-end" minOccurs="0">
+                <complexType>
+                    <!--宽度-->
+                    <attribute name="extent" use="required"/>
+                    <!--background属性-->
+                    <attributeGroup ref="fo:background-attributes"/>
+                </complexType>
+            </element>
+        </sequence>
+    </group>
+
+    <!--基础元素组-->
+    <group name="basic-elements-inline-group">
+        <choice>
+            <!--内联元素-->
+            <element ref="fo:inline" maxOccurs="unbounded" minOccurs="0"/>
+            <!--基础元素组-->
+            <group ref="fo:basic-elements-group"/>
+        </choice>
+    </group>
+
+    <!--基础元素组-->
+    <group name="basic-elements-group">
+        <choice>
+            <!--当前页码元素-->
+            <element ref="fo:page-number" maxOccurs="unbounded" minOccurs="0"/>
+            <!--总页码元素-->
+            <element ref="fo:page-number-citation-last" maxOccurs="unbounded" minOccurs="0"/>
+            <!--块元素-->
+            <element ref="fo:block" maxOccurs="unbounded" minOccurs="0"/>
+            <!--块容器元素-->
+            <element ref="fo:block-container" maxOccurs="unbounded" minOccurs="0"/>
+            <!--超链接元素-->
+            <element ref="fo:basic-link" maxOccurs="unbounded" minOccurs="0"/>
+            <!--外部图形元素-->
+            <element ref="fo:external-graphic" maxOccurs="unbounded" minOccurs="0"/>
+            <!--内联图形元素-->
+            <element ref="fo:instream-foreign-object" maxOccurs="unbounded" minOccurs="0"/>
+            <!--分隔符元素-->
+            <element ref="fo:leader" maxOccurs="unbounded" minOccurs="0"/>
+            <!--表格元素-->
+            <element ref="fo:table" maxOccurs="unbounded" minOccurs="0"/>
+        </choice>
+    </group>
+
+    <!--margin属性-->
+    <attributeGroup name="margin-attributes">
+        <!--边距-->
+        <attribute name="margin"/>
+        <!--上边距-->
+        <attribute name="margin-top"/>
+        <!--下边距-->
+        <attribute name="margin-bottom"/>
+        <!--左边距-->
+        <attribute name="margin-left"/>
+        <!--右边距-->
+        <attribute name="margin-right"/>
+    </attributeGroup>
+
+    <!--padding属性-->
+    <attributeGroup name="padding-attributes">
+        <!--填充-->
+        <attribute name="padding"/>
+        <!--上填充-->
+        <attribute name="padding-top"/>
+        <!--下填充-->
+        <attribute name="padding-bottom"/>
+        <!--左填充-->
+        <attribute name="padding-left"/>
+        <!--右填充-->
+        <attribute name="padding-right"/>
+    </attributeGroup>
+
+    <!--text-align属性-->
+    <attributeGroup name="text-align-attributes">
+        <!--文本对齐-->
+        <attribute name="text-align" type="fo:text-align-value"/>
+        <!--文本最后一行对齐-->
+        <attribute name="text-align-last" type="fo:text-align-last-value"/>
+    </attributeGroup>
+
+    <!--text属性-->
+    <attributeGroup name="text-attributes">
+        <!--语言-->
+        <attribute name="language"/>
+        <!--行间距-->
+        <attribute name="line-height"/>
+        <!--字符间距-->
+        <attribute name="letter-spacing"/>
+        <!--单词间距-->
+        <attribute name="word-spacing"/>
+        <!--文本缩进-->
+        <attribute name="text-indent"/>
+        <!--段前缩进-->
+        <attribute name="start-indent"/>
+        <!--段后缩进-->
+        <attribute name="end-indent"/>
+        <!--段前空白-->
+        <attribute name="space-before"/>
+        <!--段后空白-->
+        <attribute name="space-after"/>
+        <!--空白空间-->
+        <attribute name="white-space" type="fo:white-space-value"/>
+        <!--空白空间折叠-->
+        <attribute name="white-space-collapse" type="fo:white-space-collapse-value"/>
+        <!--文本装饰-->
+        <attribute name="text-decoration" type="fo:text-decoration-value"/>
+    </attributeGroup>
+
+    <!--font属性-->
+    <attributeGroup name="font-attributes">
+        <!--字体名称-->
+        <attribute name="font-family"/>
+        <!--字体重量-->
+        <attribute name="font-weight"/>
+        <!--字体样式-->
+        <attribute name="font-style"/>
+        <!--字体大小-->
+        <attribute name="font-size"/>
+        <!--字体大小调整-->
+        <attribute name="font-size-adjust"/>
+        <!--字体变体-->
+        <attribute name="font-variant" type="fo:font-variant-value"/>
+        <!--字体颜色（css颜色）-->
+        <attribute name="color"/>
+    </attributeGroup>
+
+    <!--border属性-->
+    <attributeGroup name="border-attributes">
+        <!--边框-->
+        <attribute name="border"/>
+        <!--边框样式-->
+        <attributeGroup ref="fo:border-style-attributes"/>
+        <!--边框颜色-->
+        <attributeGroup ref="fo:border-color-attributes"/>
+        <!--边框宽度-->
+        <attributeGroup ref="fo:border-width-attributes"/>
+    </attributeGroup>
+
+    <!--border-style属性-->
+    <attributeGroup name="border-style-attributes">
+        <!--边框样式-->
+        <attribute name="border-style" type="fo:border-style-value"/>
+        <!--上边框样式-->
+        <attribute name="border-top-style" type="fo:border-style-value"/>
+        <!--下边框样式-->
+        <attribute name="border-bottom-style" type="fo:border-style-value"/>
+        <!--左边框样式-->
+        <attribute name="border-left-style" type="fo:border-style-value"/>
+        <!--右边框样式-->
+        <attribute name="border-right-style" type="fo:border-style-value"/>
+    </attributeGroup>
+
+    <!--border-color属性-->
+    <attributeGroup name="border-color-attributes">
+        <!--边框颜色（css颜色）-->
+        <attribute name="border-color"/>
+        <!--上边框颜色（css颜色）-->
+        <attribute name="border-top-color"/>
+        <!--下边框颜色（css颜色）-->
+        <attribute name="border-bottom-color"/>
+        <!--左边框颜色（css颜色）-->
+        <attribute name="border-left-color"/>
+        <!--右边框颜色（css颜色）-->
+        <attribute name="border-right-color"/>
+    </attributeGroup>
+
+    <!--border-width属性-->
+    <attributeGroup name="border-width-attributes">
+        <!--边框宽度-->
+        <attribute name="border-width"/>
+        <!--上边框宽度-->
+        <attribute name="border-top-width"/>
+        <!--下边框宽度-->
+        <attribute name="border-bottom-width"/>
+        <!--左边框宽度-->
+        <attribute name="border-left-width"/>
+        <!--右边框宽度-->
+        <attribute name="border-right-width"/>
+    </attributeGroup>
+
+    <!--background属性-->
+    <attributeGroup name="background-attributes">
+        <!--背景-->
+        <attribute name="background"/>
+        <!--背景颜色（css颜色）-->
+        <attribute name="background-color"/>
+        <!--背景图片，url('')形式-->
+        <attribute name="background-image" type="fo:background-image-value"/>
+        <!--背景图片宽度-->
+        <attribute ref="fox:background-image-width"/>
+        <!--背景图片高度-->
+        <attribute ref="fox:background-image-height"/>
+        <!--背景重复-->
+        <attribute name="background-repeat" type="fo:background-repeat-value"/>
+        <!--背景附件-->
+        <attribute name="background-attachment" type="fo:background-attachment-value"/>
+        <!--背景位置-->
+        <attribute name="background-position"/>
+        <!--背景水平位置-->
+        <attribute name="background-position-horizontal"/>
+        <!--背景垂直位置-->
+        <attribute name="background-position-vertical"/>
+    </attributeGroup>
+
+    <!--table属性-->
+    <attributeGroup name="table-attributes">
+        <!--id-->
+        <attribute name="id"/>
+        <!--宽度-->
+        <attribute name="width"/>
+        <!--高度-->
+        <attribute name="height"/>
+        <!--表格样式-->
+        <attribute name="table-layout" fixed="fixed" use="required"/>
+        <!--忽略表头-->
+        <attribute name="table-omit-header-at-break" type="boolean"/>
+        <!--忽略表尾-->
+        <attribute name="table-omit-footer-at-break" type="boolean"/>
+        <!--段前空白-->
+        <attribute name="space-before"/>
+        <!--段后空白-->
+        <attribute name="space-after"/>
+        <!--开始缩进-->
+        <attribute name="start-indent"/>
+        <!--keep and break属性-->
+        <attributeGroup ref="fo:keep-break-attributes"/>
+        <!--margin属性-->
+        <attributeGroup ref="fo:margin-attributes"/>
+        <!--padding属性-->
+        <attributeGroup ref="fo:padding-attributes"/>
+        <!--border属性-->
+        <attributeGroup ref="fo:border-attributes"/>
+        <!--background属性-->
+        <attributeGroup ref="fo:background-attributes"/>
+    </attributeGroup>
+
+    <!--table-cell属性-->
+    <attributeGroup name="table-cell-attributes">
+        <!--id-->
+        <attribute name="id"/>
+        <!--宽度-->
+        <attribute name="width"/>
+        <!--高度-->
+        <attribute name="height"/>
+        <!--文本对齐-->
+        <attribute name="text-align" type="fo:text-align-value"/>
+        <!--显示（上下）对齐-->
+        <attribute name="display-align" type="fo:display-align-value"/>
+        <!--合并行-->
+        <attribute name="number-rows-spanned" type="integer"/>
+        <!--合并列-->
+        <attribute name="number-columns-spanned" type="integer"/>
+        <!--padding属性-->
+        <attributeGroup ref="fo:padding-attributes"/>
+        <!--text属性-->
+        <attributeGroup ref="fo:text-attributes"/>
+        <!--font属性-->
+        <attributeGroup ref="fo:font-attributes"/>
+        <!--border属性-->
+        <attributeGroup ref="fo:border-attributes"/>
+        <!--background属性-->
+        <attributeGroup ref="fo:background-attributes"/>
+        <!--keep and break属性-->
+        <attributeGroup ref="fo:keep-break-attributes"/>
+    </attributeGroup>
+
+    <!--keep and break属性-->
+    <attributeGroup name="keep-break-attributes">
+        <!--保持一起-->
+        <attribute name="keep-together" type="fo:keep-value"/>
+        <!--与下一个保持一起-->
+        <attribute name="keep-with-next" type="fo:keep-value"/>
+        <!--与上一个保持一起-->
+        <attribute name="keep-with-previous" type="fo:keep-value"/>
+        <!--之前分页-->
+        <attribute name="break-before" type="fo:break-value"/>
+        <!--之后分页-->
+        <attribute name="break-after" type="fo:break-value"/>
+    </attributeGroup>
+
+    <!--writing-mode-value-->
+    <simpleType name="writing-mode-value">
+        <restriction base="string">
+            <!--从左往右，从上往下-->
+            <enumeration value="lr-tb"/>
+            <!--从右往左，从上往下-->
+            <enumeration value="rl-tb"/>
+            <!--从上往下，从左往右-->
+            <enumeration value="tb-lr"/>
+            <!--从上往下，从右往左-->
+            <enumeration value="tb-rl"/>
+        </restriction>
+    </simpleType>
+
+    <!--break-value-->
+    <simpleType name="break-value">
+        <restriction base="string">
+            <!--自动-->
+            <enumeration value="auto"/>
+            <!--列-->
+            <enumeration value="column"/>
+            <!--页面-->
+            <enumeration value="page"/>
+            <!--奇数页-->
+            <enumeration value="odd-page"/>
+            <!--偶数页-->
+            <enumeration value="even-page"/>
+        </restriction>
+    </simpleType>
+
+    <!--keep-value-->
+    <simpleType name="keep-value">
+        <restriction base="string">
+            <!--自动-->
+            <enumeration value="auto"/>
+            <!--总是-->
+            <enumeration value="always"/>
+        </restriction>
+    </simpleType>
+
+    <!--leader-alignment-value-->
+    <simpleType name="leader-alignment-value">
+        <restriction base="string">
+            <!--无-->
+            <enumeration value="none"/>
+            <!--参考区域-->
+            <enumeration value="reference-area"/>
+            <!--页面-->
+            <enumeration value="page"/>
+        </restriction>
+    </simpleType>
+
+    <!--leader-pattern-value-->
+    <simpleType name="leader-pattern-value">
+        <restriction base="string">
+            <!--空白-->
+            <enumeration value="space"/>
+            <!--规则-->
+            <enumeration value="rule"/>
+            <!--点-->
+            <enumeration value="dots"/>
+            <!--使用内容-->
+            <enumeration value="use-content"/>
+        </restriction>
+    </simpleType>
+
+    <!--rule-style-value-->
+    <simpleType name="rule-style-value">
+        <restriction base="string">
+            <!--无-->
+            <enumeration value="none"/>
+            <!--点虚线-->
+            <enumeration value="dotted"/>
+            <!--短虚线-->
+            <enumeration value="dashed"/>
+            <!--实线-->
+            <enumeration value="solid"/>
+            <!--双实线-->
+            <enumeration value="double"/>
+            <!--凹线（槽）-->
+            <enumeration value="groove"/>
+            <!--凸线（脊）-->
+            <enumeration value="ridge"/>
+        </restriction>
+    </simpleType>
+
+    <!--border-style-value-->
+    <simpleType name="border-style-value">
+        <restriction base="string">
+            <!--无-->
+            <enumeration value="none"/>
+            <!--隐藏-->
+            <enumeration value="hidden"/>
+            <!--点虚线-->
+            <enumeration value="dotted"/>
+            <!--短虚线-->
+            <enumeration value="dashed"/>
+            <!--实线-->
+            <enumeration value="solid"/>
+            <!--双实线-->
+            <enumeration value="double"/>
+            <!--凹线（槽）-->
+            <enumeration value="groove"/>
+            <!--凸线（脊）-->
+            <enumeration value="ridge"/>
+            <!--嵌入-->
+            <enumeration value="inset"/>
+            <!--凸出-->
+            <enumeration value="outset"/>
+        </restriction>
+    </simpleType>
+
+    <simpleType name="flow-name-value">
+        <restriction base="string">
+            <!--页面主体-->
+            <enumeration value="xsl-region-body"/>
+            <!--页眉-->
+            <enumeration value="xsl-region-before"/>
+            <!--页脚-->
+            <enumeration value="xsl-region-after"/>
+            <!--左侧栏-->
+            <enumeration value="xsl-region-start"/>
+            <!--右侧栏-->
+            <enumeration value="xsl-region-end"/>
+        </restriction>
+    </simpleType>
+
+    <!--text-align-value-->
+    <simpleType name="text-align-value">
+        <restriction base="string">
+            <!--居左-->
+            <enumeration value="left"/>
+            <!--居中-->
+            <enumeration value="center"/>
+            <!--居右-->
+            <enumeration value="right"/>
+            <!--两端对齐-->
+            <enumeration value="justify"/>
+        </restriction>
+    </simpleType>
+
+    <!--text-align-last-value-->
+    <simpleType name="text-align-last-value">
+        <restriction base="string">
+            <!--相对-->
+            <enumeration value="relative"/>
+            <!--居左-->
+            <enumeration value="left"/>
+            <!--居中-->
+            <enumeration value="center"/>
+            <!--居右-->
+            <enumeration value="right"/>
+            <!--两端对齐-->
+            <enumeration value="justify"/>
+        </restriction>
+    </simpleType>
+
+    <!--display-align-value-->
+    <simpleType name="display-align-value">
+        <restriction base="string">
+            <!--自动-->
+            <enumeration value="auto"/>
+            <!--居上-->
+            <enumeration value="before"/>
+            <!--居中-->
+            <enumeration value="center"/>
+            <!--居下-->
+            <enumeration value="after"/>
+        </restriction>
+    </simpleType>
+
+    <!--vertical-align-value-->
+    <simpleType name="vertical-align-value">
+        <restriction base="string">
+            <!--基线-->
+            <enumeration value="baseline"/>
+            <!--居中-->
+            <enumeration value="middle"/>
+            <!--上标-->
+            <enumeration value="super"/>
+            <!--下标-->
+            <enumeration value="sub"/>
+            <!--父元素上对齐-->
+            <enumeration value="text-top"/>
+            <!--父元素下对齐-->
+            <enumeration value="text-bottom"/>
+            <!--上对齐-->
+            <enumeration value="top"/>
+            <!--下对齐-->
+            <enumeration value="bottom"/>
+        </restriction>
+    </simpleType>
+
+    <!--text-decoration-value-->
+    <simpleType name="text-decoration-value">
+        <restriction base="string">
+            <!--无-->
+            <enumeration value="none"/>
+            <!--闪烁-->
+            <enumeration value="blink"/>
+            <!--上划线-->
+            <enumeration value="overline"/>
+            <!--下划线-->
+            <enumeration value="underline"/>
+            <!--下划线+上划线-->
+            <enumeration value="underline overline"/>
+            <!--删除线-->
+            <enumeration value="line-through"/>
+            <!--删除线+上划线-->
+            <enumeration value="line-through overline"/>
+            <!--删除线+下划线-->
+            <enumeration value="line-through underline"/>
+            <!--删除线+下划线+上划线-->
+            <enumeration value="line-through underline overline"/>
+        </restriction>
+    </simpleType>
+
+    <!--white-space-value-->
+    <simpleType name="white-space-value">
+        <restriction base="string">
+            <!--正常-->
+            <enumeration value="normal"/>
+            <!--取消合并空格-->
+            <enumeration value="pre"/>
+            <!--无包装-->
+            <enumeration value="nowrap"/>
+        </restriction>
+    </simpleType>
+
+    <!--white-space-collapse-value-->
+    <simpleType name="white-space-collapse-value">
+        <restriction base="string">
+            <!--是-->
+            <enumeration value="true"/>
+            <!--否-->
+            <enumeration value="false"/>
+        </restriction>
+    </simpleType>
+
+    <!--font-variant-value-->
+    <simpleType name="font-variant-value">
+        <restriction base="string">
+            <!--正常-->
+            <enumeration value="normal"/>
+            <!--大写字母变小-->
+            <enumeration value="small-caps"/>
+        </restriction>
+    </simpleType>
+
+    <!--background-image-value-->
+    <simpleType name="background-image-value">
+        <restriction base="string">
+            <pattern value="url\('.*'\)"/>
+        </restriction>
+    </simpleType>
+
+    <!--background-repeat-value-->
+    <simpleType name="background-repeat-value">
+        <restriction base="string">
+            <!--重复-->
+            <enumeration value="repeat"/>
+            <!--x轴重复-->
+            <enumeration value="repeat-x"/>
+            <!--y轴重复-->
+            <enumeration value="repeat-y"/>
+            <!--不重复-->
+            <enumeration value="no-repeat"/>
+        </restriction>
+    </simpleType>
+
+    <!--background-attachment-value-->
+    <simpleType name="background-attachment-value">
+        <restriction base="string">
+            <!--滚动-->
+            <enumeration value="scroll"/>
+            <!--固定-->
+            <enumeration value="fixed"/>
+        </restriction>
+    </simpleType>
+
+    <!--starting-state-value-->
+    <simpleType name="starting-state-value">
+        <restriction base="string">
+            <!--展示-->
+            <enumeration value="show"/>
+            <!--隐藏-->
+            <enumeration value="hide"/>
+        </restriction>
+    </simpleType>
+</schema>
