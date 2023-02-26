@@ -55,7 +55,7 @@ public class XEasyPdfTemplateTest {
         // 定义fop配置文件路径
         String configPath = "H:\\java_workspace\\my\\mutil\\x-easypdf\\x-easypdf-fop\\src\\main\\resources\\wiki\\xsx\\core\\pdf\\template\\fop.xconf";
         // 定义xsl-fo模板路径
-        String templatePath = "classpath:wiki/xsx/core/pdf/template/thymeleaf/template2.html";
+        String templatePath = "wiki/xsx/core/pdf/template/thymeleaf/template2.html";
         // 定义pdf输出路径
         String outputPath = "E:\\pdf\\test\\fo\\Thymeleaf.pdf";
         // 定义数据map
@@ -72,7 +72,7 @@ public class XEasyPdfTemplateTest {
     @Test
     public void testThymeleaf3() {
         // 定义xsl-fo模板路径
-        String templatePath = "E:\\pdf\\test\\fo\\space-after-1\\space-after-1.fo";
+        String templatePath = "E:\\pdf\\test\\fo\\template2.html";
         // 定义pdf输出路径
         String outputPath = "E:\\pdf\\test\\fo\\Thymeleaf.pdf";
         // 定义数据map
@@ -81,9 +81,10 @@ public class XEasyPdfTemplateTest {
         data.put("createTime", "创建时间：2022-10-27 15:35:00");
         data.put("printTime", "打印时间：2022-10-27 15:36:00");
         data.put("printUser", "打印人：x-easypdf");
+        data.put("data", "hello world");
         // 转换pdf
         XEasyPdfTemplateHandler.Template.build()
-                .setDataSource(XEasyPdfTemplateHandler.DataSource.Thymeleaf.build().setTemplatePath(templatePath))
+                .setDataSource(XEasyPdfTemplateHandler.DataSource.Thymeleaf.build().setTemplatePath(templatePath).setTemplateData(data))
                 .transform(outputPath);
     }
 

@@ -44,10 +44,6 @@ public class XEasyPdfTemplateThymeleafDataSource extends XEasyPdfTemplateAbstrac
      */
     private static final TemplateEngine CLASSPATH_TEMPLATE_ENGINE = initTemplateEngine(new ClassLoaderTemplateResolver());
     /**
-     * 类路径前缀
-     */
-    private static final String CLASSPATH_PREFIX = "classpath:";
-    /**
      * 所在区域
      */
     private Locale locale = Locale.SIMPLIFIED_CHINESE;
@@ -105,15 +101,15 @@ public class XEasyPdfTemplateThymeleafDataSource extends XEasyPdfTemplateAbstrac
                 // 创建写入器
                 Writer writer = new OutputStreamWriter(outputStream)
         ) {
-            // 如果模板路径为类路径前缀，则使用类路径模板引擎
-            if (this.templatePath.startsWith(CLASSPATH_PREFIX) || this.templatePath.startsWith(CLASSPATH_PREFIX.toLowerCase().intern())) {
-                // 使用类路径模板引擎处理
-                CLASSPATH_TEMPLATE_ENGINE.process(this.templatePath.substring(CLASSPATH_PREFIX.length()).intern(), context, writer);
-            }
-            // 否则文件类路径模板引擎
-            else {
+            // 如果模板路径为非资源路径，则使用文件路径模板引擎
+            if (XEasyPdfTemplateThymeleafDataSource.class.getClassLoader().getResource(this.templatePath) == null) {
                 // 使用文件路径模板引擎处理
                 FILEPATH_TEMPLATE_ENGINE.process(this.templatePath, context, writer);
+            }
+            // 否则使用类路径模板引擎
+            else {
+                // 使用类路径模板引擎处理
+                CLASSPATH_TEMPLATE_ENGINE.process(this.templatePath, context, writer);
             }
             // 返回输入流
             return new BufferedInputStream(new ByteArrayInputStream(outputStream.toByteArray()));
