@@ -1,1 +1,0 @@
-import{_ as r,V as t,W as a,Y as o}from"./framework-7e306a38.js";const s={},c=["src"];function i(e,n){return t(),a("div",null,[o("iframe",{src:e.$withBase("https://apidoc.gitee.com/dromara/x-easypdf/"),width:"100%",height:"550",frameborder:"0",scrolling:"No",leftmargin:"0",topmargin:"0"},null,8,c)])}const l=r(s,[["render",i],["__file","api文档.html.vue"]]);export{l as default};
