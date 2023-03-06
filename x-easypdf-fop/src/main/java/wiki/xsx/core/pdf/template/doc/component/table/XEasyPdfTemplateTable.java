@@ -559,7 +559,7 @@ public class XEasyPdfTemplateTable implements XEasyPdfTemplateComponent {
     @Override
     public Element createElement(Document document) {
         // 创建block元素
-        Element block = this.createBlockElement(document, this.param);
+        Element block = this.createBlockElement(document, this.param, false);
         // 添加table元素
         block.appendChild(this.createTable(document));
         // 返回block元素
@@ -581,6 +581,16 @@ public class XEasyPdfTemplateTable implements XEasyPdfTemplateComponent {
         XEasyPdfTemplateElementHandler.appendChild(table, this.createTableBody(document));
         // 添加表尾
         XEasyPdfTemplateElementHandler.appendChild(table, this.createTableFooter(document));
+        // 设置上下左右边距
+        Optional.ofNullable(param.getMargin()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.MARGIN, v.intern().toLowerCase()));
+        // 设置上边距
+        Optional.ofNullable(param.getMarginTop()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.MARGIN_TOP, v.intern().toLowerCase()));
+        // 设置下边距
+        Optional.ofNullable(param.getMarginBottom()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.MARGIN_BOTTOM, v.intern().toLowerCase()));
+        // 设置左边距
+        Optional.ofNullable(param.getMarginLeft()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.MARGIN_LEFT, v.intern().toLowerCase()));
+        // 设置右边距
+        Optional.ofNullable(param.getMarginRight()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.MARGIN_RIGHT, v.intern().toLowerCase()));
         // 设置垂直样式
         Optional.ofNullable(this.param.getVerticalStyle()).ifPresent(v -> table.setAttribute(XEasyPdfTemplateAttributes.DISPLAY_ALIGN, v.intern().toLowerCase()));
         // 设置宽度
