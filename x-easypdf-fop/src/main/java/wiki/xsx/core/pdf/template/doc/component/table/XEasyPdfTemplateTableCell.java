@@ -682,6 +682,8 @@ public class XEasyPdfTemplateTableCell {
     public Element createElement(Document document) {
         // 创建tableCell元素
         Element tableCell = document.createElement(XEasyPdfTemplateTags.TABLE_CELL);
+        // 重置属性
+        this.resetAttribute(tableCell);
         // 添加id
         Optional.ofNullable(this.param.getId()).ifPresent(v -> tableCell.setAttribute(XEasyPdfTemplateAttributes.ID, v.intern()));
         // 设置宽度
@@ -778,5 +780,17 @@ public class XEasyPdfTemplateTableCell {
         Optional.ofNullable(this.param.getComponents()).ifPresent(v -> v.forEach(e -> tableCell.appendChild(e.createElement(document))));
         // 返回tableCell元素
         return tableCell;
+    }
+
+    /**
+     * 重置属性
+     *
+     * @param tableCell tableCell元素
+     */
+    private void resetAttribute(Element tableCell) {
+        // 设置边距
+        tableCell.setAttribute(XEasyPdfTemplateAttributes.MARGIN, "0");
+        // 设置填充
+        tableCell.setAttribute(XEasyPdfTemplateAttributes.PADDING, "0");
     }
 }
