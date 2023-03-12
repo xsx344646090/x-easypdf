@@ -2,6 +2,7 @@ package wiki.xsx.core.pdf.component;
 
 import org.junit.Before;
 import org.junit.Test;
+import wiki.xsx.core.pdf.component.image.XEasyPdfImage;
 import wiki.xsx.core.pdf.component.image.XEasyPdfImageType;
 import wiki.xsx.core.pdf.doc.XEasyPdfDocument;
 import wiki.xsx.core.pdf.doc.XEasyPdfPage;
@@ -227,5 +228,21 @@ public class XEasyPdfImageTest {
                 )
         ).save(filePath).close();
         System.out.println("finish");
+    }
+
+    @Test
+    public void testImage8() throws Exception {
+        // 加载文档
+        XEasyPdfDocument document = XEasyPdfHandler.Document.load("E:\\pdf\\hello-world2.pdf");
+        // 获取第一页
+        XEasyPdfPage page = document.getPageList().get(0);
+        // 创建图片组件
+        XEasyPdfImage image = XEasyPdfHandler.Image.build(new File("E:\\pdf\\text.png"));
+        // 指定坐标
+        image.setPosition(100F, 100F);
+        // 添加图片
+        page.addComponent(image);
+        // 保存并关闭文档
+        document.save("E:\\pdf\\hello-world3.pdf").close();
     }
 }
