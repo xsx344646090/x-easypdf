@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8"?><!--根标签-->
+<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format"
+         xmlns:fox="http://xmlgraphics.apache.org/fop/extensions"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:xe="http://www.x-easypdf.cn/ns">
+    <!--页面模板-->
+    <fo:layout-master-set>
+        <fo:simple-page-master margin-bottom="20pt" margin-left="20pt" margin-right="20pt" margin-top="20pt"
+                               master-name="page1" page-height="29.7cm" page-width="21cm">
+            <fo:region-body background-image="url('/E:/pdf/test/fo/watermark.png')" fox:background-image-width="200pt"/>
+            <fo:region-before/>
+            <fo:region-after extent="20pt"/>
+            <fo:region-start/>
+            <fo:region-end/>
+        </fo:simple-page-master>
+    </fo:layout-master-set>
+    <fo:bookmark-tree>
+        <fo:bookmark internal-destination="title">
+            <fo:bookmark-title>目录</fo:bookmark-title>
+            <fo:bookmark internal-destination="tableText">
+                <fo:bookmark-title>贵阳市行政区划</fo:bookmark-title>
+            </fo:bookmark>
+        </fo:bookmark>
+    </fo:bookmark-tree>
+    <fo:page-sequence font-family="微软雅黑" font-size="15pt" id="pageId" master-reference="page1">
+        <fo:static-content flow-name="xsl-region-after">
+            <fo:block-container>
+                <fo:block text-align="center">
+                    <fo:inline>第</fo:inline>
+                    <fo:page-number/>
+                    <fo:inline>页，共</fo:inline>
+                    <fo:page-number-citation-last ref-id="pageId"/>
+                    <fo:inline>页</fo:inline>
+                </fo:block>
+            </fo:block-container>
+        </fo:static-content>
+        <fo:flow flow-name="xsl-region-body">
+            <fo:block id="title" text-align="center">
+                <fo:inline font-size="20pt">贵阳市简介</fo:inline>
+            </fo:block>
+            <fo:block space-before="12pt" start-indent="60pt">
+                <fo:inline font-size="12pt">创建时间：2022-11-11 00:00:00</fo:inline>
+                <fo:leader leader-length="80pt"/>
+                <fo:inline font-size="12pt">创建人：x-easypdf</fo:inline>
+            </fo:block>
+            <fo:block margin-top="-62pt" text-align="right">
+                <fo:instream-foreign-object>
+                    <xe:barcode content="https://baike.baidu.com/item/贵阳/438289" height="60pt" type="qr_code"
+                                width="60pt" words="扫一扫"/>
+                </fo:instream-foreign-object>
+            </fo:block>
+            <fo:block id="text" space-before="12pt" text-indent="24pt">
+                <fo:inline text-indent="24pt">
+                    贵阳，简称“筑”，别称林城、筑城，贵州省辖地级市、省会、Ⅰ型大城市，国务院批复确定的中国西南地区重要的中心城市之一、重要的区域创新中心和全国重要的生态休闲度假旅游城市。贵阳地处黔中山原丘陵中部，东南与黔南布依族苗族自治州的瓮安、龙里、惠水、长顺4县接壤，西靠安顺市的平坝区和毕节市的织金县，北邻毕节市的黔西市、金沙县和遵义市的播州区，截至2020年，全市下辖6个区、3个县，代管1个县级市。截至2021年末，贵阳市常住人口610.23万人。
+                </fo:inline>
+            </fo:block>
+            <fo:block text-align="right">
+                <fo:inline font-size="12pt">-- 摘自百度百科</fo:inline>
+            </fo:block>
+            <fo:block break-before="page" id="tableText" space-before="20pt" text-align="center">
+                <fo:inline font-size="20pt">贵阳市行政区划</fo:inline>
+            </fo:block>
+            <fo:block>
+                <fo:table display-align="center" table-layout="fixed">
+                    <fo:table-header>
+                        <fo:table-row>
+                            <fo:table-cell background-color="#7c7d7d" border-style="solid" height="30pt" margin="0"
+                                           padding="0" text-align="center">
+                                <fo:block>
+                                    <fo:inline>名称</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell background-color="#7c7d7d" border-style="solid" height="30pt" margin="0"
+                                           padding="0" text-align="center">
+                                <fo:block>
+                                    <fo:inline>区划代码</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell background-color="#7c7d7d" border-style="solid" height="30pt" margin="0"
+                                           padding="0" text-align="center">
+                                <fo:block>
+                                    <fo:inline>人口（万人）</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell background-color="#7c7d7d" border-style="solid" height="30pt" margin="0"
+                                           padding="0" text-align="center">
+                                <fo:block>
+                                    <fo:inline>面积（平方千米）</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                        </fo:table-row>
+                    </fo:table-header>
+                    <fo:table-body>
+                        <fo:table-row>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                                <fo:block>
+                                    <fo:inline>贵阳市</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                                <fo:block>
+                                    <fo:inline>520100</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                                <fo:block>
+                                    <fo:inline>599</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                                <fo:block>
+                                    <fo:inline>8035</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                        </fo:table-row>
+                        <fo:table-row>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                                <fo:block>
+                                    <fo:inline>南明区</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                                <fo:block>
+                                    <fo:inline>520102</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                                <fo:block>
+                                    <fo:inline>105</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                                <fo:block>
+                                    <fo:inline>271</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                        </fo:table-row>
+                        <fo:table-row>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                                <fo:block>
+                                    <fo:inline>云岩区</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                                <fo:block>
+                                    <fo:inline>520103</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                                <fo:block>
+                                    <fo:inline>106</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                                <fo:block>
+                                    <fo:inline>94</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                        </fo:table-row>
+                        <fo:table-row>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                                <fo:block>
+                                    <fo:inline>花溪区</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                                <fo:block>
+                                    <fo:inline>520111</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                                <fo:block>
+                                    <fo:inline>97</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                                <fo:block>
+                                    <fo:inline>964</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                        </fo:table-row>
+                        <fo:table-row>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                                <fo:block>
+                                    <fo:inline>乌当区</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                                <fo:block>
+                                    <fo:inline>520112</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                                <fo:block>
+                                    <fo:inline>34</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                                <fo:block>
+                                    <fo:inline>686</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                        </fo:table-row>
+                        <fo:table-row>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                                <fo:block>
+                                    <fo:inline>白云区</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                                <fo:block>
+                                    <fo:inline>520113</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                                <fo:block>
+                                    <fo:inline>46</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                                <fo:block>
+                                    <fo:inline>270</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                        </fo:table-row>
+                        <fo:table-row>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                                <fo:block>
+                                    <fo:inline>观山湖区</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                                <fo:block>
+                                    <fo:inline>520115</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                                <fo:block>
+                                    <fo:inline>64</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                                <fo:block>
+                                    <fo:inline>309</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                        </fo:table-row>
+                        <fo:table-row>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
+                                <fo:block>
+                                    <fo:inline>清镇市</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
+                                <fo:block>
+                                    <fo:inline>520181</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
+                                <fo:block>
+                                    <fo:inline>63</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
+                                <fo:block>
+                                    <fo:inline>1302</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                        </fo:table-row>
+                        <fo:table-row>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
+                                <fo:block>
+                                    <fo:inline>开阳县</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
+                                <fo:block>
+                                    <fo:inline>520121</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
+                                <fo:block>
+                                    <fo:inline>34</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
+                                <fo:block>
+                                    <fo:inline>2026</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                        </fo:table-row>
+                        <fo:table-row>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
+                                <fo:block>
+                                    <fo:inline>息烽县</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
+                                <fo:block>
+                                    <fo:inline>520122</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
+                                <fo:block>
+                                    <fo:inline>22</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
+                                <fo:block>
+                                    <fo:inline>1037</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                        </fo:table-row>
+                        <fo:table-row>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
+                                <fo:block>
+                                    <fo:inline>修文县</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
+                                <fo:block>
+                                    <fo:inline>520123</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
+                                <fo:block>
+                                    <fo:inline>29</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
+                                <fo:block>
+                                    <fo:inline>1076</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                        </fo:table-row>
+                    </fo:table-body>
+                </fo:table>
+            </fo:block>
+        </fo:flow>
+    </fo:page-sequence>
+</fo:root>

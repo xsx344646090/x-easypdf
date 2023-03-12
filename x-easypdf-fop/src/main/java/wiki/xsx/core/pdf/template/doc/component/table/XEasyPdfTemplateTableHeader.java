@@ -57,6 +57,32 @@ public class XEasyPdfTemplateTableHeader {
     }
 
     /**
+     * 设置最小行高
+     *
+     * @param minRowHeight 最小行高
+     * @return 返回表格行组件
+     */
+    public XEasyPdfTemplateTableHeader setMinRowHeight(String minRowHeight) {
+        if (this.minRowHeight == null) {
+            this.minRowHeight = minRowHeight;
+        }
+        return this;
+    }
+
+    /**
+     * 设置最小列宽
+     *
+     * @param minColumnWidth 最小列宽
+     * @return 返回表格行组件
+     */
+    public XEasyPdfTemplateTableHeader setMinColumnWidth(String minColumnWidth) {
+        if (this.minColumnWidth == null) {
+            this.minColumnWidth = minColumnWidth;
+        }
+        return this;
+    }
+
+    /**
      * 添加行
      *
      * @param rows 表格行列表
@@ -103,27 +129,5 @@ public class XEasyPdfTemplateTableHeader {
         }
         // 返回tableHeader元素
         return tableHeader;
-    }
-
-    /**
-     * 设置最小行高
-     *
-     * @param minRowHeight 最小行高
-     * @return 返回表格行组件
-     */
-    XEasyPdfTemplateTableHeader setMinRowHeight(String minRowHeight) {
-        this.minRowHeight = minRowHeight;
-        return this;
-    }
-
-    /**
-     * 设置最小列宽
-     *
-     * @param minColumnWidth 最小列宽
-     * @return 返回表格行组件
-     */
-    XEasyPdfTemplateTableHeader setMinColumnWidth(String minColumnWidth) {
-        this.minColumnWidth = minColumnWidth;
-        return this;
     }
 }

@@ -576,6 +576,28 @@ public class XEasyPdfTemplateTableCell {
     }
 
     /**
+     * 设置背景图片宽度
+     *
+     * @param width 图片宽度
+     * @return 返回表格单元格组件
+     */
+    public XEasyPdfTemplateTableCell setBackgroundImageWidth(String width) {
+        this.param.setBackgroundImageWidth(width);
+        return this;
+    }
+
+    /**
+     * 设置背景图片高度
+     *
+     * @param height 图片高度
+     * @return 返回表格单元格组件
+     */
+    public XEasyPdfTemplateTableCell setBackgroundImageHeight(String height) {
+        this.param.setBackgroundImageHeight(height);
+        return this;
+    }
+
+    /**
      * 设置背景附件
      * <p>scroll：滚动</p>
      * <p>fixed：固定</p>

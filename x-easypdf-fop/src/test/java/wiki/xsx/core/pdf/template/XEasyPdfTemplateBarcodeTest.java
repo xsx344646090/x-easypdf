@@ -1,6 +1,9 @@
 package wiki.xsx.core.pdf.template;
 
 import org.junit.Test;
+import wiki.xsx.core.pdf.template.doc.XEasyPdfTemplateDocument;
+import wiki.xsx.core.pdf.template.doc.component.barcode.XEasyPdfTemplateBarcode;
+import wiki.xsx.core.pdf.template.doc.page.XEasyPdfTemplatePage;
 import wiki.xsx.core.pdf.template.handler.XEasyPdfTemplateHandler;
 
 import java.util.ArrayList;
@@ -80,26 +83,43 @@ public class XEasyPdfTemplateBarcodeTest {
 
     @Test
     public void testBarcodeForDocument() {
-        // 定义fop配置文件路径
-        String configPath = "E:\\pdf\\test\\fo\\fop.xconf";
         // 定义输出路径
-        String outputPath = "E:\\pdf\\test\\fo\\template-barcode.pdf";
+        String outputPath = "E:\\pdf\\test\\fo\\test.pdf";
+        // 创建文档
+        XEasyPdfTemplateDocument document = XEasyPdfTemplateHandler.Document.build();
+        // 创建页面
+        XEasyPdfTemplatePage page = XEasyPdfTemplateHandler.Page.build();
+        // 创建条形码
+        XEasyPdfTemplateBarcode codabar = XEasyPdfTemplateHandler.Barcode.build()
+                // 设置类型
+                .setType("codabar")
+                // 设置宽度
+                .setWidth("150px")
+                // 设置高度
+                .setHeight("50px")
+                // 设置内容
+                .setContent("11223344")
+                // 设置水平居中
+                .setHorizontalStyle("center");
+        // 创建二维码
+        XEasyPdfTemplateBarcode qrCode = XEasyPdfTemplateHandler.Barcode.build()
+                // 设置类型
+                .setType("qr_code")
+                // 设置宽度
+                .setWidth("150px")
+                // 设置高度
+                .setHeight("150px")
+                // 设置内容
+                .setContent("https://www.x-easypdf.cn")
+                // 设置显示文本
+                .setWords("https://www.x-easypdf.cn")
+                // 设置水平居中
+                .setHorizontalStyle("center");
+        // 添加条码
+        page.addBodyComponent(codabar, qrCode);
+        // 添加页面
+        document.addPage(page);
         // 转换pdf
-        XEasyPdfTemplateHandler.Document.build()
-                .setConfigPath(configPath)
-                .addPage(
-                        XEasyPdfTemplateHandler.Page.build().addBodyComponent(
-                                XEasyPdfTemplateHandler.Barcode.build()
-                                        .setType("codabar")
-                                        .setWidth("150px")
-                                        .setHeight("50px")
-                                        .setContent("11223344"),
-                                XEasyPdfTemplateHandler.Barcode.build()
-                                        .setType("qr_code")
-                                        .setWidth("100px")
-                                        .setHeight("100px")
-                                        .setContent("https://www.x-easypdf.cn")
-                        )
-                ).transform(outputPath);
+        document.transform(outputPath);
     }
 }

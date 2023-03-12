@@ -41,4 +41,30 @@ public class HelloWorld {
         xEasyPdfPage.setHeader(header);
         document.save("E:\\pdf\\hello-world3.pdf").close();
     }
+
+    @Test
+    public void test2() {
+        XEasyPdfHandler.Document.build(
+                XEasyPdfHandler.Page.build(
+                        XEasyPdfHandler.Table.build(
+                                XEasyPdfHandler.Table.Row.build(
+                                        XEasyPdfHandler.Table.Row.Cell.build(200F, 60F).addContent(
+                                                XEasyPdfHandler.Table.build(
+                                                        XEasyPdfHandler.Table.Row.build(
+                                                                XEasyPdfHandler.Table.Row.Cell.build(200F).addContent(
+                                                                        XEasyPdfHandler.Text.build("Hello World-row1Hello World-row1")
+                                                                )
+                                                        ),
+                                                        XEasyPdfHandler.Table.Row.build(
+                                                                XEasyPdfHandler.Table.Row.Cell.build(200F).addContent(
+                                                                        XEasyPdfHandler.Text.build("Hello World-row2")
+                                                                )
+                                                        )
+                                                ).disableBorder()
+                                        )
+                                )
+                        )
+                )
+        ).save("E:\\pdf\\test.pdf").close();
+    }
 }
