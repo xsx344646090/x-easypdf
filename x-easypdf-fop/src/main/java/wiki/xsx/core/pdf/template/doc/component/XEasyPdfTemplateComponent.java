@@ -55,34 +55,49 @@ public interface XEasyPdfTemplateComponent {
      * @return 返回block元素
      */
     default Element createBlockElement(Document document, XEasyPdfTemplateComponentParam param) {
+        return this.createBlockElement(document, param, true);
+    }
+
+    /**
+     * 创建block元素
+     *
+     * @param document              fo文档
+     * @param param                 模板参数
+     * @param isAddMarginAndPadding 是否添加边距与填充
+     * @return 返回block元素
+     */
+    default Element createBlockElement(Document document, XEasyPdfTemplateComponentParam param, boolean isAddMarginAndPadding) {
         // 创建block元素
         Element block = this.createEmptyElement(document);
+        // 如果需要添加边距与填充，则添加
+        if (isAddMarginAndPadding) {
+            // 设置上下左右边距
+            Optional.ofNullable(param.getMargin()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.MARGIN, v.intern().toLowerCase()));
+            // 设置上边距
+            Optional.ofNullable(param.getMarginTop()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.MARGIN_TOP, v.intern().toLowerCase()));
+            // 设置下边距
+            Optional.ofNullable(param.getMarginBottom()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.MARGIN_BOTTOM, v.intern().toLowerCase()));
+            // 设置左边距
+            Optional.ofNullable(param.getMarginLeft()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.MARGIN_LEFT, v.intern().toLowerCase()));
+            // 设置右边距
+            Optional.ofNullable(param.getMarginRight()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.MARGIN_RIGHT, v.intern().toLowerCase()));
+            // 设置上下左右填充
+            Optional.ofNullable(param.getPadding()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.PADDING, v.intern().toLowerCase()));
+            // 设置上填充
+            Optional.ofNullable(param.getPaddingTop()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.PADDING_TOP, v.intern().toLowerCase()));
+            // 设置下填充
+            Optional.ofNullable(param.getPaddingBottom()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.PADDING_BOTTOM, v.intern().toLowerCase()));
+            // 设置左填充
+            Optional.ofNullable(param.getPaddingLeft()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.PADDING_LEFT, v.intern().toLowerCase()));
+            // 设置右填充
+            Optional.ofNullable(param.getPaddingRight()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.PADDING_RIGHT, v.intern().toLowerCase()));
+        }
         // 添加id
         Optional.ofNullable(param.getId()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.ID, v.intern()));
         // 添加边框
         Optional.ofNullable(param.getHasBorder()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.BORDER, XEasyPdfTemplateConstants.DEFAULT_BORDER_VALUE));
         // 设置水平样式
         Optional.ofNullable(param.getHorizontalStyle()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.TEXT_ALIGN, v.intern().toLowerCase()));
-        // 设置上下左右边距
-        Optional.ofNullable(param.getMargin()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.MARGIN, v.intern().toLowerCase()));
-        // 设置上边距
-        Optional.ofNullable(param.getMarginTop()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.MARGIN_TOP, v.intern().toLowerCase()));
-        // 设置下边距
-        Optional.ofNullable(param.getMarginBottom()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.MARGIN_BOTTOM, v.intern().toLowerCase()));
-        // 设置左边距
-        Optional.ofNullable(param.getMarginLeft()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.MARGIN_LEFT, v.intern().toLowerCase()));
-        // 设置右边距
-        Optional.ofNullable(param.getMarginRight()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.MARGIN_RIGHT, v.intern().toLowerCase()));
-        // 设置上下左右填充
-        Optional.ofNullable(param.getPadding()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.PADDING, v.intern().toLowerCase()));
-        // 设置上填充
-        Optional.ofNullable(param.getPaddingTop()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.PADDING_TOP, v.intern().toLowerCase()));
-        // 设置下填充
-        Optional.ofNullable(param.getPaddingBottom()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.PADDING_BOTTOM, v.intern().toLowerCase()));
-        // 设置左填充
-        Optional.ofNullable(param.getPaddingLeft()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.PADDING_LEFT, v.intern().toLowerCase()));
-        // 设置右填充
-        Optional.ofNullable(param.getPaddingRight()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.PADDING_RIGHT, v.intern().toLowerCase()));
         // 设置段前空白
         Optional.ofNullable(param.getSpaceBefore()).ifPresent(v -> block.setAttribute(XEasyPdfTemplateAttributes.SPACE_BEFORE, v.intern().toLowerCase()));
         // 设置段后空白

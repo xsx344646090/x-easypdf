@@ -3,6 +3,8 @@ package wiki.xsx.core.pdf.template;
 import org.junit.Test;
 import wiki.xsx.core.pdf.template.doc.XEasyPdfTemplateDocument;
 import wiki.xsx.core.pdf.template.doc.component.XEasyPdfTemplateComponent;
+import wiki.xsx.core.pdf.template.doc.component.image.XEasyPdfTemplateImage;
+import wiki.xsx.core.pdf.template.doc.page.XEasyPdfTemplatePage;
 import wiki.xsx.core.pdf.template.handler.XEasyPdfTemplateHandler;
 
 import java.util.ArrayList;
@@ -28,23 +30,26 @@ public class XEasyPdfTemplateImageTest {
 
     @Test
     public void testImage() {
-        // 定义fop配置文件路径
-        String configPath = "E:\\pdf\\test\\fo\\fop.xconf";
         // 定义输出路径
-        String outputPath = "E:\\pdf\\test\\fo\\template-image.pdf";
-        // 转换pdf
-        XEasyPdfTemplateDocument document = XEasyPdfTemplateHandler.Document.build().setConfigPath(configPath).addPage(
-                XEasyPdfTemplateHandler.Page.build().addBodyComponent(
-                        XEasyPdfTemplateHandler.Image.build()
-                                // 绝对路径
-                                .setPath("/E:\\pdf\\test\\fo\\test.png")
-                                // .setPath("http://tiebapic.baidu.com/forum/w%3D580/sign=70bb6037c8b1cb133e693c1bed5556da/4c2955fbb2fb4316293171a265a4462308f7d384.jpg")
-                                .setWidth("100px")
-                                .setHeight("100px")
-                                .setHorizontalStyle("center")
-                                .enableBorder()
-                )
-        );
+        String outputPath = "E:\\pdf\\test\\fo\\test.pdf";
+        // 创建文档
+        XEasyPdfTemplateDocument document = XEasyPdfTemplateHandler.Document.build();
+        // 创建页面
+        XEasyPdfTemplatePage page = XEasyPdfTemplateHandler.Page.build();
+        // 创建图像
+        XEasyPdfTemplateImage image = XEasyPdfTemplateHandler.Image.build()
+                // 设置图像路径（绝对路径）
+                .setPath("/E:\\pdf\\test\\fo\\test.svg")
+                // 设置图像宽度
+                .setWidth("150px")
+                // 设置图像高度
+                .setHeight("150px")
+                // 设置水平居中
+                .setHorizontalStyle("center");
+        // 添加图像
+        page.addBodyComponent(image);
+        // 添加页面
+        document.addPage(page);
         // 转换pdf
         document.transform(outputPath);
     }

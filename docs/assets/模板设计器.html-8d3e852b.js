@@ -1,0 +1,1 @@
+import{_ as t,V as r,W as _,X as n}from"./framework-e82ec112.js";const s={},a=["src"];function c(e,o){return r(),_("div",null,[n("iframe",{src:e.$withBase("/design/index.html"),width:"1200",height:"600",frameborder:"0",leftmargin:"0",topmargin:"0"},null,8,a)])}const l=t(s,[["render",c],["__file","模板设计器.html.vue"]]);export{l as default};

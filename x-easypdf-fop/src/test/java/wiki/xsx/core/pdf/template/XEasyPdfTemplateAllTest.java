@@ -1,6 +1,5 @@
 package wiki.xsx.core.pdf.template;
 
-import org.junit.Test;
 import wiki.xsx.core.pdf.template.doc.XEasyPdfTemplateDocument;
 import wiki.xsx.core.pdf.template.doc.bookmark.XEasyPdfTemplateBookmark;
 import wiki.xsx.core.pdf.template.doc.component.barcode.XEasyPdfTemplateBarcode;
@@ -13,10 +12,13 @@ import wiki.xsx.core.pdf.template.handler.XEasyPdfTemplateHandler;
 
 public class XEasyPdfTemplateAllTest {
 
-    @Test
-    public void document() {
+    public static void main(String[] args) {
+        new XEasyPdfTemplateAllTest().createDocument();
+    }
+
+    public void createDocument() {
         // 定义输出路径
-        String outputPath = "E:\\pdf\\test\\fo\\template-demo.pdf";
+        String outputPath = "E:\\pdf\\test\\fo\\test.pdf";
         // 定义书签
         XEasyPdfTemplateBookmark bookmark = XEasyPdfTemplateHandler.Bookmark.build()
                 // 设置标题

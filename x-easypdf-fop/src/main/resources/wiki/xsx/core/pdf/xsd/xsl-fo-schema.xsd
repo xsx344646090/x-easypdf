@@ -796,6 +796,8 @@
         <attribute name="number-rows-spanned" type="integer"/>
         <!--合并列-->
         <attribute name="number-columns-spanned" type="integer"/>
+        <!--margin属性-->
+        <attributeGroup ref="fo:margin-attributes"/>
         <!--padding属性-->
         <attributeGroup ref="fo:padding-attributes"/>
         <!--text属性-->
