@@ -1,11 +1,7 @@
 package wiki.xsx.core.pdf;
 
 import org.junit.Test;
-import wiki.xsx.core.pdf.doc.XEasyPdfDocument;
-import wiki.xsx.core.pdf.doc.XEasyPdfDocumentAnalyzer;
-import wiki.xsx.core.pdf.doc.XEasyPdfPage;
 import wiki.xsx.core.pdf.handler.XEasyPdfHandler;
-import wiki.xsx.core.pdf.header.XEasyPdfHeader;
 
 /**
  * @author xsx
@@ -28,18 +24,9 @@ public class HelloWorld {
     @Test
     public void test() {
         // 开启系统字体映射
-        // XEasyPdfHandler.Font.enableSystemFontMapping();
-        // // 构建pdf
-        // XEasyPdfHandler.Document.build(XEasyPdfHandler.Page.build(XEasyPdfHandler.Text.build("Hello World"))).save("E:\\pdf\\hello-world.pdf").close();
-
-        XEasyPdfDocument document = XEasyPdfHandler.Document.load("E:\\pdf\\hello-world2.pdf");
-        XEasyPdfDocumentAnalyzer analyzer = document.analyzer();
-        XEasyPdfPage xEasyPdfPage = document.getPageList().get(0);
-        XEasyPdfHeader header = XEasyPdfHandler.Header.build().addComponent(
-                XEasyPdfHandler.Text.build("test")
-        );
-        xEasyPdfPage.setHeader(header);
-        document.save("E:\\pdf\\hello-world3.pdf").close();
+        XEasyPdfHandler.Font.enableSystemFontMapping();
+        // 构建pdf
+        XEasyPdfHandler.Document.build(XEasyPdfHandler.Page.build(XEasyPdfHandler.Text.build("Hello World"))).save("E:\\pdf\\hello-world.pdf").close();
     }
 
     @Test
