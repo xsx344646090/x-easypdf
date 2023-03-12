@@ -55,7 +55,7 @@ public class XEasyPdfTemplateTest {
         // 定义fop配置文件路径
         String configPath = "H:\\java_workspace\\my\\mutil\\x-easypdf\\x-easypdf-fop\\src\\main\\resources\\wiki\\xsx\\core\\pdf\\template\\fop.xconf";
         // 定义xsl-fo模板路径
-        String templatePath = "wiki/xsx/core/pdf/template/thymeleaf/template2.html";
+        String templatePath = "wiki/xsx/core/pdf/template/xml/test.fo";
         // 定义pdf输出路径
         String outputPath = "E:\\pdf\\test\\fo\\Thymeleaf.pdf";
         // 定义数据map

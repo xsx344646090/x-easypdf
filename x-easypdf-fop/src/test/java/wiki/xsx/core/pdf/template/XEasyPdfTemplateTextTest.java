@@ -2,14 +2,14 @@ package wiki.xsx.core.pdf.template;
 
 import org.junit.Test;
 import wiki.xsx.core.pdf.template.doc.XEasyPdfTemplateDocument;
+import wiki.xsx.core.pdf.template.doc.component.block.XEasyPdfTemplateBlockContainer;
 import wiki.xsx.core.pdf.template.doc.component.line.XEasyPdfTemplateSplitLine;
+import wiki.xsx.core.pdf.template.doc.component.page.XEasyPdfTemplateCurrentPageNumber;
+import wiki.xsx.core.pdf.template.doc.component.page.XEasyPdfTemplateTotalPageNumber;
 import wiki.xsx.core.pdf.template.doc.component.text.XEasyPdfTemplateText;
 import wiki.xsx.core.pdf.template.doc.component.text.XEasyPdfTemplateTextExtend;
 import wiki.xsx.core.pdf.template.doc.page.XEasyPdfTemplatePage;
 import wiki.xsx.core.pdf.template.handler.XEasyPdfTemplateHandler;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author xsx
@@ -133,18 +133,39 @@ public class XEasyPdfTemplateTextTest {
 
     @Test
     public void test3() {
-        // 定义xsl-fo模板路径
-        String templatePath = "/wiki/xsx/core/pdf/template/xml/test.fo";
-        // 定义pdf输出路径
-        String outputPath = "E:\\pdf\\test\\fo\\Thymeleaf.pdf";
-        // 定义数据map
-        Map<String, Object> data = new HashMap<>();
-        // 设置值
-        data.put("data", "hello world");
+        // 定义输出路径
+        String outputPath = "E:\\pdf\\test\\fo\\test.pdf";
+        // 定义页面id
+        String pageId = "page";
+        // 创建文档
+        XEasyPdfTemplateDocument document = XEasyPdfTemplateHandler.Document.build();
+        // 创建页面
+        XEasyPdfTemplatePage page = XEasyPdfTemplateHandler.Page.build().setFontFamily("微软雅黑");
+        // 创建当前页码
+        XEasyPdfTemplateCurrentPageNumber currentPageNumber = XEasyPdfTemplateHandler.CurrentPageNumber.build();
+        // 创建总页码
+        XEasyPdfTemplateTotalPageNumber totalPageNumber = XEasyPdfTemplateHandler.TotalPageNumber.build().setPageId(pageId);
+        // 创建普通文本
+        XEasyPdfTemplateText text1 = XEasyPdfTemplateHandler.Text.build().setText("第一页内容");
+        // 创建普通文本并分页
+        XEasyPdfTemplateText text2 = XEasyPdfTemplateHandler.Text.build().setText("第二页内容").setBreakBefore("page");
+        // 创建容器
+        XEasyPdfTemplateBlockContainer container = XEasyPdfTemplateHandler.BlockContainer.build();
+        // 创建当前页码文本
+        XEasyPdfTemplateText currentText = XEasyPdfTemplateHandler.Text.build().setText("当前第： ");
+        // 创建总页码文本
+        XEasyPdfTemplateText totalText = XEasyPdfTemplateHandler.Text.build().setText("，共： ");
+        // 添加容器内组件
+        container.addComponent(currentText, currentPageNumber, totalText, totalPageNumber);
+        // 设置id
+        page.setId(pageId);
+        // 设置页眉高度并添加页眉组件
+        page.setHeaderHeight("20pt").addHeaderComponent(container);
+        // 设置页面主体上边距并添加页面主体组件
+        page.setBodyMarginTop("20pt").addBodyComponent(text1, text2);
+        // 添加页面
+        document.addPage(page);
         // 转换pdf
-        XEasyPdfTemplateHandler.Template.build()
-                // .setConfigPath(configPath)
-                .setDataSource(XEasyPdfTemplateHandler.DataSource.Thymeleaf.build().setTemplatePath(templatePath))
-                .transform(outputPath);
+        document.transform(outputPath);
     }
 }
