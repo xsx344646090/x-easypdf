@@ -867,7 +867,7 @@ public class XEasyPdfText extends XEasyPdfTextBase {
      * @return 返回字体颜色
      */
     @Override
-    Color getFontColor() {
+    public Color getFontColor() {
         return this.param.getFontColor();
     }
 

@@ -15,6 +15,7 @@ import wiki.xsx.core.pdf.handler.XEasyPdfHandler;
 
 import java.awt.Color;
 import java.io.Serializable;
+import java.util.Optional;
 
 /**
  * pdf单元格组件
@@ -664,7 +665,7 @@ public class XEasyPdfCell implements Serializable {
             XEasyPdfCellBorder cellBorder = new XEasyPdfCellBorder()
                     .setDocument(document.getTarget())
                     .setPage(page.getLastPage())
-                    .setContentMode(this.param.getContentMode().getMode())
+                    .setContentMode(Optional.ofNullable(this.param.getContentMode()).orElse(XEasyPdfComponent.ContentMode.APPEND).getMode())
                     .setIsResetContext(this.param.getIsResetContext())
                     .setWidth(this.param.getWidth())
                     .setHeight(this.param.getHeight())
@@ -802,6 +803,9 @@ public class XEasyPdfCell implements Serializable {
             if (this.param.getIsComponentSelfStyle()) {
                 // 设置文本自身样式
                 this.param.setContentMode(text.getContentMode())
+                        .setFontPath(text.getFontPath())
+                        .setFontSize(text.getFontSize())
+                        .setFontColor(text.getFontColor())
                         .setVerticalStyle(text.getVerticalStyle())
                         .setHorizontalStyle(text.getHorizontalStyle());
             }
