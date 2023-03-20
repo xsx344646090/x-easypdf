@@ -4,13 +4,11 @@ import org.junit.Before;
 import org.junit.Test;
 import wiki.xsx.core.pdf.component.image.XEasyPdfImage;
 import wiki.xsx.core.pdf.component.image.XEasyPdfImageType;
-import wiki.xsx.core.pdf.doc.XEasyPdfDocument;
-import wiki.xsx.core.pdf.doc.XEasyPdfPage;
-import wiki.xsx.core.pdf.doc.XEasyPdfPageRectangle;
-import wiki.xsx.core.pdf.doc.XEasyPdfPositionStyle;
+import wiki.xsx.core.pdf.doc.*;
 import wiki.xsx.core.pdf.handler.XEasyPdfHandler;
 import wiki.xsx.core.pdf.util.XEasyPdfImageUtil;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -244,5 +242,21 @@ public class XEasyPdfImageTest {
         page.addComponent(image);
         // 保存并关闭文档
         document.save("E:\\pdf\\hello-world3.pdf").close();
+    }
+
+    @Test
+    public void testImage9() throws Exception {
+        XEasyPdfDocument document = new XEasyPdfDocument();
+        XEasyPdfPage page = new XEasyPdfPage(XEasyPdfPageRectangle.A4);
+        page.addComponent(XEasyPdfHandler.Layout.Vertical.build().addLayoutComponent(
+                XEasyPdfHandler.Layout.Component.build(500,50).setComponent(
+                        XEasyPdfHandler.Text.build("测试布局组件中文本组件样式")
+                                .setFontColor(Color.RED)
+                                .setFontSize(20)
+                                .setFontPath(XEasyPdfDefaultFontStyle.BOLD.getPath())
+                                .enableUnderline()
+                )
+        ).enableBorder());
+        document.addPage(page).save("E:\\pdf\\hello-world4.pdf").close();
     }
 }
