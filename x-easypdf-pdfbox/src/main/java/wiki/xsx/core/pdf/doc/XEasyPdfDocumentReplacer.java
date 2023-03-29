@@ -27,6 +27,8 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * pdf文档替换器
@@ -397,6 +399,7 @@ public class XEasyPdfDocumentReplacer implements Serializable {
         int fontIndex = 0;
         // 定义资源字体
         PDFont resourceFont = null;
+        boolean findReplaceStr = false;
         // 遍历标记列表
         for (int i = 0, count = tokens.size(); i < count; i++) {
             // 获取标记
@@ -419,6 +422,7 @@ public class XEasyPdfDocumentReplacer implements Serializable {
                 if (this.processCOSArray(token, entrySet, resourceFont, font)) {
                     // 替换字体
                     tokens.set(fontIndex, replaceFontName);
+                    findReplaceStr = true;
                 }
             }
             // 如果标记为cos字符串，则替换文本
@@ -427,6 +431,7 @@ public class XEasyPdfDocumentReplacer implements Serializable {
                 if (this.processCOSString(false, token, entrySet, resourceFont, font)) {
                     // 替换字体
                     tokens.set(fontIndex, replaceFontName);
+                    findReplaceStr = true;
                 }
             }
             // 如果替换字典文本列表为空，则结束遍历
@@ -435,17 +440,8 @@ public class XEasyPdfDocumentReplacer implements Serializable {
                 break;
             }
         }
-        // 获取需要替换数量
-        int needReplaceCount = replaceMap.size();
-        // 获取已替换数量
-        int replacedCount = needReplaceCount - replaceMapTemp.size();
-        // 日志打印
-        if (log.isDebugEnabled()) {
-            // 打印已替换数量
-            log.debug("need replace keys: " + needReplaceCount + "，replaced keys: " + replacedCount);
-        }
         // 如果已替换数量大于0，则添加字体
-        if (replacedCount > 0) {
+        if (findReplaceStr) {
             // 添加字体
             resources.put(replaceFontName, font);
             return true;
@@ -622,35 +618,32 @@ public class XEasyPdfDocumentReplacer implements Serializable {
                 log.debug("current string: " + value);
             }
         }
-        // 获取待替换文本数量
-        int count = entrySet.size();
-        // 如果字符串不为空，则替换
-        if (value.trim().length() > 0) {
-            // 定义临时字符串
-            String temp;
+        boolean findReplaceStr = false;
+        // 定义临时字符串
+        String temp = value;
+        if (temp.trim().length() > 0) {
             // 获取待替换字典文本迭代器
-            Iterator<Map.Entry<String, String>> iterator = entrySet.iterator();
             // 遍历待替换字典文本列表
-            while (iterator.hasNext()) {
+            for (Map.Entry<String, String> entry : entrySet) {
                 // 获取待替换文本字典
-                Map.Entry<String, String> entry = iterator.next();
-                // 替换字符串
-                temp = value.replaceFirst(entry.getKey(), entry.getValue());
-                // 如果当前字符串不等于临时字符串，则说明已替换
-                if (!value.equals(temp)) {
-                    // 替换字符串
-                    value = temp;
-                    // 移除已替换的文本字典
-                    iterator.remove();
+                // 替换字符串，大小写不敏感
+                Matcher matcher = Pattern.compile(entry.getKey(), Pattern.LITERAL | Pattern.CASE_INSENSITIVE).matcher(Matcher.quoteReplacement(temp));
+                if (matcher.find()) {
+                    temp = matcher.replaceAll(entry.getValue());
+                    findReplaceStr = true;
                 }
             }
         }
         // 如果替换过字符串，则关联文本
-        if (count > entrySet.size()) {
+        if (findReplaceStr) {
             // 添加文本关联
-            XEasyPdfFontUtil.addToSubset(font, value);
+            XEasyPdfFontUtil.addToSubset(font, temp);
+            if (log.isDebugEnabled()) {
+                // 如果为数组，则提示为数组
+                log.debug("replace string for : " + value+" to :"+temp);
+            }
             // 字符串编码
-            return font.encode(value);
+            return font.encode(temp);
         }
         return null;
     }
