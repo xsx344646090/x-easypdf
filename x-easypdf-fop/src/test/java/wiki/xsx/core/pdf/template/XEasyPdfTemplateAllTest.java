@@ -142,7 +142,7 @@ public class XEasyPdfTemplateAllTest {
                 // 设置页面id
                 .setId("pageId")
                 // 设置字体
-                .setFontFamily("微软雅黑")
+                .setFontFamily("思源宋体")
                 // 设置字体大小
                 .setFontSize("15pt")
                 // 设置边距（上下左右）

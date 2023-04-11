@@ -62,13 +62,11 @@ public class XEasyPdfTemplateXMLDataSource implements XEasyPdfTemplateDataSource
         // 如果不为空数据，则加载xml数据
         if (this.isNotEmptyData()) {
             try {
-                // 如果xml数据输入流为空，则从文件读取
-                if (this.xmlInputStream == null) {
-                    // 从资源路径加载xml数据
-                    InputStream inputStream = this.getClass().getResourceAsStream(this.xmlPath);
-                    // 如果不为空，则返回数据源读取器，否则从绝对路径重新加载模板
-                    this.xmlInputStream = inputStream != null ? inputStream : Files.newInputStream(Paths.get(this.xmlPath));
-                }
+                // 从资源路径加载xml数据
+                InputStream inputStream = ClassLoader.getSystemResourceAsStream(this.xmlPath);
+                // 如果不为空，则返回数据源读取器，否则从绝对路径重新加载模板
+                this.xmlInputStream = inputStream != null ? inputStream : Files.newInputStream(Paths.get(this.xmlPath));
+                // 返回输入流读取器
                 return new InputStreamReader(this.xmlInputStream, StandardCharsets.UTF_8);
             } catch (Exception e) {
                 // 提示错误信息
@@ -116,7 +114,7 @@ public class XEasyPdfTemplateXMLDataSource implements XEasyPdfTemplateDataSource
                 Reader reader = this.getSourceReader()
         ) {
             // 加载模板（从资源路径读取）
-            InputStream inputStream = this.getClass().getResourceAsStream(this.templatePath);
+            InputStream inputStream = ClassLoader.getSystemResourceAsStream(this.templatePath);
             try {
                 // 如果输入流为空，则从绝对路径读取
                 if (inputStream == null) {

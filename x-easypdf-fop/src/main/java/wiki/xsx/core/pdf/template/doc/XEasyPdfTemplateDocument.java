@@ -221,7 +221,7 @@ public class XEasyPdfTemplateDocument implements XEasyPdfTemplateDocumentCompone
     public Document getDocument() {
         // 定义文档
         Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(
-                this.getClass().getResourceAsStream(XEasyPdfTemplateConstants.DEFAULT_TEMPLATE_PATH)
+                ClassLoader.getSystemResourceAsStream(XEasyPdfTemplateConstants.DEFAULT_TEMPLATE_PATH)
         );
         // 添加页面
         this.addPage(document);

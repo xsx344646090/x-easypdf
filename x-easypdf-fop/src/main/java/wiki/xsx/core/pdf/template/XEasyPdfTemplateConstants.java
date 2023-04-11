@@ -27,11 +27,11 @@ public final class XEasyPdfTemplateConstants {
     /**
      * 默认配置路径
      */
-    public static final String DEFAULT_CONFIG_PATH = "/wiki/xsx/core/pdf/template/fop.xconf";
+    public static final String DEFAULT_CONFIG_PATH = "wiki/xsx/core/pdf/template/fop.xconf";
     /**
      * 默认模板路径
      */
-    public static final String DEFAULT_TEMPLATE_PATH = "/wiki/xsx/core/pdf/template/template.fo";
+    public static final String DEFAULT_TEMPLATE_PATH = "wiki/xsx/core/pdf/template/template.fo";
     /**
      * 默认边框参数
      */

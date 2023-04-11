@@ -52,55 +52,55 @@ public class XEasyPdfTemplatePageRectangle implements Serializable {
      * /**
      * A0
      * <p>841 * 1189，单位：mm</p>
-     * <p>2383.937 * 3370.3938，单位：px</p>
+     * <p>2383.937007 * 3370.393700，单位：pt</p>
      */
     public static final XEasyPdfTemplatePageRectangle A0 = new XEasyPdfTemplatePageRectangle(841 * POINTS_PER_MM, 1189 * POINTS_PER_MM);
     /**
      * A1
      * <p>594 * 841，单位：mm</p>
-     * <p>1683.7795 * 2383.937，单位：px</p>
+     * <p>1683.779527 * 2383.937007，单位：pt</p>
      */
     public static final XEasyPdfTemplatePageRectangle A1 = new XEasyPdfTemplatePageRectangle(594 * POINTS_PER_MM, 841 * POINTS_PER_MM);
     /**
      * A2
      * <p>420 * 594，单位：mm</p>
-     * <p>1190.5513 * 1683.7795，单位：px</p>
+     * <p>1190.551181 * 1683.779527，单位：pt</p>
      */
     public static final XEasyPdfTemplatePageRectangle A2 = new XEasyPdfTemplatePageRectangle(420 * POINTS_PER_MM, 594 * POINTS_PER_MM);
     /**
      * A3
      * <p>297 * 420，单位：mm</p>
-     * <p>841.8898 * 1190.5513，单位：px</p>
+     * <p>841.889763 * 1190.551181，单位：pt</p>
      */
     public static final XEasyPdfTemplatePageRectangle A3 = new XEasyPdfTemplatePageRectangle(297 * POINTS_PER_MM, 420 * POINTS_PER_MM);
     /**
      * A4
      * <p>210 * 297，单位：mm</p>
-     * <p>595.27563 * 841.8898，单位：px</p>
+     * <p>595.275590 * 841.889763，单位：pt</p>
      */
     public static final XEasyPdfTemplatePageRectangle A4 = new XEasyPdfTemplatePageRectangle(210 * POINTS_PER_MM, 297 * POINTS_PER_MM);
     /**
      * A5
      * <p>148 * 210，单位：mm</p>
-     * <p>419.52756 * 595.27563，单位：px</p>
+     * <p>419.527559 * 595.275590，单位：pt</p>
      */
     public static final XEasyPdfTemplatePageRectangle A5 = new XEasyPdfTemplatePageRectangle(148 * POINTS_PER_MM, 210 * POINTS_PER_MM);
     /**
      * A6
      * <p>105 * 148，单位：mm</p>
-     * <p>297.63782 * 419.52756，单位：px</p>
+     * <p>297.637795 * 419.527559，单位：pt</p>
      */
     public static final XEasyPdfTemplatePageRectangle A6 = new XEasyPdfTemplatePageRectangle(105 * POINTS_PER_MM, 148 * POINTS_PER_MM);
     /**
      * A7
      * <p>74 * 105，单位：mm</p>
-     * <p>209.76378 * 297.63782，单位：px</p>
+     * <p>209.763779 * 297.637795，单位：pt</p>
      */
     public static final XEasyPdfTemplatePageRectangle A7 = new XEasyPdfTemplatePageRectangle(74 * POINTS_PER_MM, 105 * POINTS_PER_MM);
     /**
      * A8
      * <p>52 * 74，单位：mm</p>
-     * <p>147.40158 * 209.76378，单位：px</p>
+     * <p>147.401574 * 209.763779，单位：pt</p>
      */
     public static final XEasyPdfTemplatePageRectangle A8 = new XEasyPdfTemplatePageRectangle(52 * POINTS_PER_MM, 74 * POINTS_PER_MM);
 
@@ -109,55 +109,55 @@ public class XEasyPdfTemplatePageRectangle implements Serializable {
      * /**
      * B0
      * <p>1030 * 1456，单位：mm</p>
-     * <p>2919.685 * 4127.244，单位：px</p>
+     * <p>2919.685039 * 4127.244094，单位：pt</p>
      */
     public static final XEasyPdfTemplatePageRectangle B0 = new XEasyPdfTemplatePageRectangle(1030 * POINTS_PER_MM, 1456 * POINTS_PER_MM);
     /**
      * B1
      * <p>728 * 1030，单位：mm</p>
-     * <p>2063.622 * 2919.685，单位：px</p>
+     * <p>2063.622047 * 2919.685039，单位：pt</p>
      */
     public static final XEasyPdfTemplatePageRectangle B1 = new XEasyPdfTemplatePageRectangle(728 * POINTS_PER_MM, 1030 * POINTS_PER_MM);
     /**
      * B2
      * <p>515 * 728，单位：mm</p>
-     * <p>1459.8425 * 2063.622，单位：px</p>
+     * <p>1459.842519 * 2063.622047，单位：pt</p>
      */
     public static final XEasyPdfTemplatePageRectangle B2 = new XEasyPdfTemplatePageRectangle(515 * POINTS_PER_MM, 728 * POINTS_PER_MM);
     /**
      * B3
      * <p>364 * 515，单位：mm</p>
-     * <p>1031.811 * 1459.8425，单位：px</p>
+     * <p>1031.811023 * 1459.842519，单位：pt</p>
      */
     public static final XEasyPdfTemplatePageRectangle B3 = new XEasyPdfTemplatePageRectangle(364 * POINTS_PER_MM, 515 * POINTS_PER_MM);
     /**
      * B4
      * <p>257 * 364，单位：mm</p>
-     * <p>728.50397 * 1031.811，单位：px</p>
+     * <p>728.503937 * 1031.811023，单位：pt</p>
      */
     public static final XEasyPdfTemplatePageRectangle B4 = new XEasyPdfTemplatePageRectangle(257 * POINTS_PER_MM, 364 * POINTS_PER_MM);
     /**
      * B5
      * <p>182 * 257，单位：mm</p>
-     * <p>515.9055 * 728.50397，单位：px</p>
+     * <p>515.905511 * 728.503937，单位：pt</p>
      */
     public static final XEasyPdfTemplatePageRectangle B5 = new XEasyPdfTemplatePageRectangle(182 * POINTS_PER_MM, 257 * POINTS_PER_MM);
     /**
      * B6
      * <p>128 * 182，单位：mm</p>
-     * <p>362.83466 * 515.9055，单位：px</p>
+     * <p>362.834645 * 515.905511，单位：pt</p>
      */
     public static final XEasyPdfTemplatePageRectangle B6 = new XEasyPdfTemplatePageRectangle(128 * POINTS_PER_MM, 182 * POINTS_PER_MM);
     /**
      * B7
      * <p>91 * 128，单位：mm</p>
-     * <p>257.95276 * 362.83466，单位：px</p>
+     * <p>257.952755 * 362.834645，单位：pt</p>
      */
     public static final XEasyPdfTemplatePageRectangle B7 = new XEasyPdfTemplatePageRectangle(91 * POINTS_PER_MM, 128 * POINTS_PER_MM);
     /**
      * B8
      * <p>64 * 91，单位：mm</p>
-     * <p>181.41733 * 257.95276，单位：px</p>
+     * <p>181.417322 * 257.952755，单位：pt</p>
      */
     public static final XEasyPdfTemplatePageRectangle B8 = new XEasyPdfTemplatePageRectangle(64 * POINTS_PER_MM, 91 * POINTS_PER_MM);
 
