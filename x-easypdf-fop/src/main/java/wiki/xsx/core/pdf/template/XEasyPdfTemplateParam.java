@@ -2,18 +2,29 @@ package wiki.xsx.core.pdf.template;
 
 import lombok.Data;
 import lombok.SneakyThrows;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.FopFactoryBuilder;
+import org.apache.fop.apps.io.ResourceResolverFactory;
+import org.apache.fop.configuration.Configuration;
+import org.apache.fop.configuration.DefaultConfiguration;
 import org.apache.fop.configuration.DefaultConfigurationBuilder;
+import org.apache.xmlgraphics.io.Resource;
+import org.apache.xmlgraphics.io.ResourceResolver;
 import wiki.xsx.core.pdf.template.datasource.XEasyPdfTemplateDataSource;
 import wiki.xsx.core.pdf.template.ext.layout.XEasyPdfTemplateLayoutManagerMapping;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * pdf模板参数
@@ -98,6 +109,64 @@ class XEasyPdfTemplateParam {
     private Boolean isConserveMemory = Boolean.FALSE;
 
     /**
+     * 文件-类路径资源解析器
+     */
+    public static final class FileClassPathResourceResolver implements ResourceResolver {
+
+        /**
+         * 资源字体
+         */
+        private final Map<String, String> resources;
+
+        /**
+         * 有参构造
+         *
+         * @param resources 资源字体
+         */
+        public FileClassPathResourceResolver(Map<String, String> resources) {
+            this.resources = resources;
+        }
+
+        /**
+         * 获取资源
+         *
+         * @param uri uri
+         * @return 返回资源
+         * @throws IOException IO异常
+         */
+        @Override
+        public Resource getResource(URI uri) throws IOException {
+            // 获取资源字体路径
+            String resourceFontPath = this.resources.get(FilenameUtils.getName(uri.toString()));
+            // 定义输入流
+            InputStream inputStream;
+            // 如果资源字体路径不为空，则从资源路径读取
+            if (resourceFontPath != null) {
+                // 读取输入流（从资源路径读取）
+                inputStream = ClassLoader.getSystemResourceAsStream(resourceFontPath);
+            } else {
+                // 读取输入流（从绝对路径读取）
+                inputStream = Files.newInputStream(Paths.get(uri));
+            }
+            // 返回资源
+            return new Resource(inputStream);
+        }
+
+        /**
+         * 获取输出流
+         *
+         * @param uri uri
+         * @return 返回输出流
+         * @throws IOException IO异常
+         */
+        @SuppressWarnings("all")
+        @Override
+        public OutputStream getOutputStream(URI uri) throws IOException {
+            return Thread.currentThread().getContextClassLoader().getResource(uri.toString()).openConnection().getOutputStream();
+        }
+    }
+
+    /**
      * 初始化参数
      */
     void initParams() {
@@ -136,22 +205,34 @@ class XEasyPdfTemplateParam {
         InputStream inputStream = null;
         try {
             // 创建配置输入流（从资源路径读取）
-            inputStream = this.getClass().getResourceAsStream(this.configPath);
-            // 如果
+            inputStream = ClassLoader.getSystemResourceAsStream(this.configPath);
+            // 如果为空，则从绝对路径读取
             if (inputStream == null) {
                 // 创建配置输入流（从绝对路径读取）
                 inputStream = Files.newInputStream(Paths.get(this.configPath));
             }
-            // 返回fop工厂
-            return new FopFactoryBuilder(
-                    new File(".").toURI()
-            ).setConfiguration(
-                    new DefaultConfigurationBuilder().build(inputStream)
+            // 创建配置
+            DefaultConfiguration configuration = new DefaultConfigurationBuilder().build(inputStream);
+            // 定义基础uri
+            URI baseURI = new File(".").toURI();
+            // 创建资源解析器
+            ResourceResolver resourceResolver = new FileClassPathResourceResolver(this.initResource(configuration));
+            // 创建fop工厂建造者
+            FopFactoryBuilder factoryBuilder = new FopFactoryBuilder(
+                    baseURI, resourceResolver
             ).setLayoutManagerMakerOverride(
                     this.layoutManagerMaker
-            ).build();
+            ).setConfiguration(configuration);
+            // 重置字体解析器
+            factoryBuilder.getFontManager().setResourceResolver(
+                    ResourceResolverFactory.createInternalResourceResolver(baseURI, resourceResolver)
+            );
+            // 返回fop工厂
+            return factoryBuilder.build();
         } finally {
+            // 如果输入流不为空，则关闭
             if (inputStream != null) {
+                // 关闭输入流
                 inputStream.close();
             }
         }
@@ -189,5 +270,45 @@ class XEasyPdfTemplateParam {
         userAgent.setConserveMemoryPolicy(this.isConserveMemory);
         // 返回代理
         return userAgent;
+    }
+
+    /**
+     * 初始化资源
+     *
+     * @param configuration 配置
+     * @return 返回资源字典
+     */
+    @SneakyThrows
+    private Map<String, String> initResource(DefaultConfiguration configuration) {
+        // 定义资源字典
+        Map<String, String> resource = new HashMap<>(10);
+        // 获取类加载器
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        // 获取renderers节点
+        Configuration renderers = configuration.getChild("renderers");
+        // 获取renderer节点
+        Configuration[] rendererArray = renderers.getChildren("renderer");
+        // 遍历renderer节点
+        for (Configuration renderer : rendererArray) {
+            // 如果为pdf渲染器，则解析
+            if ("application/pdf".equals(renderer.getAttribute("mime"))) {
+                // 获取fonts节点
+                Configuration fonts = renderer.getChild("fonts");
+                // 获取font节点
+                Configuration[] fontArray = fonts.getChildren("font");
+                // 遍历font节点
+                for (Configuration font : fontArray) {
+                    // 获取embed-url属性
+                    String attribute = font.getAttribute("embed-url");
+                    // 如果embed-url属性不为空，且为资源路径，则放入资源字典
+                    if (attribute != null && classLoader.getResource(attribute) != null) {
+                        // 放入资源字典
+                        resource.put(FilenameUtils.getName(attribute), attribute);
+                    }
+                }
+            }
+        }
+        // 返回资源字典
+        return resource;
     }
 }
