@@ -1021,7 +1021,7 @@
 
     <!--text-decoration-value-->
     <simpleType name="text-decoration-value">
-        <restriction base="string">
+        <restriction base="NMTOKEN">
             <!--无-->
             <enumeration value="none"/>
             <!--闪烁-->
@@ -1030,16 +1030,16 @@
             <enumeration value="overline"/>
             <!--下划线-->
             <enumeration value="underline"/>
-            <!--下划线+上划线-->
-            <enumeration value="underline overline"/>
-            <!--删除线-->
-            <enumeration value="line-through"/>
-            <!--删除线+上划线-->
-            <enumeration value="line-through overline"/>
-            <!--删除线+下划线-->
-            <enumeration value="line-through underline"/>
-            <!--删除线+下划线+上划线-->
-            <enumeration value="line-through underline overline"/>
+            <!--&lt;!&ndash;下划线+上划线&ndash;&gt;-->
+            <!--<enumeration value="underline overline"/>-->
+            <!--&lt;!&ndash;删除线&ndash;&gt;-->
+            <!--<enumeration value="line-through"/>-->
+            <!--&lt;!&ndash;删除线+上划线&ndash;&gt;-->
+            <!--<enumeration value="line-through overline"/>-->
+            <!--&lt;!&ndash;删除线+下划线&ndash;&gt;-->
+            <!--<enumeration value="line-through underline"/>-->
+            <!--&lt;!&ndash;删除线+下划线+上划线&ndash;&gt;-->
+            <!--<enumeration value="line-through underline overline"/>-->
         </restriction>
     </simpleType>
 

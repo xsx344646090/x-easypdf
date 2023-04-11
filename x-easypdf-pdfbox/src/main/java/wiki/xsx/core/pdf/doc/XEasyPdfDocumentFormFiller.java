@@ -226,7 +226,7 @@ public class XEasyPdfDocumentFormFiller implements Serializable {
      * @return 返回pdf文档签名器
      */
     public XEasyPdfDocumentSigner signer() {
-        return new XEasyPdfDocumentSigner(this.pdfDocument);
+        return new XEasyPdfDocumentSigner(this.pdfDocument, this.document);
     }
 
     /**

@@ -34,13 +34,12 @@ public class XEasyPdfClassUtil {
     public static void resetField(String className) {
         Class<?> target = Class.forName(className);
         Field[] fields = target.getDeclaredFields();
-        Field field1 = fields[0];
-        Field field2 = fields[1];
-        field1.setAccessible(true);
-        field2.setAccessible(true);
-        Field modifiersField = Field.class.getDeclaredField("modifiers");
-        modifiersField.setAccessible(true);
-        modifiersField.setInt(field1, field2.getModifiers() & ~Modifier.FINAL);
-        field1.set(null, field2.get(null));
+        for (Field field : fields) {
+            field.setAccessible(true);
+            Field modifiersField = Field.class.getDeclaredField("modifiers");
+            modifiersField.setAccessible(true);
+            modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+            field.set(null, field.get(null));
+        }
     }
 }

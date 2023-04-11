@@ -23,16 +23,16 @@ import wiki.xsx.core.pdf.handler.XEasyPdfHandler;
 import wiki.xsx.core.pdf.header.XEasyPdfHeader;
 import wiki.xsx.core.pdf.mark.XEasyPdfWatermark;
 import wiki.xsx.core.pdf.util.XEasyPdfFileUtil;
-import wiki.xsx.core.pdf.util.XEasyPdfTextUtil;
 
 import javax.print.PrintServiceLookup;
-import java.awt.Color;
+import java.awt.*;
 import java.awt.print.PageFormat;
 import java.awt.print.PrinterJob;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.List;
 import java.util.*;
 
 /**
@@ -957,12 +957,10 @@ public class XEasyPdfDocument implements Closeable, Serializable {
             if (totalPage > 0) {
                 // 创建pdf文本替换器
                 XEasyPdfDocumentReplacer replacer = new XEasyPdfDocumentReplacer(this, target);
-                // 开启替换cos数组
-                replacer.enableReplaceCOSArray();
                 // 定义待替换文本字典
                 Map<String, String> replaceMap = new HashMap<>(1);
                 // 设置替换文本
-                replaceMap.put(XEasyPdfTextUtil.escapeForRegex(XEasyPdfHandler.Page.getTotalPagePlaceholder()), String.valueOf(totalPage));
+                replaceMap.put(XEasyPdfHandler.Page.getTotalPagePlaceholder(), String.valueOf(totalPage));
                 // 如果为多文档，则使用多文档替换方式
                 if (isMultiDocument) {
                     // 替换总页码占位符

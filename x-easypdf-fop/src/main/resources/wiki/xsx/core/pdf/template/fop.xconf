@@ -27,6 +27,29 @@
             <fonts>
                 <!-- auto-detect fonts -->
                 <auto-detect/>
+                <!-- custom fonts-->
+                <font kerning="yes"
+                      simulate-style="true"
+                      embed-url="wiki/xsx/core/pdf/font/SourceHanSerifSC-Regular.otf">
+                    <font-triplet name="思源宋体" style="normal" weight="100"/>
+                    <font-triplet name="思源宋体" style="normal" weight="200"/>
+                    <font-triplet name="思源宋体" style="normal" weight="300"/>
+                    <font-triplet name="思源宋体" style="normal" weight="400"/>
+                    <font-triplet name="思源宋体" style="normal" weight="500"/>
+                    <font-triplet name="思源宋体" style="normal" weight="600"/>
+                    <font-triplet name="思源宋体" style="normal" weight="700"/>
+                    <font-triplet name="思源宋体" style="normal" weight="800"/>
+                    <font-triplet name="思源宋体" style="normal" weight="900"/>
+                    <font-triplet name="思源宋体" style="italic" weight="100"/>
+                    <font-triplet name="思源宋体" style="italic" weight="200"/>
+                    <font-triplet name="思源宋体" style="italic" weight="300"/>
+                    <font-triplet name="思源宋体" style="italic" weight="400"/>
+                    <font-triplet name="思源宋体" style="italic" weight="500"/>
+                    <font-triplet name="思源宋体" style="italic" weight="600"/>
+                    <font-triplet name="思源宋体" style="italic" weight="700"/>
+                    <font-triplet name="思源宋体" style="italic" weight="800"/>
+                    <font-triplet name="思源宋体" style="italic" weight="900"/>
+                </font>
             </fonts>
         </renderer>
     </renderers>
