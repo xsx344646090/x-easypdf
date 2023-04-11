@@ -55,6 +55,16 @@ public class XEasyPdfDocumentSigner implements Serializable {
     }
 
     /**
+     * 有参构造
+     *
+     * @param pdfDocument pdf文档
+     */
+    XEasyPdfDocumentSigner(XEasyPdfDocument pdfDocument, PDDocument document) {
+        this.param.setPdfDocument(pdfDocument);
+        this.param.setDocument(document);
+    }
+
+    /**
      * 设置签名信息
      *
      * @param name        名称
