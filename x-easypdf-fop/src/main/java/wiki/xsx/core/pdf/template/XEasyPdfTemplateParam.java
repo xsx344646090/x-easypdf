@@ -8,7 +8,6 @@ import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.FopFactoryBuilder;
 import org.apache.fop.apps.io.ResourceResolverFactory;
 import org.apache.fop.configuration.Configuration;
-import org.apache.fop.configuration.DefaultConfiguration;
 import org.apache.fop.configuration.DefaultConfigurationBuilder;
 import org.apache.xmlgraphics.io.Resource;
 import org.apache.xmlgraphics.io.ResourceResolver;
@@ -84,6 +83,10 @@ class XEasyPdfTemplateParam {
      */
     private FOUserAgent userAgent;
     /**
+     * 基础路径
+     */
+    private URI baseUri;
+    /**
      * 布局管理器
      */
     private XEasyPdfTemplateLayoutManagerMapping layoutManagerMaker = new XEasyPdfTemplateLayoutManagerMapping();
@@ -107,64 +110,6 @@ class XEasyPdfTemplateParam {
      * 是否开启保留内存
      */
     private Boolean isConserveMemory = Boolean.FALSE;
-
-    /**
-     * 文件-类路径资源解析器
-     */
-    public static final class FileClassPathResourceResolver implements ResourceResolver {
-
-        /**
-         * 资源字体
-         */
-        private final Map<String, String> resources;
-
-        /**
-         * 有参构造
-         *
-         * @param resources 资源字体
-         */
-        public FileClassPathResourceResolver(Map<String, String> resources) {
-            this.resources = resources;
-        }
-
-        /**
-         * 获取资源
-         *
-         * @param uri uri
-         * @return 返回资源
-         * @throws IOException IO异常
-         */
-        @Override
-        public Resource getResource(URI uri) throws IOException {
-            // 获取资源字体路径
-            String resourceFontPath = this.resources.get(FilenameUtils.getName(uri.toString()));
-            // 定义输入流
-            InputStream inputStream;
-            // 如果资源字体路径不为空，则从资源路径读取
-            if (resourceFontPath != null) {
-                // 读取输入流（从资源路径读取）
-                inputStream = ClassLoader.getSystemResourceAsStream(resourceFontPath);
-            } else {
-                // 读取输入流（从绝对路径读取）
-                inputStream = Files.newInputStream(Paths.get(uri));
-            }
-            // 返回资源
-            return new Resource(inputStream);
-        }
-
-        /**
-         * 获取输出流
-         *
-         * @param uri uri
-         * @return 返回输出流
-         * @throws IOException IO异常
-         */
-        @SuppressWarnings("all")
-        @Override
-        public OutputStream getOutputStream(URI uri) throws IOException {
-            return Thread.currentThread().getContextClassLoader().getResource(uri.toString()).openConnection().getOutputStream();
-        }
-    }
 
     /**
      * 初始化参数
@@ -205,30 +150,23 @@ class XEasyPdfTemplateParam {
         InputStream inputStream = null;
         try {
             // 创建配置输入流（从资源路径读取）
-            inputStream = ClassLoader.getSystemResourceAsStream(this.configPath);
+            inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(this.configPath);
             // 如果为空，则从绝对路径读取
             if (inputStream == null) {
                 // 创建配置输入流（从绝对路径读取）
                 inputStream = Files.newInputStream(Paths.get(this.configPath));
             }
-            // 创建配置
-            DefaultConfiguration configuration = new DefaultConfigurationBuilder().build(inputStream);
-            // 定义基础uri
-            URI baseURI = new File(".").toURI();
-            // 创建资源解析器
-            ResourceResolver resourceResolver = new FileClassPathResourceResolver(this.initResource(configuration));
-            // 创建fop工厂建造者
-            FopFactoryBuilder factoryBuilder = new FopFactoryBuilder(
-                    baseURI, resourceResolver
+            // 初始化配置
+            Configuration configuration = this.initConfiguration(new DefaultConfigurationBuilder().build(inputStream));
+            // 返回fop工厂
+            return new FopFactoryBuilder(
+                    this.baseUri,
+                    new ImageResourceResolver(this.baseUri)
             ).setLayoutManagerMakerOverride(
                     this.layoutManagerMaker
-            ).setConfiguration(configuration);
-            // 重置字体解析器
-            factoryBuilder.getFontManager().setResourceResolver(
-                    ResourceResolverFactory.createInternalResourceResolver(baseURI, resourceResolver)
-            );
-            // 返回fop工厂
-            return factoryBuilder.build();
+            ).setConfiguration(
+                    configuration
+            ).build();
         } finally {
             // 如果输入流不为空，则关闭
             if (inputStream != null) {
@@ -246,6 +184,13 @@ class XEasyPdfTemplateParam {
     FOUserAgent initUserAgent() {
         // 创建代理
         FOUserAgent userAgent = this.fopFactory.newFOUserAgent();
+        // 设置资源解析器
+        userAgent.getFontManager().setResourceResolver(
+                ResourceResolverFactory.createInternalResourceResolver(
+                        this.baseUri,
+                        new FontResourceResolver(this.initResource(this.fopFactory.getUserConfig()))
+                )
+        );
         // 设置生产者
         userAgent.setProducer(XEasyPdfTemplateConstants.FOP_PRODUCER);
         // 设置开启辅助功能
@@ -279,7 +224,7 @@ class XEasyPdfTemplateParam {
      * @return 返回资源字典
      */
     @SneakyThrows
-    private Map<String, String> initResource(DefaultConfiguration configuration) {
+    private Map<String, String> initResource(Configuration configuration) {
         // 定义资源字典
         Map<String, String> resource = new HashMap<>(10);
         // 获取类加载器
@@ -310,5 +255,153 @@ class XEasyPdfTemplateParam {
         }
         // 返回资源字典
         return resource;
+    }
+
+    /**
+     * 初始化配置
+     *
+     * @param configuration 配置
+     * @return 返回配置
+     */
+    @SneakyThrows
+    private Configuration initConfiguration(Configuration configuration) {
+        // 获取基础路径配置
+        Configuration baseConfig = configuration.getChild("base");
+        // 如果基础路径配置为空，则初始化为当前路径
+        if (baseConfig == null) {
+            // 初始化为当前路径
+            this.baseUri = new File(".").toURI();
+        }
+        // 否则初始化为给定路径
+        else {
+            // 初始化为给定路径
+            this.baseUri = new File(baseConfig.getValue(".")).toURI();
+        }
+        // 返回配置
+        return configuration;
+    }
+
+    /**
+     * 字体资源解析器
+     */
+    public static final class FontResourceResolver implements ResourceResolver {
+
+        /**
+         * 资源字体
+         */
+        private final Map<String, String> resources;
+
+        /**
+         * 有参构造
+         *
+         * @param resources 资源字体
+         */
+        public FontResourceResolver(Map<String, String> resources) {
+            this.resources = resources;
+        }
+
+        /**
+         * 获取资源
+         *
+         * @param uri uri
+         * @return 返回资源
+         * @throws IOException IO异常
+         */
+        @Override
+        public Resource getResource(URI uri) throws IOException {
+            // 获取资源字体路径
+            String resourceFontPath = this.resources.get(FilenameUtils.getName(uri.toString()));
+            // 定义输入流
+            InputStream inputStream;
+            // 如果资源字体路径不为空，则从资源路径读取
+            if (resourceFontPath != null) {
+                // 读取输入流（从资源路径读取）
+                inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourceFontPath);
+            } else {
+                // 读取输入流（从绝对路径读取）
+                inputStream = uri.toURL().openStream();
+            }
+            // 返回资源
+            return new Resource(inputStream);
+        }
+
+        /**
+         * 获取输出流
+         *
+         * @param uri uri
+         * @return 返回输出流
+         * @throws IOException IO异常
+         */
+        @SuppressWarnings("all")
+        @Override
+        public OutputStream getOutputStream(URI uri) throws IOException {
+            return uri.toURL().openConnection().getOutputStream();
+        }
+    }
+
+    /**
+     * 图像资源解析器
+     */
+    public static final class ImageResourceResolver implements ResourceResolver {
+
+        /**
+         * 基础索引
+         */
+        private final Integer baseIndexOf;
+        /**
+         * 类型
+         */
+        private static final String TYPE = "file";
+
+        /**
+         * 有参构造
+         *
+         * @param baseUri 基础路径
+         */
+        @SneakyThrows
+        public ImageResourceResolver(URI baseUri) {
+            this.baseIndexOf = Paths.get(baseUri).toRealPath().toUri().getPath().length();
+        }
+
+        /**
+         * 获取资源
+         *
+         * @param uri uri
+         * @return 返回资源
+         * @throws IOException IO异常
+         */
+        @Override
+        public Resource getResource(URI uri) throws IOException {
+            // 定义输入流
+            InputStream inputStream;
+            // 如果为文件类型，则从本地读取
+            if (TYPE.equals(uri.getScheme())) {
+                // 读取输入流（从资源路径读取）
+                inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(uri.getPath().substring(this.baseIndexOf));
+                // 如果输入流为空，则从绝对路径读取
+                if (inputStream == null) {
+                    // 读取输入流（从绝对路径读取）
+                    inputStream = Files.newInputStream(Paths.get(uri));
+                }
+            } else {
+                // 读取输入流（从网络请求）
+                inputStream = uri.toURL().openStream();
+            }
+            // 返回资源
+            return new Resource(inputStream);
+        }
+
+        /**
+         * 获取输出流
+         *
+         * @param uri uri
+         * @return 返回输出流
+         * @throws IOException IO异常
+         */
+        @SuppressWarnings("all")
+        @Override
+        public OutputStream getOutputStream(URI uri) throws IOException {
+            return uri.toURL().openConnection().getOutputStream();
+        }
     }
 }

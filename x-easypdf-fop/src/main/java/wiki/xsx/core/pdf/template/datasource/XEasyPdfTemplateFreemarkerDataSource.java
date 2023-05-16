@@ -102,14 +102,14 @@ public class XEasyPdfTemplateFreemarkerDataSource extends XEasyPdfTemplateAbstra
         // 获取模板路径
         String templatePath = System.getProperty(XEasyPdfTemplateConstants.FREEMARKER_TEMPLATE_PATH_KEY);
         // 如果非资源路径，则为文件目录
-        if (XEasyPdfTemplateFreemarkerDataSource.class.getClassLoader().getResource(templatePath) == null) {
+        if (Thread.currentThread().getContextClassLoader().getResource(templatePath) == null) {
             // 设置文件目录解析器
             config.setDirectoryForTemplateLoading(Paths.get(templatePath).toFile());
         }
         // 否则为资源目录
         else {
             // 设置资源解析器
-            config.setTemplateLoader(new ClassTemplateLoader(XEasyPdfTemplateFreemarkerDataSource.class, "/" + templatePath));
+            config.setTemplateLoader(new ClassTemplateLoader(XEasyPdfTemplateFreemarkerDataSource.class, File.separator + templatePath));
         }
         // 返回配置
         return config;

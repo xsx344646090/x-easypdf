@@ -729,14 +729,19 @@ public class XEasyPdfPage implements Serializable {
         } else {
             // 获取页面尺寸
             PDRectangle modifyPageSize = this.param.getModifyPageSize();
-            // 如果页面尺寸不为空，则进行设置
-            if (modifyPageSize != null) {
-                // 获取原有pdfbox页面列表
-                List<PDPage> pageList = this.param.getPageList();
-                // 遍历pdfbox页面列表
-                for (PDPage page : pageList) {
+            // 获取原有pdfbox页面列表
+            List<PDPage> pageList = this.param.getPageList();
+            // 遍历pdfbox页面列表
+            for (PDPage page : pageList) {
+                // 如果页面尺寸不为空，则进行设置
+                if (modifyPageSize != null) {
                     // 修改页面尺寸
                     this.modifyPageSize(page, modifyPageSize);
+                }
+                // 如果允许旋转固有页面且旋转角度不为空，则设置旋转角度
+                if (this.param.getAllowRotateInherentPage() && this.param.getRotation() != null) {
+                    // 设置旋转角度
+                    page.setRotation(this.param.getRotation());
                 }
             }
             // 初始化页面
@@ -768,11 +773,6 @@ public class XEasyPdfPage implements Serializable {
     private void modifyPageSize(PDPage page, PDRectangle pageSize) {
         // 设置页面尺寸
         page.setCropBox(pageSize);
-        // 如果允许旋转固有页面且旋转角度不为空，则设置旋转角度
-        if (this.param.getAllowRotateInherentPage() && this.param.getRotation() != null) {
-            // 设置旋转角度
-            page.setRotation(this.param.getRotation());
-        }
     }
 
     /**
