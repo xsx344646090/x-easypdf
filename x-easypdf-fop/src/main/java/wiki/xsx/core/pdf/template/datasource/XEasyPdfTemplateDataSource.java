@@ -84,7 +84,7 @@ public interface XEasyPdfTemplateDataSource {
     @SneakyThrows
     default void domTransform(FopFactory fopFactory, FOUserAgent foAgent, String templatePath, OutputStream outputStream) {
         // 加载模板（从资源路径读取）
-        InputStream inputStream = ClassLoader.getSystemResourceAsStream(templatePath);
+        InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(templatePath);
         try {
             // 如果输入流为空，则从绝对路径读取
             if (inputStream == null) {

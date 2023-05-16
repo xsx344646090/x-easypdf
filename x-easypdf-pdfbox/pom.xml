@@ -5,7 +5,7 @@
     <parent>
         <groupId>wiki.xsx</groupId>
         <artifactId>x-easypdf-parent</artifactId>
-        <version>2.11.6</version>
+        <version>2.11.7</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>x-easypdf-pdfbox</artifactId>

@@ -102,7 +102,7 @@ public class XEasyPdfTemplateThymeleafDataSource extends XEasyPdfTemplateAbstrac
                 Writer writer = new OutputStreamWriter(outputStream)
         ) {
             // 如果模板路径为非资源路径，则使用文件路径模板引擎
-            if (XEasyPdfTemplateThymeleafDataSource.class.getClassLoader().getResource(this.templatePath) == null) {
+            if (Thread.currentThread().getContextClassLoader().getResource(this.templatePath) == null) {
                 // 使用文件路径模板引擎处理
                 FILEPATH_TEMPLATE_ENGINE.process(this.templatePath, context, writer);
             }
