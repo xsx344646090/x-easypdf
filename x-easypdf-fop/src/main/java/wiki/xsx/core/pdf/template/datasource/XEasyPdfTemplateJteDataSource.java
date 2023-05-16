@@ -78,7 +78,7 @@ public class XEasyPdfTemplateJteDataSource extends XEasyPdfTemplateAbstractDataS
         // 创建输出流
         try (StringOutput output = new StringOutput()) {
             // 如果非资源路径，则为目录解析器
-            if (this.getClass().getClassLoader().getResource(this.templatePath) == null) {
+            if (Thread.currentThread().getContextClassLoader().getResource(this.templatePath) == null) {
                 // 处理模板
                 this.getTemplateEngine().render(Paths.get(this.templatePath).getFileName().toString(), this.templateData, output);
             }
@@ -111,14 +111,14 @@ public class XEasyPdfTemplateJteDataSource extends XEasyPdfTemplateAbstractDataS
                     // 定义解析器
                     CodeResolver resolver;
                     // 如果非资源路径，则重置解析器为目录解析器
-                    if (this.getClass().getClassLoader().getResource(this.templatePath) == null) {
+                    if (Thread.currentThread().getContextClassLoader().getResource(this.templatePath) == null) {
                         // 重置解析器为目录解析器
                         resolver = new DirectoryCodeResolver(Paths.get(this.templatePath).getParent());
                     }
                     // 否则重置解析器为资源解析器
                     else {
                         // 重置解析器为资源解析器
-                        resolver = new ResourceCodeResolver(".", this.getClass().getClassLoader());
+                        resolver = new ResourceCodeResolver(".", Thread.currentThread().getContextClassLoader());
                     }
                     // 创建模板引擎
                     engine = TemplateEngine.create(resolver, ContentType.Html);

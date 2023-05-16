@@ -93,7 +93,7 @@ abstract class XEasyPdfTemplateAbstractDataSource implements XEasyPdfTemplateDat
     private InputStream loadTemplateInputStream() {
         try {
             // 从资源路径加载模板
-            InputStream inputStream = ClassLoader.getSystemResourceAsStream(this.templatePath);
+            InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(this.templatePath);
             // 如果不为空，则返回，否则从绝对路径加载模板
             return inputStream != null ? inputStream : Files.newInputStream(Paths.get(this.templatePath));
         } catch (Exception e) {

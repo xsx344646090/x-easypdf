@@ -64,9 +64,8 @@ public class XEasyPdfDocumentReplacer implements Serializable {
      * 字体路径
      */
     private String fontPath;
-
     /**
-     * 是否允许替换书签
+     * 是否允许替换评论
      */
     boolean isAllowReplaceComments = Boolean.FALSE;
 
@@ -354,9 +353,6 @@ public class XEasyPdfDocumentReplacer implements Serializable {
      */
     @SneakyThrows
     void replaceText(PDPage page, Map<String, String> replaceMap) {
-        if (this.isAllowReplaceComments) {
-            this.replaceComment(page, replaceMap);
-        }
         // 获取pdfbox字体
         PDFont font = this.initFont();
         // 获取页面资源
@@ -434,7 +430,7 @@ public class XEasyPdfDocumentReplacer implements Serializable {
         for (Map.Entry<String, String> entry : replaceMap.entrySet()) {
             // 获取待替换文本字典
             // 替换字符串，大小写不敏感
-            Matcher matcher = Pattern.compile(entry.getKey(), Pattern.LITERAL | Pattern.CASE_INSENSITIVE).matcher(Matcher.quoteReplacement(source));
+            Matcher matcher = Pattern.compile(entry.getKey(), Pattern.LITERAL | Pattern.CASE_INSENSITIVE).matcher(source);
             if (matcher.find()) {
                 return true;
             }
@@ -460,7 +456,7 @@ public class XEasyPdfDocumentReplacer implements Serializable {
             for (Map.Entry<String, String> entry : replaceMap.entrySet()) {
                 // 获取待替换文本字典
                 // 替换字符串，大小写不敏感
-                Matcher matcher = Pattern.compile(entry.getKey(), Pattern.LITERAL | Pattern.CASE_INSENSITIVE).matcher(Matcher.quoteReplacement(content));
+                Matcher matcher = Pattern.compile(entry.getKey(), Pattern.LITERAL | Pattern.CASE_INSENSITIVE).matcher(content);
                 if (matcher.find()) {
                     content = matcher.replaceAll(entry.getValue());
                 }
@@ -525,26 +521,52 @@ public class XEasyPdfDocumentReplacer implements Serializable {
         int fontIndex = 0;
         // 定义资源字体
         PDFont resourceFont;
-
-        //将汉文字的token与文字字体组合起来
-        Map<Integer, List<COSBase>> cosNameIntegerMap = new LinkedHashMap<>();
+        COSName cosName = replaceFontName;
+        Map<COSName, Integer> fontMap = new HashMap<>(10);
+        Map<COSName, List<COSBase>> cosNameMap = new LinkedHashMap<>(10);
         for (int i = 0; i < tokens.size(); i++) {
             Object token = tokens.get(i);
             if (token instanceof COSName) {
-                fontIndex = i;
-                cosNameIntegerMap.put(i, new ArrayList<>());
-            } else if (token instanceof COSArray) {
-                cosNameIntegerMap.get(fontIndex).add((COSBase) token);
-            } else if (token instanceof COSString) {
-                cosNameIntegerMap.get(fontIndex).add((COSBase) token);
+                // 如果为资源字体名称，则重置资源字体
+                if (resourceFontMap.get(token) != null) {
+                    cosName = (COSName) token;
+                    fontMap.put(cosName, i);
+                    if (!cosNameMap.containsKey(cosName)) {
+                        cosNameMap.put(cosName, new ArrayList<>());
+                    }
+                }
+                // 跳过
+                continue;
+            }
+            if (token instanceof COSArray || token instanceof COSString) {
+                List<COSBase> list = cosNameMap.get(cosName);
+                if (list !=null) {
+                    list.add((COSBase) token);
+                }
             }
         }
+
+        //将汉文字的token与文字字体组合起来
+        // Map<Integer, List<COSBase>> cosNameIntegerMap = new LinkedHashMap<>();
+        // for (int i = 0; i < tokens.size(); i++) {
+        //     Object token = tokens.get(i);
+        //     if (token instanceof COSName) {
+        //         fontIndex = i;
+        //         cosNameIntegerMap.put(i, new ArrayList<>());
+        //     } else if (token instanceof COSArray) {
+        //         cosNameIntegerMap.get(fontIndex).add((COSBase) token);
+        //     } else if (token instanceof COSString) {
+        //         cosNameIntegerMap.get(fontIndex).add((COSBase) token);
+        //     }
+        // }
 
 
         boolean findReplaceToken = false;
 
-        for (Map.Entry<Integer, List<COSBase>> entry : cosNameIntegerMap.entrySet()) {
-            resourceFont = resourceFontMap.get((COSName) tokens.get(entry.getKey()));
+        for (Map.Entry<COSName, List<COSBase>> entry : cosNameMap.entrySet()) {
+            // COSName cosName = (COSName) tokens.get(entry.getKey());
+            COSName name = entry.getKey();
+            resourceFont = resourceFontMap.get(name);
             if (resourceFont == null) {
                 continue;
             }
@@ -572,8 +594,10 @@ public class XEasyPdfDocumentReplacer implements Serializable {
                     this.replaceString(c, source, replaceMap, font);
                 }
                 //设置字体
-                tokens.set(entry.getKey(), replaceFontName);
+                tokens.set(fontMap.get(name), replaceFontName);
             }
+            //设置字体
+            tokens.set(fontMap.get(name), replaceFontName);
         }
         if (findReplaceToken) {
             // 添加字体

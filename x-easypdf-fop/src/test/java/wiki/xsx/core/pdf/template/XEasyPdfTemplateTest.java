@@ -55,9 +55,9 @@ public class XEasyPdfTemplateTest {
         // 定义fop配置文件路径
         String configPath = "H:\\java_workspace\\my\\mutil\\x-easypdf\\x-easypdf-fop\\src\\main\\resources\\wiki\\xsx\\core\\pdf\\template\\fop.xconf";
         // 定义xsl-fo模板路径
-        String templatePath = "wiki/xsx/core/pdf/template/xml/test.fo";
+        String templatePath = "wiki/xsx/core/pdf/template/thymeleaf/template.html";
         // 定义pdf输出路径
-        String outputPath = "E:\\pdf\\test\\fo\\Thymeleaf.pdf";
+        String outputPath = "D:\\PDF\\fo\\Thymeleaf.pdf";
         // 定义数据map
         Map<String, Object> data = new HashMap<>();
         // 设置值
@@ -72,9 +72,9 @@ public class XEasyPdfTemplateTest {
     @Test
     public void testThymeleaf3() {
         // 定义xsl-fo模板路径
-        String templatePath = "E:\\pdf\\test\\fo\\template2.html";
+        String templatePath = "wiki/xsx/core/pdf/template/thymeleaf/template2.html";
         // 定义pdf输出路径
-        String outputPath = "E:\\pdf\\test\\fo\\Thymeleaf.pdf";
+        String outputPath = "D:\\PDF\\fo\\Thymeleaf.pdf";
         // 定义数据map
         Map<String, Object> data = new HashMap<>();
         // 设置值
@@ -107,7 +107,7 @@ public class XEasyPdfTemplateTest {
         // 定义xml数据路径
         String xmlPath = "wiki/xsx/core/pdf/template/xml/data.xml";
         // 定义pdf输出路径
-        String outputPath = "E:\\pdf\\test\\fo\\XML.pdf";
+        String outputPath = "D:\\PDF\\fo\\XML.pdf";
         // 转换pdf
         XEasyPdfTemplateHandler.Template.build()
                 // 设置配置文件
@@ -127,7 +127,7 @@ public class XEasyPdfTemplateTest {
         // 定义xsl-fo模板路径
         String templatePath2 = "E:\\workspace\\my\\x-easypdf\\x-easypdf-fop\\src\\test\\resources\\wiki\\xsx\\core\\pdf\\template\\barcode\\barcode.fo";
         // 定义pdf输出路径
-        String outputPath = "E:\\pdf\\test\\fo\\Jte.pdf";
+        String outputPath = "D:\\PDF\\fo\\Jte.pdf";
         // 定义数据map
         Map<String, Object> data = new HashMap<>();
         // 定义数据list
@@ -158,11 +158,11 @@ public class XEasyPdfTemplateTest {
     @Test
     public void testJte2() {
         // 定义fop配置文件路径
-        String configPath = "/wiki/xsx/core/pdf/template/fop.xconf";
+        String configPath = "wiki/xsx/core/pdf/template/fop.xconf";
         // 定义xsl-fo模板路径
         String templatePath = "wiki/xsx/core/pdf/template/jte/template.jte";
         // 定义pdf输出路径
-        String outputPath = "E:\\pdf\\test\\fo\\Jte.pdf";
+        String outputPath = "D:\\PDF\\fo\\Jte.pdf";
         // 定义数据map
         Map<String, Object> data = new HashMap<>();
         List<String> list = new ArrayList<>(2);
@@ -181,11 +181,11 @@ public class XEasyPdfTemplateTest {
     @Test
     public void testFreemarker() {
         // 定义fop配置文件路径
-        String configPath = "E:\\workspace\\my\\x-easypdf\\x-easypdf-fop\\src\\main\\resources\\wiki\\xsx\\core\\pdf\\template\\fop.xconf";
+        String configPath = "wiki/xsx/core/pdf/template/fop.xconf";
         // 定义pdf输出路径
-        String outputPath = "E:\\pdf\\test\\fo\\Freemarker.pdf";
+        String outputPath = "D:\\PDF\\fo\\Freemarker.pdf";
         // 设置模板路径
-        XEasyPdfTemplateHandler.DataSource.Freemarker.setTemplatePath("E:\\workspace\\my\\x-easypdf\\x-easypdf-fop\\src\\test\\resources\\wiki\\xsx\\core\\pdf\\template\\freemarker");
+        XEasyPdfTemplateHandler.DataSource.Freemarker.setTemplatePath("wiki/xsx/core/pdf/template/freemarker");
         // 定义数据map
         Map<String, Object> data = new HashMap<>();
         // 定义数据list
@@ -205,7 +205,7 @@ public class XEasyPdfTemplateTest {
                             () -> XEasyPdfTemplateHandler.Template.build()
                                     .setConfigPath(configPath)
                                     .setDataSource(
-                                            XEasyPdfTemplateHandler.DataSource.Freemarker.build().setTemplateName("template.html").setTemplateData(data)
+                                            XEasyPdfTemplateHandler.DataSource.Freemarker.build().setTemplateName("template.fo").setTemplateData(data)
                                     ).transform(outputPath + index)
                     )
             );
