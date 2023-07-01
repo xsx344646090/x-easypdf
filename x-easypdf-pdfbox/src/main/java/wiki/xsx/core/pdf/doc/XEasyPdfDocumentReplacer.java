@@ -533,10 +533,10 @@ public class XEasyPdfDocumentReplacer implements Serializable {
             Object token = tokens.get(i);
             // 如果标记为cosName，则重置资源字体
             if (token instanceof COSName) {
-                // 重置资源字体
-                resourceFont = resourceFontMap.get(token);
                 // 如果资源字体不为空，则重置资源字体索引与名称
                 if (resourceFontMap.get(token) != null) {
+                    // 重置资源字体
+                    resourceFont = resourceFontMap.get(token);
                     // 重置资源字体索引
                     resourceFontIndex = i;
                     // 重置资源字体名称
