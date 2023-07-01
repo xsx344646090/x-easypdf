@@ -375,7 +375,7 @@ class XEasyPdfTemplateParam {
             // 定义输入流
             InputStream inputStream;
             // 如果为文件类型，则从本地读取
-            if (TYPE.equals(uri.getScheme())) {
+            if (TYPE.equals(uri.getScheme()) && uri.getPath().length() > this.baseIndexOf) {
                 // 读取输入流（从资源路径读取）
                 inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(uri.getPath().substring(this.baseIndexOf));
                 // 如果输入流为空，则从绝对路径读取
