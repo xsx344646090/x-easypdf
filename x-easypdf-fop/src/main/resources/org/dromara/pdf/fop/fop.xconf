@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+
+<!-- NOTE: This is the version of the configuration -->
+<fop version="1.0">
+
+    <!-- Base URL for resolving relative URLs -->
+    <base>.</base>
+
+    <!-- Source resolution in dpi (dots/pixels per inch) for determining the size of pixels in SVG and bitmap images, default: 72dpi -->
+    <source-resolution>72</source-resolution>
+    <!-- Target resolution in dpi (dots/pixels per inch) for specifying the target resolution for generated bitmaps, default: 72dpi -->
+    <target-resolution>72</target-resolution>
+
+    <!-- Default page-height and page-width, in case value is specified as auto -->
+    <default-page-settings width="21cm" height="29.7cm"/>
+
+    <!-- Information for specific renderers -->
+    <!-- Uses renderer mime type for renderers -->
+    <renderers>
+        <renderer mime="application/pdf">
+            <version>1.5</version>
+            <filterList>
+                <!-- provides compression using zlib flate (default is on) -->
+                <value>flate</value>
+            </filterList>
+
+            <fonts>
+                <!-- auto-detect fonts -->
+                <auto-detect/>
+                <!-- custom fonts-->
+                <font kerning="yes"
+                      simulate-style="true"
+                      embed-url="org/dromara/pdf/fop/font/SourceHanSerifSC-Regular.otf">
+                    <font-triplet name="思源宋体" style="normal" weight="100"/>
+                    <font-triplet name="思源宋体" style="normal" weight="200"/>
+                    <font-triplet name="思源宋体" style="normal" weight="300"/>
+                    <font-triplet name="思源宋体" style="normal" weight="400"/>
+                    <font-triplet name="思源宋体" style="normal" weight="500"/>
+                    <font-triplet name="思源宋体" style="normal" weight="600"/>
+                    <font-triplet name="思源宋体" style="normal" weight="700"/>
+                    <font-triplet name="思源宋体" style="normal" weight="800"/>
+                    <font-triplet name="思源宋体" style="normal" weight="900"/>
+                    <font-triplet name="思源宋体" style="italic" weight="100"/>
+                    <font-triplet name="思源宋体" style="italic" weight="200"/>
+                    <font-triplet name="思源宋体" style="italic" weight="300"/>
+                    <font-triplet name="思源宋体" style="italic" weight="400"/>
+                    <font-triplet name="思源宋体" style="italic" weight="500"/>
+                    <font-triplet name="思源宋体" style="italic" weight="600"/>
+                    <font-triplet name="思源宋体" style="italic" weight="700"/>
+                    <font-triplet name="思源宋体" style="italic" weight="800"/>
+                    <font-triplet name="思源宋体" style="italic" weight="900"/>
+                </font>
+            </fonts>
+        </renderer>
+    </renderers>
+</fop>
