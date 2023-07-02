@@ -196,7 +196,7 @@ public class XEasyPdfTemplateDocument implements XEasyPdfTemplateDocumentCompone
      * @return 返回pdf文档
      */
     @SneakyThrows
-    public wiki.xsx.core.pdf.doc.XEasyPdfDocument transform() {
+    public org.dromara.pdf.pdfbox.doc.XEasyPdfDocument transform() {
         return this.initTemplate().transform();
     }
 
