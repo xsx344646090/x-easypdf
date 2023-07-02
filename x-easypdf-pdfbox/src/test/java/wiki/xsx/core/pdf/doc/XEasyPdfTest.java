@@ -36,9 +36,9 @@ import java.util.concurrent.CompletableFuture;
  */
 public class XEasyPdfTest {
 
-    private static final String OUTPUT_PATH = "E:\\pdf\\test\\test\\";
+    private static final String OUTPUT_PATH = "D:\\PDF\\pdfbox\\";
     private static final String FONT_PATH = OUTPUT_PATH + "SourceHanSansCN-Bold.otf";
-    private static final String IMAGE_PATH = OUTPUT_PATH + "test.png";
+    private static final String IMAGE_PATH = OUTPUT_PATH + "test.jpg";
 
     @Before
     public void setup() {
