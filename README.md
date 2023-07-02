@@ -21,7 +21,7 @@
 ---
 
 #### 当前版本
-> v2.11.8
+> v2.12.0
 
 ---
 
@@ -99,27 +99,27 @@
 - ##### 全功能模块（pdfbox + fop）
 ```maven
 <dependency>
-    <groupId>wiki.xsx</groupId>
+    <groupId>org.dromara.x-easypdf</groupId>
     <artifactId>x-easypdf</artifactId>
-    <version>2.11.8</version>
+    <version>2.12.0</version>
 </dependency>
 ```
 
 - ##### pdfbox模块
 ```maven
 <dependency>
-    <groupId>wiki.xsx</groupId>
+    <groupId>org.dromara.x-easypdf</groupId>
     <artifactId>x-easypdf-pdfbox</artifactId>
-    <version>2.11.8</version>
+    <version>2.12.0</version>
 </dependency>
 ```
 
 - ##### fop模块
 ```maven
 <dependency>
-    <groupId>wiki.xsx</groupId>
+    <groupId>org.dromara.x-easypdf</groupId>
     <artifactId>x-easypdf-fop</artifactId>
-    <version>2.11.8</version>
+    <version>2.12.0</version>
 </dependency>
 ```
 
