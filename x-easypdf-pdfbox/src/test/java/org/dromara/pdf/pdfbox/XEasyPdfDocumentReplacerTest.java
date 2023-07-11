@@ -1,9 +1,12 @@
 package org.dromara.pdf.pdfbox;
 
+import org.dromara.pdf.pdfbox.doc.XEasyPdfDocument;
+import org.dromara.pdf.pdfbox.doc.XEasyPdfDocumentReplacer;
+import org.dromara.pdf.pdfbox.handler.XEasyPdfHandler;
 import org.junit.Before;
 import org.junit.Test;
-import org.dromara.pdf.pdfbox.handler.XEasyPdfHandler;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -72,4 +75,11 @@ public class XEasyPdfDocumentReplacerTest {
                 .finish(filePath);
     }
 
+    @Test
+    public void testReplace() {
+        XEasyPdfDocument document = XEasyPdfHandler.Document.load("D:\\PDF\\pdfbox\\test.pdf");
+        XEasyPdfDocumentReplacer replacer = document.replacer();
+        replacer.replaceText(Collections.singletonMap("锐浪软件 Grid++Report6 报表服务器(WIN64 LIB)", ""));
+        replacer.finish("D:\\PDF\\pdfbox\\test2.pdf");
+    }
 }

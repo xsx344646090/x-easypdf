@@ -11,7 +11,7 @@
 ---
 
 #### 项目主页
-> https://www.x-easypdf.cn
+> https://x-easypdf.cn
 
 ---
 
@@ -21,7 +21,7 @@
 ---
 
 #### 当前版本
-> v2.12.0
+> v2.12.1
 
 ---
 
@@ -101,7 +101,7 @@
 <dependency>
     <groupId>org.dromara.x-easypdf</groupId>
     <artifactId>x-easypdf</artifactId>
-    <version>2.12.0</version>
+    <version>2.12.1</version>
 </dependency>
 ```
 
@@ -110,7 +110,7 @@
 <dependency>
     <groupId>org.dromara.x-easypdf</groupId>
     <artifactId>x-easypdf-pdfbox</artifactId>
-    <version>2.12.0</version>
+    <version>2.12.1</version>
 </dependency>
 ```
 
@@ -119,7 +119,7 @@
 <dependency>
     <groupId>org.dromara.x-easypdf</groupId>
     <artifactId>x-easypdf-fop</artifactId>
-    <version>2.12.0</version>
+    <version>2.12.1</version>
 </dependency>
 ```
 
