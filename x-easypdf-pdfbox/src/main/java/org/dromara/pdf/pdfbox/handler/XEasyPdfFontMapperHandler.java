@@ -250,8 +250,14 @@ public class XEasyPdfFontMapperHandler implements FontMapper {
             // 返回字体
             return info;
         }
-        // 返回字体
-        return FONT_NAME_MAPPING.get(Standard14Fonts.getMappedName(finalName));
+        // 获取标准字体名称
+        String mappedName = Standard14Fonts.getMappedName(finalName);
+        // 如果名称不为空，则返回字体
+        if (mappedName != null) {
+            // 返回字体
+            return FONT_NAME_MAPPING.get(mappedName);
+        }
+        return null;
     }
 
     /**
