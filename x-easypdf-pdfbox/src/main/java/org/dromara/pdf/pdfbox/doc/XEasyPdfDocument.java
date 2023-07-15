@@ -443,6 +443,8 @@ public class XEasyPdfDocument implements Closeable, Serializable {
         if (this.param.getTarget() == null || this.param.getIsReset()) {
             // 初始化
             this.param.initTarget(this);
+            // 初始化页面
+            this.param.initPage(this);
         }
         return this.param.getTarget();
     }
@@ -881,8 +883,6 @@ public class XEasyPdfDocument implements Closeable, Serializable {
     PDDocument build(boolean isReplaceTotalPagePlaceholder) {
         // 获取任务文档
         PDDocument target = this.getTarget();
-        // 初始化页面
-        this.param.initPage(this);
         // 如果替换总页码占位符，则进行替换
         if (isReplaceTotalPagePlaceholder) {
             // 替换总页码占位符
