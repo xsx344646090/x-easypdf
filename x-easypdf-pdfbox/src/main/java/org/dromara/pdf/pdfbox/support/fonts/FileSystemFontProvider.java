@@ -10,6 +10,7 @@ import org.apache.fontbox.cff.CFFFont;
 import org.apache.fontbox.ttf.*;
 import org.apache.fontbox.type1.Type1Font;
 import org.apache.fontbox.util.autodetect.FontFileFinder;
+import org.apache.pdfbox.io.RandomAccessReadBufferedFile;
 import org.apache.pdfbox.pdmodel.font.CIDSystemInfo;
 import org.apache.pdfbox.pdmodel.font.FontCache;
 import org.apache.pdfbox.pdmodel.font.FontFormat;
@@ -186,8 +187,8 @@ public class FileSystemFontProvider extends FontProvider {
                 }
                 return ttf;
             } else {
-                TTFParser ttfParser = new TTFParser(false, true);
-                return ttfParser.parse(file);
+                TTFParser ttfParser = new TTFParser(true);
+                return ttfParser.parse(new RandomAccessReadBufferedFile(file));
             }
         }
 
@@ -213,8 +214,8 @@ public class FileSystemFontProvider extends FontProvider {
                     return (OpenTypeFont) ttf;
                 }
 
-                OTFParser parser = new OTFParser(false, true);
-                OpenTypeFont otf = parser.parse(file);
+                OTFParser parser = new OTFParser(true);
+                OpenTypeFont otf = parser.parse(new RandomAccessReadBufferedFile(file));
 
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("Loaded " + postScriptName + " from " + file);
@@ -521,19 +522,19 @@ public class FileSystemFontProvider extends FontProvider {
     /**
      * Adds an OTF or TTF font to the file cache. To reduce memory, the parsed font is not cached.
      */
-    private void addTrueTypeFont(File ttfFile) throws IOException {
+    private void addTrueTypeFont(File file) throws IOException {
         try {
-            if (ttfFile.getPath().toLowerCase().endsWith(".otf")) {
-                OTFParser parser = new OTFParser(false, true);
-                OpenTypeFont otf = parser.parse(ttfFile);
-                addTrueTypeFontImpl(otf, ttfFile);
+            if (file.getPath().toLowerCase().endsWith(".otf")) {
+                OTFParser parser = new OTFParser(true);
+                OpenTypeFont otf = parser.parse(new RandomAccessReadBufferedFile(file));
+                addTrueTypeFontImpl(otf, file);
             } else {
-                TTFParser parser = new TTFParser(false, true);
-                TrueTypeFont ttf = parser.parse(ttfFile);
-                addTrueTypeFontImpl(ttf, ttfFile);
+                TTFParser parser = new TTFParser(true);
+                TrueTypeFont ttf = parser.parse(new RandomAccessReadBufferedFile(file));
+                addTrueTypeFontImpl(ttf, file);
             }
         } catch (IOException e) {
-            LOG.warn("Could not load font file: " + ttfFile, e);
+            LOG.warn("Could not load font file: " + file, e);
         }
     }
 

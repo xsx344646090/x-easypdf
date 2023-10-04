@@ -13,7 +13,7 @@
     <properties>
         <java.version>1.8</java.version>
         <lombok.version>1.18.24</lombok.version>
-        <pdfbox.version>3.0.0-alpha3</pdfbox.version>
+        <pdfbox.version>3.0.0</pdfbox.version>
         <zxing.core.version>3.5.1</zxing.core.version>
         <bouncycastle.version>1.72</bouncycastle.version>
         <batik.version>1.16</batik.version>

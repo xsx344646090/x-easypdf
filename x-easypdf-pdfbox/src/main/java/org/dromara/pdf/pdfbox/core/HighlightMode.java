@@ -1,8 +1,12 @@
-package org.dromara.pdf.pdfbox.enums;
+package org.dromara.pdf.pdfbox.core;
+
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationLink;
 
 /**
+ * 高亮模式
+ *
  * @author xsx
- * @date 2023/6/2
+ * @date 2023/9/7
  * @since 1.8
  * <p>
  * Copyright (c) 2020-2023 xsx All Rights Reserved.
@@ -16,48 +20,44 @@ package org.dromara.pdf.pdfbox.enums;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public enum FontType {
+public enum HighlightMode {
     /**
-     * ttf
+     * 无
      */
-    TTF(".ttf"),
+    NONE(PDAnnotationLink.HIGHLIGHT_MODE_NONE),
     /**
-     * otf
+     * 反转
      */
-    OTF(".otf"),
+    INVERT(PDAnnotationLink.HIGHLIGHT_MODE_INVERT),
     /**
-     * ttc
+     * 轮廓
      */
-    TTC(".ttc"),
+    OUTLINE(PDAnnotationLink.HIGHLIGHT_MODE_OUTLINE),
     /**
-     * otc
+     * 推送
      */
-    OTC(".otc"),
-    /**
-     * pfb
-     */
-    PFB(".pfb");
+    PUSH(PDAnnotationLink.HIGHLIGHT_MODE_PUSH);
 
     /**
-     * 后缀
+     * 模式
      */
-    private final String suffix;
+    private final String mode;
 
     /**
      * 有参构造
      *
-     * @param suffix 后缀
+     * @param mode 模式
      */
-    FontType(String suffix) {
-        this.suffix = suffix;
+    HighlightMode(String mode) {
+        this.mode = mode;
     }
 
     /**
-     * 获取后缀
+     * 获取模式
      *
-     * @return 返回后缀
+     * @return 返回模式
      */
-    public String getSuffix() {
-        return this.suffix;
+    public String getMode() {
+        return this.mode;
     }
 }

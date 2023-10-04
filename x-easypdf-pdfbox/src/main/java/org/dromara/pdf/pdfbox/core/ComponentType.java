@@ -1,13 +1,10 @@
-package org.dromara.pdf.pdfbox.handler;
-
-import org.dromara.pdf.pdfbox.component.Text;
-import org.dromara.pdf.pdfbox.core.Page;
+package org.dromara.pdf.pdfbox.core;
 
 /**
- * 文本助手
+ * 组件类型
  *
  * @author xsx
- * @date 2023/6/12
+ * @date 2023/9/21
  * @since 1.8
  * <p>
  * Copyright (c) 2020-2023 xsx All Rights Reserved.
@@ -21,35 +18,39 @@ import org.dromara.pdf.pdfbox.core.Page;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public class TextHandler {
+public enum ComponentType {
 
     /**
-     * 助手实例
+     * 页眉
      */
-    private static final TextHandler INSTANCE = new TextHandler();
-
+    PAGE_HEADER,
     /**
-     * 无参构造
+     * 页脚
      */
-    private TextHandler() {
-    }
-
+    PAGE_FOOTER,
     /**
-     * 获取实例
-     *
-     * @return 返回实例
+     * 文本域
      */
-    public static TextHandler getInstance() {
-        return INSTANCE;
-    }
-
+    TEXTAREA,
     /**
-     * 构建
-     *
-     * @param page 页面
-     * @return 返回文本
+     * 图像
      */
-    public Text build(Page page) {
-        return new Text(page);
+    IMAGE,
+    /**
+     * 条形码
+     */
+    BARCODE,
+    /**
+     * 容器
+     */
+    CONTAINER,
+    /**
+     * 自定义
+     */
+    CUSTOM;
+
+
+    public boolean isNotPageHeaderOrFooter() {
+        return this != PAGE_HEADER && this != PAGE_FOOTER;
     }
 }

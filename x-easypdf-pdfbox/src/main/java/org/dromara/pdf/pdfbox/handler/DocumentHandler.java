@@ -50,11 +50,11 @@ public class DocumentHandler {
     }
 
     /**
-     * 构建
+     * 创建
      *
      * @return 返回文档
      */
-    public Document build() {
+    public Document create() {
         return new Document();
     }
 

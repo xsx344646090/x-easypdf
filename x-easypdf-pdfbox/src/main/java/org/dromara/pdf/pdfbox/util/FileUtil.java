@@ -1,8 +1,10 @@
 package org.dromara.pdf.pdfbox.util;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 
 /**
  * 文件工具
@@ -55,5 +57,27 @@ public class FileUtil {
         }
         // 返回路径
         return path;
+    }
+
+    /**
+     * 解析后缀
+     *
+     * @param file 文件
+     * @return 返回后缀
+     */
+    public static String parseSuffix(File file) {
+        // 如果文件为空，则提示错误信息
+        Objects.requireNonNull(file, "the file can not be null");
+        // 获取文件名称
+        String name = file.getName();
+        // 获取最后一个点号位置
+        int dot = name.lastIndexOf('.');
+        // 如果位置未获取到，则提示错误信息
+        if (dot == -1) {
+            // 提示错误信息
+            throw new IllegalArgumentException("the file suffix can not supported: " + name);
+        }
+        // 返回后缀名
+        return name.substring(dot + 1).toLowerCase();
     }
 }

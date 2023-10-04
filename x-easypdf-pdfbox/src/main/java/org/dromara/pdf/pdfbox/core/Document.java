@@ -1,13 +1,18 @@
 package org.dromara.pdf.pdfbox.core;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.io.RandomAccessReadBuffer;
 import org.apache.pdfbox.pdfwriter.compress.CompressParameters;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.dromara.pdf.pdfbox.enums.ContentMode;
-import org.dromara.pdf.pdfbox.enums.FontStyle;
-import org.dromara.pdf.pdfbox.enums.HorizontalAlignment;
+import org.apache.pdfbox.pdmodel.PDPageTree;
+import org.dromara.pdf.pdfbox.enums.*;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
+import org.dromara.pdf.pdfbox.support.Constants;
 import org.dromara.pdf.pdfbox.util.FileUtil;
 
 import java.awt.*;
@@ -17,7 +22,9 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * 文档
@@ -37,18 +44,38 @@ import java.util.Optional;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public class Document implements Closeable {
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class Document extends BaseFont implements Closeable {
 
     /**
-     * 参数
+     * 日志
      */
-    private final DocumentParam param = new DocumentParam();
+    private static final Log log = LogFactory.getLog(Document.class);
+    /**
+     * 生产者
+     */
+    private static final String PRODUCER = Constants.PDFBOX_PRODUCER;
+
+    /**
+     * 任务文档
+     */
+    private PDDocument target;
+    /**
+     * 页面列表
+     */
+    private List<Page> pages;
+    /**
+     * 总页码
+     */
+    private Integer totalPageNumber;
 
     /**
      * 无参构造
      */
     public Document() {
-        this.param.init();
+        // 初始化参数
+        this.init();
     }
 
     /**
@@ -61,202 +88,74 @@ public class Document implements Closeable {
      * @param policy      内存策略
      */
     public Document(InputStream inputStream, String password, InputStream keyStore, String alias, MemoryPolicy policy) {
-        this.param.init(inputStream, password, keyStore, alias, policy);
+        // 初始化参数
+        this.init(inputStream, password, keyStore, alias, policy);
     }
 
     /**
-     * 设置边距（上下左右）
-     *
-     * @param margin 边距
-     * @return 返回文档
+     * 初始化
      */
-    public Document setMargin(float margin) {
-        if (margin < 0) {
-            throw new IllegalArgumentException("the margin must be positive");
-        }
-        this.param.initMargin(margin);
-        return this;
+    @Override
+    public void init() {
+        // 初始化任务文档
+        this.target = new PDDocument();
+        // 初始化基础参数
+        this.initBase();
+        // 初始化页面
+        this.initPages();
     }
 
     /**
-     * 设置左边距
-     *
-     * @param margin 边距
-     * @return 返回文档
+     * 初始化基础
      */
-    public Document setMarginLeft(float margin) {
-        if (margin < 0) {
-            throw new IllegalArgumentException("the margin must be positive");
-        }
-        this.param.setMarginLeft(margin);
-        return this;
+    @Override
+    public void initBase() {
+        // 初始化上下文
+        super.setContext(new Context(this));
+        // 初始化字体参数
+        this.initFontParams();
+        // 初始化边框参数
+        this.initBorderParams();
+        // 初始化边距
+        this.initMargin();
+        // 初始化其他参数
+        this.initOtherParams();
     }
 
-    /**
-     * 设置右边距
-     *
-     * @param margin 边距
-     * @return 返回文档
-     */
-    public Document setMarginRight(float margin) {
-        if (margin < 0) {
-            throw new IllegalArgumentException("the margin must be positive");
+    @SneakyThrows
+    public void init(InputStream inputStream, String password, InputStream keyStore, String alias, MemoryPolicy policy) {
+        // 初始化任务文档
+        this.target = Loader.loadPDF(new RandomAccessReadBuffer(inputStream), password, keyStore, alias, policy.getSetting().streamCache);
+        // 初始化基础参数
+        this.initBase();
+        // 初始化页面
+        this.initPages();
+        // 重置上下文
+        if (!this.pages.isEmpty()) {
+            // 获取最新页面
+            Page page = this.pages.get(this.pages.size() - 1);
+            // 获取上下文
+            Context context = this.getContext();
+            // 设置页面
+            context.setPage(page);
+            // 设置是否分页
+            context.setIsAlreadyPaging(Boolean.FALSE);
+            // 重置游标
+            context.getCursor().reset(
+                    page.getMarginLeft(),
+                    page.getHeight() - page.getMarginTop()
+            );
         }
-        this.param.setMarginRight(margin);
-        return this;
-    }
-
-    /**
-     * 设置上边距
-     *
-     * @param margin 边距
-     * @return 返回文档
-     */
-    public Document setMarginTop(float margin) {
-        if (margin < 0) {
-            throw new IllegalArgumentException("the margin must be positive");
-        }
-        this.param.setMarginTop(margin);
-        return this;
-    }
-
-    /**
-     * 设置下边距
-     *
-     * @param margin 边距
-     * @return 返回文档
-     */
-    public Document setMarginBottom(float margin) {
-        if (margin < 0) {
-            throw new IllegalArgumentException("the margin must be positive");
-        }
-        this.param.setMarginBottom(margin);
-        return this;
-    }
-
-    /**
-     * 设置内容模式
-     *
-     * @param mode 内容模式
-     * @return 返回文档
-     */
-    public Document setContentMode(ContentMode mode) {
-        if (mode != null) {
-            this.param.setContentMode(mode);
-        }
-        return this;
-    }
-
-    /**
-     * 设置背景颜色
-     *
-     * @param color 颜色
-     * @return 返回文档
-     */
-    public Document setBackgroundColor(Color color) {
-        if (color != null) {
-            this.param.setBackgroundColor(color);
-        }
-        return this;
-    }
-
-    /**
-     * 设置水平对齐方式
-     *
-     * @param alignment 对齐方式
-     * @return 返回文档
-     */
-    public Document setHorizontalAlignment(HorizontalAlignment alignment) {
-        if (alignment != null) {
-            this.param.setHorizontalAlignment(alignment);
-        }
-        return this;
     }
 
     /**
      * 设置字体名称
      *
      * @param fontName 字体名称
-     * @return 返回文档
      */
-    public Document setFontName(String fontName) {
-        this.param.getFontParam().setFont(PdfHandler.getFontHandler().getPDFont(this.getPDDocument(), fontName, true));
-        return this;
-    }
-
-    /**
-     * 设置字体大小
-     *
-     * @param fontSize 字体大小
-     * @return 返回文档
-     */
-    public Document setFontSize(float fontSize) {
-        if (fontSize < 1) {
-            throw new IllegalArgumentException("the font size must be greater than 1");
-        }
-        this.param.getFontParam().setFontSize(fontSize);
-        return this;
-    }
-
-    /**
-     * 设置字体颜色
-     *
-     * @param color 字体颜色
-     * @return 返回文档
-     */
-    public Document setFontColor(Color color) {
-        this.param.getFontParam().setFontColor(color);
-        return this;
-    }
-
-    /**
-     * 设置字体样式
-     *
-     * @param style 字体样式
-     * @return 返回文档
-     */
-    public Document setFontStyle(FontStyle style) {
-        this.param.getFontParam().setFontStyle(style);
-        return this;
-    }
-
-    /**
-     * 设置字符间距
-     *
-     * @param spacing 字符间距
-     * @return 返回文档
-     */
-    public Document setCharacterSpacing(float spacing) {
-        if (spacing < 0) {
-            throw new IllegalArgumentException("the character spacing must be greater than 0");
-        }
-        this.param.getFontParam().setCharacterSpacing(spacing);
-        return this;
-    }
-
-    /**
-     * 设置行间距
-     *
-     * @param leading 行间距
-     * @return 返回文档
-     */
-    public Document setLeading(float leading) {
-        if (leading < 0) {
-            throw new IllegalArgumentException("the leading must be greater than 0");
-        }
-        this.param.getFontParam().setLeading(leading);
-        return this;
-    }
-
-    /**
-     * 设置总页数
-     *
-     * @param number 页码
-     * @return 返回文档
-     */
-    public Document setTotalPageNumber(int number) {
-        this.param.setTotalPageNumber(number);
-        return this;
+    public void setFontName(String fontName) {
+        super.setFontName(fontName);
+        super.setFont(PdfHandler.getFontHandler().getPDFont(this.target, fontName, true));
     }
 
     /**
@@ -265,34 +164,176 @@ public class Document implements Closeable {
      * @return 返回总页数
      */
     public int getTotalPageNumber() {
-        return Optional.ofNullable(this.param.getTotalPageNumber()).orElse(this.param.getPages().size());
+        return Optional.ofNullable(this.totalPageNumber).orElse(this.pages.size());
     }
 
     /**
-     * 获取pdfbox文档
+     * 重排序页面
      *
-     * @return pdfbox文档
+     * @param indexes 页面索引
+     * @return 返回文档
      */
-    public PDDocument getPDDocument() {
-        return this.param.getTarget();
+    public Document reorderPage(int... indexes) {
+        // 获取页面列表
+        List<Page> pages = this.getPages();
+        // 创建排序列表
+        List<Page> orderPages = new ArrayList<>(pages.size());
+        // 遍历索引
+        for (int i : indexes) {
+            try {
+                // 添加页面
+                orderPages.add(pages.remove(i));
+            } catch (Exception e) {
+                // 提示信息
+                log.warn("the index['" + i + "'] is invalid, will be ignored");
+            }
+        }
+        // 添加剩余页面
+        orderPages.addAll(pages);
+        // 重置页面列表
+        this.setPages(orderPages);
+        // 重置页面
+        this.resetPage();
+        // 返回文档
+        return this;
     }
 
     /**
-     * 获取当前使用字体
+     * 插入页面
      *
-     * @return 返回pdf字体
+     * @param index 页面索引
+     * @param page  页面
+     * @return 返回文档
      */
-    public PDFont getPDFont() {
-        return this.param.getFontParam().getFont();
+    public Document insertPage(int index, Page page) {
+        try {
+            // 添加页面
+            this.getPages().add(index, page);
+            // 遍历
+            while (true) {
+                // 索引自增
+                index++;
+                // 获取子页面
+                page = page.getSubPage();
+                // 子页面不存在结束
+                if (Objects.isNull(page)) {
+                    break;
+                }
+                // 添加子页面
+                this.getPages().add(index, page);
+            }
+            // 重置页面
+            this.resetPage();
+        } catch (Exception e) {
+            // 提示信息
+            log.warn("the index['" + index + "'] is invalid, will be ignored");
+        }
+        // 返回文档
+        return this;
     }
 
     /**
-     * 获取页面列表
+     * 追加页面
      *
-     * @return 返回页面列表
+     * @param page 页面
+     * @return 返回文档
      */
-    public List<Page> getPages() {
-        return this.param.getPages();
+    public Document appendPage(Page page) {
+        // 添加页面
+        this.getPages().add(page);
+        // 遍历
+        while (true) {
+            // 获取子页面
+            page = page.getSubPage();
+            // 子页面不存在结束
+            if (Objects.isNull(page)) {
+                break;
+            }
+            // 添加子页面
+            this.getPages().add(page);
+        }
+        // 重置页面
+        this.resetPage();
+        // 返回文档
+        return this;
+    }
+
+    /**
+     * 设置页面（替换）
+     *
+     * @param index 页面索引
+     * @param page  页面
+     * @return 返回文档
+     */
+    public Document setPage(int index, Page page) {
+        try {
+            // 设置页面
+            this.getPages().set(index, page);
+            // 遍历
+            while (true) {
+                // 索引自增
+                index++;
+                // 获取子页面
+                page = page.getSubPage();
+                // 子页面不存在结束
+                if (Objects.isNull(page)) {
+                    break;
+                }
+                // 添加子页面
+                this.getPages().add(index, page);
+            }
+            // 重置页面
+            this.resetPage();
+        } catch (Exception e) {
+            // 提示信息
+            log.warn("the index['" + index + "'] is invalid, will be ignored");
+        }
+        // 返回文档
+        return this;
+    }
+
+    /**
+     * 移除页面
+     *
+     * @param indexes 页面索引
+     * @return 返回文档
+     */
+    public Document removePage(int... indexes) {
+        // 创建临时列表
+        List<Page> temp = new ArrayList<>(this.getPages());
+        // 遍历索引
+        for (int index : indexes) {
+            try {
+                // 移除页面
+                this.getPages().remove(temp.get(index));
+            } catch (Exception e) {
+                // 提示信息
+                log.warn("the index['" + index + "'] is invalid, will be ignored");
+            }
+        }
+        // 重置页面
+        this.resetPage();
+        // 返回文档
+        return this;
+    }
+
+    /**
+     * 创建页面
+     *
+     * @param rectangle 页面尺寸
+     * @return 返回页面
+     */
+    public Page createPage(PageRectangle rectangle) {
+        return new Page(this.getContext(), rectangle);
+    }
+
+    /**
+     * 获取当前页面
+     *
+     * @return 返回页面
+     */
+    public Page getCurrentPage() {
+        return this.getContext().getPage();
     }
 
     /**
@@ -302,20 +343,40 @@ public class Document implements Closeable {
      * @return 返回页面
      */
     public Page getPage(int index) {
-        List<Page> pages = this.param.getPages();
-        if (pages == null || pages.size() <= index) {
+        if (Objects.isNull(this.pages) || this.pages.size() <= index) {
             return null;
         }
-        return pages.get(index);
+        return this.pages.get(index);
     }
 
     /**
-     * 获取文档参数
+     * 获取目录列表
      *
-     * @return 返回文档参数
+     * @return 返回目录列表
      */
-    public DocumentParam getParam() {
-        return this.param;
+    public List<Catalog> getCatalogs() {
+        return this.getContext().getCatalogs();
+    }
+
+    /**
+     * 刷新目录
+     *
+     * @return 返回文档
+     */
+    public Document flushCatalog() {
+        // 获取目录
+        List<Catalog> catalogs = this.getContext().getCatalogs();
+        // 目录不为空
+        if (catalogs != null && !catalogs.isEmpty()) {
+            // 转为页面字典
+            Map<String, Page> pageMap = this.getPages().stream().collect(
+                    Collectors.toMap(Page::getId, Function.identity())
+            );
+            // 重置索引
+            catalogs.forEach(catalog -> catalog.setPageIndex(pageMap.get(catalog.getPageId()).getIndex()));
+        }
+        // 返回文档
+        return this;
     }
 
     /**
@@ -363,7 +424,10 @@ public class Document implements Closeable {
      */
     @SneakyThrows
     public Document save(OutputStream outputStream, int objectStreamSize) {
-        this.getPDDocument().save(outputStream, new CompressParameters(objectStreamSize));
+        if (this.getPages().isEmpty()) {
+            log.error("the document has no pages");
+        }
+        this.getTarget().save(outputStream, new CompressParameters(objectStreamSize));
         return this;
     }
 
@@ -408,8 +472,118 @@ public class Document implements Closeable {
     /**
      * 关闭文档
      */
+    @SneakyThrows
     @Override
     public void close() {
-        this.param.release();
+        // 关闭任务文档
+        this.getTarget().close();
+        // 重置字体
+        super.setFont(null);
+        // 关闭页面
+        this.getPages().forEach(Page::close);
+    }
+
+    /**
+     * 重置页面
+     */
+    private void resetPage() {
+        // 遍历页面
+        for (int i = 0; i < this.getPages().size(); i++) {
+            // 设置索引
+            this.getPages().get(i).setIndex(i + 1);
+        }
+        // 获取pdfbox页面树
+        PDPageTree pageTree = this.getTarget().getPages();
+        // 移除页面
+        pageTree.forEach(pageTree::remove);
+        // 重新添加
+        this.getPages().forEach(page -> this.getTarget().addPage(page.getTarget()));
+    }
+
+    /**
+     * 初始化页面列表
+     */
+    private void initPages() {
+        // 获取总页数
+        int count = this.getTarget().getNumberOfPages();
+        // 初始化页面列表
+        this.pages = new ArrayList<>(this.getTarget().getNumberOfPages());
+        // 获取页面树
+        PDPageTree pageTree = this.getTarget().getPages();
+        // 遍历页面树
+        for (int i = 0; i < count; i++) {
+            // 添加页面
+            this.pages.add(new Page(this.getContext(), pageTree.get(i)));
+        }
+    }
+
+    /**
+     * 初始化边框参数
+     */
+    private void initBorderParams() {
+        // 初始化样式
+        super.setBorderStyle(BorderStyle.SOLID);
+        // 初始化线宽
+        super.setBorderWidth(1F);
+        // 初始化线长
+        super.setBorderLineLength(1F);
+        // 初始化间隔
+        super.setBorderLineSpacing(1F);
+        // 初始化上边框颜色
+        super.setBorderTopColor(Color.BLACK);
+        // 初始化下边框颜色
+        super.setBorderBottomColor(Color.BLACK);
+        // 初始化左边框颜色
+        super.setBorderLeftColor(Color.BLACK);
+        // 初始化右边框颜色
+        super.setBorderRightColor(Color.BLACK);
+        // 初始化是否上边框
+        super.setIsBorderTop(Boolean.FALSE);
+        // 初始化是否下边框
+        super.setIsBorderBottom(Boolean.FALSE);
+        // 初始化是否左边框
+        super.setIsBorderLeft(Boolean.FALSE);
+        // 初始化是否右边框
+        super.setIsBorderRight(Boolean.FALSE);
+    }
+
+    /**
+     * 初始化字体参数
+     */
+    private void initFontParams() {
+        // 初始化字体
+        super.setFont(
+                PdfHandler.getFontHandler().getPDFont(
+                        this.target, Constants.DEFAULT_FONT_NAME, true
+                )
+        );
+        // 初始化字体大小
+        super.setFontSize(12F);
+        // 初始化字体颜色
+        super.setFontColor(Color.BLACK);
+        // 初始化字体样式
+        super.setFontStyle(FontStyle.NORMAL);
+        // 初始化字符间距
+        super.setCharacterSpacing(0F);
+        // 初始化行间距
+        super.setLeading(0F);
+        // 初始化换行高度
+        super.getContext().setWrapHeight(this.getFontSize());
+    }
+
+    /**
+     * 初始化其他参数
+     */
+    private void initOtherParams() {
+        // 初始化水平对齐方式
+        super.setHorizontalAlignment(HorizontalAlignment.LEFT);
+        // 初始化垂直对齐方式
+        super.setVerticalAlignment(VerticalAlignment.TOP);
+        // 初始化内容模式
+        super.setContentMode(ContentMode.APPEND);
+        // 初始化是否重置内容流
+        super.setIsResetContentStream(Boolean.FALSE);
+        // 初始化背景颜色
+        super.setBackgroundColor(Color.WHITE);
     }
 }

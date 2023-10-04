@@ -47,7 +47,7 @@ public final class Constants {
     /**
      * 默认字体路径
      */
-    public static final String DEFAULT_FONT_RESOURCE_PATH = "org/dromara/pdf/ttf/HarmonyOS_Sans_SC_Medium.ttf";
+    public static final String DEFAULT_FONT_RESOURCE_PATH = "org/dromara/pdf/pdfbox/ttf/HarmonyOS_Sans_SC_Medium.ttf";
     /**
      * 临时文件路径
      */

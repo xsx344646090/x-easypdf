@@ -1,13 +1,16 @@
-package org.dromara.pdf.pdfbox.handler;
+package org.dromara.pdf.pdfbox.core;
 
+import org.dromara.pdf.pdfbox.core.component.Component;
 
 /**
+ * 分页事件
+ *
  * @author xsx
- * @date 2023/6/1
+ * @date 2023/9/7
  * @since 1.8
  * <p>
  * Copyright (c) 2020-2023 xsx All Rights Reserved.
- * x-easypdf-pdfbox is licensed under Mulan PSL v2.
+ * x-easypdf-new is licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  * http://license.coscl.org.cn/MulanPSL2
@@ -17,23 +20,19 @@ package org.dromara.pdf.pdfbox.handler;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public class PdfHandler {
+public interface PagingEvent {
 
     /**
-     * 获取字体助手
+     * 分页之前
      *
-     * @return 返回字体助手
+     * @param component 当前组件
      */
-    public static FontHandler getFontHandler() {
-        return FontHandler.getInstance();
-    }
+    void before(Component component);
 
     /**
-     * 获取文档助手
+     * 分页之后
      *
-     * @return 返回文档助手
+     * @param component 当前组件
      */
-    public static DocumentHandler getDocumentHandler() {
-        return DocumentHandler.getInstance();
-    }
+    void after(Component component);
 }

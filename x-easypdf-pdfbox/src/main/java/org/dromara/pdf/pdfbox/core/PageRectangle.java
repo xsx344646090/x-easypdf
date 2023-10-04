@@ -225,6 +225,7 @@ public class PageRectangle {
      *
      * @return 返回页面尺寸
      */
+    @SuppressWarnings("all")
     public PageRectangle changeLandscape() {
         return new PageRectangle(this.height, this.width);
     }

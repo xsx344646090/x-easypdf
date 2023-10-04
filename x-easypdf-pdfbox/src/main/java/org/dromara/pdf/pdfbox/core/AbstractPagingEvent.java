@@ -1,8 +1,12 @@
-package org.dromara.pdf.pdfbox.enums;
+package org.dromara.pdf.pdfbox.core;
+
+import org.dromara.pdf.pdfbox.core.component.Component;
 
 /**
+ * 抽象分页事件
+ *
  * @author xsx
- * @date 2023/6/2
+ * @date 2023/9/21
  * @since 1.8
  * <p>
  * Copyright (c) 2020-2023 xsx All Rights Reserved.
@@ -16,48 +20,25 @@ package org.dromara.pdf.pdfbox.enums;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public enum FontType {
-    /**
-     * ttf
-     */
-    TTF(".ttf"),
-    /**
-     * otf
-     */
-    OTF(".otf"),
-    /**
-     * ttc
-     */
-    TTC(".ttc"),
-    /**
-     * otc
-     */
-    OTC(".otc"),
-    /**
-     * pfb
-     */
-    PFB(".pfb");
+public class AbstractPagingEvent implements PagingEvent {
 
     /**
-     * 后缀
-     */
-    private final String suffix;
-
-    /**
-     * 有参构造
+     * 分页之前
      *
-     * @param suffix 后缀
+     * @param component 当前组件
      */
-    FontType(String suffix) {
-        this.suffix = suffix;
+    @Override
+    public void before(Component component) {
+
     }
 
     /**
-     * 获取后缀
+     * 分页之后
      *
-     * @return 返回后缀
+     * @param component 当前组件
      */
-    public String getSuffix() {
-        return this.suffix;
+    @Override
+    public void after(Component component) {
+
     }
 }

@@ -54,8 +54,18 @@ public class MemoryPolicy {
      * @return 返回内存策略
      */
     public static MemoryPolicy setupTempFileOnly() {
+        return setupTempFileOnly(Constants.TEMP_FILE_PATH);
+    }
+
+    /**
+     * 仅设置临时文件
+     *
+     * @param tempPath 临时文件路径
+     * @return 返回内存策略
+     */
+    public static MemoryPolicy setupTempFileOnly(String tempPath) {
         MemoryUsageSetting setting = MemoryUsageSetting.setupTempFileOnly();
-        setting.setTempDir(Paths.get(Constants.TEMP_FILE_PATH).toFile());
+        setting.setTempDir(Paths.get(tempPath).toFile());
         return new MemoryPolicy(setting);
     }
 

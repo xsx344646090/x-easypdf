@@ -1,14 +1,12 @@
 package org.dromara.pdf.pdfbox.core;
 
 import lombok.Data;
-import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.dromara.pdf.pdfbox.enums.FontStyle;
-
-import java.awt.*;
 
 /**
+ * 目录
+ *
  * @author xsx
- * @date 2023/6/21
+ * @date 2023/9/5
  * @since 1.8
  * <p>
  * Copyright (c) 2020-2023 xsx All Rights Reserved.
@@ -23,33 +21,34 @@ import java.awt.*;
  * </p>
  */
 @Data
-public class FontParam {
+public class Catalog {
+
     /**
-     * 当前使用字体名称
+     * 标题
      */
-    private String fontName;
+    private final String title;
     /**
-     * 当前使用字体
+     * 页面id
      */
-    private PDFont font;
+    private String pageId;
     /**
-     * 字体大小
+     * 页码
      */
-    private Float fontSize;
+    private Integer pageIndex;
     /**
-     * 字体颜色
+     * X轴起始坐标
      */
-    private Color fontColor;
+    private Float beginX;
     /**
-     * 字体样式
+     * Y轴起始坐标
      */
-    private FontStyle fontStyle;
+    private Float beginY;
     /**
-     * 字符间距
+     * X轴起始坐标
      */
-    private Float characterSpacing;
+    private Float endX;
     /**
-     * 行间距
+     * Y轴起始坐标
      */
-    private Float leading;
+    private Float endY;
 }

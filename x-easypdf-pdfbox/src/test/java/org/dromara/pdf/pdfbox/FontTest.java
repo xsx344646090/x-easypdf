@@ -22,7 +22,7 @@ import java.util.List;
  * @since 1.8
  * <p>
  * Copyright (c) 2020-2023 xsx All Rights Reserved.
- * gitee is licensed under the Mulan PSL v2.
+ * x-easypdf-pdfbox is licensed under the Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  * http://license.coscl.org.cn/MulanPSL2
@@ -52,8 +52,8 @@ public class FontTest {
 
     @Test
     public void testGetPDFont() {
-        try (Document document = PdfHandler.getDocumentHandler().build()) {
-            PDFont pdFont = PdfHandler.getFontHandler().getPDFont(document.getPDDocument(), "SimSun", true);
+        try (Document document = PdfHandler.getDocumentHandler().create()) {
+            PDFont pdFont = PdfHandler.getFontHandler().getPDFont(document.getTarget(), "SimSun", true);
             System.out.println("name = " + pdFont.getName());
         }
     }

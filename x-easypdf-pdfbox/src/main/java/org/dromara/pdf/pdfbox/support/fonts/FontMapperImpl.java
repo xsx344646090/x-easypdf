@@ -7,6 +7,7 @@ import org.apache.fontbox.ttf.OpenTypeFont;
 import org.apache.fontbox.ttf.TTFParser;
 import org.apache.fontbox.ttf.TrueTypeFont;
 import org.apache.fontbox.type1.Type1Font;
+import org.apache.pdfbox.io.RandomAccessReadBuffer;
 import org.apache.pdfbox.pdmodel.font.*;
 import org.dromara.pdf.pdfbox.support.Constants;
 
@@ -90,7 +91,7 @@ public class FontMapperImpl implements FontMapper {
         // -------------------------
 
         try {
-            String resourceName = "org/dromara/pdf/ttf/HarmonyOS_Sans_SC_Medium.ttf";
+            String resourceName = "org/dromara/pdf/pdfbox/ttf/HarmonyOS_Sans_SC_Medium.ttf";
             InputStream resourceAsStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourceName);
             if (resourceAsStream == null) {
                 throw new IOException("resource '" + resourceName + "' not found");
@@ -98,7 +99,7 @@ public class FontMapperImpl implements FontMapper {
 
             InputStream ttfStream = new BufferedInputStream(resourceAsStream);
             TTFParser ttfParser = new TTFParser();
-            lastResortFont = ttfParser.parse(ttfStream);
+            lastResortFont = ttfParser.parse(new RandomAccessReadBuffer(ttfStream));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

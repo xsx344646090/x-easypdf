@@ -3,14 +3,15 @@ package org.dromara.pdf.pdfbox;
 import org.dromara.pdf.pdfbox.core.Document;
 import org.dromara.pdf.pdfbox.core.Page;
 import org.dromara.pdf.pdfbox.core.PageRectangle;
+import org.dromara.pdf.pdfbox.core.component.Barcode;
+import org.dromara.pdf.pdfbox.enums.BarcodeType;
+import org.dromara.pdf.pdfbox.enums.BorderStyle;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.junit.Test;
 
-import java.awt.*;
-
 /**
  * @author xsx
- * @date 2023/7/17
+ * @date 2023/8/24
  * @since 1.8
  * <p>
  * Copyright (c) 2020-2023 xsx All Rights Reserved.
@@ -24,16 +25,26 @@ import java.awt.*;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public class PageTest {
+public class BarcodeTest {
 
     @Test
-    public void testBackgroundColor() {
+    public void testQrcode() {
         Document document = PdfHandler.getDocumentHandler().create();
         document.setMargin(50F);
-        document.setBackgroundColor(Color.CYAN);
         Page page = document.createPage(PageRectangle.A4);
-        page.setBackgroundColor(Color.WHITE);
-        document.saveAndClose("D:\\PDF\\page\\testPage.pdf");
+        Barcode barcode = new Barcode(page);
+        barcode.setCodeType(BarcodeType.QR_CODE);
+        barcode.setWidth(150);
+        barcode.setHeight(150);
+        barcode.setContent("https://x-easypdf.cn");
+        // barcode.setWords("文字");
+        barcode.setWordsFontName("微软雅黑");
+        barcode.setIsBorder(true);
+        barcode.setBorderStyle(BorderStyle.DOTTED);
+        barcode.setIsShowWords(true);
+        barcode.setIsCache(Boolean.TRUE);
+        barcode.render();
+        document.appendPage(page);
+        document.saveAndClose("E:\\PDF\\barcode\\testQrcode.pdf");
     }
-
 }

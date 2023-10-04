@@ -1,15 +1,12 @@
-package org.dromara.pdf.pdfbox.support;
+package org.dromara.pdf.pdfbox.core;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
 
 /**
- * 坐标
+ * 游标
  *
  * @author xsx
- * @date 2023/6/19
+ * @date 2023/9/7
  * @since 1.8
  * <p>
  * Copyright (c) 2020-2023 xsx All Rights Reserved.
@@ -24,36 +21,23 @@ import lombok.experimental.Accessors;
  * </p>
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Accessors(chain = true)
-public class Position {
+public class Cursor {
     /**
-     * X轴坐标
+     * 当前X轴坐标
      */
     private Float x;
     /**
-     * Y轴坐标
+     * 当前Y轴坐标
      */
     private Float y;
 
     /**
-     * 创建
+     * 重置
      *
      * @param x X轴坐标
      * @param y Y轴坐标
-     * @return 返回坐标
      */
-    public static Position create(Float x, Float y) {
-        return new Position(x, y);
-    }
-
-    /**
-     * 重置
-     * @param x X轴坐标
-     * @param y Y轴坐标
-     */
-    public void reset(Float x, Float y) {
+    public void reset(float x, float y) {
         this.x = x;
         this.y = y;
     }

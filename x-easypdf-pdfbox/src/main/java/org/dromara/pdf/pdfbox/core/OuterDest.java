@@ -1,15 +1,13 @@
-package org.dromara.pdf.pdfbox.support;
+package org.dromara.pdf.pdfbox.core;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
- * 坐标
+ * 外部目标
  *
  * @author xsx
- * @date 2023/6/19
+ * @date 2023/9/6
  * @since 1.8
  * <p>
  * Copyright (c) 2020-2023 xsx All Rights Reserved.
@@ -24,37 +22,28 @@ import lombok.experimental.Accessors;
  * </p>
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Accessors(chain = true)
-public class Position {
+public class OuterDest {
+
     /**
-     * X轴坐标
+     * 目标名称
      */
-    private Float x;
+    private String name;
     /**
-     * Y轴坐标
+     * 目标地址
      */
-    private Float y;
+    private String url;
+    /**
+     * 高亮模式
+     */
+    private HighlightMode highlightMode;
 
     /**
      * 创建
      *
-     * @param x X轴坐标
-     * @param y Y轴坐标
-     * @return 返回坐标
+     * @return 返回目标
      */
-    public static Position create(Float x, Float y) {
-        return new Position(x, y);
-    }
-
-    /**
-     * 重置
-     * @param x X轴坐标
-     * @param y Y轴坐标
-     */
-    public void reset(Float x, Float y) {
-        this.x = x;
-        this.y = y;
+    public static OuterDest create() {
+        return new OuterDest();
     }
 }

@@ -1,10 +1,10 @@
-package org.dromara.pdf.pdfbox.component;
-
-import org.dromara.pdf.pdfbox.core.Page;
+package org.dromara.pdf.pdfbox.core.component;
 
 /**
+ * 分页条件
+ *
  * @author xsx
- * @date 2023/6/5
+ * @date 2023/9/15
  * @since 1.8
  * <p>
  * Copyright (c) 2020-2023 xsx All Rights Reserved.
@@ -18,12 +18,15 @@ import org.dromara.pdf.pdfbox.core.Page;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public interface Component {
+@FunctionalInterface
+public interface PagingCondition {
 
     /**
-     * 渲染
+     * 是否分页
      *
-     * @return 返回页面
+     * @param component 当前组件
+     * @param beginY    Y轴起始坐标
+     * @return 返回布尔值，true为是，false为否
      */
-    Page render();
+    boolean isPaging(Component component, float beginY);
 }

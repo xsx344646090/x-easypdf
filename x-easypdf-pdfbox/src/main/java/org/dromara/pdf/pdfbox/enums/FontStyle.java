@@ -79,7 +79,7 @@ public enum FontStyle {
      * @return 返回pdfbox文本渲染模式
      */
     public RenderingMode getMode() {
-        return mode;
+        return this.mode;
     }
 
     /**

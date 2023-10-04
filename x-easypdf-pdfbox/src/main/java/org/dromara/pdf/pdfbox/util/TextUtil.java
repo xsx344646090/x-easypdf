@@ -3,10 +3,7 @@ package org.dromara.pdf.pdfbox.util;
 import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 文本工具
@@ -199,7 +196,7 @@ public class TextUtil {
             return "";
         }
         // 如果待替换字典为空，则返回待替换文本
-        if (replaceMap == null || replaceMap.isEmpty()) {
+        if (Objects.isNull(replaceMap) || replaceMap.isEmpty()) {
             // 返回待替换文本
             return text;
         }
@@ -233,7 +230,7 @@ public class TextUtil {
      * @return 返回布尔值，是为true，否为false
      */
     public static boolean isNotBlank(String text) {
-        return text != null && text.trim().length() > 0;
+        return !Objects.isNull(text) && text.trim().length() > 0;
     }
 
     /**
@@ -245,7 +242,7 @@ public class TextUtil {
      */
     public static String join(CharSequence delimiter, String... texts) {
         // 如果字符串列表为空，则返回空串
-        if (texts == null || texts.length == 0) {
+        if (Objects.isNull(texts) || texts.length == 0) {
             // 返回空串
             return "";
         }
@@ -259,7 +256,7 @@ public class TextUtil {
             builder.append(delimiter);
         }
         // 如果分隔符不为空，则返回少一位
-        if (delimiter != null && delimiter.length() > 0) {
+        if (!Objects.isNull(delimiter) && delimiter.length() > 0) {
             // 返回拼接后的字符串
             return builder.substring(0, builder.length() - 1);
         }
@@ -273,7 +270,7 @@ public class TextUtil {
      * @param size 数量
      * @return 返回字符串
      */
-    public static String space(int size) {
+    public static String spacing(int size) {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < size; i++) {
             builder.append(" ");

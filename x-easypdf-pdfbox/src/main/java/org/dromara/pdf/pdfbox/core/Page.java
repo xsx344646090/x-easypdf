@@ -1,14 +1,16 @@
 package org.dromara.pdf.pdfbox.core;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.dromara.pdf.pdfbox.enums.ContentMode;
-import org.dromara.pdf.pdfbox.enums.FontStyle;
-import org.dromara.pdf.pdfbox.enums.HorizontalAlignment;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 
 import java.awt.*;
+import java.io.Closeable;
+import java.util.Objects;
+import java.util.UUID;
 
 /**
  * 页面
@@ -28,266 +30,249 @@ import java.awt.*;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public class Page {
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class Page extends BaseFont implements Closeable {
 
     /**
-     * 参数
+     * id
      */
-    private final PageParam param = new PageParam();
+    private String id;
+    /**
+     * 任务页面
+     */
+    private PDPage target;
+    /**
+     * 页面尺寸
+     */
+    private PageRectangle rectangle;
+    /**
+     * 页面索引（当前页码）
+     */
+    private Integer index;
+    /**
+     * 父页面
+     */
+    private Page parentPage;
+    /**
+     * 子页面
+     */
+    private Page subPage;
 
     /**
      * 有参构造
      *
-     * @param document 文档
-     */
-    public Page(Document document) {
-        this(document, PageRectangle.A4);
-    }
-
-    /**
-     * 有参构造
-     *
-     * @param document  文档
+     * @param context   上下文
      * @param rectangle 尺寸
      */
-    public Page(Document document, PageRectangle rectangle) {
-        this(document.getParam(), rectangle);
+    Page(Context context, PageRectangle rectangle) {
+        this(context, new PDPage(rectangle.getSize()));
     }
 
     /**
      * 有参构造
      *
-     * @param documentParam 文档参数
-     * @param rectangle     尺寸
+     * @param context 上下文
+     * @param page    pdfbox页面
      */
-    Page(DocumentParam documentParam, PageRectangle rectangle) {
-        this(documentParam.getPages().size() + 1, new PDPage(rectangle.getSize()), documentParam);
-    }
-
-    /**
-     * 有参构造
-     *
-     * @param index         页面索引
-     * @param page          尺寸
-     * @param documentParam 文档参数
-     */
-    Page(int index, PDPage page, DocumentParam documentParam) {
-        this.param.init(index, page, documentParam);
-        documentParam.getPages().add(this);
-        if (this.param.getBackgroundColor() != Color.WHITE) {
+    Page(Context context, PDPage page) {
+        this.init(context, page);
+        if (this.getBackgroundColor() != Color.WHITE) {
             this.initBackgroundColor();
         }
+        context.reset(this);
     }
 
     /**
-     * 设置边距（上下左右）
-     *
-     * @param margin 边距
-     * @return 返回页面
+     * 初始化
      */
-    public Page setMargin(float margin) {
-        if (margin < 0) {
-            throw new IllegalArgumentException("the margin must be positive");
-        }
-        this.param.initMargin(margin);
-        return this;
+    @Override
+    public void init() {
+
     }
 
     /**
-     * 设置左边距
-     *
-     * @param margin 边距
-     * @return 返回页面
+     * 初始化基础
      */
-    public Page setMarginLeft(float margin) {
-        if (margin < 0) {
-            throw new IllegalArgumentException("the margin must be positive");
-        }
-        this.param.initMarginLeft(margin);
-        return this;
-    }
+    @Override
+    public void initBase() {
 
-    /**
-     * 设置右边距
-     *
-     * @param margin 边距
-     * @return 返回页面
-     */
-    public Page setMarginRight(float margin) {
-        if (margin < 0) {
-            throw new IllegalArgumentException("the margin must be positive");
-        }
-        this.param.setMarginRight(margin);
-        return this;
     }
 
     /**
      * 设置上边距
      *
      * @param margin 边距
-     * @return 返回页面
      */
-    public Page setMarginTop(float margin) {
-        if (margin < 0) {
-            throw new IllegalArgumentException("the margin must be positive");
+    @Override
+    public void setMarginTop(float margin) {
+        // 获取页面高度
+        Float height = this.getContext().getPage().getHeight();
+        // 获取上边距
+        Float marginTop = this.getMarginTop();
+        // 设置上边距
+        super.setMarginTop(margin);
+        // 获取游标
+        Cursor cursor = this.getContext().getCursor();
+        // 重置游标Y轴坐标
+        if (Objects.equals(cursor.getY(), height - marginTop)) {
+            cursor.setY(height - margin);
         }
-        this.param.initMarginTop(margin);
-        return this;
     }
 
     /**
-     * 设置下边距
+     * 设置左边距
      *
      * @param margin 边距
-     * @return 返回页面
      */
-    public Page setMarginBottom(float margin) {
-        if (margin < 0) {
-            throw new IllegalArgumentException("the margin must be positive");
+    @Override
+    public void setMarginLeft(float margin) {
+        // 获取左边距
+        Float marginLeft = this.getMarginLeft();
+        // 重置左边距
+        super.setMarginLeft(margin);
+        // 获取游标
+        Cursor cursor = this.getContext().getCursor();
+        // 重置游标X轴坐标
+        if (Objects.equals(cursor.getX(), marginLeft)) {
+            cursor.setX(margin);
         }
-        this.param.setMarginBottom(margin);
-        return this;
-    }
-
-    /**
-     * 设置内容模式
-     *
-     * @param mode 内容模式
-     * @return 返回页面
-     */
-    public Page setContentMode(ContentMode mode) {
-        if (mode != null) {
-            this.param.setContentMode(mode);
-        }
-        return this;
-    }
-
-    /**
-     * 设置背景颜色
-     *
-     * @param color 颜色
-     * @return 返回页面
-     */
-    public Page setBackgroundColor(Color color) {
-        if (color != null) {
-            this.param.setBackgroundColor(color);
-            this.initBackgroundColor();
-        }
-        return this;
-    }
-
-    /**
-     * 设置水平对齐方式
-     *
-     * @param alignment 对齐方式
-     * @return 返回页面
-     */
-    public Page setHorizontalAlignment(HorizontalAlignment alignment) {
-        if (alignment != null) {
-            this.param.setHorizontalAlignment(alignment);
-        }
-        return this;
     }
 
     /**
      * 设置字体名称
      *
      * @param fontName 字体名称
-     * @return 返回页面
      */
-    public Page setFontName(String fontName) {
-        this.param.getFontParam().setFontName(fontName);
-        this.param.getFontParam().setFont(PdfHandler.getFontHandler().getPDFont(this.param.getDocumentParam().getTarget(), fontName, true));
-        return this;
+    public void setFontName(String fontName) {
+        super.setFontName(fontName);
+        super.setFont(PdfHandler.getFontHandler().getPDFont(this.getContext().getTargetDocument(), fontName, true));
     }
 
     /**
-     * 设置字体大小
+     * 获取页面宽度
      *
-     * @param fontSize 字体大小
-     * @return 返回页面
+     * @return 返回页面宽度
      */
-    public Page setFontSize(float fontSize) {
-        if (fontSize < 1) {
-            throw new IllegalArgumentException("the font size must be greater than 1");
+    public Float getWidth() {
+        return this.rectangle.getWidth();
+    }
+
+    /**
+     * 获取页面高度
+     *
+     * @return 返回页面高度
+     */
+    public Float getHeight() {
+        return this.rectangle.getHeight();
+    }
+
+    /**
+     * 获取排除页面边距的页面宽度
+     *
+     * @return 返回页面宽度
+     */
+    public Float getWithoutMarginWidth() {
+        return this.getWidth() - this.getMarginLeft() - this.getMarginRight();
+    }
+
+    /**
+     * 获取排除页面边距的页面高度
+     *
+     * @return 返回页面高度
+     */
+    public Float getWithoutMarginHeight() {
+        return this.getHeight() - this.getMarginTop() - this.getMarginBottom();
+    }
+
+    /**
+     * 获取第一个父页面
+     *
+     * @return 返回父页面
+     */
+    public Page getFirstParentPage() {
+        // 获取父页面
+        Page parent = this.getParentPage();
+        // 父页面为空
+        if (Objects.isNull(parent)) {
+            // 返回空
+            return null;
         }
-        this.param.getFontParam().setFontSize(fontSize);
-        return this;
-    }
-
-    /**
-     * 设置字体颜色
-     *
-     * @param color 字体颜色
-     * @return 返回页面
-     */
-    public Page setFontColor(Color color) {
-        this.param.getFontParam().setFontColor(color);
-        return this;
-    }
-
-    /**
-     * 设置字体样式
-     *
-     * @param style 字体样式
-     * @return 返回页面
-     */
-    public Page setFontStyle(FontStyle style) {
-        this.param.getFontParam().setFontStyle(style);
-        return this;
-    }
-
-    /**
-     * 设置字符间距
-     *
-     * @param spacing 字符间距
-     * @return 返回页面
-     */
-    public Page setCharacterSpacing(float spacing) {
-        if (spacing < 0) {
-            throw new IllegalArgumentException("the character spacing must be greater than 0");
+        // 循环获取
+        while (!Objects.isNull(parent.getParentPage())) {
+            parent = parent.getParentPage();
         }
-        this.param.getFontParam().setCharacterSpacing(spacing);
-        return this;
+        // 返回父页面
+        return parent;
     }
 
     /**
-     * 设置行间距
+     * 获取最后一个子页面
      *
-     * @param leading 行间距
-     * @return 返回页面
+     * @return 返回子页面
      */
-    public Page setLeading(float leading) {
-        if (leading < 0) {
-            throw new IllegalArgumentException("the leading must be greater than 0");
+    public Page getLastSubPage() {
+        // 获取子页面
+        Page subPage = this.getSubPage();
+        // 子页面为空
+        if (Objects.isNull(subPage)) {
+            // 返回空
+            return null;
         }
-        this.param.getFontParam().setLeading(leading);
-        return this;
+        // 循环获取
+        while (!Objects.isNull(subPage.getSubPage())) {
+            subPage = subPage.getSubPage();
+        }
+        // 返回子页面
+        return subPage;
     }
 
     /**
-     * 获取页面索引（当前页码）
+     * 再创建
+     */
+    public void recreate() {
+        // 获取子页面
+        Page subPage = new Page(this.getContext(), this.getRectangle());
+        // 初始化
+        subPage.init(this, true);
+        // 设置父页面
+        subPage.setParentPage(this);
+        // 设置子页面
+        this.setSubPage(subPage);
+    }
+
+    /**
+     * 关闭
+     */
+    @Override
+    public void close() {
+        // 重置上下文
+        this.setContext(null);
+        // 重置任务页面
+        this.setTarget(null);
+        // 重置父页面
+        this.setParentPage(null);
+        // 重置子页面
+        this.setSubPage(null);
+    }
+
+    /**
+     * 初始化
      *
-     * @return 返回页面索引
+     * @param context 上下文
+     * @param target  任务页面
      */
-    public Integer getIndex() {
-        return this.param.getIndex();
-    }
-
-    /**
-     * 获取页面参数
-     *
-     * @return 返回页面参数
-     */
-    public PageParam getParam() {
-        return this.param;
-    }
-
-    /**
-     * 释放资源
-     */
-    void release() {
-        this.param.release();
+    private void init(Context context, PDPage target) {
+        // 设置上下文
+        this.setContext(context);
+        // 初始化
+        super.init(context.getDocument(), true);
+        // 初始化id
+        this.id = UUID.randomUUID().toString();
+        // 初始化任务页面
+        this.target = target;
+        // 初始化页面尺寸
+        this.rectangle = new PageRectangle(target.getCropBox());
     }
 
     /**
@@ -295,24 +280,23 @@ public class Page {
      */
     @SneakyThrows
     private void initBackgroundColor() {
-        // 获取页面尺寸
-        PageRectangle rectangle = this.param.getRectangle();
         // 新建内容流
         PDPageContentStream contentStream = new PDPageContentStream(
-                this.param.getDocumentParam().getTarget(),
-                this.param.getTarget(),
+                this.getContext().getTargetDocument(),
+                this.getTarget(),
                 PDPageContentStream.AppendMode.APPEND,
-                true
+                true,
+                this.getIsResetContentStream()
         );
         // 绘制矩形（背景矩形）
         contentStream.addRect(
                 0,
                 0,
-                rectangle.getWidth(),
-                rectangle.getHeight()
+                this.getWidth(),
+                this.getHeight()
         );
         // 设置矩形颜色（背景颜色）
-        contentStream.setNonStrokingColor(this.param.getBackgroundColor());
+        contentStream.setNonStrokingColor(this.getBackgroundColor());
         // 填充矩形（背景矩形）
         contentStream.fill();
         // 关闭内容流
