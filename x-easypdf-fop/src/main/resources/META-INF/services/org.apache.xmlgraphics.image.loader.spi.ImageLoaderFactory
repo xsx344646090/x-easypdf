@@ -1,1 +1,1 @@
-org.dromara.pdf.fop.ext.barcode.XEasyPdfTemplateBarcodeLoaderFactory
+org.dromara.pdf.fop.ext.barcode.BarcodeLoaderFactory
