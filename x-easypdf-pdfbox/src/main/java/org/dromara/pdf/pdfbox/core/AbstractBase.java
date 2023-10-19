@@ -9,7 +9,7 @@ import java.awt.*;
 import java.util.Objects;
 
 /**
- * 基础类
+ * 抽象基础类
  *
  * @author xsx
  * @date 2023/6/2
@@ -27,7 +27,7 @@ import java.util.Objects;
  * </p>
  */
 @Data
-public abstract class Base {
+public abstract class AbstractBase {
     /**
      * 上下文
      */
@@ -74,7 +74,7 @@ public abstract class Base {
     /**
      * 初始化
      */
-    public void init(Base param) {
+    public void init(AbstractBase param) {
         // 初始化内容模式
         if (Objects.isNull(this.contentMode)) {
             this.contentMode = param.contentMode;
@@ -110,11 +110,11 @@ public abstract class Base {
             }
         }
         // 初始化上下文
-        if (!Objects.isNull(this.context)) {
+        if (Objects.nonNull(this.context)) {
             if (Objects.isNull(this.context.getWrapHeight())) {
                 this.context.setWrapHeight(12F);
             }
-            if (Objects.isNull(this.context.getWrapBeginX()) && !Objects.isNull(this.context.getPage())) {
+            if (Objects.isNull(this.context.getWrapBeginX()) && Objects.nonNull(this.context.getPage())) {
                 this.context.setWrapBeginX(this.context.getPage().getMarginLeft());
             }
         }

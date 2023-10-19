@@ -1,10 +1,10 @@
 package org.dromara.pdf.pdfbox.enums;
 
+import lombok.Getter;
+
 /**
- * 垂直对齐
- *
  * @author xsx
- * @date 2023/6/16
+ * @date 2023/10/18
  * @since 1.8
  * <p>
  * Copyright (c) 2020-2023 xsx All Rights Reserved.
@@ -18,17 +18,31 @@ package org.dromara.pdf.pdfbox.enums;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public enum VerticalAlignment {
+@Getter
+public enum PWLength {
     /**
-     * 上
+     * 长度40
      */
-    TOP,
+    LENGTH_40(40),
     /**
-     * 下
+     * 长度128
      */
-    BOTTOM,
+    LENGTH_128(128),
     /**
-     * 中
+     * 长度256
      */
-    CENTER;
+    LENGTH_256(256);
+    /**
+     * 长度
+     */
+    private final int length;
+
+    /**
+     * 构造方法
+     *
+     * @param length 长度
+     */
+    PWLength(int length) {
+        this.length = length;
+    }
 }

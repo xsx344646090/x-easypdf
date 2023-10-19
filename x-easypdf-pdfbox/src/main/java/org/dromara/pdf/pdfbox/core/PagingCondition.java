@@ -1,10 +1,12 @@
-package org.dromara.pdf.pdfbox.enums;
+package org.dromara.pdf.pdfbox.core;
+
+import org.dromara.pdf.pdfbox.core.component.Component;
 
 /**
- * 垂直对齐
+ * 分页条件
  *
  * @author xsx
- * @date 2023/6/16
+ * @date 2023/9/15
  * @since 1.8
  * <p>
  * Copyright (c) 2020-2023 xsx All Rights Reserved.
@@ -18,17 +20,15 @@ package org.dromara.pdf.pdfbox.enums;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public enum VerticalAlignment {
+@FunctionalInterface
+public interface PagingCondition {
+
     /**
-     * 上
+     * 是否分页
+     *
+     * @param component 当前组件
+     * @param beginY    Y轴起始坐标
+     * @return 返回布尔值，true为是，false为否
      */
-    TOP,
-    /**
-     * 下
-     */
-    BOTTOM,
-    /**
-     * 中
-     */
-    CENTER;
+    boolean isPaging(Component component, float beginY);
 }

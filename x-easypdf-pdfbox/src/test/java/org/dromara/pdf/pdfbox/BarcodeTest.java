@@ -32,7 +32,7 @@ public class BarcodeTest {
         Document document = PdfHandler.getDocumentHandler().create();
         document.setMargin(50F);
         Page page = document.createPage(PageRectangle.A4);
-        Barcode barcode = new Barcode(page);
+        Barcode barcode = new Barcode(document.getCurrentPage());
         barcode.setCodeType(BarcodeType.QR_CODE);
         barcode.setWidth(150);
         barcode.setHeight(150);

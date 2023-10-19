@@ -93,15 +93,6 @@ public class Image extends AbstractComponent {
     }
 
     /**
-     * 设置是否svg
-     *
-     * @param isSvg 是否svg
-     */
-    public void setIsSvg(boolean isSvg) {
-        this.isSvg = isSvg;
-    }
-
-    /**
      * 设置图片
      *
      * @param file 文件

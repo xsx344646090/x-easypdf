@@ -10,7 +10,7 @@ import org.dromara.pdf.pdfbox.core.component.Component;
  * @since 1.8
  * <p>
  * Copyright (c) 2020-2023 xsx All Rights Reserved.
- * x-easypdf-new is licensed under Mulan PSL v2.
+ * x-easypdf-pdfbox is licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  * http://license.coscl.org.cn/MulanPSL2

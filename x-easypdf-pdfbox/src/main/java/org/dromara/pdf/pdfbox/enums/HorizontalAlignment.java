@@ -1,6 +1,8 @@
 package org.dromara.pdf.pdfbox.enums;
 
 /**
+ * 水平对齐
+ *
  * @author xsx
  * @date 2023/6/16
  * @since 1.8

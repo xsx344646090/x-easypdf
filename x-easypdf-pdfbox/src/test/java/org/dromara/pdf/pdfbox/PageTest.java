@@ -1,5 +1,6 @@
 package org.dromara.pdf.pdfbox;
 
+import org.apache.pdfbox.pdmodel.PDPage;
 import org.dromara.pdf.pdfbox.core.Document;
 import org.dromara.pdf.pdfbox.core.Page;
 import org.dromara.pdf.pdfbox.core.PageRectangle;
@@ -33,7 +34,22 @@ public class PageTest {
         document.setBackgroundColor(Color.CYAN);
         Page page = document.createPage(PageRectangle.A4);
         page.setBackgroundColor(Color.WHITE);
-        document.saveAndClose("D:\\PDF\\page\\testPage.pdf");
+        document.saveAndClose("E:\\PDF\\page\\testPage.pdf");
     }
 
+    @Test
+    public void testResetRectangle() {
+        Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\page\\testPage.pdf");
+        Page page = document.getPage(0);
+        PDPage target = page.getTarget();
+        System.out.println("MediaBox = " + target.getMediaBox().getWidth() + ", " + target.getMediaBox().getHeight());
+        System.out.println("CropBox = " + target.getCropBox().getWidth() + ", " + target.getCropBox().getHeight());
+        System.out.println("ArtBox = " + target.getArtBox().getWidth() + ", " + target.getArtBox().getHeight());
+        System.out.println("-------------------------------------------------");
+        page.resetRectangle(PageRectangle.A2);
+        System.out.println("MediaBox = " + target.getMediaBox().getWidth() + ", " + target.getMediaBox().getHeight());
+        System.out.println("CropBox = " + target.getCropBox().getWidth() + ", " + target.getCropBox().getHeight());
+        System.out.println("ArtBox = " + target.getArtBox().getWidth() + ", " + target.getArtBox().getHeight());
+        document.saveAndClose("E:\\PDF\\page\\testResetRectangle.pdf");
+    }
 }

@@ -30,7 +30,7 @@ import java.util.Set;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public abstract class AbstractComponent extends BaseFont implements Component, Closeable {
+public abstract class AbstractComponent extends AbstractBaseFont implements Component, Closeable {
 
     /**
      * 分页事件列表
@@ -94,7 +94,7 @@ public abstract class AbstractComponent extends BaseFont implements Component, C
      */
     public void setBeginX(Float beginX) {
         this.beginX = beginX;
-        this.isCustomX = !Objects.isNull(beginX);
+        this.isCustomX = Objects.nonNull(beginX);
     }
 
     /**
@@ -104,7 +104,7 @@ public abstract class AbstractComponent extends BaseFont implements Component, C
      */
     public void setBeginY(Float beginY) {
         this.beginY = beginY;
-        this.isCustomY = !Objects.isNull(beginY);
+        this.isCustomY = Objects.nonNull(beginY);
     }
 
     /**
@@ -113,7 +113,7 @@ public abstract class AbstractComponent extends BaseFont implements Component, C
      * @return 返回当前对象
      */
     @Override
-    public Base getBase() {
+    public AbstractBase getBase() {
         return this;
     }
 
@@ -138,13 +138,13 @@ public abstract class AbstractComponent extends BaseFont implements Component, C
             this.getContext().setExecutingComponentType(this.getType());
         }
         // 初始化页眉分页事件
-        if (!Objects.isNull(this.getContext().getPageHeader())) {
+        if (Objects.nonNull(this.getContext().getPageHeader())) {
             if (this.getContext().getExecutingComponentType().isNotPageHeaderOrFooter()) {
                 this.getPagingEvents().add(this.getContext().getPageHeader().getPagingEvent());
             }
         }
         // 初始化页脚分页事件
-        if (!Objects.isNull(this.getContext().getPageFooter())) {
+        if (Objects.nonNull(this.getContext().getPageFooter())) {
             if (this.getContext().getExecutingComponentType().isNotPageHeaderOrFooter()) {
                 this.getPagingEvents().add(this.getContext().getPageFooter().getPagingEvent());
             }

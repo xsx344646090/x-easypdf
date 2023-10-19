@@ -87,6 +87,33 @@ public class FontHandler {
     }
 
     /**
+     * 获取pdfbox字体
+     *
+     * @param document    pdf文档
+     * @param fontName    字体名称
+     * @param embedSubset 是否嵌入子集
+     * @return 返回pdfBox字体
+     */
+    @SneakyThrows
+    public PDFont getPDFont(PDDocument document, String fontName, boolean embedSubset) {
+        FontInfo fontInfo = FontMapperImpl.getInstance().getFontInfoByName().get(fontName);
+        if (fontInfo != null && fontInfo.getFormat() == FontFormat.OTF) {
+            embedSubset = false;
+        }
+        return PDType0Font.load(document, this.getTrueTypeFont(fontName), embedSubset);
+    }
+
+    /**
+     * 获取字体
+     *
+     * @param fontName 字体名称
+     * @return 返回字体
+     */
+    public TrueTypeFont getTrueTypeFont(String fontName) {
+        return FontMapperImpl.getInstance().getTrueTypeFont(fontName, null).getFont();
+    }
+
+    /**
      * 添加自定义字体
      * <p>注：添加一次即可</p>
      *
@@ -126,29 +153,27 @@ public class FontHandler {
     }
 
     /**
-     * 获取pdfbox字体
+     * 添加文本关联
      *
-     * @param document    pdf文档
-     * @param fontName    字体名称
-     * @param embedSubset 是否嵌入子集
-     * @return 返回pdfBox字体
+     * @param font pdfbox字体
+     * @param text 文本
      */
-    @SneakyThrows
-    public PDFont getPDFont(PDDocument document, String fontName, boolean embedSubset) {
-        FontInfo fontInfo = FontMapperImpl.getInstance().getFontInfoByName().get(fontName);
-        if (fontInfo != null && fontInfo.getFormat() == FontFormat.OTF) {
-            embedSubset = false;
+    public void addToSubset(PDFont font, String text) {
+        // 如果字体不为空且字体为子集，则添加文本到子集
+        if (font != null && font.willBeSubset()) {
+            // 定义偏移量
+            int offset = 0;
+            // 获取文本长度
+            int length = text.length();
+            // 如果偏移量小于文本长度，则添加子集
+            while (offset < length) {
+                // 获取文本坐标
+                int codePoint = text.codePointAt(offset);
+                // 添加子集
+                font.addToSubset(codePoint);
+                // 重置偏移量
+                offset += Character.charCount(codePoint);
+            }
         }
-        return PDType0Font.load(document, this.getTrueTypeFont(fontName), embedSubset);
-    }
-
-    /**
-     * 获取字体
-     *
-     * @param fontName 字体名称
-     * @return 返回字体
-     */
-    public TrueTypeFont getTrueTypeFont(String fontName) {
-        return FontMapperImpl.getInstance().getTrueTypeFont(fontName, null).getFont();
     }
 }

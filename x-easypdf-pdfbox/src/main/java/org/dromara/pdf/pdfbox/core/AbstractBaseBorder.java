@@ -8,6 +8,8 @@ import java.awt.*;
 import java.util.Objects;
 
 /**
+ * 抽象基础边框类
+ *
  * @author xsx
  * @date 2023/9/22
  * @since 1.8
@@ -25,7 +27,7 @@ import java.util.Objects;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public abstract class BaseBorder extends BaseMargin {
+public abstract class AbstractBaseBorder extends AbstractBaseMargin {
     /**
      * 边框样式
      */
@@ -141,7 +143,7 @@ public abstract class BaseBorder extends BaseMargin {
      * @param base                基础参数
      * @param isInitMarginByParam 是否使用参数初始化边距
      */
-    public void init(BaseBorder base, boolean isInitMarginByParam) {
+    public void init(AbstractBaseBorder base, boolean isInitMarginByParam) {
         // 初始化
         super.init(base, isInitMarginByParam);
         // 初始化边框
@@ -153,7 +155,7 @@ public abstract class BaseBorder extends BaseMargin {
      *
      * @param base 基础参数
      */
-    private void initBorder(BaseBorder base) {
+    private void initBorder(AbstractBaseBorder base) {
         // 初始化边框样式
         if (Objects.isNull(this.borderStyle)) {
             this.borderStyle = base.borderStyle;

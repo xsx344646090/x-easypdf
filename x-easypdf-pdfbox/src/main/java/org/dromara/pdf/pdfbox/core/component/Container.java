@@ -263,7 +263,7 @@ public class Container extends AbstractComponent {
             // 获取容器信息
             ContainerInfo info = context.getContainerInfo();
             // 存在容器信息
-            if (!Objects.isNull(info)) {
+            if (Objects.nonNull(info)) {
                 // 获取游标
                 Cursor cursor = context.getCursor();
                 // 获取高度

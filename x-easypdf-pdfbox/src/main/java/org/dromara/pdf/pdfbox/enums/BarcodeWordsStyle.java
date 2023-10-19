@@ -3,6 +3,8 @@ package org.dromara.pdf.pdfbox.enums;
 import java.awt.*;
 
 /**
+ * 条形码类型文字样式
+ *
  * @author xsx
  * @date 2023/8/28
  * @since 1.8

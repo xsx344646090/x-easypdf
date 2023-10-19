@@ -31,7 +31,7 @@ import java.util.Optional;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public abstract class AbstractPageHeaderOrFooter extends BaseBorder {
+public abstract class AbstractPageHeaderOrFooter extends AbstractBaseBorder {
     /**
      * 宽度
      */
@@ -79,6 +79,13 @@ public abstract class AbstractPageHeaderOrFooter extends BaseBorder {
      * @return 返回类型
      */
     public abstract ComponentType getType();
+
+    /**
+     * 获取分页事件
+     *
+     * @return 返回分页事件
+     */
+    public abstract PagingEvent getPagingEvent();
 
     /**
      * 设置宽度
@@ -129,9 +136,9 @@ public abstract class AbstractPageHeaderOrFooter extends BaseBorder {
      */
     public void render() {
         // 校验宽度
-        Objects.requireNonNull(this.width, "the width can not be null");
+        Objects.requireNonNull(this.getWidth(), "the width can not be null");
         // 校验高度
-        Objects.requireNonNull(this.height, "the height can not be null");
+        Objects.requireNonNull(this.getHeight(), "the height can not be null");
         // 初始化
         this.init();
         // 渲染前
@@ -223,39 +230,5 @@ public abstract class AbstractPageHeaderOrFooter extends BaseBorder {
         }
         // 返回偏移量
         return offset;
-    }
-
-    /**
-     * 获取分页事件
-     *
-     * @return 返回分页事件
-     */
-    public PagingEvent getPagingEvent() {
-        return new DefaultPagingEvent();
-    }
-
-    /**
-     * 默认分页事件
-     */
-    public static class DefaultPagingEvent extends AbstractPagingEvent {
-
-        /**
-         * 分页之后
-         *
-         * @param component 当前组件
-         */
-        @Override
-        public void after(Component component) {
-            // 获取换行起始坐标
-            Float wrapBeginX = component.getContext().getWrapBeginX();
-            // 获取执行组件类型
-            ComponentType currentExecutingComponentType = component.getContext().getExecutingComponentType();
-            // 渲染组件
-            Optional.ofNullable(component.getContext().getPageFooter()).ifPresent(AbstractPageHeaderOrFooter::render);
-            // 重置执行组件类型
-            component.getContext().setExecutingComponentType(currentExecutingComponentType);
-            // 重置换行起始坐标
-            component.getContext().setWrapBeginX(wrapBeginX);
-        }
     }
 }

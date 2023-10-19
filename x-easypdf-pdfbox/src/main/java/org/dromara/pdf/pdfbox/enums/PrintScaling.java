@@ -1,10 +1,13 @@
 package org.dromara.pdf.pdfbox.enums;
 
+import lombok.Getter;
+import org.apache.pdfbox.printing.Scaling;
+
 /**
- * 垂直对齐
+ * 打印缩放
  *
  * @author xsx
- * @date 2023/6/16
+ * @date 2023/10/18
  * @since 1.8
  * <p>
  * Copyright (c) 2020-2023 xsx All Rights Reserved.
@@ -18,17 +21,35 @@ package org.dromara.pdf.pdfbox.enums;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public enum VerticalAlignment {
+@Getter
+public enum PrintScaling {
     /**
-     * 上
+     * 实际尺寸
      */
-    TOP,
+    ACTUAL_SIZE(Scaling.ACTUAL_SIZE),
     /**
-     * 下
+     * 缩小填充
      */
-    BOTTOM,
+    SHRINK_TO_FIT(Scaling.SHRINK_TO_FIT),
     /**
-     * 中
+     * 拉伸填充
      */
-    CENTER;
+    STRETCH_TO_FIT(Scaling.STRETCH_TO_FIT),
+    /**
+     * 缩放至合适
+     */
+    SCALE_TO_FIT(Scaling.SCALE_TO_FIT);
+    /**
+     * 缩放
+     */
+    private final Scaling scaling;
+
+    /**
+     * 有参构造
+     *
+     * @param scaling 缩放
+     */
+    PrintScaling(Scaling scaling) {
+        this.scaling = scaling;
+    }
 }

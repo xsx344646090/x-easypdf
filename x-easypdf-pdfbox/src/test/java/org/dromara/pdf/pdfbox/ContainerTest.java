@@ -33,7 +33,6 @@ public class ContainerTest {
         Document document = PdfHandler.getDocumentHandler().create();
         document.setMargin(50F);
         Page page = document.createPage(PageRectangle.A4);
-        document.appendPage(page);
         Container container = new Container(document.getCurrentPage());
         container.setWidth(100F);
         container.setHeight(100F);
@@ -51,7 +50,7 @@ public class ContainerTest {
         container.render();
         container.setIsWrap(true);
         container.render();
-
+        document.appendPage(page);
         document.saveAndClose("E:\\PDF\\container\\testTextContainer.pdf");
     }
 

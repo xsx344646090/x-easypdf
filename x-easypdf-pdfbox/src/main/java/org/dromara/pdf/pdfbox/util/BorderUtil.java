@@ -3,7 +3,7 @@ package org.dromara.pdf.pdfbox.util;
 import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.dromara.pdf.pdfbox.core.BaseBorder;
+import org.dromara.pdf.pdfbox.core.AbstractBaseBorder;
 import org.dromara.pdf.pdfbox.core.Context;
 import org.dromara.pdf.pdfbox.enums.BorderStyle;
 
@@ -33,7 +33,7 @@ public class BorderUtil {
      * @param base 基类
      */
     @SneakyThrows
-    public static void drawBorderWithBase(BaseBorder base, PDRectangle rectangle) {
+    public static void drawBorderWithBase(AbstractBaseBorder base, PDRectangle rectangle) {
         // 获取上下文
         Context context = base.getContext();
         // 初始化内容流
@@ -58,7 +58,7 @@ public class BorderUtil {
      * @param base      基类
      */
     @SneakyThrows
-    public static void drawNormalBorder(PDPageContentStream stream, PDRectangle rectangle, BaseBorder base) {
+    public static void drawNormalBorder(PDPageContentStream stream, PDRectangle rectangle, AbstractBaseBorder base) {
         // 设置线宽
         stream.setLineWidth(base.getBorderWidth());
         // 设置线帽样式
@@ -74,7 +74,7 @@ public class BorderUtil {
      * @param rectangle pdfbox页面尺寸
      * @param base      基类
      */
-    private static void line(PDPageContentStream stream, PDRectangle rectangle, BaseBorder base) {
+    private static void line(PDPageContentStream stream, PDRectangle rectangle, AbstractBaseBorder base) {
         // 实线
         if (base.getBorderStyle() == BorderStyle.SOLID) {
             // 绘制实线
@@ -96,7 +96,7 @@ public class BorderUtil {
      * @param base      基类
      */
     @SneakyThrows
-    private static void drawSolidLine(PDPageContentStream stream, PDRectangle rectangle, BaseBorder base) {
+    private static void drawSolidLine(PDPageContentStream stream, PDRectangle rectangle, AbstractBaseBorder base) {
         // 绘制上边框
         if (base.getIsBorderTop()) {
             // 设置颜色
@@ -151,7 +151,7 @@ public class BorderUtil {
      * @param base      基类
      */
     @SneakyThrows
-    private static void drawDottedLine(PDPageContentStream stream, PDRectangle rectangle, BaseBorder base) {
+    private static void drawDottedLine(PDPageContentStream stream, PDRectangle rectangle, AbstractBaseBorder base) {
         // 绘制上边框
         if (base.getIsBorderTop()) {
             // 绘制上边框

@@ -97,23 +97,4 @@ public class ImageTest {
         rightTextarea.render();
         document.saveAndClose("E:\\PDF\\image\\testMix.pdf");
     }
-
-    @Test
-    public void test() {
-        Document document = PdfHandler.getDocumentHandler().create();
-        // document.setMargin(50F);
-        Page page = document.getCurrentPage();
-        // Textarea leftText = PdfHandler.getTextHandler().build(page);
-        // page = leftText.setText("左侧文本").setFontColor(Color.BLUE).render();
-        Image image = new Image(page);
-        image.setWidth(300);
-        image.setHeight(300);
-        image.setBeginX(0F);
-        image.setBeginY(300F);
-        image.setImage(Paths.get("E:\\PDF\\image\\test.jpeg").toFile());
-        image.render();
-        // Textarea rightText = PdfHandler.getTextHandler().build(page);
-        // rightText.setText("右侧文本").setFontColor(Color.GREEN).render();
-        document.saveAndClose("E:\\PDF\\image\\testMix.pdf");
-    }
 }

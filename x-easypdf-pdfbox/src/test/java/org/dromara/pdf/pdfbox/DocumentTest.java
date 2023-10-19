@@ -9,8 +9,17 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.dromara.pdf.pdfbox.core.Document;
 import org.dromara.pdf.pdfbox.core.Page;
 import org.dromara.pdf.pdfbox.core.PageRectangle;
+import org.dromara.pdf.pdfbox.core.component.Container;
+import org.dromara.pdf.pdfbox.core.component.PageFooter;
+import org.dromara.pdf.pdfbox.core.component.PageHeader;
+import org.dromara.pdf.pdfbox.core.component.Textarea;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.junit.Test;
+
+import java.awt.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Optional;
 
 /**
  * @author xsx
@@ -48,7 +57,7 @@ public class DocumentTest {
         contentStream.endText();
         contentStream.close();
         // differentSettings(pdDocument, page, document.getFont());
-        document.save("D:\\PDF\\test.pdf").close();
+        document.saveAndClose("D:\\PDF\\test.pdf");
 
         // List<String> fontNames = PdfHandler.getFontHandler().getFontNames();
         // fontNames.forEach(System.out::println);
@@ -96,5 +105,70 @@ public class DocumentTest {
         Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\document\\insertPage.pdf");
         document.reorderPage(1, 0);
         document.saveAndClose("E:\\PDF\\document\\resortPageTest.pdf");
+    }
+
+    @Test
+    public void restructurePageTest() {
+        Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\document\\insertPage.pdf");
+        document.restructurePage(1, 0, 1, 0, 1);
+        document.saveAndClose("E:\\PDF\\document\\restructurePageTest.pdf");
+    }
+
+    @Test
+    public void testTotalPageNumber() {
+        Document document = this.create(null);
+        int totalPageNumber = document.getTotalPageNumber();
+        document.close();
+        document = this.create(totalPageNumber);
+        document.saveAndClose("E:\\PDF\\document\\testTotalPageNumber.pdf");
+    }
+
+    private Document create(Integer totalPage) {
+        Document document = PdfHandler.getDocumentHandler().create();
+        document.setMargin(50F);
+        document.setTotalPageNumber(totalPage);
+
+        Page page = document.createPage(PageRectangle.A4);
+        page.setBorderColor(Color.LIGHT_GRAY);
+
+        PageHeader pageHeader = new PageHeader(document.getCurrentPage());
+        Textarea headerText = new Textarea(pageHeader.getPage());
+        headerText.setText("页眉");
+        pageHeader.setWidth(490F);
+        pageHeader.setHeight(100F);
+        pageHeader.setComponents(Collections.singletonList(headerText));
+        pageHeader.setIsBorder(true);
+        pageHeader.render();
+
+        PageFooter pageFooter = new PageFooter(document.getCurrentPage());
+        Textarea footerText = new Textarea(pageHeader.getPage());
+        footerText.setText("页脚");
+        pageFooter.setWidth(490F);
+        pageFooter.setHeight(350F);
+        pageFooter.setComponents(Collections.singletonList(footerText));
+        pageFooter.setIsBorder(true);
+        pageFooter.render();
+
+        Container container = new Container(document.getCurrentPage());
+        container.setWidth(100F);
+        container.setHeight(100F);
+        container.setIsBorder(true);
+        Textarea textarea1 = new Textarea(container.getPage());
+        textarea1.setText("hello");
+        Textarea textarea2 = new Textarea(container.getPage());
+        textarea2.setText("world1world2");
+        Textarea textarea3 = new Textarea(container.getPage());
+        textarea3.setText("总页数" + Optional.ofNullable(totalPage).orElse(0));
+        container.setComponents(Arrays.asList(textarea1, textarea2, textarea3));
+        container.render();
+        container.render();
+        container.render();
+        container.render();
+        container.render();
+        container.render();
+        container.setIsWrap(true);
+        container.render();
+        document.appendPage(page);
+        return document;
     }
 }

@@ -208,7 +208,7 @@ public class Barcode extends AbstractComponent {
      * @param level 纠错级别
      */
     public void setErrorLevel(BarcodeErrorLevel level) {
-        if (!Objects.isNull(level)) {
+        if (Objects.nonNull(level)) {
             this.encodeHints.put(EncodeHintType.ERROR_CORRECTION, level.getLevel());
         }
     }

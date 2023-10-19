@@ -1,6 +1,9 @@
 package org.dromara.pdf.pdfbox.core;
 
+import lombok.EqualsAndHashCode;
 import org.dromara.pdf.pdfbox.core.component.Component;
+
+import java.util.UUID;
 
 /**
  * 抽象分页事件
@@ -20,7 +23,13 @@ import org.dromara.pdf.pdfbox.core.component.Component;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public class AbstractPagingEvent implements PagingEvent {
+@EqualsAndHashCode
+public abstract class AbstractPagingEvent implements PagingEvent {
+
+    /**
+     * 唯一标识
+     */
+    private final String id = UUID.randomUUID().toString();
 
     /**
      * 分页之前

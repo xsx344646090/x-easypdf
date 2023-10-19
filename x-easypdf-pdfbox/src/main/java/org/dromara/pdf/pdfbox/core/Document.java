@@ -9,18 +9,37 @@ import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.io.RandomAccessReadBuffer;
 import org.apache.pdfbox.pdfwriter.compress.CompressParameters;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDDocumentInformation;
 import org.apache.pdfbox.pdmodel.PDPageTree;
+import org.apache.pdfbox.pdmodel.common.PDMetadata;
+import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
+import org.apache.pdfbox.pdmodel.encryption.PublicKeyProtectionPolicy;
+import org.apache.pdfbox.pdmodel.encryption.PublicKeyRecipient;
+import org.apache.pdfbox.pdmodel.encryption.StandardProtectionPolicy;
+import org.apache.pdfbox.printing.PDFPageable;
+import org.apache.pdfbox.printing.PDFPrintable;
+import org.apache.xmpbox.XMPMetadata;
+import org.apache.xmpbox.schema.AdobePDFSchema;
+import org.apache.xmpbox.xml.XmpSerializer;
+import org.dromara.pdf.pdfbox.core.info.CatalogInfo;
 import org.dromara.pdf.pdfbox.enums.*;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.dromara.pdf.pdfbox.support.Constants;
 import org.dromara.pdf.pdfbox.util.FileUtil;
 
+import javax.print.PrintServiceLookup;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.print.PageFormat;
+import java.awt.print.PrinterJob;
+import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.*;
 import java.util.function.Function;
@@ -46,7 +65,7 @@ import java.util.stream.Collectors;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class Document extends BaseFont implements Closeable {
+public class Document extends AbstractBaseFont implements Closeable {
 
     /**
      * 日志
@@ -56,7 +75,22 @@ public class Document extends BaseFont implements Closeable {
      * 生产者
      */
     private static final String PRODUCER = Constants.PDFBOX_PRODUCER;
-
+    /**
+     * pdf访问权限
+     */
+    private AccessPermission accessPermission;
+    /**
+     * 文档信息
+     */
+    private PDDocumentInformation info;
+    /**
+     * 文档版本
+     */
+    private Float version;
+    /**
+     * 文档元数据
+     */
+    private PDMetadata metadata;
     /**
      * 任务文档
      */
@@ -141,10 +175,7 @@ public class Document extends BaseFont implements Closeable {
             // 设置是否分页
             context.setIsAlreadyPaging(Boolean.FALSE);
             // 重置游标
-            context.getCursor().reset(
-                    page.getMarginLeft(),
-                    page.getHeight() - page.getMarginTop()
-            );
+            context.getCursor().reset(page.getMarginLeft(), page.getHeight() - page.getMarginTop());
         }
     }
 
@@ -159,6 +190,25 @@ public class Document extends BaseFont implements Closeable {
     }
 
     /**
+     * 设置版本
+     *
+     * @param version 版本
+     */
+    public void setVersion(float version) {
+        // 最大版本
+        float maxVersion = 1.7F;
+        // 最小版本
+        float minVersion = 1.0F;
+        // 如果版本小于1.0且大于1.7，则提示错误
+        if (version < minVersion || version > maxVersion) {
+            // 提示错误
+            throw new IllegalArgumentException("the version must be between 1.0 and 1.7");
+        }
+        // 重置版本
+        this.version = version;
+    }
+
+    /**
      * 获取总页数
      *
      * @return 返回总页数
@@ -168,24 +218,130 @@ public class Document extends BaseFont implements Closeable {
     }
 
     /**
+     * 标准保护策略
+     */
+    public void protectWithStandard() {
+        this.protectWithStandard(false, PWLength.LENGTH_40, "", "");
+    }
+
+    /**
+     * 标准保护策略
+     *
+     * @param preferAES     AES加密（密码长度为128位时生效）
+     * @param length        密码长度（40位，128位，256位）
+     * @param ownerPassword 拥有者密码
+     * @param userPassword  用户密码
+     */
+    @SneakyThrows
+    public void protectWithStandard(boolean preferAES, PWLength length, String ownerPassword, String userPassword) {
+        // 初始化标准保护策略
+        StandardProtectionPolicy policy = new StandardProtectionPolicy(ownerPassword, userPassword, this.getAccessPermission());
+        // 设置AES加密
+        policy.setPreferAES(preferAES);
+        // 设置密钥长度
+        policy.setEncryptionKeyLength(Optional.ofNullable(length).orElse(PWLength.LENGTH_40).getLength());
+        // 设置文档权限
+        this.getTarget().protect(policy);
+    }
+
+    /**
+     * 公钥保护策略
+     * <p>注：仅支持"X.509"</p>
+     *
+     * @param certificateInputStream 公钥证书数据流
+     */
+    @SneakyThrows
+    public void protectWithPublicKey(InputStream certificateInputStream) {
+        // 初始化公钥接收者
+        PublicKeyRecipient recipient = new PublicKeyRecipient();
+        // 设置访问权限
+        recipient.setPermission(this.getAccessPermission());
+        // 设置X509证书
+        recipient.setX509((X509Certificate) CertificateFactory.getInstance("X.509").generateCertificate(certificateInputStream));
+        // 初始化公钥保护策略
+        PublicKeyProtectionPolicy policy = new PublicKeyProtectionPolicy();
+        // 设置接收者
+        policy.addRecipient(recipient);
+        // 设置文档权限
+        this.getTarget().protect(policy);
+    }
+
+    /**
+     * 替换文本
+     *
+     * @param replaceMap 替换字典（key可为正则）
+     */
+    public void replaceText(Map<String, String> replaceMap) {
+        this.getPages().forEach(page -> page.replaceText(replaceMap));
+    }
+
+    /**
+     * 替换评论
+     *
+     * @param replaceMap 替换字典（key可为正则）
+     */
+    public void replaceComment(Map<String, String> replaceMap) {
+        this.getPages().forEach(page -> page.replaceComment(replaceMap));
+    }
+
+    /**
+     * 替换图像
+     *
+     * @param image        待替换图像
+     * @param imageIndexes 图像索引
+     */
+    public void replaceImage(BufferedImage image, int... imageIndexes) {
+        this.getPages().forEach(page -> page.replaceImage(image, imageIndexes));
+    }
+
+    /**
+     * 重组页面
+     *
+     * @param indexes 页面索引
+     */
+    public void restructurePage(int... indexes) {
+        // 参数校验
+        Objects.requireNonNull(indexes, "the indexes can not be null");
+        // 获取页面列表
+        List<Page> pages = this.getPages();
+        // 创建新列表
+        List<Page> newPages = new ArrayList<>(indexes.length);
+        // 遍历索引
+        for (int index : indexes) {
+            try {
+                // 添加页面
+                newPages.add(pages.get(index));
+            } catch (Exception e) {
+                // 提示信息
+                log.warn("the index['" + index + "'] is invalid, will be ignored");
+            }
+        }
+        // 重置页面列表
+        this.setPages(newPages);
+        // 重置页面
+        this.resetPage();
+    }
+
+    /**
      * 重排序页面
      *
      * @param indexes 页面索引
-     * @return 返回文档
      */
-    public Document reorderPage(int... indexes) {
+    public void reorderPage(int... indexes) {
+        // 参数校验
+        Objects.requireNonNull(indexes, "the indexes can not be null");
         // 获取页面列表
         List<Page> pages = this.getPages();
         // 创建排序列表
         List<Page> orderPages = new ArrayList<>(pages.size());
         // 遍历索引
-        for (int i : indexes) {
+        for (int index : indexes) {
             try {
                 // 添加页面
-                orderPages.add(pages.remove(i));
+                orderPages.add(pages.remove(index));
             } catch (Exception e) {
                 // 提示信息
-                log.warn("the index['" + i + "'] is invalid, will be ignored");
+                log.warn("the index['" + index + "'] is invalid, will be ignored");
             }
         }
         // 添加剩余页面
@@ -194,8 +350,6 @@ public class Document extends BaseFont implements Closeable {
         this.setPages(orderPages);
         // 重置页面
         this.resetPage();
-        // 返回文档
-        return this;
     }
 
     /**
@@ -203,9 +357,8 @@ public class Document extends BaseFont implements Closeable {
      *
      * @param index 页面索引
      * @param page  页面
-     * @return 返回文档
      */
-    public Document insertPage(int index, Page page) {
+    public void insertPage(int index, Page page) {
         try {
             // 添加页面
             this.getPages().add(index, page);
@@ -228,17 +381,14 @@ public class Document extends BaseFont implements Closeable {
             // 提示信息
             log.warn("the index['" + index + "'] is invalid, will be ignored");
         }
-        // 返回文档
-        return this;
     }
 
     /**
      * 追加页面
      *
      * @param page 页面
-     * @return 返回文档
      */
-    public Document appendPage(Page page) {
+    public void appendPage(Page page) {
         // 添加页面
         this.getPages().add(page);
         // 遍历
@@ -254,8 +404,6 @@ public class Document extends BaseFont implements Closeable {
         }
         // 重置页面
         this.resetPage();
-        // 返回文档
-        return this;
     }
 
     /**
@@ -263,9 +411,8 @@ public class Document extends BaseFont implements Closeable {
      *
      * @param index 页面索引
      * @param page  页面
-     * @return 返回文档
      */
-    public Document setPage(int index, Page page) {
+    public void setPage(int index, Page page) {
         try {
             // 设置页面
             this.getPages().set(index, page);
@@ -288,17 +435,16 @@ public class Document extends BaseFont implements Closeable {
             // 提示信息
             log.warn("the index['" + index + "'] is invalid, will be ignored");
         }
-        // 返回文档
-        return this;
     }
 
     /**
      * 移除页面
      *
      * @param indexes 页面索引
-     * @return 返回文档
      */
-    public Document removePage(int... indexes) {
+    public void removePage(int... indexes) {
+        // 参数校验
+        Objects.requireNonNull(indexes, "the indexes can not be null");
         // 创建临时列表
         List<Page> temp = new ArrayList<>(this.getPages());
         // 遍历索引
@@ -313,8 +459,6 @@ public class Document extends BaseFont implements Closeable {
         }
         // 重置页面
         this.resetPage();
-        // 返回文档
-        return this;
     }
 
     /**
@@ -354,40 +498,92 @@ public class Document extends BaseFont implements Closeable {
      *
      * @return 返回目录列表
      */
-    public List<Catalog> getCatalogs() {
+    public List<CatalogInfo> getCatalogs() {
         return this.getContext().getCatalogs();
     }
 
     /**
      * 刷新目录
-     *
-     * @return 返回文档
      */
-    public Document flushCatalog() {
+    public void flushCatalog() {
         // 获取目录
-        List<Catalog> catalogs = this.getContext().getCatalogs();
+        List<CatalogInfo> catalogs = this.getContext().getCatalogs();
         // 目录不为空
-        if (catalogs != null && !catalogs.isEmpty()) {
-            // 转为页面字典
-            Map<String, Page> pageMap = this.getPages().stream().collect(
-                    Collectors.toMap(Page::getId, Function.identity())
-            );
+        if (Objects.nonNull(catalogs) && !catalogs.isEmpty()) {
+            // 获取页面字典
+            Map<String, Page> pageMap = this.getPages().stream().collect(Collectors.toMap(Page::getId, Function.identity()));
             // 重置索引
             catalogs.forEach(catalog -> catalog.setPageIndex(pageMap.get(catalog.getPageId()).getIndex()));
         }
-        // 返回文档
-        return this;
+    }
+
+    /**
+     * 打印
+     *
+     * @param count 数量
+     */
+    public void print(int count) {
+        this.print(PrintScaling.ACTUAL_SIZE, PrintOrientation.PORTRAIT, count);
+    }
+
+    /**
+     * 打印
+     *
+     * @param scaling 缩放
+     * @param count   数量
+     */
+    public void print(PrintScaling scaling, int count) {
+        this.print(scaling, PrintOrientation.PORTRAIT, count);
+    }
+
+    /**
+     * 打印
+     *
+     * @param orientation 方向
+     * @param count       数量
+     */
+    public void print(PrintOrientation orientation, int count) {
+        this.print(PrintScaling.ACTUAL_SIZE, orientation, count);
+    }
+
+    /**
+     * 打印
+     *
+     * @param scaling     缩放
+     * @param orientation 方向
+     * @param count       数量
+     */
+    @SneakyThrows
+    public void print(PrintScaling scaling, PrintOrientation orientation, int count) {
+        // 创建打印选项
+        PDFPrintable printable = new PDFPrintable(this.getTarget(), scaling.getScaling());
+        // 创建打印任务
+        PDFPageable target = new PDFPageable(this.getTarget());
+        // 创建页面格式对象
+        PageFormat pageFormat = new PageFormat();
+        // 设置打印方向
+        pageFormat.setOrientation(orientation.getOrientation());
+        // 添加打印页面
+        target.append(printable, pageFormat);
+        // 获取打印任务
+        PrinterJob job = PrinterJob.getPrinterJob();
+        // 设置打印服务（默认）
+        job.setPrintService(PrintServiceLookup.lookupDefaultPrintService());
+        // 设置打印任务
+        job.setPageable(target);
+        // 设置打印数量
+        job.setCopies(count);
+        // 执行打印
+        job.print();
     }
 
     /**
      * 保存文档
      *
      * @param path 路径
-     * @return 返回文档
      */
-    @SneakyThrows
-    public Document save(String path) {
-        return this.save(path, CompressParameters.DEFAULT_OBJECT_STREAM_SIZE);
+    public void save(String path) {
+        this.save(path, CompressParameters.DEFAULT_OBJECT_STREAM_SIZE);
     }
 
     /**
@@ -395,12 +591,11 @@ public class Document extends BaseFont implements Closeable {
      *
      * @param path             路径
      * @param objectStreamSize 对象流大小（用于压缩文档）
-     * @return 返回文档
      */
     @SneakyThrows
-    public Document save(String path, int objectStreamSize) {
+    public void save(String path, int objectStreamSize) {
         try (OutputStream outputStream = Files.newOutputStream(FileUtil.createDirectories(Paths.get(path)))) {
-            return this.save(outputStream, objectStreamSize);
+            this.save(outputStream, objectStreamSize);
         }
     }
 
@@ -408,11 +603,9 @@ public class Document extends BaseFont implements Closeable {
      * 保存文档
      *
      * @param outputStream 输出流
-     * @return 返回文档
      */
-    @SneakyThrows
-    public Document save(OutputStream outputStream) {
-        return this.save(outputStream, CompressParameters.DEFAULT_OBJECT_STREAM_SIZE);
+    public void save(OutputStream outputStream) {
+        this.save(outputStream, CompressParameters.DEFAULT_OBJECT_STREAM_SIZE);
     }
 
     /**
@@ -420,15 +613,20 @@ public class Document extends BaseFont implements Closeable {
      *
      * @param outputStream     输出流
      * @param objectStreamSize 对象流大小（用于压缩文档）
-     * @return 返回文档
      */
     @SneakyThrows
-    public Document save(OutputStream outputStream, int objectStreamSize) {
+    public void save(OutputStream outputStream, int objectStreamSize) {
         if (this.getPages().isEmpty()) {
             log.error("the document has no pages");
         }
+        // 设置文档版本
+        this.getTarget().setVersion(this.getVersion());
+        // 设置文档信息
+        this.getTarget().setDocumentInformation(this.getInfo());
+        // 设置元数据
+        this.getTarget().getDocumentCatalog().setMetadata(this.getMetadata());
+        // 保存文档
         this.getTarget().save(outputStream, new CompressParameters(objectStreamSize));
-        return this;
     }
 
     /**
@@ -437,7 +635,8 @@ public class Document extends BaseFont implements Closeable {
      * @param path 路径
      */
     public void saveAndClose(String path) {
-        this.save(path).close();
+        this.save(path);
+        this.close();
     }
 
     /**
@@ -447,7 +646,8 @@ public class Document extends BaseFont implements Closeable {
      * @param objectStreamSize 对象流大小（用于压缩文档）
      */
     public void saveAndClose(String path, int objectStreamSize) {
-        this.save(path, objectStreamSize).close();
+        this.save(path, objectStreamSize);
+        this.close();
     }
 
     /**
@@ -456,7 +656,8 @@ public class Document extends BaseFont implements Closeable {
      * @param outputStream 输出流
      */
     public void saveAndClose(OutputStream outputStream) {
-        this.save(outputStream).close();
+        this.save(outputStream);
+        this.close();
     }
 
     /**
@@ -466,7 +667,8 @@ public class Document extends BaseFont implements Closeable {
      * @param objectStreamSize 对象流大小（用于压缩文档）
      */
     public void saveAndClose(OutputStream outputStream, int objectStreamSize) {
-        this.save(outputStream, objectStreamSize).close();
+        this.save(outputStream, objectStreamSize);
+        this.close();
     }
 
     /**
@@ -552,11 +754,7 @@ public class Document extends BaseFont implements Closeable {
      */
     private void initFontParams() {
         // 初始化字体
-        super.setFont(
-                PdfHandler.getFontHandler().getPDFont(
-                        this.target, Constants.DEFAULT_FONT_NAME, true
-                )
-        );
+        super.setFont(PdfHandler.getFontHandler().getPDFont(this.target, Constants.DEFAULT_FONT_NAME, true));
         // 初始化字体大小
         super.setFontSize(12F);
         // 初始化字体颜色
@@ -585,5 +783,47 @@ public class Document extends BaseFont implements Closeable {
         super.setIsResetContentStream(Boolean.FALSE);
         // 初始化背景颜色
         super.setBackgroundColor(Color.WHITE);
+        // 初始化文档访问权限
+        this.accessPermission = this.target.getCurrentAccessPermission();
+        // 初始化文档信息
+        this.info = this.target.getDocumentInformation();
+        // 初始化文档版本
+        this.version = this.target.getVersion();
+        // 初始化文档元数据
+        this.metadata = this.initXMPMetadata();
+    }
+
+    /**
+     * 初始化文档元数据
+     *
+     * @return 返回文档元数据
+     */
+    @SneakyThrows
+    private PDMetadata initXMPMetadata() {
+        // 获取pdf元数据
+        PDMetadata pdMetadata = this.getTarget().getDocumentCatalog().getMetadata();
+        // pdf元数据不存在
+        if (Objects.isNull(pdMetadata)) {
+            // 创建pdf元数据
+            pdMetadata = new PDMetadata(this.getTarget());
+            // 创建xmp元数据
+            XMPMetadata xmpMetadata = XMPMetadata.createXMPMetadata();
+            // 创建adobe纲要
+            AdobePDFSchema adobePdfSchema = xmpMetadata.createAndAddAdobePDFSchema();
+            // 设置pdf版本
+            adobePdfSchema.setPDFVersion(this.getVersion().toString());
+            // 设置生产者
+            adobePdfSchema.setProducer(PRODUCER);
+            // 添加adobe纲要
+            xmpMetadata.addSchema(adobePdfSchema);
+            // 定义输出流
+            try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+                // 序列化xmp元数据
+                new XmpSerializer().serialize(xmpMetadata, outputStream, true);
+                // 导入xmp元数据
+                pdMetadata.importXMPMetadata(outputStream.toByteArray());
+            }
+        }
+        return pdMetadata;
     }
 }

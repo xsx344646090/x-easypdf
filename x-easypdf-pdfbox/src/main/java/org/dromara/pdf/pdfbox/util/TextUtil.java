@@ -230,38 +230,7 @@ public class TextUtil {
      * @return 返回布尔值，是为true，否为false
      */
     public static boolean isNotBlank(String text) {
-        return !Objects.isNull(text) && text.trim().length() > 0;
-    }
-
-    /**
-     * 拼接字符串
-     *
-     * @param delimiter 分隔符
-     * @param texts     字符串列表
-     * @return 返回拼接后的字符串
-     */
-    public static String join(CharSequence delimiter, String... texts) {
-        // 如果字符串列表为空，则返回空串
-        if (Objects.isNull(texts) || texts.length == 0) {
-            // 返回空串
-            return "";
-        }
-        // 定义字符串构建器
-        StringBuilder builder = new StringBuilder();
-        // 遍历字符串列表
-        for (String text : texts) {
-            // 添加字符串
-            builder.append(text);
-            // 添加分隔符
-            builder.append(delimiter);
-        }
-        // 如果分隔符不为空，则返回少一位
-        if (!Objects.isNull(delimiter) && delimiter.length() > 0) {
-            // 返回拼接后的字符串
-            return builder.substring(0, builder.length() - 1);
-        }
-        // 返回拼接后的完整字符串
-        return builder.toString();
+        return Objects.nonNull(text) && !text.trim().isEmpty();
     }
 
     /**
@@ -276,5 +245,16 @@ public class TextUtil {
             builder.append(" ");
         }
         return builder.toString();
+    }
+
+    /**
+     * 替换制表符
+     *
+     * @param text 待替换文本
+     * @param size 空格数量
+     * @return 返回字符串
+     */
+    public static String replaceTab(String text, int size) {
+        return filterAll(text).replaceAll("\t", spacing(size));
     }
 }

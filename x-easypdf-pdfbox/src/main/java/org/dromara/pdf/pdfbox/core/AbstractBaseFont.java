@@ -9,6 +9,8 @@ import java.awt.*;
 import java.util.Objects;
 
 /**
+ * 抽象基础字体类
+ *
  * @author xsx
  * @date 2023/9/22
  * @since 1.8
@@ -26,7 +28,7 @@ import java.util.Objects;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public abstract class BaseFont extends BaseBorder {
+public abstract class AbstractBaseFont extends AbstractBaseBorder {
     /**
      * 字体名称
      */
@@ -98,7 +100,7 @@ public abstract class BaseFont extends BaseBorder {
      * @param base                基础参数
      * @param isInitMarginByParam 是否使用参数初始化边距
      */
-    public void init(BaseFont base, boolean isInitMarginByParam) {
+    public void init(AbstractBaseFont base, boolean isInitMarginByParam) {
         // 初始化
         super.init(base, isInitMarginByParam);
         // 初始化字体
@@ -110,7 +112,7 @@ public abstract class BaseFont extends BaseBorder {
      *
      * @param base 基础参数
      */
-    private void initFont(BaseFont base) {
+    private void initFont(AbstractBaseFont base) {
         // 初始化pdfbox字体
         if (Objects.isNull(this.font)) {
             this.font = base.font;

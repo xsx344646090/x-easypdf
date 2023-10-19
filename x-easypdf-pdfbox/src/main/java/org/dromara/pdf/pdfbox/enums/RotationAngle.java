@@ -1,10 +1,8 @@
 package org.dromara.pdf.pdfbox.enums;
 
 /**
- * 垂直对齐
- *
  * @author xsx
- * @date 2023/6/16
+ * @date 2023/6/2
  * @since 1.8
  * <p>
  * Copyright (c) 2020-2023 xsx All Rights Reserved.
@@ -18,17 +16,40 @@ package org.dromara.pdf.pdfbox.enums;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public enum VerticalAlignment {
+public enum RotationAngle {
     /**
-     * 上
+     * 90度
      */
-    TOP,
+    ROTATION_90(90),
     /**
-     * 下
+     * 180度
      */
-    BOTTOM,
+    ROTATION_180(180),
     /**
-     * 中
+     * 270度
      */
-    CENTER;
+    ROTATION_270(270);
+
+    /**
+     * 后缀
+     */
+    private final Integer angle;
+
+    /**
+     * 有参构造
+     *
+     * @param angle 角度
+     */
+    RotationAngle(Integer angle) {
+        this.angle = angle;
+    }
+
+    /**
+     * 获取角度
+     *
+     * @return 返回角度
+     */
+    public Integer getAngle() {
+        return this.angle;
+    }
 }

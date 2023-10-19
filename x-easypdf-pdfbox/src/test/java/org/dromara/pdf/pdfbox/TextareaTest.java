@@ -2,6 +2,7 @@ package org.dromara.pdf.pdfbox;
 
 import org.dromara.pdf.pdfbox.core.*;
 import org.dromara.pdf.pdfbox.core.component.Textarea;
+import org.dromara.pdf.pdfbox.core.info.CatalogInfo;
 import org.dromara.pdf.pdfbox.enums.FontStyle;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.junit.Test;
@@ -29,7 +30,7 @@ import java.util.List;
 public class TextareaTest {
     @Test
     public void testGlobal() {
-        PdfHandler.getFontHandler().addFont(Paths.get("D:\\PDF\\textarea\\SourceHanSerifSC-Regular.otf").toFile());
+        PdfHandler.getFontHandler().addFont(Paths.get("E:\\PDF\\textarea\\SourceHanSerifSC-Regular.otf").toFile());
         Document document = PdfHandler.getDocumentHandler().create();
         document.setMargin(50F);
         document.setFontName("SourceHanSerifSC-Regular");
@@ -43,20 +44,26 @@ public class TextareaTest {
         Textarea textarea = new Textarea(document.getCurrentPage());
         textarea.setText("这是第一页，使用的页面设置");
         textarea.render();
+        System.out.println("page.getLastIndex() = " + page.getLastIndex());
         textarea.setIsBreak(true);
         textarea.setText("这是第二页，使用的上个页面设置");
         textarea.render();
-        textarea = new Textarea(page);
+        System.out.println("page.getLastIndex() = " + page.getLastIndex());
+        textarea = new Textarea(document.getCurrentPage());
         textarea.setText("这是第二页换行文本，使用的自定义设置");
         textarea.setIsWrap(true);
         textarea.setFontColor(Color.BLACK);
         textarea.setFontSize(6F);
         textarea.render();
-        page = document.createPage(PageRectangle.A4);
-        textarea = new Textarea(page);
+        System.out.println("page.getLastIndex() = " + page.getLastIndex());
+        Page page1 = document.createPage(PageRectangle.A4);
+        textarea = new Textarea(document.getCurrentPage());
         textarea.setText("这是第三页，使用的全局设置");
         textarea.render();
-        document.saveAndClose("D:\\PDF\\textarea\\testGlobal.pdf");
+        System.out.println("page1.getLastIndex() = " + (page.getLastIndex() + page1.getLastIndex()));
+        document.appendPage(page);
+        document.appendPage(page1);
+        document.saveAndClose("E:\\PDF\\textarea\\testGlobal.pdf");
     }
 
     @Test
@@ -74,6 +81,7 @@ public class TextareaTest {
         textarea.setIsWrap(true);
         textarea.setText("手动换行");
         textarea.render();
+        document.appendPage(page);
         document.saveAndClose("D:\\PDF\\textarea\\testWrap.pdf");
     }
 
@@ -120,6 +128,7 @@ public class TextareaTest {
         textarea.setFontStyle(FontStyle.ITALIC_STROKE);
         textarea.setText("x-easypdf（ITALIC_STROKE）");
         textarea.render();
+        document.appendPage(page);
         document.saveAndClose("D:\\PDF\\textarea\\testFontStyle.pdf");
     }
 
@@ -193,11 +202,11 @@ public class TextareaTest {
         textarea.setUnderlineColor(Color.BLUE);
         textarea.setIsUnderline(true);
         textarea.setOuterDest(
-                        OuterDest.create()
-                                .setName("x-easypdf官网")
-                                .setUrl("https://x-easypdf.cn")
-                                .setHighlightMode(HighlightMode.OUTLINE)
-                );
+                OuterDest.create()
+                        .setName("x-easypdf官网")
+                        .setUrl("https://x-easypdf.cn")
+                        .setHighlightMode(HighlightMode.OUTLINE)
+        );
         textarea.setText("这是\n超链接文本");
         textarea.render();
         document.appendPage(page);
@@ -236,35 +245,38 @@ public class TextareaTest {
         textarea.setLeading(12F);
         textarea.setBorderColor(Color.CYAN);
         textarea.setText("爽爽的贵阳，避暑的天堂1");
-        textarea.setCatalog(new Catalog("爽爽的贵阳，避暑的天堂1"));
+        textarea.setCatalog(new CatalogInfo("爽爽的贵阳，避暑的天堂1"));
         textarea.render();
         textarea.setIsBorderTop(false);
         textarea.setIsBorderBottom(true);
         textarea.setMarginLeft(200F);
         textarea.setText("爽爽的贵阳，避暑的天堂2");
-        textarea.setCatalog(new Catalog("爽爽的贵阳，避暑的天堂2"));
+        textarea.setCatalog(new CatalogInfo("爽爽的贵阳，避暑的天堂2"));
         textarea.render();
         textarea.setIsWrap(true);
         textarea.setIsBorderBottom(false);
         textarea.setIsBorderLeft(true);
         textarea.setMarginLeft(0F);
         textarea.setText("爽爽的贵阳，避暑的天堂3");
-        textarea.setCatalog(new Catalog("爽爽的贵阳，避暑的天堂3"));
+        textarea.setCatalog(new CatalogInfo("爽爽的贵阳，避暑的天堂3"));
         textarea.render();
         textarea.setIsWrap(false);
         textarea.setIsBorderLeft(false);
         textarea.setIsBorderRight(true);
         textarea.setMarginLeft(200F);
         textarea.setText("爽爽的贵阳，避暑的天堂4");
-        textarea.setCatalog(new Catalog("爽爽的贵阳，避暑的天堂4"));
+        textarea.setCatalog(new CatalogInfo("爽爽的贵阳，避暑的天堂4"));
         textarea.render();
         Page page1 = document.createPage(PageRectangle.A4);
         textarea = new Textarea(page1);
         textarea.setIsBorder(true);
         textarea.setText("爽爽的贵阳，避暑的天堂");
-        textarea.setCatalog(new Catalog("爽爽的贵阳，避暑的天堂"));
+        textarea.setCatalog(new CatalogInfo("爽爽的贵阳，避暑的天堂"));
         textarea.render();
-        List<Catalog> catalogs = document.appendPage(page).appendPage(page1).flushCatalog().getCatalogs();
+        document.appendPage(page);
+        document.appendPage(page1);
+        document.flushCatalog();
+        List<CatalogInfo> catalogs = document.getCatalogs();
         catalogs.forEach(System.out::println);
         document.saveAndClose("E:\\PDF\\textarea\\testBorder.pdf");
     }

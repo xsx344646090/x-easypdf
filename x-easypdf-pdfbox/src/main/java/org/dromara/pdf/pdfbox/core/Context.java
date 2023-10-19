@@ -6,6 +6,7 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.dromara.pdf.pdfbox.core.component.ContainerInfo;
 import org.dromara.pdf.pdfbox.core.component.PageFooter;
 import org.dromara.pdf.pdfbox.core.component.PageHeader;
+import org.dromara.pdf.pdfbox.core.info.CatalogInfo;
 import org.dromara.pdf.pdfbox.enums.ContentMode;
 
 import java.util.*;
@@ -82,7 +83,7 @@ public class Context {
     /**
      * 目录列表
      */
-    private List<Catalog> catalogs;
+    private List<CatalogInfo> catalogs;
     /**
      * 容器信息
      */
@@ -150,7 +151,7 @@ public class Context {
      * @return 返回布尔值，是为true，否为false
      */
     public boolean hasPageHeader() {
-        return !Objects.isNull(this.pageHeader);
+        return Objects.nonNull(this.pageHeader);
     }
 
     /**
@@ -159,7 +160,7 @@ public class Context {
      * @return 返回布尔值，是为true，否为false
      */
     public boolean hasPageFooter() {
-        return !Objects.isNull(this.pageFooter);
+        return Objects.nonNull(this.pageFooter);
     }
 
     /**

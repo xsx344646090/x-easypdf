@@ -1,10 +1,13 @@
 package org.dromara.pdf.pdfbox.core.component;
 
 import lombok.EqualsAndHashCode;
+import org.dromara.pdf.pdfbox.core.AbstractPagingEvent;
 import org.dromara.pdf.pdfbox.core.ComponentType;
 import org.dromara.pdf.pdfbox.core.Page;
+import org.dromara.pdf.pdfbox.core.PagingEvent;
 
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * 页脚
@@ -26,6 +29,11 @@ import java.util.Objects;
  */
 @EqualsAndHashCode(callSuper = true)
 public class PageFooter extends AbstractPageHeaderOrFooter {
+
+    /**
+     * 分页事件
+     */
+    private final PagingEvent pagingEvent = new DefaultPagingEvent();
 
     /**
      * 原始Y轴坐标
@@ -50,6 +58,16 @@ public class PageFooter extends AbstractPageHeaderOrFooter {
     @Override
     public ComponentType getType() {
         return ComponentType.PAGE_FOOTER;
+    }
+
+    /**
+     * 获取分页事件
+     *
+     * @return 返回分页事件
+     */
+    @Override
+    public PagingEvent getPagingEvent() {
+        return this.pagingEvent;
     }
 
     /**
@@ -91,6 +109,31 @@ public class PageFooter extends AbstractPageHeaderOrFooter {
         this.getContext().getCursor().reset(this.getBeginX(), this.originalY);
         // 重置当前执行组件类型
         this.getContext().resetExecutingComponentType(this.getType());
+    }
+
+    /**
+     * 默认分页事件
+     */
+    public static class DefaultPagingEvent extends AbstractPagingEvent {
+
+        /**
+         * 分页之后
+         *
+         * @param component 当前组件
+         */
+        @Override
+        public void after(Component component) {
+            // 获取换行起始坐标
+            Float wrapBeginX = component.getContext().getWrapBeginX();
+            // 获取执行组件类型
+            ComponentType currentExecutingComponentType = component.getContext().getExecutingComponentType();
+            // 渲染组件
+            Optional.ofNullable(component.getContext().getPageFooter()).ifPresent(AbstractPageHeaderOrFooter::render);
+            // 重置执行组件类型
+            component.getContext().setExecutingComponentType(currentExecutingComponentType);
+            // 重置换行起始坐标
+            component.getContext().setWrapBeginX(wrapBeginX);
+        }
     }
 }
 

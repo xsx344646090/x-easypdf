@@ -1,10 +1,12 @@
-package org.dromara.pdf.pdfbox.core.component;
+package org.dromara.pdf.pdfbox.enums;
+
+import lombok.Getter;
 
 /**
- * 分页条件
+ * 打印方向
  *
  * @author xsx
- * @date 2023/9/15
+ * @date 2023/10/18
  * @since 1.8
  * <p>
  * Copyright (c) 2020-2023 xsx All Rights Reserved.
@@ -18,15 +20,31 @@ package org.dromara.pdf.pdfbox.core.component;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-@FunctionalInterface
-public interface PagingCondition {
+@Getter
+public enum PrintOrientation {
+    /**
+     * 横向
+     */
+    LANDSCAPE(0),
+    /**
+     * 纵向
+     */
+    PORTRAIT(1),
+    /**
+     * 反向横向
+     */
+    REVERSE_LANDSCAPE(2);
+    /**
+     * 方向
+     */
+    private final int orientation;
 
     /**
-     * 是否分页
+     * 有参构造
      *
-     * @param component 当前组件
-     * @param beginY    Y轴起始坐标
-     * @return 返回布尔值，true为是，false为否
+     * @param orientation 方向
      */
-    boolean isPaging(Component component, float beginY);
+    PrintOrientation(int orientation) {
+        this.orientation = orientation;
+    }
 }

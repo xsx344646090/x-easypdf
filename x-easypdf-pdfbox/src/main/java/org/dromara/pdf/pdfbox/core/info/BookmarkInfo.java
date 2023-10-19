@@ -1,10 +1,13 @@
-package org.dromara.pdf.pdfbox.enums;
+package org.dromara.pdf.pdfbox.core.info;
+
+import lombok.Builder;
+import lombok.Data;
 
 /**
- * 字体类型
+ * 书签信息
  *
  * @author xsx
- * @date 2023/6/2
+ * @date 2023/10/19
  * @since 1.8
  * <p>
  * Copyright (c) 2020-2023 xsx All Rights Reserved.
@@ -18,48 +21,35 @@ package org.dromara.pdf.pdfbox.enums;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public enum FontType {
+@Data
+@Builder
+public class BookmarkInfo {
     /**
-     * ttf
+     * 标题
      */
-    TTF(".ttf"),
+    private String title;
     /**
-     * otf
+     * 起始页面索引
      */
-    OTF(".otf"),
+    private Integer beginPageIndex;
     /**
-     * ttc
+     * 结束页面索引
      */
-    TTC(".ttc"),
+    private Integer endPageIndex;
     /**
-     * otc
+     * 起始页面顶部Y轴坐标
      */
-    OTC(".otc"),
+    private Integer beginPageTopY;
     /**
-     * pfb
+     * 起始页面底部Y轴坐标
      */
-    PFB(".pfb");
-
+    private Integer beginPageBottomY;
     /**
-     * 后缀
+     * 结束页面顶部Y轴坐标
      */
-    private final String suffix;
-
+    private Integer endPageTopY;
     /**
-     * 有参构造
-     *
-     * @param suffix 后缀
+     * 结束页面底部Y轴坐标
      */
-    FontType(String suffix) {
-        this.suffix = suffix;
-    }
-
-    /**
-     * 获取后缀
-     *
-     * @return 返回后缀
-     */
-    public String getSuffix() {
-        return this.suffix;
-    }
+    private Integer endPageBottomY;
 }

@@ -45,6 +45,10 @@ public enum ComponentType {
      */
     CONTAINER,
     /**
+     * 水印
+     */
+    WATERMARK,
+    /**
      * 自定义
      */
     CUSTOM;

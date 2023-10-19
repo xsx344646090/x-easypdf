@@ -1,12 +1,14 @@
-package org.dromara.pdf.pdfbox.core;
+package org.dromara.pdf.pdfbox.support;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.pdmodel.font.PDFont;
 
 /**
- * 目录
- *
  * @author xsx
- * @date 2023/9/5
+ * @date 2023/10/10
  * @since 1.8
  * <p>
  * Copyright (c) 2020-2023 xsx All Rights Reserved.
@@ -21,34 +23,22 @@ import lombok.Data;
  * </p>
  */
 @Data
-public class Catalog {
-
+@AllArgsConstructor
+public class COSBaseInfo {
     /**
-     * 标题
+     * cosBase
      */
-    private final String title;
+    private COSBase cosBase;
     /**
-     * 页面id
+     * 字体索引
      */
-    private String pageId;
+    private Integer fontIndex;
     /**
-     * 页码
+     * 字体名称
      */
-    private Integer pageIndex;
+    private COSName fontName;
     /**
-     * X轴起始坐标
+     * 字体
      */
-    private Float beginX;
-    /**
-     * Y轴起始坐标
-     */
-    private Float beginY;
-    /**
-     * X轴起始坐标
-     */
-    private Float endX;
-    /**
-     * Y轴起始坐标
-     */
-    private Float endY;
+    private PDFont font;
 }

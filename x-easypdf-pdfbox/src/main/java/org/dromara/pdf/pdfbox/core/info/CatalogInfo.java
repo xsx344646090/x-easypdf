@@ -1,10 +1,12 @@
-package org.dromara.pdf.pdfbox.enums;
+package org.dromara.pdf.pdfbox.core.info;
+
+import lombok.Data;
 
 /**
- * 垂直对齐
+ * 目录
  *
  * @author xsx
- * @date 2023/6/16
+ * @date 2023/9/5
  * @since 1.8
  * <p>
  * Copyright (c) 2020-2023 xsx All Rights Reserved.
@@ -18,17 +20,35 @@ package org.dromara.pdf.pdfbox.enums;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public enum VerticalAlignment {
+@Data
+public class CatalogInfo {
+
     /**
-     * 上
+     * 标题
      */
-    TOP,
+    private final String title;
     /**
-     * 下
+     * 页面id
      */
-    BOTTOM,
+    private String pageId;
     /**
-     * 中
+     * 页码
      */
-    CENTER;
+    private Integer pageIndex;
+    /**
+     * X轴起始坐标
+     */
+    private Float beginX;
+    /**
+     * Y轴起始坐标
+     */
+    private Float beginY;
+    /**
+     * X轴起始坐标
+     */
+    private Float endX;
+    /**
+     * Y轴起始坐标
+     */
+    private Float endY;
 }

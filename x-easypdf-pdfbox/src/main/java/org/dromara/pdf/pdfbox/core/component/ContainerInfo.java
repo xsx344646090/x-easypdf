@@ -2,7 +2,7 @@ package org.dromara.pdf.pdfbox.core.component;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.dromara.pdf.pdfbox.core.BaseBorder;
+import org.dromara.pdf.pdfbox.core.AbstractBaseBorder;
 import org.dromara.pdf.pdfbox.core.PagingEvent;
 
 /**
@@ -23,7 +23,7 @@ import org.dromara.pdf.pdfbox.core.PagingEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ContainerInfo extends BaseBorder {
+public class ContainerInfo extends AbstractBaseBorder {
 
     /**
      * 分页次数
@@ -65,7 +65,7 @@ public class ContainerInfo extends BaseBorder {
      */
     public ContainerInfo(Container container) {
         // 初始化
-        super.init(container);
+        super.init(container, false);
         // 初始化分页次数
         this.pagingCount = 0;
         // 初始化宽度

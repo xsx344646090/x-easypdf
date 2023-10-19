@@ -1,9 +1,6 @@
 package org.dromara.pdf.pdfbox.core.component;
 
-import org.dromara.pdf.pdfbox.core.Base;
-import org.dromara.pdf.pdfbox.core.ComponentType;
-import org.dromara.pdf.pdfbox.core.Context;
-import org.dromara.pdf.pdfbox.core.PagingEvent;
+import org.dromara.pdf.pdfbox.core.*;
 
 import java.util.Set;
 
@@ -65,7 +62,7 @@ public interface Component {
      *
      * @return 返回当前对象
      */
-    Base getBase();
+    AbstractBase getBase();
 
     /**
      * 获取分页事件

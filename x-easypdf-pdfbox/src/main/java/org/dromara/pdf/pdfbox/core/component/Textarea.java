@@ -14,6 +14,7 @@ import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationLink;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.destination.PDPageFitWidthDestination;
 import org.apache.pdfbox.util.Matrix;
 import org.dromara.pdf.pdfbox.core.*;
+import org.dromara.pdf.pdfbox.core.info.CatalogInfo;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.dromara.pdf.pdfbox.support.Position;
 import org.dromara.pdf.pdfbox.util.BorderUtil;
@@ -48,7 +49,7 @@ public class Textarea extends AbstractComponent {
     /**
      * 目录
      */
-    private Catalog catalog;
+    private CatalogInfo catalog;
     /**
      * 制表符大小
      */
@@ -186,7 +187,7 @@ public class Textarea extends AbstractComponent {
             }
         }
         // 初始化字体
-        if (!Objects.isNull(this.getFontName())) {
+        if (Objects.nonNull(this.getFontName())) {
             PDFont pdFont = PdfHandler.getFontHandler().getPDFont(this.getContext().getTargetDocument(), this.getFontName(), true);
             super.setFont(pdFont);
         }
@@ -282,12 +283,12 @@ public class Textarea extends AbstractComponent {
         // 创建临时文本列表
         List<String> tempTextList = new ArrayList<>(128);
         // 文本不为空
-        if (!Objects.isNull(this.text)) {
+        if (Objects.nonNull(this.text)) {
             // 添加文本
             tempTextList.addAll(this.processText(this.text));
         }
         // 文本列表不为空
-        else if (!Objects.isNull(this.textList)) {
+        else if (Objects.nonNull(this.textList)) {
             // 遍历文本列表
             this.textList.forEach(text -> {
                 // 添加文本
@@ -415,7 +416,7 @@ public class Textarea extends AbstractComponent {
      */
     private void initCatalog(Position position) {
         // 初始化目录
-        if (!Objects.isNull(this.catalog)) {
+        if (Objects.nonNull(this.catalog)) {
             // 获取上下文
             Context context = this.getContext();
             // 设置页面id
@@ -569,7 +570,7 @@ public class Textarea extends AbstractComponent {
     @SneakyThrows
     private void addInnerDest(PDRectangle rectangle) {
         // 设置内部目标
-        if (!Objects.isNull(this.getInnerDest())) {
+        if (Objects.nonNull(this.getInnerDest())) {
             // 判断非空
             Objects.requireNonNull(this.getInnerDest().getPage(), "the page of inner destination can not be null");
             // 创建目标
@@ -595,7 +596,7 @@ public class Textarea extends AbstractComponent {
     @SneakyThrows
     private void addOuterDest(PDRectangle rectangle) {
         // 设置外部目标
-        if (!Objects.isNull(this.getOuterDest())) {
+        if (Objects.nonNull(this.getOuterDest())) {
             // 判断非空
             Objects.requireNonNull(this.getOuterDest().getUrl(), "the url of outer destination can not be null");
             // 创建动作
@@ -771,7 +772,7 @@ public class Textarea extends AbstractComponent {
         // 重置游标
         context.getCursor().reset(beginX, beginY);
         // 设置结束坐标
-        if (!Objects.isNull(this.getCatalog())) {
+        if (Objects.nonNull(this.getCatalog())) {
             // 设置X轴坐标
             this.getCatalog().setEndX(beginX);
             // 设置Y轴坐标

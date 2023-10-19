@@ -1,11 +1,12 @@
 package org.dromara.pdf.pdfbox.core;
 
+import lombok.Getter;
 import org.apache.fontbox.util.BoundingBox;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.dromara.pdf.pdfbox.support.Constants;
 
 /**
- * pdf页面尺寸
+ * 页面尺寸
  *
  * @author xsx
  * @date 2022/6/10
@@ -22,6 +23,7 @@ import org.dromara.pdf.pdfbox.support.Constants;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
+@Getter
 public class PageRectangle {
 
     /**
@@ -240,24 +242,6 @@ public class PageRectangle {
     }
 
     /**
-     * 获取宽度
-     *
-     * @return 返回宽度
-     */
-    public float getWidth() {
-        return this.width;
-    }
-
-    /**
-     * 获取高度
-     *
-     * @return 返回高度
-     */
-    public float getHeight() {
-        return this.height;
-    }
-
-    /**
      * 获取X轴左坐标
      *
      * @return 返回X轴左坐标
@@ -291,14 +275,5 @@ public class PageRectangle {
      */
     public float getTopY() {
         return this.size.getUpperRightY();
-    }
-
-    /**
-     * 获取pdfbox页面尺寸
-     *
-     * @return 返回pdfbox页面尺寸
-     */
-    public PDRectangle getSize() {
-        return this.size;
     }
 }

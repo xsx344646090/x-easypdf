@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 import java.util.Objects;
 
 /**
- * 基础边距类
+ * 抽象基础边距类
  *
  * @author xsx
  * @date 2023/6/2
@@ -25,7 +25,7 @@ import java.util.Objects;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public abstract class BaseMargin extends Base {
+public abstract class AbstractBaseMargin extends AbstractBase {
     /**
      * 上边距
      */
@@ -109,7 +109,7 @@ public abstract class BaseMargin extends Base {
      * @param base                基础参数
      * @param isInitMarginByParam 是否使用参数初始化边距
      */
-    public void init(BaseMargin base, boolean isInitMarginByParam) {
+    public void init(AbstractBaseMargin base, boolean isInitMarginByParam) {
         // 是否使用参数初始化边距
         if (isInitMarginByParam) {
             // 使用参数初始化边距
@@ -163,7 +163,7 @@ public abstract class BaseMargin extends Base {
      *
      * @param base 基础参数
      */
-    private void initMarginWithParam(BaseMargin base) {
+    private void initMarginWithParam(AbstractBaseMargin base) {
         // 初始化上边距
         if (Objects.isNull(this.marginTop)) {
             this.marginTop = base.marginTop;
