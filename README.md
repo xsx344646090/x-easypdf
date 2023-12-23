@@ -21,7 +21,7 @@
 ---
 
 #### 当前版本
-> v3.0.0
+> v3.0.0-BETA
 
 ---
 
@@ -101,7 +101,7 @@
 <dependency>
     <groupId>org.dromara.x-easypdf</groupId>
     <artifactId>x-easypdf</artifactId>
-    <version>3.0.0</version>
+    <version>3.0.0-BETA</version>
 </dependency>
 ```
 
@@ -110,7 +110,7 @@
 <dependency>
     <groupId>org.dromara.x-easypdf</groupId>
     <artifactId>x-easypdf-pdfbox</artifactId>
-    <version>3.0.0</version>
+    <version>3.0.0-BETA</version>
 </dependency>
 ```
 
@@ -119,7 +119,7 @@
 <dependency>
     <groupId>org.dromara.x-easypdf</groupId>
     <artifactId>x-easypdf-fop</artifactId>
-    <version>3.0.0</version>
+    <version>3.0.0-BETA</version>
 </dependency>
 ```
 
@@ -135,11 +135,28 @@ mvn clean install
 #### 快速体验
 - ##### pdfbox模块
 ```
-XEasyPdfHandler.Document.build(XEasyPdfHandler.Page.build(XEasyPdfHandler.Text.build("Hello World"))).save("E:\pdf\hello-world.pdf").close();
+// 创建文档
+Document document = PdfHandler.getDocumentHandler().create();
+// 设置使用字体
+document.setFontName("微软雅黑");
+// 创建页面
+Page page = document.createPage();
+// 创建文本域
+Textarea textarea = new Textarea(page);
+// 设置文本
+textarea.setText("Hello World!");
+// 渲染文本
+textarea.render();
+// 添加页面
+document.appendPage(page);
+// 保存文档
+document.save("E:\\PDF\\pdfbox\\document\\hello-world.pdf");
+// 关闭文档
+document.close();
 ```
 - ##### fop模块（使用document数据源）
 ```
-XEasyPdfTemplateHandler.Document.build().addPage(XEasyPdfTemplateHandler.Page.build().addBodyComponent(XEasyPdfTemplateHandler.Text.build().setText("hello world"))).transform("E:\pdf\hello-world.pdf");
+TemplateHandler.Document.build().addPage(TemplateHandler.Page.build().addBodyComponent(TemplateHandler.Text.build().setText("hello world"))).transform("E:\\PDF\\fop\\document\\hello-world.pdf");
 ```
 
 更多教程，请查看[文档](https://www.x-easypdf.cn)
