@@ -1,8 +1,8 @@
 package org.dromara.pdf.pdfbox;
 
-import org.dromara.pdf.pdfbox.core.Document;
-import org.dromara.pdf.pdfbox.core.Page;
-import org.dromara.pdf.pdfbox.core.PageRectangle;
+import org.dromara.pdf.pdfbox.core.base.Document;
+import org.dromara.pdf.pdfbox.core.base.Page;
+import org.dromara.pdf.pdfbox.core.base.PageSize;
 import org.dromara.pdf.pdfbox.core.component.TextareaWatermark;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.junit.Test;
@@ -14,7 +14,7 @@ import java.util.Arrays;
  * @date 2023/8/24
  * @since 1.8
  * <p>
- * Copyright (c) 2020-2023 xsx All Rights Reserved.
+ * Copyright (c) 2020 xsx All Rights Reserved.
  * x-easypdf-pdfbox is licensed under the Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
@@ -30,8 +30,8 @@ public class TextareaWatermarkTest {
     @Test
     public void testDocument() {
         Document document = PdfHandler.getDocumentHandler().create();
-        document.appendPage(document.createPage(PageRectangle.A4));
-        document.appendPage(document.createPage(PageRectangle.A4));
+        document.appendPage(document.createPage(PageSize.A4));
+        document.appendPage(document.createPage(PageSize.A4));
         TextareaWatermark watermark = new TextareaWatermark(document);
         watermark.setTextList(Arrays.asList("test\ttest", "test123"));
         watermark.setBeginX(30F);
@@ -40,15 +40,15 @@ public class TextareaWatermarkTest {
         watermark.setCountOfLine(5);
         watermark.setLeading(50F);
         watermark.render(document);
-        document.saveAndClose("E:\\PDF\\watermark\\textarea\\testDocument.pdf");
+        document.save("E:\\PDF\\watermark\\textarea\\testDocument.pdf");
     }
 
     @Test
     public void testPage() {
         Document document = PdfHandler.getDocumentHandler().create();
-        Page page = document.createPage(PageRectangle.A4);
+        Page page = document.createPage(PageSize.A4);
         document.appendPage(page);
-        document.appendPage(document.createPage(PageRectangle.A4));
+        document.appendPage(document.createPage(PageSize.A4));
         TextareaWatermark watermark = new TextareaWatermark(document);
         watermark.setTextList(Arrays.asList("test\ttest", "test123"));
         watermark.setBeginX(30F);
@@ -57,6 +57,6 @@ public class TextareaWatermarkTest {
         watermark.setCountOfLine(5);
         watermark.setLeading(50F);
         watermark.render(page);
-        document.saveAndClose("E:\\PDF\\watermark\\textarea\\testPage.pdf");
+        document.save("E:\\PDF\\watermark\\textarea\\testPage.pdf");
     }
 }

@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.dromara.x-easypdf</groupId>
         <artifactId>x-easypdf-parent</artifactId>
-        <version>3.0.0</version>
+        <version>3.0.0-BETA</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>x-easypdf-fop</artifactId>
@@ -16,6 +16,7 @@
     <description>A framework based on fop</description>
 
     <properties>
+        <font-box.version>2.0.29</font-box.version>
         <skipTests>true</skipTests>
     </properties>
 
@@ -148,6 +149,11 @@
         <dependency>
             <groupId>org.apache.xmlgraphics</groupId>
             <artifactId>fop</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>fontbox</artifactId>
+            <version>${font-box.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.zxing</groupId>

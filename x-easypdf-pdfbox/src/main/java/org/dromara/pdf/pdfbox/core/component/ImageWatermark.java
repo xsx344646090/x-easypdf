@@ -6,10 +6,10 @@ import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
-import org.dromara.pdf.pdfbox.core.AbstractBaseBorder;
-import org.dromara.pdf.pdfbox.core.ComponentType;
-import org.dromara.pdf.pdfbox.core.Document;
-import org.dromara.pdf.pdfbox.core.Page;
+import org.dromara.pdf.pdfbox.core.base.AbstractBaseBorder;
+import org.dromara.pdf.pdfbox.core.base.ComponentType;
+import org.dromara.pdf.pdfbox.core.base.Document;
+import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.util.ImageUtil;
 
 import java.io.BufferedInputStream;
@@ -18,7 +18,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * 图像水印
@@ -27,7 +26,7 @@ import java.util.Optional;
  * @date 2023/10/14
  * @since 1.8
  * <p>
- * Copyright (c) 2020-2023 xsx All Rights Reserved.
+ * Copyright (c) 2020 xsx All Rights Reserved.
  * x-easypdf-pdfbox is licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
@@ -78,10 +77,6 @@ public class ImageWatermark extends AbstractBaseBorder implements Watermark {
      * 每行图像间距
      */
     private Float spacingOfLine;
-    /**
-     * 是否svg格式
-     */
-    private Boolean isSvg;
 
     /**
      * 有参构造
@@ -154,7 +149,7 @@ public class ImageWatermark extends AbstractBaseBorder implements Watermark {
         Objects.requireNonNull(bytes, "the image bytes can not be null");
         this.image = PDImageXObject.createFromByteArray(
                 this.getContext().getTargetDocument(),
-                ImageUtil.resetBytes(Optional.ofNullable(this.getIsSvg()).orElse(Boolean.FALSE), bytes),
+                ImageUtil.resetBytes(bytes),
                 "unknown"
         );
     }
@@ -230,10 +225,6 @@ public class ImageWatermark extends AbstractBaseBorder implements Watermark {
         // 初始化每行图像间距
         if (Objects.isNull(this.spacingOfLine)) {
             this.spacingOfLine = Float.valueOf(this.width);
-        }
-        // 初始化是否svg格式
-        if (Objects.isNull(this.isSvg)) {
-            this.isSvg = Boolean.FALSE;
         }
     }
 

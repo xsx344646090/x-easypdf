@@ -9,11 +9,11 @@ import java.util.*;
  * 文本工具
  *
  * @author xsx
- * @date 2020/3/24
+ * @date 2023/3/24
  * @since 1.8
  * <p>
- * Copyright (c) 2020-2023 xsx All Rights Reserved.
- * x-easypdf is licensed under Mulan PSL v2.
+ * Copyright (c) 2020 xsx All Rights Reserved.
+ * x-easypdf-pdfbox is licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  * http://license.coscl.org.cn/MulanPSL2
@@ -83,7 +83,7 @@ public class TextUtil {
             return new ArrayList<>(0);
         }
         // 定义文本列表
-        List<String> lineList = new ArrayList<>(200);
+        List<String> lineList = new ArrayList<>(1024);
         // 定义临时文本
         String tempText;
         // 定义当前行真实宽度
@@ -255,6 +255,33 @@ public class TextUtil {
      * @return 返回字符串
      */
     public static String replaceTab(String text, int size) {
-        return filterAll(text).replaceAll("\t", spacing(size));
+        // 定义制表符
+        final char tab = '\t';
+        // 获取文本字符数组
+        char[] charArray = filterAll(text).toCharArray();
+        // 定义文本构建器
+        StringBuilder builder = new StringBuilder();
+        // 定义临时文本构建器
+        StringBuilder temp = new StringBuilder();
+        // 遍历文本字符
+        for (char c : charArray) {
+            // 到达指定长度
+            if (temp.length() == size) {
+                // 添加文本
+                builder.append(temp);
+                // 重置临时文本构建器
+                temp = new StringBuilder();
+            }
+            // 替换制表符
+            if (c == tab) {
+                // 添加空格
+                temp.append(spacing(size - temp.length()));
+            } else {
+                // 添加字符
+                temp.append(c);
+            }
+        }
+        // 返回文本
+        return builder.append(temp).toString();
     }
 }

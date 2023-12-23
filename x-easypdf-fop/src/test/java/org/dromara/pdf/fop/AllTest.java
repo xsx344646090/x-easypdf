@@ -1,14 +1,14 @@
 package org.dromara.pdf.fop;
 
 
-import org.dromara.pdf.fop.doc.Document;
-import org.dromara.pdf.fop.doc.bookmark.Bookmark;
-import org.dromara.pdf.fop.doc.component.barcode.Barcode;
-import org.dromara.pdf.fop.doc.component.table.Table;
-import org.dromara.pdf.fop.doc.component.table.TableRow;
-import org.dromara.pdf.fop.doc.component.text.Text;
-import org.dromara.pdf.fop.doc.component.text.TextExtend;
-import org.dromara.pdf.fop.doc.page.Page;
+import org.dromara.pdf.fop.core.doc.Document;
+import org.dromara.pdf.fop.core.doc.bookmark.Bookmark;
+import org.dromara.pdf.fop.core.doc.component.barcode.Barcode;
+import org.dromara.pdf.fop.core.doc.component.table.Table;
+import org.dromara.pdf.fop.core.doc.component.table.TableRow;
+import org.dromara.pdf.fop.core.doc.component.text.Text;
+import org.dromara.pdf.fop.core.doc.component.text.TextExtend;
+import org.dromara.pdf.fop.core.doc.page.Page;
 import org.dromara.pdf.fop.handler.TemplateHandler;
 
 public class AllTest {

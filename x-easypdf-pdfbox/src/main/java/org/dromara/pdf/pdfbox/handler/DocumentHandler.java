@@ -1,8 +1,8 @@
 package org.dromara.pdf.pdfbox.handler;
 
 import lombok.SneakyThrows;
-import org.dromara.pdf.pdfbox.core.Document;
-import org.dromara.pdf.pdfbox.core.MemoryPolicy;
+import org.dromara.pdf.pdfbox.core.base.Document;
+import org.dromara.pdf.pdfbox.core.base.MemoryPolicy;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;
@@ -16,7 +16,7 @@ import java.nio.file.Paths;
  * @date 2023/6/2
  * @since 1.8
  * <p>
- * Copyright (c) 2020-2023 xsx All Rights Reserved.
+ * Copyright (c) 2020 xsx All Rights Reserved.
  * x-easypdf-pdfbox is licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
@@ -56,6 +56,16 @@ public class DocumentHandler {
      */
     public Document create() {
         return new Document();
+    }
+
+    /**
+     * 创建
+     *
+     * @param policy 内存策略
+     * @return 返回文档
+     */
+    public Document create(MemoryPolicy policy) {
+        return new Document(policy);
     }
 
     /**

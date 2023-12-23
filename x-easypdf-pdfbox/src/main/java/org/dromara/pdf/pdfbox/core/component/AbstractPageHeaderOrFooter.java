@@ -3,7 +3,7 @@ package org.dromara.pdf.pdfbox.core.component;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.dromara.pdf.pdfbox.core.*;
+import org.dromara.pdf.pdfbox.core.base.*;
 import org.dromara.pdf.pdfbox.util.BorderUtil;
 
 import java.util.Collections;
@@ -18,7 +18,7 @@ import java.util.Optional;
  * @date 2023/9/21
  * @since 1.8
  * <p>
- * Copyright (c) 2020-2023 xsx All Rights Reserved.
+ * Copyright (c) 2020 xsx All Rights Reserved.
  * x-easypdf-pdfbox is licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
@@ -187,7 +187,7 @@ public abstract class AbstractPageHeaderOrFooter extends AbstractBaseBorder {
      * 重置
      */
     public void reset() {
-        // 重置游标
+        // 重置光标
         this.getContext().getCursor().reset(this.getBeginX(), this.getBeginY() - this.getHeight());
         // 重置当前执行组件类型
         this.getContext().resetExecutingComponentType(this.getType());

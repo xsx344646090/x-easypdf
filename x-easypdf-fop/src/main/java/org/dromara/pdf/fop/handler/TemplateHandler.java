@@ -1,8 +1,8 @@
 package org.dromara.pdf.fop.handler;
 
-import org.dromara.pdf.fop.Constants;
-import org.dromara.pdf.fop.datasource.*;
-import org.dromara.pdf.fop.doc.component.table.*;
+import org.dromara.pdf.fop.core.base.Constants;
+import org.dromara.pdf.fop.core.datasource.*;
+import org.dromara.pdf.fop.core.doc.component.table.*;
 
 /**
  * pdf模板助手
@@ -11,8 +11,8 @@ import org.dromara.pdf.fop.doc.component.table.*;
  * @date 2022/8/6
  * @since 1.8
  * <p>
- * Copyright (c) 2020-2023 xsx All Rights Reserved.
- * x-easypdf is licensed under the Mulan PSL v2.
+ * Copyright (c) 2020 xsx All Rights Reserved.
+ * x-easypdf-fop is licensed under the Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  * http://license.coscl.org.cn/MulanPSL2
@@ -33,8 +33,8 @@ public class TemplateHandler {
          *
          * @return 返回pdf模板
          */
-        public static org.dromara.pdf.fop.Template build() {
-            return new org.dromara.pdf.fop.Template();
+        public static org.dromara.pdf.fop.core.base.Template build() {
+            return new org.dromara.pdf.fop.core.base.Template();
         }
     }
 
@@ -139,8 +139,8 @@ public class TemplateHandler {
          *
          * @return 返回pdf模板-文档
          */
-        public static org.dromara.pdf.fop.doc.Document build() {
-            return new org.dromara.pdf.fop.doc.Document();
+        public static org.dromara.pdf.fop.core.doc.Document build() {
+            return new org.dromara.pdf.fop.core.doc.Document();
         }
     }
 
@@ -153,8 +153,8 @@ public class TemplateHandler {
          *
          * @return 返回pdf模板-页面
          */
-        public static org.dromara.pdf.fop.doc.page.Page build() {
-            return new org.dromara.pdf.fop.doc.page.Page();
+        public static org.dromara.pdf.fop.core.doc.page.Page build() {
+            return new org.dromara.pdf.fop.core.doc.page.Page();
         }
     }
 
@@ -167,8 +167,8 @@ public class TemplateHandler {
          *
          * @return 返回pdf模板-当前页码
          */
-        public static org.dromara.pdf.fop.doc.component.page.CurrentPageNumber build() {
-            return new org.dromara.pdf.fop.doc.component.page.CurrentPageNumber();
+        public static org.dromara.pdf.fop.core.doc.component.page.CurrentPageNumber build() {
+            return new org.dromara.pdf.fop.core.doc.component.page.CurrentPageNumber();
         }
     }
 
@@ -181,8 +181,8 @@ public class TemplateHandler {
          *
          * @return 返回pdf模板-总页码
          */
-        public static org.dromara.pdf.fop.doc.component.page.TotalPageNumber build() {
-            return new org.dromara.pdf.fop.doc.component.page.TotalPageNumber();
+        public static org.dromara.pdf.fop.core.doc.component.page.TotalPageNumber build() {
+            return new org.dromara.pdf.fop.core.doc.component.page.TotalPageNumber();
         }
     }
 
@@ -195,8 +195,8 @@ public class TemplateHandler {
          *
          * @return 返回pdf模板-文本
          */
-        public static org.dromara.pdf.fop.doc.component.text.Text build() {
-            return new org.dromara.pdf.fop.doc.component.text.Text();
+        public static org.dromara.pdf.fop.core.doc.component.text.Text build() {
+            return new org.dromara.pdf.fop.core.doc.component.text.Text();
         }
     }
 
@@ -209,8 +209,8 @@ public class TemplateHandler {
          *
          * @return 返回pdf模板-文本扩展
          */
-        public static org.dromara.pdf.fop.doc.component.text.TextExtend build() {
-            return new org.dromara.pdf.fop.doc.component.text.TextExtend();
+        public static org.dromara.pdf.fop.core.doc.component.text.TextExtend build() {
+            return new org.dromara.pdf.fop.core.doc.component.text.TextExtend();
         }
     }
 
@@ -223,8 +223,8 @@ public class TemplateHandler {
          *
          * @return 返回pdf模板-图像
          */
-        public static org.dromara.pdf.fop.doc.component.image.Image build() {
-            return new org.dromara.pdf.fop.doc.component.image.Image();
+        public static org.dromara.pdf.fop.core.doc.component.image.Image build() {
+            return new org.dromara.pdf.fop.core.doc.component.image.Image();
         }
     }
 
@@ -237,8 +237,8 @@ public class TemplateHandler {
          *
          * @return 返回pdf模板-表格
          */
-        public static org.dromara.pdf.fop.doc.component.table.Table build() {
-            return new org.dromara.pdf.fop.doc.component.table.Table();
+        public static org.dromara.pdf.fop.core.doc.component.table.Table build() {
+            return new org.dromara.pdf.fop.core.doc.component.table.Table();
         }
 
         /**
@@ -321,8 +321,8 @@ public class TemplateHandler {
          *
          * @return 返回pdf模板-分割线
          */
-        public static org.dromara.pdf.fop.doc.component.line.SplitLine build() {
-            return new org.dromara.pdf.fop.doc.component.line.SplitLine();
+        public static org.dromara.pdf.fop.core.doc.component.line.SplitLine build() {
+            return new org.dromara.pdf.fop.core.doc.component.line.SplitLine();
         }
     }
 
@@ -335,8 +335,8 @@ public class TemplateHandler {
          *
          * @return 返回pdf模板-超链接
          */
-        public static org.dromara.pdf.fop.doc.component.link.Link build() {
-            return new org.dromara.pdf.fop.doc.component.link.Link();
+        public static org.dromara.pdf.fop.core.doc.component.link.Link build() {
+            return new org.dromara.pdf.fop.core.doc.component.link.Link();
         }
     }
 
@@ -349,8 +349,8 @@ public class TemplateHandler {
          *
          * @return 返回pdf模板-块容器
          */
-        public static org.dromara.pdf.fop.doc.component.block.BlockContainer build() {
-            return new org.dromara.pdf.fop.doc.component.block.BlockContainer();
+        public static org.dromara.pdf.fop.core.doc.component.block.BlockContainer build() {
+            return new org.dromara.pdf.fop.core.doc.component.block.BlockContainer();
         }
     }
 
@@ -363,8 +363,8 @@ public class TemplateHandler {
          *
          * @return 返回pdf模板-条形码
          */
-        public static org.dromara.pdf.fop.doc.component.barcode.Barcode build() {
-            return new org.dromara.pdf.fop.doc.component.barcode.Barcode();
+        public static org.dromara.pdf.fop.core.doc.component.barcode.Barcode build() {
+            return new org.dromara.pdf.fop.core.doc.component.barcode.Barcode();
         }
     }
 
@@ -377,8 +377,8 @@ public class TemplateHandler {
          *
          * @return 返回pdf模板-书签
          */
-        public static org.dromara.pdf.fop.doc.bookmark.Bookmark build() {
-            return new org.dromara.pdf.fop.doc.bookmark.Bookmark();
+        public static org.dromara.pdf.fop.core.doc.bookmark.Bookmark build() {
+            return new org.dromara.pdf.fop.core.doc.bookmark.Bookmark();
         }
     }
 
@@ -391,8 +391,8 @@ public class TemplateHandler {
          *
          * @return 返回pdf模板-水印（文本）
          */
-        public static org.dromara.pdf.fop.doc.watermark.Watermark build() {
-            return new org.dromara.pdf.fop.doc.watermark.Watermark();
+        public static org.dromara.pdf.fop.core.doc.watermark.Watermark build() {
+            return new org.dromara.pdf.fop.core.doc.watermark.Watermark();
         }
     }
 

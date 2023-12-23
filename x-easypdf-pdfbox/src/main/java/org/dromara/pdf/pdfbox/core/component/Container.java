@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.dromara.pdf.pdfbox.core.*;
+import org.dromara.pdf.pdfbox.core.base.*;
 import org.dromara.pdf.pdfbox.util.BorderUtil;
 
 import java.util.Collections;
@@ -19,7 +19,7 @@ import java.util.Optional;
  * @date 2023/9/14
  * @since 1.8
  * <p>
- * Copyright (c) 2020-2023 xsx All Rights Reserved.
+ * Copyright (c) 2020 xsx All Rights Reserved.
  * x-easypdf-pdfbox is licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
@@ -106,7 +106,10 @@ public class Container extends AbstractComponent {
         // // 非自定义Y轴
         if (!this.getIsCustomY()) {
             // 检查分页
-            this.isPaging(this, this.getBeginY());
+            if (this.isPaging(this, this.getBeginY())) {
+                // 重置容器信息Y轴起始坐标
+                this.getContext().getContainerInfo().setBeginY(this.getContext().getCursor().getY());
+            }
         }
         // 渲染之前X轴坐标
         Float beforeX = this.getBeginX();
@@ -186,7 +189,7 @@ public class Container extends AbstractComponent {
      * @param info    容器信息
      */
     @SneakyThrows
-    private void addBorder(Float beforeY, ContainerInfo info) {
+    public void addBorder(Float beforeY, ContainerInfo info) {
         // 是否分页
         if (info.isPaging()) {
             // 非分页边框
@@ -199,35 +202,8 @@ public class Container extends AbstractComponent {
         }
         // 需要分页
         if (this.checkPaging(beforeY - info.getHeight())) {
-            // 获取高度
-            float height = beforeY - this.getMarginBottom() - this.getContext().getPage().getMarginBottom();
-            // 获取是否下边框
-            Boolean isBorderBottom = info.getIsBorderBottom();
-            // 非分页边框
-            if (!this.getIsPagingBorder()) {
-                // 重置是否下边框
-                info.setIsBorderBottom(Boolean.FALSE);
-            }
-            // 绘制边框
-            BorderUtil.drawBorderWithBase(
-                    info,
-                    new PDRectangle(
-                            info.getBeginX(),
-                            info.getBeginY() - height,
-                            info.getWidth(),
-                            height
-                    )
-            );
-            // 重置是否下边框
-            info.setIsBorderBottom(isBorderBottom);
-            // 重置高度
-            info.setHeight(info.getHeight() - height);
-            // 分页次数累计
-            info.pagingCount();
             // 分页
             this.paging();
-            // 重置Y轴起始坐标
-            info.setBeginY(this.getContext().getCursor().getY());
             // 递归添加边框
             this.addBorder(info.getBeginY(), info);
         } else {
@@ -241,7 +217,7 @@ public class Container extends AbstractComponent {
                             info.getHeight()
                     )
             );
-            // 重置游标
+            // 重置光标
             this.getContext().getCursor().setY(beforeY - info.getHeight());
         }
     }
@@ -264,12 +240,10 @@ public class Container extends AbstractComponent {
             ContainerInfo info = context.getContainerInfo();
             // 存在容器信息
             if (Objects.nonNull(info)) {
-                // 获取游标
-                Cursor cursor = context.getCursor();
                 // 获取高度
                 Float height = info.getHeight();
                 // 重置高度
-                info.setHeight(info.getBeginY() - cursor.getY());
+                info.setHeight(info.getBeginY() - component.getBottom());
                 // 是否上边框
                 Boolean isBorderTop = info.getIsBorderTop();
                 // 是否下边框

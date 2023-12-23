@@ -6,17 +6,14 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.font.FontFormat;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
-import org.dromara.pdf.pdfbox.enums.FontType;
+import org.dromara.pdf.pdfbox.core.enums.FontType;
 import org.dromara.pdf.pdfbox.support.Constants;
 import org.dromara.pdf.pdfbox.support.fonts.FontInfo;
 import org.dromara.pdf.pdfbox.support.fonts.FontMapperImpl;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
 
 /**
  * 字体助手
@@ -25,7 +22,7 @@ import java.util.stream.Collectors;
  * @date 2023/6/2
  * @since 1.8
  * <p>
- * Copyright (c) 2020-2023 xsx All Rights Reserved.
+ * Copyright (c) 2020 xsx All Rights Reserved.
  * x-easypdf-pdfbox is licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
@@ -69,12 +66,7 @@ public class FontHandler {
      * @return 返回字体名称列表
      */
     public List<String> getFontNames() {
-        return FontMapperImpl.getInstance()
-                .getProvider()
-                .getFontInfo()
-                .stream()
-                .map(FontInfo::getPostScriptName)
-                .collect(Collectors.toList());
+        return new ArrayList<>(FontMapperImpl.getInstance().getFontInfoByName().keySet());
     }
 
     /**
@@ -97,7 +89,7 @@ public class FontHandler {
     @SneakyThrows
     public PDFont getPDFont(PDDocument document, String fontName, boolean embedSubset) {
         FontInfo fontInfo = FontMapperImpl.getInstance().getFontInfoByName().get(fontName);
-        if (fontInfo != null && fontInfo.getFormat() == FontFormat.OTF) {
+        if (Objects.nonNull(fontInfo) && fontInfo.getFormat() == FontFormat.OTF) {
             embedSubset = false;
         }
         return PDType0Font.load(document, this.getTrueTypeFont(fontName), embedSubset);
@@ -120,7 +112,7 @@ public class FontHandler {
      * @param files 字体文件
      */
     public void addFont(File... files) {
-        if (files != null) {
+        if (Objects.nonNull(files)) {
             Arrays.stream(files).forEach(FontMapperImpl.getInstance().getProvider()::addFont);
             FontMapperImpl.getInstance().resetFontInfoByName();
         }
@@ -133,7 +125,7 @@ public class FontHandler {
      * @param files 字体文件
      */
     public void addFont(Collection<File> files) {
-        if (files != null) {
+        if (Objects.nonNull(files)) {
             files.forEach(FontMapperImpl.getInstance().getProvider()::addFont);
             FontMapperImpl.getInstance().resetFontInfoByName();
         }
@@ -160,7 +152,7 @@ public class FontHandler {
      */
     public void addToSubset(PDFont font, String text) {
         // 如果字体不为空且字体为子集，则添加文本到子集
-        if (font != null && font.willBeSubset()) {
+        if (Objects.nonNull(font) && font.willBeSubset()) {
             // 定义偏移量
             int offset = 0;
             // 获取文本长度

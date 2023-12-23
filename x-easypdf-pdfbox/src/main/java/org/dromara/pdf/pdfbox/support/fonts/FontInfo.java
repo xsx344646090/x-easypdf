@@ -8,6 +8,13 @@ package org.dromara.pdf.pdfbox.support.fonts;
 public abstract class FontInfo extends org.apache.pdfbox.pdmodel.font.FontInfo{
 
     /**
+     * Returns the name of the font.
+     *
+     * @return the name of the font
+     */
+    public abstract String getFontName();
+
+    /**
      * Returns the usWeightClass field as a Panose Weight.
      */
     final int getWeightClassAsPanose()

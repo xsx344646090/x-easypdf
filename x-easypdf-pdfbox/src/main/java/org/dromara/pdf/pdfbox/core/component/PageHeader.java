@@ -1,10 +1,10 @@
 package org.dromara.pdf.pdfbox.core.component;
 
 import lombok.EqualsAndHashCode;
-import org.dromara.pdf.pdfbox.core.AbstractPagingEvent;
-import org.dromara.pdf.pdfbox.core.ComponentType;
-import org.dromara.pdf.pdfbox.core.Page;
-import org.dromara.pdf.pdfbox.core.PagingEvent;
+import org.dromara.pdf.pdfbox.core.base.AbstractPagingEvent;
+import org.dromara.pdf.pdfbox.core.base.ComponentType;
+import org.dromara.pdf.pdfbox.core.base.Page;
+import org.dromara.pdf.pdfbox.core.base.PagingEvent;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -16,8 +16,8 @@ import java.util.Optional;
  * @date 2023/9/21
  * @since 1.8
  * <p>
- * Copyright (c) 2020-2023 xsx All Rights Reserved.
- * x-easypdf-new is licensed under Mulan PSL v2.
+ * Copyright (c) 2020 xsx All Rights Reserved.
+ * x-easypdf-pdfbox is licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  * http://license.coscl.org.cn/MulanPSL2
@@ -80,7 +80,7 @@ public class PageHeader extends AbstractPageHeaderOrFooter {
         if (Objects.isNull(this.getBeginY())) {
             this.setBeginY(this.getContext().getPage().getHeight() - this.getContext().getPage().getMarginTop());
         }
-        // 重置游标
+        // 重置光标
         this.getContext().getCursor().reset(this.getBeginX(), this.getBeginY() - this.getBeginYOffset());
     }
 

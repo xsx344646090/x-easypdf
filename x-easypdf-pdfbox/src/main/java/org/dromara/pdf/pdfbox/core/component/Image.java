@@ -7,8 +7,9 @@ import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
-import org.dromara.pdf.pdfbox.core.ComponentType;
-import org.dromara.pdf.pdfbox.core.Page;
+import org.apache.pdfbox.util.Matrix;
+import org.dromara.pdf.pdfbox.core.base.ComponentType;
+import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.util.BorderUtil;
 import org.dromara.pdf.pdfbox.util.ImageUtil;
 
@@ -18,7 +19,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * 图像组件
@@ -27,7 +27,7 @@ import java.util.Optional;
  * @date 2023/6/30
  * @since 1.8
  * <p>
- * Copyright (c) 2020-2023 xsx All Rights Reserved.
+ * Copyright (c) 2020 xsx All Rights Reserved.
  * x-easypdf-pdfbox is licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
@@ -55,9 +55,9 @@ public class Image extends AbstractComponent {
      */
     private Integer height;
     /**
-     * 是否svg格式
+     * 旋转角度
      */
-    private Boolean isSvg;
+    private Float angle;
 
     /**
      * 有参构造
@@ -130,7 +130,7 @@ public class Image extends AbstractComponent {
         Objects.requireNonNull(bytes, "the image bytes can not be null");
         this.image = PDImageXObject.createFromByteArray(
                 this.getContext().getTargetDocument(),
-                ImageUtil.resetBytes(Optional.ofNullable(this.getIsSvg()).orElse(Boolean.FALSE), bytes),
+                ImageUtil.resetBytes(bytes),
                 "unknown"
         );
     }
@@ -156,6 +156,10 @@ public class Image extends AbstractComponent {
         super.init();
         // 初始化宽度与高度
         this.initWidthAndHeight();
+        // 初始化旋转角度
+        if (Objects.isNull(this.angle)) {
+            this.angle = 0F;
+        }
         // 初始化首行
         if (!this.getIsCustomY() && this.getContext().isFirstLine()) {
             this.setBeginY(this.getBeginY() - this.getHeight());
@@ -179,6 +183,10 @@ public class Image extends AbstractComponent {
             // 检查分页
             this.isPaging(this, this.getBeginY());
         }
+        // 定义X轴偏移量
+        float offsetX = 0.5F * this.getWidth();
+        // 定义Y轴偏移量
+        float offsetY = 0.5F * this.getHeight();
         // 新建内容流
         PDPageContentStream contentStream = new PDPageContentStream(
                 this.getContext().getTargetDocument(),
@@ -187,19 +195,26 @@ public class Image extends AbstractComponent {
                 true,
                 this.getIsResetContentStream()
         );
-        // 添加图片
-        contentStream.drawImage(
-                this.getImage(),
-                this.getBeginX() + this.getRelativeBeginX(),
-                this.getBeginY() + this.getRelativeBeginY(),
-                this.getWidth(),
-                this.getHeight()
+        // 保存图形状态
+        contentStream.saveGraphicsState();
+        // 移动到中心点
+        contentStream.transform(
+                Matrix.getTranslateInstance(
+                        this.getBeginX() + this.getRelativeBeginX() + offsetX,
+                        this.getBeginY() + this.getRelativeBeginY() + offsetY
+                )
         );
+        // 旋转
+        contentStream.transform(Matrix.getRotateInstance(Math.toRadians(this.getAngle()), 0, 0));
+        // 移动到左下角
+        contentStream.transform(Matrix.getTranslateInstance(-offsetX, -offsetY));
+        // 添加图片
+        contentStream.drawImage(this.getImage(), 0, 0, this.getWidth(), this.getHeight());
         // 添加边框
         BorderUtil.drawNormalBorder(contentStream, this.getRectangle(), this);
         // 关闭内容流
         contentStream.close();
-        // 重置游标
+        // 重置光标
         this.getContext().getCursor().reset(
                 this.getBeginX() + this.getWidth() + this.getMarginRight(),
                 this.getBeginY() - this.getHeight() - this.getMarginBottom()
@@ -218,7 +233,7 @@ public class Image extends AbstractComponent {
             this.width = this.image.getWidth();
         }
         // 获取最大宽度
-        int maxWidth = (int) (this.getContext().getWrapWidth() - this.getBeginX() - this.getMarginRight());
+        int maxWidth = (int) (this.getContext().getWrapWidth() + this.getPage().getMarginLeft() - this.getBeginX() - this.getMarginRight());
         // 图片宽度大于最大宽度，则重置
         if (this.width > maxWidth) {
             // 重置图片宽度
@@ -247,13 +262,13 @@ public class Image extends AbstractComponent {
         // 创建尺寸
         PDRectangle rectangle = new PDRectangle();
         // 设置起始X轴坐标
-        rectangle.setLowerLeftX(this.getBeginX() + this.getRelativeBeginX());
-        // 设置起始Y轴坐标
-        rectangle.setLowerLeftY(this.getBeginY() + this.getRelativeBeginY());
-        // 设置结束Y轴坐标
-        rectangle.setUpperRightY(rectangle.getLowerLeftY() + this.getHeight());
+        rectangle.setLowerLeftX(0);
         // 设置结束X轴坐标
-        rectangle.setUpperRightX(rectangle.getLowerLeftX() + this.getWidth());
+        rectangle.setUpperRightX(this.getWidth());
+        // 设置起始Y轴坐标
+        rectangle.setLowerLeftY(0);
+        // 设置结束Y轴坐标
+        rectangle.setUpperRightY(this.getHeight());
         // 返回尺寸
         return rectangle;
     }

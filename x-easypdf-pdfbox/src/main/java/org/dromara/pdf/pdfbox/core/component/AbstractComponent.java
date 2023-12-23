@@ -2,7 +2,7 @@ package org.dromara.pdf.pdfbox.core.component;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.dromara.pdf.pdfbox.core.*;
+import org.dromara.pdf.pdfbox.core.base.*;
 
 import java.io.Closeable;
 import java.util.HashSet;
@@ -17,7 +17,7 @@ import java.util.Set;
  * @date 2023/9/4
  * @since 1.8
  * <p>
- * Copyright (c) 2020-2023 xsx All Rights Reserved.
+ * Copyright (c) 2020 xsx All Rights Reserved.
  * x-easypdf-pdfbox is licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
@@ -195,7 +195,7 @@ public abstract class AbstractComponent extends AbstractBaseFont implements Comp
     public void checkWrap() {
         // 初始化换行
         if (this.isWrap()) {
-            // 重置游标
+            // 重置光标
             this.getContext().getCursor().reset(
                     this.getContext().getWrapBeginX(),
                     this.getContext().getCursor().getY() - this.getContext().getWrapHeight()
@@ -323,12 +323,7 @@ public abstract class AbstractComponent extends AbstractBaseFont implements Comp
      */
     public boolean checkPaging(float beginY) {
         // 获取页面下边距
-        float bottom = this.getContext().getPage().getMarginBottom();
-        // 是否有页脚
-        if (this.getContext().hasPageFooter()) {
-            // 重置下边距
-            bottom = bottom + this.getContext().getPageFooter().getHeight();
-        }
+        float bottom = this.getBottom();
         // Y轴坐标小于下边距+页面下边距
         if (beginY < this.getMarginBottom() + bottom) {
             // 返回true
@@ -339,11 +334,28 @@ public abstract class AbstractComponent extends AbstractBaseFont implements Comp
     }
 
     /**
+     * 获取下边距
+     *
+     * @return 返回下边距
+     */
+    public float getBottom() {
+        // 获取页面下边距
+        float bottom = this.getContext().getPage().getMarginBottom();
+        // 是否有页脚
+        if (this.getContext().hasPageFooter()) {
+            // 重置下边距
+            bottom = bottom + this.getContext().getPageFooter().getHeight();
+        }
+        // 返回下边距
+        return bottom;
+    }
+
+    /**
      * 关闭
      */
     @Override
     public void close() {
-        this.setContext(null);
+        super.setContext(null);
     }
 
     /**
@@ -375,10 +387,20 @@ public abstract class AbstractComponent extends AbstractBaseFont implements Comp
         // 分页前事件
         Optional.ofNullable(this.pagingEvents).ifPresent(events -> events.forEach(event -> event.before(this)));
         // 重建页面
-        this.getContext().getPage().recreate();
+        this.getContext().getPage().createSubPage();
+        // 重置起始XY轴坐标
+        this.resetXY();
         // 初始化
         super.init(this.getContext().getPage(), false);
         // 分页后事件
         Optional.ofNullable(this.pagingEvents).ifPresent(events -> events.forEach(event -> event.after(this)));
+    }
+
+    /**
+     * 重置起始XY轴坐标
+     */
+    private void resetXY() {
+        this.beginX = null;
+        this.beginY = null;
     }
 }

@@ -1,6 +1,6 @@
 package org.dromara.pdf.pdfbox.core.component;
 
-import org.dromara.pdf.pdfbox.core.*;
+import org.dromara.pdf.pdfbox.core.base.*;
 
 import java.util.Set;
 
@@ -11,7 +11,7 @@ import java.util.Set;
  * @date 2023/6/5
  * @since 1.8
  * <p>
- * Copyright (c) 2020-2023 xsx All Rights Reserved.
+ * Copyright (c) 2020 xsx All Rights Reserved.
  * x-easypdf-pdfbox is licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
@@ -60,9 +60,16 @@ public interface Component {
     /**
      * 获取基类
      *
-     * @return 返回当前对象
+     * @return 返回基类
      */
     AbstractBase getBase();
+
+    /**
+     * 获取下边距
+     *
+     * @return 返回下边距
+     */
+    float getBottom();
 
     /**
      * 获取分页事件

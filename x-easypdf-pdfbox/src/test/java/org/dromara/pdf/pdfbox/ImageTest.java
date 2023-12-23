@@ -1,7 +1,8 @@
 package org.dromara.pdf.pdfbox;
 
-import org.dromara.pdf.pdfbox.core.Document;
-import org.dromara.pdf.pdfbox.core.Page;
+import org.dromara.pdf.pdfbox.core.base.Document;
+import org.dromara.pdf.pdfbox.core.base.Page;
+import org.dromara.pdf.pdfbox.core.base.PageSize;
 import org.dromara.pdf.pdfbox.core.component.Image;
 import org.dromara.pdf.pdfbox.core.component.Textarea;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
@@ -16,7 +17,7 @@ import java.nio.file.Paths;
  * @date 2023/8/24
  * @since 1.8
  * <p>
- * Copyright (c) 2020-2023 xsx All Rights Reserved.
+ * Copyright (c) 2020 xsx All Rights Reserved.
  * x-easypdf-pdfbox is licensed under the Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
@@ -27,60 +28,74 @@ import java.nio.file.Paths;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public class ImageTest {
+public class ImageTest extends BaseTest {
 
     @Test
-    public void testPng() {
-        Document document = PdfHandler.getDocumentHandler().create();
-        document.setMargin(50F);
-        Page page = document.getCurrentPage();
-        Image image = new Image(page);
-        image.setImage(Paths.get("E:\\PDF\\image\\test.png").toFile());
-        image.render();
-        document.saveAndClose("E:\\PDF\\image\\testPng.pdf");
+    public void pngTest() {
+        this.test(() -> {
+            Document document = PdfHandler.getDocumentHandler().create();
+            document.setMargin(50F);
+
+            Page page = document.createPage(PageSize.A4);
+
+            Image image = new Image(page);
+            image.setImage(Paths.get("E:\\PDF\\image\\test.png").toFile());
+            image.setWidth(100);
+            image.setHeight(100);
+            image.setAngle(45F);
+            image.render();
+
+            document.appendPage(page);
+
+            document.save("E:\\PDF\\image\\pngTest.pdf");
+
+            document.close();
+        });
     }
 
     @Test
-    public void testJpeg() {
+    public void jpegTest() {
         Document document = PdfHandler.getDocumentHandler().create();
         document.setMargin(50F);
-        Page page = document.getCurrentPage();
+        Page page = document.createPage(PageSize.A4);
         Image image = new Image(page);
         image.setImage(Paths.get("E:\\PDF\\image\\test.jpeg").toFile());
         image.render();
-        document.saveAndClose("E:\\PDF\\image\\testJpeg.pdf");
+        document.save("E:\\PDF\\image\\jpegTest.pdf");
+        document.close();
     }
 
     @Test
-    public void testSvg() {
+    public void svgTest() {
         Document document = PdfHandler.getDocumentHandler().create();
         document.setMargin(50F);
-        Page page = document.getCurrentPage();
+        Page page = document.createPage(PageSize.A4);
         Image image = new Image(page);
-        image.setIsSvg(true);
-        image.setImage(new File("F:\\workspace\\my\\x-easypdf\\x-easypdf-fop\\src\\test\\resources\\wiki\\xsx\\core\\pdf\\template\\svg\\test.svg"));
+        image.setImage(new File("F:\\workspace\\my\\x-easypdf-3.0\\x-easypdf-fop\\src\\test\\resources\\org\\dromara\\pdf\\fop\\svg\\test.svg"));
         image.render();
-        document.saveAndClose("E:\\PDF\\image\\testSvg.pdf");
+        document.save("E:\\PDF\\image\\svgTest.pdf");
+        document.close();
     }
 
     @Test
     public void testSize() {
         Document document = PdfHandler.getDocumentHandler().create();
         document.setMargin(50F);
-        Page page = document.getCurrentPage();
+        Page page = document.createPage(PageSize.A4);
         Image image = new Image(page);
         image.setWidth(600);
         image.setHeight(600);
         image.setImage(Paths.get("E:\\PDF\\image\\test.jpeg").toFile());
         image.render();
-        document.saveAndClose("E:\\PDF\\image\\testSize.pdf");
+        document.save("E:\\PDF\\image\\testSize.pdf");
+        document.close();
     }
 
     @Test
     public void testMix() {
         Document document = PdfHandler.getDocumentHandler().create();
         document.setMargin(50F);
-        Page page = document.getCurrentPage();
+        Page page = document.createPage(PageSize.A4);
         Textarea leftTextarea = new Textarea(page);
         leftTextarea.setText("左侧文本");
         leftTextarea.setFontColor(Color.BLUE);
@@ -95,6 +110,7 @@ public class ImageTest {
         rightTextarea.setText("右侧文本");
         rightTextarea.setFontColor(Color.GREEN);
         rightTextarea.render();
-        document.saveAndClose("E:\\PDF\\image\\testMix.pdf");
+        document.save("E:\\PDF\\image\\testMix.pdf");
+        document.close();
     }
 }

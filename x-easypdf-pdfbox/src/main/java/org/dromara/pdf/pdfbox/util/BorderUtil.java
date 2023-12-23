@@ -3,18 +3,20 @@ package org.dromara.pdf.pdfbox.util;
 import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.dromara.pdf.pdfbox.core.AbstractBaseBorder;
-import org.dromara.pdf.pdfbox.core.Context;
-import org.dromara.pdf.pdfbox.enums.BorderStyle;
+import org.dromara.pdf.pdfbox.core.base.AbstractBaseBorder;
+import org.dromara.pdf.pdfbox.core.base.Context;
+import org.dromara.pdf.pdfbox.core.enums.BorderStyle;
 
 import java.awt.*;
 
 /**
+ * 边框工具
+ *
  * @author xsx
  * @date 2023/6/26
  * @since 1.8
  * <p>
- * Copyright (c) 2020-2023 xsx All Rights Reserved.
+ * Copyright (c) 2020 xsx All Rights Reserved.
  * x-easypdf-pdfbox is licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:

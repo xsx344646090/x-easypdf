@@ -2,15 +2,17 @@ package org.dromara.pdf.pdfbox.core.component;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.dromara.pdf.pdfbox.core.AbstractBaseBorder;
-import org.dromara.pdf.pdfbox.core.PagingEvent;
+import org.dromara.pdf.pdfbox.core.base.AbstractBaseBorder;
+import org.dromara.pdf.pdfbox.core.base.PagingEvent;
 
 /**
+ * 容器信息
+ *
  * @author xsx
  * @date 2023/9/15
  * @since 1.8
  * <p>
- * Copyright (c) 2020-2023 xsx All Rights Reserved.
+ * Copyright (c) 2020 xsx All Rights Reserved.
  * x-easypdf-pdfbox is licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:

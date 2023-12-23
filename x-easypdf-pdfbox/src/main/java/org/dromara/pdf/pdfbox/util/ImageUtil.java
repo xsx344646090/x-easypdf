@@ -4,6 +4,11 @@ import lombok.SneakyThrows;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.PNGTranscoder;
+import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.pdmodel.PDResources;
+import org.apache.pdfbox.pdmodel.graphics.PDXObject;
+import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImage;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -14,14 +19,14 @@ import java.util.Objects;
 
 
 /**
- * 图片工具
+ * 图像工具
  *
  * @author xsx
- * @date 2020/3/30
+ * @date 2023/3/30
  * @since 1.8
  * <p>
- * Copyright (c) 2020-2023 xsx All Rights Reserved.
- * x-easypdf is licensed under Mulan PSL v2.
+ * Copyright (c) 2020 xsx All Rights Reserved.
+ * x-easypdf-pdfbox is licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  * http://license.coscl.org.cn/MulanPSL2
@@ -108,18 +113,17 @@ public class ImageUtil {
     /**
      * 重置图像字节数组
      *
-     * @param isSvg 是否svg
      * @param bytes 字节数组
      * @return 返回字节数组
      */
     @SneakyThrows
-    public static byte[] resetBytes(boolean isSvg, byte[] bytes) {
+    public static byte[] resetBytes(byte[] bytes) {
         // 字节数组校验
         Objects.requireNonNull(bytes, "the bytes can not be null");
         // 定义字节数组
         byte[] byteArray = bytes;
         // 如果svg格式
-        if (isSvg) {
+        if (isSvgImage(byteArray)) {
             try (
                     // 定义输入流
                     InputStream inputStream = new BufferedInputStream(new ByteArrayInputStream(bytes));
@@ -216,8 +220,9 @@ public class ImageUtil {
 
     /**
      * 拼接图片
+     *
      * @param sourceImageList 图片列表
-     * @param isHorizontal 是否水平拼接
+     * @param isHorizontal    是否水平拼接
      * @return 返回拼接后的图片对象
      */
     public static BufferedImage join(List<BufferedImage> sourceImageList, boolean isHorizontal) {
@@ -238,9 +243,7 @@ public class ImageUtil {
                 // 累计宽度
                 imageWidth = imageWidth + sourceImage.getWidth();
             }
-        }
-        // 否则累计高度
-        else {
+        } else {
             // 重置图片宽度
             imageWidth = firstImage.getWidth();
             // 遍历源图片列表
@@ -265,9 +268,7 @@ public class ImageUtil {
             if (isHorizontal) {
                 // 累计x轴坐标
                 x = x + sourceImage.getWidth();
-            }
-            // 否则累计y轴坐标
-            else {
+            } else {
                 // 累计y轴坐标
                 y = y + sourceImage.getHeight();
             }
@@ -278,6 +279,66 @@ public class ImageUtil {
         graphics.dispose();
         // 返回图片
         return image;
+    }
+
+    /**
+     * 提取图像
+     *
+     * @param imageList 待接收图像列表
+     * @param resources 页面资源
+     */
+    @SneakyThrows
+    public static void extract(List<BufferedImage> imageList, PDResources resources) {
+        // 获取页面资源内容名称
+        Iterable<COSName> objectNames = resources.getXObjectNames();
+        // 遍历资源内容名称
+        for (COSName objectName : objectNames) {
+            // 获取资源内容
+            PDXObject xObject = resources.getXObject(objectName);
+            // 如果资源内容为图片，则添加到待接收图片列表
+            if (xObject instanceof PDImage) {
+                // 添加到待接收图片列表
+                imageList.add(((PDImage) xObject).getImage());
+            } else if (xObject instanceof PDFormXObject) {
+                // 提取图像
+                extract(imageList, ((PDFormXObject) xObject).getResources());
+            }
+        }
+    }
+
+    /**
+     * 是否svg图像
+     * <p>注：判断是否为xml</p>
+     *
+     * @param bytes 字节数组
+     * @return 返回布尔值，是为true，否为false
+     */
+    public static boolean isSvgImage(byte[] bytes) {
+        // 定义svg字节码
+        final byte[] svgBytes = new byte[]{0x3c, 0x3f, 0x78, 0x6d, 0x6c, 0x20};
+        // 定义长度
+        int length = 5;
+        // 定义最大长度
+        int maxLength = 24;
+        // 定义索引
+        int index = 0;
+        // 定义标记字节
+        byte flag = svgBytes[index];
+        // 遍历字节数组
+        for (int idx = 0; idx < bytes.length; idx++) {
+            // 到达指定长度
+            if (index == length || idx == maxLength) {
+                // 结束
+                break;
+            }
+            // 当前字节与标记字节相等
+            if (bytes[idx] == flag) {
+                // 重置标记
+                flag = svgBytes[++index];
+            }
+        }
+        // 返回是否svg图像
+        return index == length;
     }
 
     /**
@@ -314,22 +375,37 @@ public class ImageUtil {
      * @return 返回旋转后的尺寸
      */
     private static Rectangle getRotateRectangle(int width, int height, double radians) {
+        // 定义矩形
         Rectangle src = new Rectangle(new Dimension(width, height));
+        // 定义角度
         final int angle = 90;
+        // 定义旋转次数
         final int num = 2;
+        // 旋转角度大于等于90度
         if (radians >= angle) {
+            // 旋转角度可以被90整除
             if (radians / angle % num == 1) {
+                // 返回旋转后的矩形（宽高翻转）
                 return new Rectangle((int) src.getHeight(), (int) src.getWidth());
             }
+            // 旋转角度对90取余
             radians = radians % angle;
         }
+        // 计算半径
         double radius = Math.sqrt(src.getHeight() * src.getHeight() + src.getWidth() * src.getWidth()) / num;
+        // 计算旋转后的矩形长度
         double len = num * Math.sin(Math.toRadians(radians) / num) * radius;
+        // 计算旋转角度
         double radiansAlpha = (Math.PI - Math.toRadians(radians)) / num;
+        // 计算旋转后的矩形宽度
         double radiansWidth = Math.atan(src.getHeight() / src.getWidth());
+        // 计算旋转后的矩形高度
         double radiansHeight = Math.atan(src.getWidth() / src.getHeight());
-        int lenWidth = Math.abs((int) (len * Math.cos(Math.PI - radiansAlpha - radiansWidth)));
-        int lenHeight = Math.abs((int) (len * Math.cos(Math.PI - radiansAlpha - radiansHeight)));
-        return new Rectangle((src.width + lenWidth * num), (src.height + lenHeight * num));
+        // 计算旋转后的矩形宽度增加量
+        int offsetWidth = Math.abs((int) (len * Math.cos(Math.PI - radiansAlpha - radiansWidth)));
+        // 计算旋转后的矩形高度增加量
+        int offsetHeight = Math.abs((int) (len * Math.cos(Math.PI - radiansAlpha - radiansHeight)));
+        // 返回旋转后的矩形
+        return new Rectangle((src.width + offsetWidth * num), (src.height + offsetHeight * num));
     }
 }

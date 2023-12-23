@@ -3,10 +3,7 @@ package org.dromara.pdf.fop;
 import org.dromara.pdf.fop.handler.TemplateHandler;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -14,8 +11,8 @@ import java.util.concurrent.CompletableFuture;
  * @date 2022/8/6
  * @since 1.8
  * <p>
- * Copyright (c) 2020-2023 xsx All Rights Reserved.
- * x-easypdf is licensed under the Mulan PSL v2.
+ * Copyright (c) 2020 xsx All Rights Reserved.
+ * x-easypdf-fop is licensed under the Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  * http://license.coscl.org.cn/MulanPSL2
@@ -55,13 +52,14 @@ public class TemplateTest {
         // 定义fop配置文件路径
         String configPath = "H:\\java_workspace\\my\\mutil\\x-easypdf\\x-easypdf-fop\\src\\main\\resources\\wiki\\xsx\\core\\pdf\\template\\fop.xconf";
         // 定义xsl-fo模板路径
-        String templatePath = "wiki/xsx/core/pdf/template/thymeleaf/template.html";
+        String templatePath = "org/dromara/pdf/fop/thymeleaf/template.html";
         // 定义pdf输出路径
-        String outputPath = "D:\\PDF\\fo\\Thymeleaf.pdf";
+        String outputPath = "E:\\PDF\\fo\\Thymeleaf.pdf";
         // 定义数据map
         Map<String, Object> data = new HashMap<>();
         // 设置值
         data.put("data", "hello world");
+        data.put("signatureList", Arrays.asList(Collections.singletonMap("nameUrl", "test")));
         // 转换pdf
         TemplateHandler.Template.build()
                 // .setConfigPath(configPath)

@@ -1,6 +1,6 @@
 package org.dromara.pdf.pdfbox.support.fonts;
 
-import org.dromara.pdf.pdfbox.enums.FontType;
+import org.dromara.pdf.pdfbox.core.enums.FontType;
 
 import java.io.File;
 import java.io.InputStream;
@@ -17,8 +17,9 @@ public abstract class FontProvider {
      * Adds a font to the list of available fonts.
      *
      * @param file the font file
+     * @return returns the font name
      */
-    public abstract void addFont(File file);
+    public abstract String addFont(File file);
 
     /**
      * Adds a font to the list of available fonts.
@@ -26,8 +27,9 @@ public abstract class FontProvider {
      * @param inputStream the font file input stream
      * @param tempName    the font temp name
      * @param type        the font type
+     * @return returns the font name
      */
-    public abstract void addFont(InputStream inputStream, String tempName, FontType type);
+    public abstract String addFont(InputStream inputStream, String tempName, FontType type);
 
     /**
      * Returns a string containing debugging information. This will be written to the log if no

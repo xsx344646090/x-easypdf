@@ -6,7 +6,7 @@ import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.util.Matrix;
-import org.dromara.pdf.pdfbox.core.*;
+import org.dromara.pdf.pdfbox.core.base.*;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.dromara.pdf.pdfbox.util.TextUtil;
 
@@ -20,7 +20,7 @@ import java.util.Objects;
  * @date 2023/10/13
  * @since 1.8
  * <p>
- * Copyright (c) 2020-2023 xsx All Rights Reserved.
+ * Copyright (c) 2020 xsx All Rights Reserved.
  * x-easypdf-pdfbox is licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
@@ -215,6 +215,7 @@ public class TextareaWatermark extends AbstractBaseFont implements Watermark {
         PDPageContentStream stream = this.initContentStream(page);
         // 循环写入文本
         for (int i = 0; i < this.getLines(); i++) {
+            // 定义最近Y轴起始坐标
             float lastBeginY = beginY;
             // 循环写入文本
             for (int j = 0; j < this.getCountOfLine(); j++) {

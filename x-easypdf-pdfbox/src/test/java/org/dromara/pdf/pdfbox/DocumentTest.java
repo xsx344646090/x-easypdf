@@ -1,32 +1,37 @@
 package org.dromara.pdf.pdfbox;
 
-import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.dromara.pdf.pdfbox.core.Document;
-import org.dromara.pdf.pdfbox.core.Page;
-import org.dromara.pdf.pdfbox.core.PageRectangle;
+import org.dromara.pdf.pdfbox.core.base.Document;
+import org.dromara.pdf.pdfbox.core.base.MemoryPolicy;
+import org.dromara.pdf.pdfbox.core.base.Page;
+import org.dromara.pdf.pdfbox.core.base.PageSize;
 import org.dromara.pdf.pdfbox.core.component.Container;
 import org.dromara.pdf.pdfbox.core.component.PageFooter;
 import org.dromara.pdf.pdfbox.core.component.PageHeader;
 import org.dromara.pdf.pdfbox.core.component.Textarea;
+import org.dromara.pdf.pdfbox.core.enums.PWLength;
+import org.dromara.pdf.pdfbox.core.ext.processor.MergeProcessor;
+import org.dromara.pdf.pdfbox.core.info.CatalogInfo;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.junit.Test;
 
 import java.awt.*;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Optional;
+import java.io.File;
+import java.util.List;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 /**
  * @author xsx
  * @date 2023/7/16
  * @since 1.8
  * <p>
- * Copyright (c) 2020-2023 xsx All Rights Reserved.
+ * Copyright (c) 2020 xsx All Rights Reserved.
  * x-easypdf-pdfbox is licensed under the Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
@@ -37,90 +42,308 @@ import java.util.Optional;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public class DocumentTest {
+public class DocumentTest extends BaseTest {
 
-
-    @SneakyThrows
     @Test
-    public void test() {
-        Document document = PdfHandler.getDocumentHandler().create();
-        document.setFontName("SimSun");
-        PDDocument pdDocument = document.getTarget();
-        PDPage page = new PDPage(PDRectangle.A4);
-        pdDocument.addPage(page);
-        PDPageContentStream contentStream = new PDPageContentStream(pdDocument, page);
-        PDFont pdFont = document.getFont();
-        contentStream.setFont(pdFont, 12f);
-        contentStream.beginText();
-        contentStream.newLineAtOffset(0, page.getMediaBox().getHeight() - 12);
-        contentStream.showText("你好，世界！hello world");
-        contentStream.endText();
-        contentStream.close();
-        // differentSettings(pdDocument, page, document.getFont());
-        document.saveAndClose("D:\\PDF\\test.pdf");
+    public void pdfboxTest() {
+        this.test(() -> {
+            Document document = PdfHandler.getDocumentHandler().create();
+            document.setFontName("微软雅黑");
 
-        // List<String> fontNames = PdfHandler.getFontHandler().getFontNames();
-        // fontNames.forEach(System.out::println);
-        // System.out.println("--------------------fontNames = " + fontNames.size());
+            PDDocument pdDocument = document.getTarget();
 
-        // FontMapperImpl.getInstance().getProvider();
-        // FontMapperImpl instance = FontMapperImpl.getInstance();
-        // Map<String, FontInfo> fontInfoByName = instance.getFontInfoByName();
-        // fontInfoByName.keySet().forEach(System.out::println);
+            PDPage page = new PDPage(PDRectangle.A4);
+            pdDocument.addPage(page);
+
+            PDPageContentStream contentStream = new PDPageContentStream(pdDocument, page);
+
+            PDFont pdFont = document.getFont();
+
+            contentStream.setFont(pdFont, 12f);
+            contentStream.beginText();
+            contentStream.newLineAtOffset(0, page.getMediaBox().getHeight() - 12);
+            contentStream.showText("你好，世界！hello world");
+            contentStream.endText();
+            contentStream.close();
+
+            document.save("E:\\PDF\\pdfbox\\document\\test.pdf");
+            document.close();
+        });
+    }
+
+    @Test
+    public void versionTest() {
+        this.test(() -> {
+            Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\document\\test.pdf");
+            document.setVersion(1.7F);
+            document.save("E:\\PDF\\pdfbox\\document\\versionTest.pdf");
+            document.close();
+        });
+    }
+
+    @Test
+    public void encryptionTest() {
+        this.test(() -> {
+            Document document = this.create(null);
+            document.encryption(true, PWLength.LENGTH_128, "123456", "123456");
+            document.save("E:\\PDF\\pdfbox\\document\\encryptionTest.pdf");
+            document.close();
+        });
+    }
+
+    @Test
+    public void decryptTest() {
+        this.test(() -> {
+            Document document = PdfHandler.getDocumentHandler().load(
+                    "E:\\PDF\\pdfbox\\document\\encryptionTest.pdf",
+                    "123456"
+            );
+            document.decrypt();
+            document.save("E:\\PDF\\pdfbox\\document\\decryptTest.pdf");
+            document.close();
+        });
     }
 
     @Test
     public void insertPageTest() {
-        Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\document\\test.pdf");
-        Page page = document.createPage(PageRectangle.A4);
-        document.insertPage(2, page);
-        document.saveAndClose("E:\\PDF\\document\\insertPageTest.pdf");
+        this.test(() -> {
+            Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\document\\test.pdf");
+
+            Page page = document.createPage(PageSize.A4);
+
+            document.insertPage(1, page);
+            document.save("E:\\PDF\\pdfbox\\document\\insertPageTest1.pdf");
+            document.insertPage(3, page);
+            document.save("E:\\PDF\\pdfbox\\document\\insertPageTest2.pdf");
+            document.close();
+        });
     }
 
     @Test
     public void appendPageTest() {
-        Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\document\\test.pdf");
-        Page page = document.createPage(PageRectangle.A4);
-        document.appendPage(page);
-        document.saveAndClose("E:\\PDF\\document\\appendPageTest.pdf");
+        this.test(() -> {
+            Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\document\\test.pdf");
+
+            Page page = document.createPage(PageSize.A4);
+
+            document.appendPage(page);
+            document.save("E:\\PDF\\pdfbox\\document\\appendPageTest.pdf");
+            document.close();
+        });
     }
 
     @Test
     public void setPageTest() {
-        Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\document\\insertPageTest.pdf");
-        Page page = document.createPage(PageRectangle.A4);
-        document.setPage(1, page);
-        document.saveAndClose("E:\\PDF\\document\\setPageTest.pdf");
+        this.test(() -> {
+            Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\document\\insertPageTest1.pdf");
+
+            Page page = document.createPage(PageSize.A4);
+
+            document.setPage(0, page);
+            document.save("E:\\PDF\\pdfbox\\document\\setPageTest.pdf");
+            document.close();
+        });
     }
 
     @Test
-    public void removePageTest() {
-        Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\document\\insertPageTest.pdf");
-        document.removePage(0, 2, 5);
-        document.saveAndClose("E:\\PDF\\document\\removePageTest.pdf");
+    public void createPageTest() {
+        this.test(() -> {
+            Document document = PdfHandler.getDocumentHandler().create();
+
+            Page page = document.createPage(PageSize.A4);
+            System.out.println(page.getWidth());
+
+            page = document.createPage();
+            System.out.println(page.getWidth());
+
+            document.close();
+        });
     }
 
     @Test
-    public void resortPageTest() {
-        Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\document\\insertPage.pdf");
-        document.reorderPage(1, 0);
-        document.saveAndClose("E:\\PDF\\document\\resortPageTest.pdf");
+    public void getCurrentPageTest() {
+        this.test(() -> {
+            Document document = PdfHandler.getDocumentHandler().create();
+
+            Page page = document.getCurrentPage();
+            System.out.println(page);
+
+            page = document.createPage();
+            System.out.println(page);
+
+            document.appendPage(page);
+
+            page = document.getCurrentPage();
+            System.out.println(page);
+
+            page = document.getPage(0);
+            System.out.println(page);
+
+            document.close();
+        });
     }
 
     @Test
-    public void restructurePageTest() {
-        Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\document\\insertPage.pdf");
-        document.restructurePage(1, 0, 1, 0, 1);
-        document.saveAndClose("E:\\PDF\\document\\restructurePageTest.pdf");
+    public void getCatalogsTest() {
+        this.test(() -> {
+            Document document = PdfHandler.getDocumentHandler().create();
+
+            Page page1 = document.createPage();
+
+            Textarea textarea1 = new Textarea(page1);
+            textarea1.setText("Catalog-Title1");
+            textarea1.setCatalog(new CatalogInfo("Catalog-Title1"));
+            textarea1.render();
+
+            Page page2 = document.createPage();
+
+            Textarea textarea2 = new Textarea(page2);
+            textarea2.setText("Catalog-Title2");
+            textarea2.setCatalog(new CatalogInfo("Catalog-Title2"));
+            textarea2.render();
+
+            document.appendPage(page1);
+            document.appendPage(page2);
+
+            document.flushCatalog();
+
+            List<CatalogInfo> catalogs = document.getCatalogs();
+            catalogs.forEach(System.out::println);
+
+            document.close();
+        });
     }
 
     @Test
-    public void testTotalPageNumber() {
-        Document document = this.create(null);
-        int totalPageNumber = document.getTotalPageNumber();
-        document.close();
-        document = this.create(totalPageNumber);
-        document.saveAndClose("E:\\PDF\\document\\testTotalPageNumber.pdf");
+    public void bigDataTest1() {
+        // 单页面耗时：211.121s 页面数：295 耗时：211.843s 大小：449KB
+        this.test(() -> {
+            Document document = PdfHandler.getDocumentHandler().create(MemoryPolicy.setupTempFileOnly("E:\\PDF\\pdfbox\\document"));
+            document.setMargin(50F);
+
+            Page page = document.createPage();
+
+            long begin = System.currentTimeMillis();
+            StringBuilder builder = new StringBuilder();
+            for (int j = 0; j < 100000; j++) {
+                builder.append("测试内容").append(j);
+            }
+            Textarea textarea = new Textarea(page);
+            textarea.setText(builder.toString());
+            textarea.render();
+            long end = System.currentTimeMillis();
+            long diff = end - begin;
+            System.out.println("页面耗时：" + (diff / 1000D) + "s");
+
+            document.appendPage(page);
+            System.out.println("页面数：" + document.getTotalPageNumber());
+
+            document.save("E:\\PDF\\pdfbox\\document\\bigDataTest1.pdf");
+            document.close();
+        });
+    }
+
+    @Test
+    public void bigDataTest2() {
+        // 单页面耗时：0.513s 页面数：300 耗时：11.972s 大小：458KB
+        this.test(() -> {
+            Document document = PdfHandler.getDocumentHandler().create(MemoryPolicy.setupTempFileOnly("E:\\PDF\\pdfbox\\document"));
+            document.setMargin(50F);
+
+            List<Page> pages = new ArrayList<>(20);
+            for (int i = 0; i < 20; i++) {
+                Page page = document.createPage();
+
+                long begin = System.currentTimeMillis();
+                StringBuilder builder = new StringBuilder();
+                for (int j = 0; j < 5500; j++) {
+                    builder.append("测试内容").append(j);
+                }
+                Textarea textarea = new Textarea(page);
+                textarea.setText(builder.toString());
+                textarea.render();
+                long end = System.currentTimeMillis();
+                long diff = end - begin;
+                System.out.println("页面耗时：" + (diff / 1000D) + "s");
+                pages.add(page);
+            }
+
+            document.appendPage(pages);
+            System.out.println("页面数：" + document.getTotalPageNumber());
+
+            document.save("E:\\PDF\\pdfbox\\document\\bigDataTest2.pdf");
+            document.close();
+        });
+    }
+
+    @Test
+    public void bigDataTest3() {
+        // 单文档耗时：1.342s 页面数：300 耗时：9.006s 大小：826KB
+        this.test(() -> {
+            String dir = "E:\\PDF\\pdfbox\\document";
+            List<String> files = new ArrayList<>(20);
+            List<Document> documents = new ArrayList<>(20);
+            try {
+                List<CompletableFuture<?>> tasks = new ArrayList<>(20);
+                for (int i = 0; i < 20; i++) {
+                    String index = String.valueOf(i);
+                    tasks.add(
+                            CompletableFuture.runAsync(() -> {
+                                long start = System.currentTimeMillis();
+                                Document document = PdfHandler.getDocumentHandler().create();
+                                document.setMargin(50F);
+
+                                Page page = document.createPage();
+                                Textarea textarea = new Textarea(page);
+                                for (int j = 0; j < 5500; j++) {
+                                    textarea.setText("测试内容" + j);
+                                    textarea.render();
+                                }
+
+                                document.appendPage(page);
+
+                                String file = new File(dir, String.join("", "temp", index, ".pdf")).getAbsolutePath();
+                                files.add(file);
+                                document.save(file);
+                                document.close();
+                                long end = System.currentTimeMillis();
+                                long diff = end - start;
+                                System.out.println("文档耗时：" + (diff / 1000D) + "s");
+                            })
+                    );
+                }
+                CompletableFuture.allOf(tasks.toArray(new CompletableFuture[0])).join();
+
+                documents = files.stream().map(file -> PdfHandler.getDocumentHandler().load(file)).collect(Collectors.toList());
+
+                Document document = PdfHandler.getDocumentHandler().create();
+
+                MergeProcessor mergeProcessor = PdfHandler.getMergeProcessor(document);
+                mergeProcessor.merge(documents);
+                mergeProcessor.close();
+
+                document.save("E:\\PDF\\pdfbox\\document\\bigDataTest3.pdf");
+                document.close();
+            } finally {
+                documents.forEach(Document::close);
+                files.forEach(path -> new File(path).delete());
+            }
+        });
+    }
+
+    @Test
+    public void totalPageNumberTest() {
+        this.test(() -> {
+            Document document = this.create(null);
+
+            int totalPageNumber = document.getTotalPageNumber();
+            System.out.println("totalPageNumber = " + totalPageNumber);
+
+            document.close();
+            document = this.create(totalPageNumber);
+            document.save("E:\\PDF\\pdfbox\\document\\totalPageNumberTest.pdf");
+            document.close();
+        });
     }
 
     private Document create(Integer totalPage) {
@@ -128,12 +351,12 @@ public class DocumentTest {
         document.setMargin(50F);
         document.setTotalPageNumber(totalPage);
 
-        Page page = document.createPage(PageRectangle.A4);
+        Page page = document.createPage(PageSize.A4);
         page.setBorderColor(Color.LIGHT_GRAY);
 
         PageHeader pageHeader = new PageHeader(document.getCurrentPage());
         Textarea headerText = new Textarea(pageHeader.getPage());
-        headerText.setText("页眉");
+        headerText.setText("页眉，当前第" + headerText.getContext().getPage().getPlaceholder() + "页");
         pageHeader.setWidth(490F);
         pageHeader.setHeight(100F);
         pageHeader.setComponents(Collections.singletonList(headerText));
@@ -142,7 +365,7 @@ public class DocumentTest {
 
         PageFooter pageFooter = new PageFooter(document.getCurrentPage());
         Textarea footerText = new Textarea(pageHeader.getPage());
-        footerText.setText("页脚");
+        footerText.setText("页脚，共" + totalPage + "页");
         pageFooter.setWidth(490F);
         pageFooter.setHeight(350F);
         pageFooter.setComponents(Collections.singletonList(footerText));
@@ -168,6 +391,7 @@ public class DocumentTest {
         container.render();
         container.setIsWrap(true);
         container.render();
+
         document.appendPage(page);
         return document;
     }

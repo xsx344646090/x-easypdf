@@ -1,9 +1,9 @@
 package org.dromara.pdf.fop;
 
-import org.dromara.pdf.fop.doc.Document;
-import org.dromara.pdf.fop.doc.component.Component;
-import org.dromara.pdf.fop.doc.component.image.Image;
-import org.dromara.pdf.fop.doc.page.Page;
+import org.dromara.pdf.fop.core.doc.Document;
+import org.dromara.pdf.fop.core.doc.component.Component;
+import org.dromara.pdf.fop.core.doc.component.image.Image;
+import org.dromara.pdf.fop.core.doc.page.Page;
 import org.dromara.pdf.fop.handler.TemplateHandler;
 import org.junit.Test;
 
@@ -15,8 +15,8 @@ import java.util.List;
  * @date 2022/8/6
  * @since 1.8
  * <p>
- * Copyright (c) 2020-2023 xsx All Rights Reserved.
- * x-easypdf is licensed under the Mulan PSL v2.
+ * Copyright (c) 2020 xsx All Rights Reserved.
+ * x-easypdf-fop is licensed under the Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  * http://license.coscl.org.cn/MulanPSL2

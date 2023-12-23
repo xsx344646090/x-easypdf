@@ -13,9 +13,10 @@ import org.apache.pdfbox.pdmodel.interactive.action.PDActionURI;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationLink;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.destination.PDPageFitWidthDestination;
 import org.apache.pdfbox.util.Matrix;
-import org.dromara.pdf.pdfbox.core.*;
+import org.dromara.pdf.pdfbox.core.base.*;
 import org.dromara.pdf.pdfbox.core.info.CatalogInfo;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
+import org.dromara.pdf.pdfbox.support.Constants;
 import org.dromara.pdf.pdfbox.support.Position;
 import org.dromara.pdf.pdfbox.util.BorderUtil;
 import org.dromara.pdf.pdfbox.util.TextUtil;
@@ -31,7 +32,7 @@ import java.util.*;
  * @date 2023/6/5
  * @since 1.8
  * <p>
- * Copyright (c) 2020-2023 xsx All Rights Reserved.
+ * Copyright (c) 2020 xsx All Rights Reserved.
  * x-easypdf-pdfbox is licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
@@ -177,14 +178,9 @@ public class Textarea extends AbstractComponent {
         super.init();
         // 获取当前页面
         Page page = this.getContext().getPage();
-        // 初始化容器换行
-        if (this.getContext().isContainerWrap()) {
+        // 初始化容器换行或首行
+        if (this.getContext().isContainerWrap() || (!this.getIsCustomY() && this.getContext().isFirstLine())) {
             super.setBeginY(this.getBeginY() - this.getFontSize());
-        } else {
-            // 初始化首行
-            if (!this.getIsCustomY() && this.getContext().isFirstLine()) {
-                super.setBeginY(this.getContext().getCursor().getY() - this.getFontSize());
-            }
         }
         // 初始化字体
         if (Objects.nonNull(this.getFontName())) {
@@ -244,19 +240,27 @@ public class Textarea extends AbstractComponent {
             // 检查分页
             this.isPaging(this, this.getBeginY());
         }
+        // 创建坐标
+        Position position = Position.create(
+                this.getBeginX() + this.getRelativeBeginX(),
+                this.getBeginY() - this.getRelativeBeginY()
+        );
+        // 初始化目录
+        this.initCatalog(position);
         // 文本列表不为空
         if (!this.getTextList().isEmpty()) {
-            // 创建坐标
-            Position position = Position.create(
-                    this.getBeginX() + this.getRelativeBeginX(),
-                    this.getBeginY() - this.getRelativeBeginY()
-            );
-            // 初始化目录
-            this.initCatalog(position);
+            // 定义文本行数
+            int count = this.getTextList().size();
+            // 定义最后一行索引
+            int lastIndex = count - 1;
+            // 定义最后一行文本宽度
+            float lastTextWidth = 0F;
             // 初始化内容流
             PDPageContentStream contentStream = this.initContentStream();
             // 遍历文本列表
-            for (String text : this.getTextList()) {
+            for (int i = 0; i < count; i++) {
+                // 获取文本
+                String text = this.getTextList().get(i);
                 // 写入
                 contentStream = this.write(text, contentStream, position);
                 // 重置坐标
@@ -264,13 +268,23 @@ public class Textarea extends AbstractComponent {
                         this.getContext().getWrapBeginX(),
                         position.getY() - this.getFontSize() - this.getLeading() - this.getUnderlineWidth()
                 );
+                // 最后一行
+                if (i == lastIndex) {
+                    // 重置文本宽度
+                    lastTextWidth = TextUtil.getTextRealWidth(
+                            text,
+                            this.getFont(),
+                            this.getFontSize(),
+                            this.getCharacterSpacing()
+                    );
+                }
             }
             // 关闭内容流
             contentStream.close();
             // 重置Y轴坐标
             position.setY(position.getY() + this.getFontSize() + this.getLeading() + this.getUnderlineWidth());
             // 重置页面位置坐标
-            this.resetPagePosition(position.getY());
+            this.resetPagePosition(position.getY(), lastTextWidth);
         }
         // 重置
         super.reset(this.getType());
@@ -313,8 +327,10 @@ public class Textarea extends AbstractComponent {
     private List<String> processText(String text) {
         // 过滤特殊字符
         String temp = TextUtil.filterAll(text);
+        // 替换当前页码
+        temp = temp.replace(Constants.CURRENT_PAGE_PLACEHOLDER, this.getContext().getPage().getIndex().toString());
         // 替换制表符
-        temp = temp.replaceAll("\t", TextUtil.spacing(this.getTabSize()));
+        temp = TextUtil.replaceTab(temp, this.getTabSize());
         // 根据换行符拆分
         return Arrays.asList(temp.split("\n"));
     }
@@ -747,29 +763,23 @@ public class Textarea extends AbstractComponent {
     /**
      * 重置页面位置坐标
      *
-     * @param beginY Y轴坐标
+     * @param beginY        Y轴坐标
+     * @param lastTextWidth 最后一行文本宽度
      */
-    private void resetPagePosition(float beginY) {
+    private void resetPagePosition(float beginY, float lastTextWidth) {
         // 获取上下文
         Context context = this.getContext();
-        // 获取最后一行文本宽度
-        float width = TextUtil.getTextRealWidth(
-                this.getTextList().get(this.getTextList().size() - 1),
-                this.getFont(),
-                this.getFontSize(),
-                this.getCharacterSpacing()
-        );
         // 定义X轴坐标
         float beginX;
         // 文本列表为单行
         if (this.getTextList().size() == 1) {
             // 重置X轴坐标
-            beginX = this.getBeginX() + width + this.getMarginRight();
+            beginX = this.getBeginX() + lastTextWidth + this.getMarginRight();
         } else {
             // 重置X轴坐标
-            beginX = context.getPage().getMarginLeft() + this.getMarginLeft() + width + this.getMarginRight();
+            beginX = context.getPage().getMarginLeft() + this.getMarginLeft() + lastTextWidth + this.getMarginRight();
         }
-        // 重置游标
+        // 重置光标
         context.getCursor().reset(beginX, beginY);
         // 设置结束坐标
         if (Objects.nonNull(this.getCatalog())) {

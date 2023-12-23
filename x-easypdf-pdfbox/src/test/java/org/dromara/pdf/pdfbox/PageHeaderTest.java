@@ -1,8 +1,8 @@
 package org.dromara.pdf.pdfbox;
 
-import org.dromara.pdf.pdfbox.core.Document;
-import org.dromara.pdf.pdfbox.core.Page;
-import org.dromara.pdf.pdfbox.core.PageRectangle;
+import org.dromara.pdf.pdfbox.core.base.Document;
+import org.dromara.pdf.pdfbox.core.base.Page;
+import org.dromara.pdf.pdfbox.core.base.PageSize;
 import org.dromara.pdf.pdfbox.core.component.Container;
 import org.dromara.pdf.pdfbox.core.component.PageFooter;
 import org.dromara.pdf.pdfbox.core.component.PageHeader;
@@ -17,7 +17,7 @@ import java.util.Arrays;
  * @date 2023/8/24
  * @since 1.8
  * <p>
- * Copyright (c) 2020-2023 xsx All Rights Reserved.
+ * Copyright (c) 2020 xsx All Rights Reserved.
  * x-easypdf-pdfbox is licensed under the Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
@@ -34,7 +34,7 @@ public class PageHeaderTest {
     public void testPageHeader() {
         Document document = PdfHandler.getDocumentHandler().create();
         document.setMargin(50F);
-        Page page = document.createPage(PageRectangle.A4);
+        Page page = document.createPage(PageSize.A4);
         PageHeader pageHeader = new PageHeader(document.getCurrentPage());
         Textarea headerText = new Textarea(pageHeader.getPage());
         headerText.setText("页眉");
@@ -67,14 +67,14 @@ public class PageHeaderTest {
         textarea3.setText(builder.toString());
         textarea3.render();
         document.appendPage(page);
-        document.saveAndClose("E:\\PDF\\pageHeader\\testPageHeader.pdf");
+        document.save("E:\\PDF\\pageHeader\\testPageHeader.pdf");
     }
 
     @Test
     public void testTextBreakContainer() {
         Document document = PdfHandler.getDocumentHandler().create();
         document.setMargin(50F);
-        Page page = document.createPage(PageRectangle.A4);
+        Page page = document.createPage(PageSize.A4);
         Container container = new Container(document.getCurrentPage());
         container.setWidth(100F);
         container.setHeight(100F);
@@ -110,6 +110,6 @@ public class PageHeaderTest {
         }
 
         document.appendPage(page);
-        document.saveAndClose("E:\\PDF\\container\\testTextBreakContainer.pdf");
+        document.save("E:\\PDF\\container\\testTextBreakContainer.pdf");
     }
 }

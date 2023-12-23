@@ -1,12 +1,12 @@
 package org.dromara.pdf.fop;
 
-import org.dromara.pdf.fop.doc.Document;
-import org.dromara.pdf.fop.doc.component.table.Table;
-import org.dromara.pdf.fop.doc.component.table.TableBody;
-import org.dromara.pdf.fop.doc.component.table.TableCell;
-import org.dromara.pdf.fop.doc.component.table.TableRow;
-import org.dromara.pdf.fop.doc.component.text.Text;
-import org.dromara.pdf.fop.doc.page.Page;
+import org.dromara.pdf.fop.core.doc.Document;
+import org.dromara.pdf.fop.core.doc.component.table.Table;
+import org.dromara.pdf.fop.core.doc.component.table.TableBody;
+import org.dromara.pdf.fop.core.doc.component.table.TableCell;
+import org.dromara.pdf.fop.core.doc.component.table.TableRow;
+import org.dromara.pdf.fop.core.doc.component.text.Text;
+import org.dromara.pdf.fop.core.doc.page.Page;
 import org.dromara.pdf.fop.handler.TemplateHandler;
 import org.junit.Test;
 
@@ -15,8 +15,8 @@ import org.junit.Test;
  * @date 2022/8/23
  * @since 1.8
  * <p>
- * Copyright (c) 2020-2023 xsx All Rights Reserved.
- * x-easypdf is licensed under the Mulan PSL v2.
+ * Copyright (c) 2020 xsx All Rights Reserved.
+ * x-easypdf-fop is licensed under the Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  * http://license.coscl.org.cn/MulanPSL2
@@ -118,9 +118,9 @@ public class TableTest {
         // 定义fop配置文件路径
         String configPath = "E:\\pdf\\test\\fo\\fop.xconf";
         // 定义输出路径
-        String outputPath = "E:\\pdf\\test\\fo\\template-table.pdf";
+        String outputPath = "E:\\PDF\\fo\\template-table.pdf";
         // 转换pdf
-        TemplateHandler.Document.build().setConfigPath(configPath).addPage(
+        TemplateHandler.Document.build().addPage(
                 TemplateHandler.Page.build().addBodyComponent(
                         TemplateHandler.Table.build().setBody(
                                 TemplateHandler.Table.Body.build().addRow(
@@ -133,6 +133,21 @@ public class TableTest {
                                                 ).setBorder("1 solid black"),
                                                 TemplateHandler.Table.Cell.build().addComponent(
                                                         TemplateHandler.Text.build().setText("1-hello-world-3")
+                                                ).setBorder("1 solid black"),
+                                                TemplateHandler.Table.Cell.build().addComponent(
+                                                        TemplateHandler.Text.build().setText("1-hello-world-4")
+                                                ).setBorder("1 solid black"),
+                                                TemplateHandler.Table.Cell.build().addComponent(
+                                                        TemplateHandler.Text.build().setText("1-hello-world-5")
+                                                ).setBorder("1 solid black"),
+                                                TemplateHandler.Table.Cell.build().addComponent(
+                                                        TemplateHandler.Text.build().setText("1-hello-world-6")
+                                                ).setBorder("1 solid black"),
+                                                TemplateHandler.Table.Cell.build().addComponent(
+                                                        TemplateHandler.Text.build().setText("1-hello-world-7")
+                                                ).setBorder("1 solid black"),
+                                                TemplateHandler.Table.Cell.build().addComponent(
+                                                        TemplateHandler.Text.build().setText("1-hello-world-8")
                                                 ).setBorder("1 solid black")
                                         ),
                                         TemplateHandler.Table.Row.build().addCell(
@@ -140,12 +155,21 @@ public class TableTest {
                                                                 TemplateHandler.Text.build().setText("2-hello-world-1")
                                                         ).setBorder("1 solid black")
                                                         // 合并两行
-                                                        .setRowSpan(2),
+                                                        .setRowSpan(4),
                                                 TemplateHandler.Table.Cell.build().addComponent(
                                                                 TemplateHandler.Text.build().setText("2-hello-world-2")
                                                         ).setBorder("1 solid black")
                                                         // 合并两列
-                                                        .setColumnSpan(2)
+                                                        .setColumnSpan(4),
+                                                TemplateHandler.Table.Cell.build().addComponent(
+                                                        TemplateHandler.Text.build().setText("1-hello-world-6")
+                                                ).setBorder("1 solid black"),
+                                                TemplateHandler.Table.Cell.build().addComponent(
+                                                        TemplateHandler.Text.build().setText("1-hello-world-7")
+                                                ).setBorder("1 solid black"),
+                                                TemplateHandler.Table.Cell.build().addComponent(
+                                                        TemplateHandler.Text.build().setText("1-hello-world-8")
+                                                ).setBorder("1 solid black")
                                         ),
                                         TemplateHandler.Table.Row.build().addCell(
                                                 TemplateHandler.Table.Cell.build().addComponent(
@@ -153,6 +177,67 @@ public class TableTest {
                                                 ).setBorder("1 solid black"),
                                                 TemplateHandler.Table.Cell.build().addComponent(
                                                         TemplateHandler.Text.build().setText("3-hello-world-3")
+                                                ).setBorder("1 solid black"),
+                                                TemplateHandler.Table.Cell.build().addComponent(
+                                                        TemplateHandler.Text.build().setText("1-hello-world-4")
+                                                ).setBorder("1 solid black"),
+                                                TemplateHandler.Table.Cell.build().addComponent(
+                                                        TemplateHandler.Text.build().setText("1-hello-world-5")
+                                                ).setBorder("1 solid black"),
+                                                TemplateHandler.Table.Cell.build().addComponent(
+                                                        TemplateHandler.Text.build().setText("1-hello-world-6")
+                                                ).setBorder("1 solid black"),
+                                                TemplateHandler.Table.Cell.build().addComponent(
+                                                        TemplateHandler.Text.build().setText("1-hello-world-7")
+                                                ).setBorder("1 solid black"),
+                                                TemplateHandler.Table.Cell.build().addComponent(
+                                                        TemplateHandler.Text.build().setText("1-hello-world-8")
+                                                ).setBorder("1 solid black")
+                                        ),
+                                        TemplateHandler.Table.Row.build().addCell(
+                                                TemplateHandler.Table.Cell.build().addComponent(
+                                                        TemplateHandler.Text.build().setText("3-hello-world-2")
+                                                ).setBorder("1 solid black"),
+                                                TemplateHandler.Table.Cell.build().addComponent(
+                                                        TemplateHandler.Text.build().setText("3-hello-world-3")
+                                                ).setBorder("1 solid black"),
+                                                TemplateHandler.Table.Cell.build().addComponent(
+                                                        TemplateHandler.Text.build().setText("1-hello-world-4")
+                                                ).setBorder("1 solid black"),
+                                                TemplateHandler.Table.Cell.build().addComponent(
+                                                        TemplateHandler.Text.build().setText("1-hello-world-5")
+                                                ).setBorder("1 solid black"),
+                                                TemplateHandler.Table.Cell.build().addComponent(
+                                                        TemplateHandler.Text.build().setText("1-hello-world-6")
+                                                ).setBorder("1 solid black"),
+                                                TemplateHandler.Table.Cell.build().addComponent(
+                                                        TemplateHandler.Text.build().setText("1-hello-world-7")
+                                                ).setBorder("1 solid black"),
+                                                TemplateHandler.Table.Cell.build().addComponent(
+                                                        TemplateHandler.Text.build().setText("1-hello-world-8")
+                                                ).setBorder("1 solid black")
+                                        ),
+                                        TemplateHandler.Table.Row.build().addCell(
+                                                TemplateHandler.Table.Cell.build().addComponent(
+                                                        TemplateHandler.Text.build().setText("3-hello-world-2")
+                                                ).setBorder("1 solid black"),
+                                                TemplateHandler.Table.Cell.build().addComponent(
+                                                        TemplateHandler.Text.build().setText("3-hello-world-3")
+                                                ).setBorder("1 solid black"),
+                                                TemplateHandler.Table.Cell.build().addComponent(
+                                                        TemplateHandler.Text.build().setText("1-hello-world-4")
+                                                ).setBorder("1 solid black"),
+                                                TemplateHandler.Table.Cell.build().addComponent(
+                                                        TemplateHandler.Text.build().setText("1-hello-world-5")
+                                                ).setBorder("1 solid black"),
+                                                TemplateHandler.Table.Cell.build().addComponent(
+                                                        TemplateHandler.Text.build().setText("1-hello-world-6")
+                                                ).setBorder("1 solid black"),
+                                                TemplateHandler.Table.Cell.build().addComponent(
+                                                        TemplateHandler.Text.build().setText("1-hello-world-7")
+                                                ).setBorder("1 solid black"),
+                                                TemplateHandler.Table.Cell.build().addComponent(
+                                                        TemplateHandler.Text.build().setText("1-hello-world-8")
                                                 ).setBorder("1 solid black")
                                         )
                                 )

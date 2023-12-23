@@ -1,17 +1,17 @@
 package org.dromara.pdf.pdfbox.core.component;
 
-import org.dromara.pdf.pdfbox.core.ComponentType;
-import org.dromara.pdf.pdfbox.core.Document;
-import org.dromara.pdf.pdfbox.core.Page;
+import org.dromara.pdf.pdfbox.core.base.ComponentType;
+import org.dromara.pdf.pdfbox.core.base.Document;
+import org.dromara.pdf.pdfbox.core.base.Page;
 
 /**
- * 抽象水印
+ * 水印
  *
  * @author xsx
  * @date 2023/10/13
  * @since 1.8
  * <p>
- * Copyright (c) 2020-2023 xsx All Rights Reserved.
+ * Copyright (c) 2020 xsx All Rights Reserved.
  * x-easypdf-pdfbox is licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:

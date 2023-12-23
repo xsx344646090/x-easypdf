@@ -10,11 +10,11 @@ import com.google.zxing.qrcode.encoder.QRCode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
-import org.dromara.pdf.pdfbox.core.ComponentType;
-import org.dromara.pdf.pdfbox.core.Page;
-import org.dromara.pdf.pdfbox.enums.BarcodeErrorLevel;
-import org.dromara.pdf.pdfbox.enums.BarcodeType;
-import org.dromara.pdf.pdfbox.enums.BarcodeWordsStyle;
+import org.dromara.pdf.pdfbox.core.base.ComponentType;
+import org.dromara.pdf.pdfbox.core.base.Page;
+import org.dromara.pdf.pdfbox.core.enums.BarcodeErrorLevel;
+import org.dromara.pdf.pdfbox.core.enums.BarcodeType;
+import org.dromara.pdf.pdfbox.core.enums.BarcodeWordsStyle;
 import org.dromara.pdf.pdfbox.util.ImageUtil;
 
 import java.awt.*;
@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 条形码组件
@@ -32,7 +33,7 @@ import java.util.Optional;
  * @date 2023/8/30
  * @since 1.8
  * <p>
- * Copyright (c) 2020-2023 xsx All Rights Reserved.
+ * Copyright (c) 2020 xsx All Rights Reserved.
  * x-easypdf-pdfbox is licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
@@ -54,7 +55,7 @@ public class Barcode extends AbstractComponent {
     /**
      * 缓存锁
      */
-    private static final Object CACHE_LOCK = new Object();
+    private static final ReentrantLock LOCK = new ReentrantLock();
     /**
      * 编码设置
      */
@@ -120,9 +121,9 @@ public class Barcode extends AbstractComponent {
      */
     private Integer wordsOffsetY;
     /**
-     * 旋转弧度
+     * 旋转角度
      */
-    private Double radians;
+    private Float angle;
     /**
      * 是否显示文字
      */
@@ -260,21 +261,6 @@ public class Barcode extends AbstractComponent {
     }
 
     /**
-     * 设置旋转弧度
-     *
-     * @param radians 旋转弧度
-     */
-    public void setRadians(double radians) {
-        radians = radians % 360;
-        if (radians != 0) {
-            if (radians < 0) {
-                radians += 360;
-            }
-            this.radians = radians;
-        }
-    }
-
-    /**
      * 获取类型
      *
      * @return 返回类型
@@ -325,9 +311,9 @@ public class Barcode extends AbstractComponent {
         if (Objects.isNull(this.offColor)) {
             this.offColor = this.getContext().getPage().getBackgroundColor();
         }
-        // 初始化旋转弧度
-        if (Objects.isNull(this.radians)) {
-            this.radians = 0D;
+        // 初始化旋转角度
+        if (Objects.isNull(this.angle)) {
+            this.angle = 0F;
         }
         // 初始化是否显示文字
         if (Objects.isNull(this.isShowWords)) {
@@ -354,6 +340,8 @@ public class Barcode extends AbstractComponent {
         image.setWidth(this.getWidth());
         // 设置高度
         image.setHeight(this.getHeight());
+        // 设置旋转角度
+        image.setAngle(this.getAngle());
         // 设置图像
         image.setImage(ImageUtil.toBytes(this.getBarcodeImage(), "png"));
         // 设置X轴相对坐标
@@ -395,15 +383,6 @@ public class Barcode extends AbstractComponent {
     }
 
     /**
-     * 是否旋转
-     *
-     * @return 返回布尔值，是为true，否为false
-     */
-    private boolean isRotate() {
-        return this.getRadians() % 360 != 0;
-    }
-
-    /**
      * 是否显示文字
      *
      * @return 返回布尔值，是为true，否为false
@@ -425,8 +404,9 @@ public class Barcode extends AbstractComponent {
             BufferedImage bufferedImage = CACHE.get(this.cacheKey());
             // 图像不存在
             if (Objects.isNull(bufferedImage)) {
-                // 加锁
-                synchronized (CACHE_LOCK) {
+                try {
+                    // 加锁
+                    LOCK.lock();
                     // 再次获取
                     bufferedImage = CACHE.get(this.cacheKey());
                     // 仍然不存在
@@ -436,6 +416,9 @@ public class Barcode extends AbstractComponent {
                         // 放入缓存
                         CACHE.put(this.cacheKey(), bufferedImage);
                     }
+                } finally {
+                    // 解锁
+                    LOCK.unlock();
                 }
             }
             // 返回图像
@@ -466,11 +449,6 @@ public class Barcode extends AbstractComponent {
         if (this.isShowWords()) {
             // 添加图像文字
             bufferedImage = this.addImageWords(bufferedImage);
-        }
-        // 如果需要旋转且不旋转文字，则重置图像为旋转后的图像
-        if (this.isRotate()) {
-            // 重置图像为旋转后的图像
-            bufferedImage = ImageUtil.rotate(bufferedImage, this.getRadians());
         }
         // 返回图像
         return bufferedImage;
@@ -593,7 +571,6 @@ public class Barcode extends AbstractComponent {
                 this.wordsSize,
                 this.wordsOffsetX,
                 this.wordsOffsetY,
-                this.radians,
                 this.isShowWords
         );
     }
