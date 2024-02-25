@@ -21,9 +21,9 @@ package org.dromara.pdf.fop.core.base;
 public final class Constants {
 
     /**
-     * fop生产者
+     * 生产者
      */
-    public static final String FOP_PRODUCER = "x-easypdf/fop";
+    public static final String PRODUCER = "x-easypdf/fop";
     /**
      * 默认配置路径
      */

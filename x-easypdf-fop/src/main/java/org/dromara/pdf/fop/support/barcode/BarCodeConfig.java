@@ -10,7 +10,7 @@ import org.apache.fop.util.ColorUtil;
 import org.apache.xmlgraphics.util.UnitConv;
 import org.dromara.pdf.fop.core.base.TemplateAttributes;
 import org.dromara.pdf.fop.core.doc.page.PageRectangle;
-import org.dromara.pdf.fop.util.XEasyPdfTemplateFontStyleUtil;
+import org.dromara.pdf.fop.util.FontStyleUtil;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
@@ -201,7 +201,7 @@ public class BarCodeConfig {
         // 初始化文字名称
         this.wordsFamily = Optional.ofNullable(attributes.getNamedItem(TemplateAttributes.WORDS_FAMILY)).map(Node::getNodeValue).orElse(null);
         // 初始化文字样式
-        this.wordsStyle = this.resolveValue(attributes, TemplateAttributes.WORDS_STYLE, "NORMAL", XEasyPdfTemplateFontStyleUtil::getStyle);
+        this.wordsStyle = this.resolveValue(attributes, TemplateAttributes.WORDS_STYLE, "NORMAL", FontStyleUtil::getStyle);
         // 初始化文字大小
         this.wordsSize = this.resolveValue(attributes, TemplateAttributes.WORDS_SIZE, "12pt", this::parseUnit);
         // 初始化文字偏移量-X轴

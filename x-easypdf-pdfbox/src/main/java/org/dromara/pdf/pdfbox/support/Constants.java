@@ -29,9 +29,13 @@ public final class Constants {
      */
     public static final Float POINTS_PER_MM = 1 / 25.4f * POINTS_PER_INCH;
     /**
-     * pdfbox生产者
+     * 生产者
      */
-    public static final String PDFBOX_PRODUCER = "x-easypdf/pdfbox";
+    public static final String PRODUCER = "x-easypdf/pdfbox";
+    /**
+     * 格式类型
+     */
+    public static final String MIME_TYPE = "application/pdf";
     /**
      * 当前页码占位符
      */
@@ -48,6 +52,10 @@ public final class Constants {
      * 默认字体路径
      */
     public static final String DEFAULT_FONT_RESOURCE_PATH = "org/dromara/pdf/pdfbox/ttf/HarmonyOS_Sans_SC_Medium.ttf";
+    /**
+     * 默认外观
+     */
+    public static final String DEFAULT_APPEARANCE = String.join("", "/", DEFAULT_FONT_NAME, " 10 Tf 0 g");
     /**
      * 用户家目录路径
      */

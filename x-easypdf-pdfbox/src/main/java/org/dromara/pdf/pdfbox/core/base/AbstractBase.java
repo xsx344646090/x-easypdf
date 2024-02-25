@@ -62,11 +62,6 @@ public abstract class AbstractBase {
     private Boolean isBreak;
 
     /**
-     * 初始化
-     */
-    public abstract void init();
-
-    /**
      * 初始化基础
      */
     public abstract void initBase();
@@ -74,7 +69,14 @@ public abstract class AbstractBase {
     /**
      * 初始化
      */
-    public void init(AbstractBase param) {
+    protected void init() {
+
+    }
+
+    /**
+     * 初始化
+     */
+    protected void init(AbstractBase param) {
         // 初始化内容模式
         if (Objects.isNull(this.contentMode)) {
             this.contentMode = param.contentMode;

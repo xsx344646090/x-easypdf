@@ -123,6 +123,16 @@ public class PdfHandler {
     }
 
     /**
+     * 获取图层处理器
+     *
+     * @param document 文档
+     * @return 返回图层处理器
+     */
+    public static LayerProcessor getLayerProcessor(Document document) {
+        return new LayerProcessor(document);
+    }
+
+    /**
      * 获取文档分析器
      *
      * @param document 文档

@@ -7,18 +7,21 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
-import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.fixup.AcroFormDefaultFixup;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceCharacteristicsDictionary;
-import org.apache.pdfbox.pdmodel.interactive.form.*;
+import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
+import org.apache.pdfbox.pdmodel.interactive.form.PDField;
+import org.apache.pdfbox.pdmodel.interactive.form.PDPushButton;
+import org.apache.pdfbox.pdmodel.interactive.form.PDTextField;
 import org.dromara.pdf.pdfbox.core.base.Document;
+import org.dromara.pdf.pdfbox.core.enums.ImageType;
+import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.dromara.pdf.pdfbox.util.ImageUtil;
 
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -57,7 +60,7 @@ public class FormProcessor extends AbstractProcessor {
     /**
      * 表单
      */
-    private PDAcroForm form;
+    protected PDAcroForm form;
 
     /**
      * 有参构造
@@ -111,9 +114,10 @@ public class FormProcessor extends AbstractProcessor {
      * 填写文本
      *
      * @param formMap 表单字典
+     * @param font    字体
      */
-    public void fillText(Map<String, String> formMap) {
-        this.fillText(formMap, null, null);
+    public void fillText(Map<String, String> formMap, PDFont font) {
+        this.fillText(formMap, font, null);
     }
 
     /**
@@ -123,21 +127,34 @@ public class FormProcessor extends AbstractProcessor {
      * @param font     字体
      * @param fontSize 字体大小
      */
+    @SneakyThrows
     public void fillText(Map<String, String> formMap, PDFont font, Integer fontSize) {
         // 检查参数
         Objects.requireNonNull(formMap, "the form map can not be null");
+        Objects.requireNonNull(font, "the font can not be null");
         // 获取表单字典键值集合
         Set<Map.Entry<String, String>> entrySet = formMap.entrySet();
         // 遍历表单字典
         for (Map.Entry<String, String> entry : entrySet) {
             // 获取表单字典中对应的pdfBox表单字段
             PDField field = this.form.getField(entry.getKey());
-            // 如果pdfBox表单字段不为空，则填充值
+            // 存在字段
             if (Objects.nonNull(field)) {
-                // 重置新值
-                this.resetText(font, fontSize, field, entry.getValue());
+                // 文本字段
+                if (field instanceof PDTextField) {
+                    // 重置新值
+                    this.resetText(font, fontSize, (PDTextField) field, entry.getValue());
+                } else {
+                    // 提示信息
+                    log.warn("the field['" + entry.getKey() + "'] is not text field, will be ignored");
+                }
+            } else {
+                // 提示信息
+                log.warn("the field['" + entry.getKey() + "'] is not exist, will be ignored");
             }
         }
+        // 刷新外观
+        this.form.refreshAppearances();
         // 重置表单
         this.document.getTarget().getDocumentCatalog().setAcroForm(this.form);
     }
@@ -176,8 +193,8 @@ public class FormProcessor extends AbstractProcessor {
                                     COSName.I,
                                     PDImageXObject.createFromByteArray(
                                             this.document.getTarget(),
-                                            ImageUtil.resetBytes(ImageUtil.toBytes(image, "png")),
-                                            "unknown"
+                                            ImageUtil.toBytes(image, ImageType.PNG.getType()),
+                                            ImageType.PNG.getType()
                                     ).getCOSObject()
                             );
                         } else {
@@ -193,20 +210,45 @@ public class FormProcessor extends AbstractProcessor {
     }
 
     /**
-     * 清空
+     * 移除字段
+     *
+     * @param keys 字段key
      */
-    public void clear() {
-        // 清空字段
-        this.form.getFields().forEach(this::clearField);
+    @SneakyThrows
+    public void remove(String... keys) {
+        // 非空
+        if (Objects.nonNull(keys) && keys.length > 0) {
+            // 定义待清空字段
+            List<PDField> fields = new ArrayList<>(keys.length);
+            // 遍历字段key
+            for (String key : keys) {
+                // 获取表单字段
+                PDField field = this.form.getField(key);
+                // 存在字段
+                if (Objects.nonNull(field)) {
+                    // 添加表单字段
+                    fields.add(field);
+                }
+            }
+            // 清空
+            this.form.flatten(fields, false);
+        } else {
+            // 清空
+            this.form.flatten();
+        }
+        // 重置表单
+        this.document.getTarget().getDocumentCatalog().setAcroForm(this.form);
     }
 
     /**
-     * 关闭
+     * 清空
      */
-    @Override
-    public void close() {
-        super.close();
-        this.form = null;
+    @SneakyThrows
+    public void clear() {
+        // 清空字段
+        this.form.flatten();
+        // 重置表单
+        this.document.getTarget().getDocumentCatalog().setAcroForm(this.form);
     }
 
     /**
@@ -237,6 +279,8 @@ public class FormProcessor extends AbstractProcessor {
         }
         // 设置外观
         acroForm.setNeedAppearances(isNeedAppearance);
+        // 设置缓存
+        acroForm.setCacheFields(true);
         // 返回表单
         return acroForm;
     }
@@ -249,65 +293,39 @@ public class FormProcessor extends AbstractProcessor {
      * @param newValue 字段新值
      */
     @SneakyThrows
-    protected void resetText(PDFont font, Integer fontSize, PDField field, String newValue) {
-        // 如果字体不为空，则替换与嵌入字体
-        if (Objects.nonNull(font)) {
-            // 如果表单字段为文本字段，则重置默认外观
-            if (field instanceof PDTextField) {
-                // 转换为文本字体
-                PDTextField textField = (PDTextField) field;
-                // 获取默认外观
-                String defaultAppearance = textField.getDefaultAppearance();
-                // 使用原字体大小
-                if (Objects.isNull(fontSize)) {
-                    // 重置默认外观（使用原字体大小）
-                    textField.setDefaultAppearance(
-                            defaultAppearance.replaceFirst(
-                                    NONE_FONT_SIZE_REGEX,
-                                    String.join("", "/", font.getName())
-                            )
-                    );
-                } else {
-                    // 重置默认外观（使用自定义字体大小）
-                    textField.setDefaultAppearance(
-                            defaultAppearance.replaceFirst(
-                                    FONT_SIZE_REGEX,
-                                    String.join(" ", "/", font.getName(), String.valueOf(fontSize), "Tf")
-                            )
-                    );
-                }
+    protected void resetText(PDFont font, Integer fontSize, PDTextField field, String newValue) {
+        // 存在字段新值
+        if (Objects.nonNull(newValue)) {
+            // 获取默认外观
+            String defaultAppearance = field.getDefaultAppearance();
+            // 使用原字体大小
+            if (Objects.isNull(fontSize)) {
+                // 重置默认外观（使用原字体大小）
+                field.setDefaultAppearance(
+                        defaultAppearance.replaceFirst(
+                                NONE_FONT_SIZE_REGEX,
+                                String.join("", "/", font.getName())
+                        )
+                );
+            } else {
+                // 重置默认外观（使用自定义字体大小）
+                field.setDefaultAppearance(
+                        defaultAppearance.replaceFirst(
+                                FONT_SIZE_REGEX,
+                                String.join(" ", "/" + font.getName(), String.valueOf(fontSize), "Tf")
+                        )
+                );
             }
+            // 添加字体
+            this.form.getDefaultResources().put(COSName.getPDFName(font.getName()), font);
+            // 嵌入字体
+            PdfHandler.getFontHandler().addToSubset(this.document.getTarget(), font, newValue);
         }
-        // 设置新值
-        field.setValue(newValue);
-    }
-
-    /**
-     * 清空表单字段
-     *
-     * @param field 表单字段
-     */
-    protected void clearField(PDField field) {
-        // 如果为终端字段，则删除页面注释
-        if (field instanceof PDTerminalField) {
-            // 删除页面注释
-            field.getWidgets().forEach(v -> Optional.ofNullable(v.getPage()).ifPresent(this::clearAnnotations));
-        } else if (field instanceof PDNonTerminalField) {
-            // 递归清空
-            ((PDNonTerminalField) field).getChildren().forEach(this::clearField);
-        }
-    }
-
-    /**
-     * 清空注解
-     *
-     * @param page 页面
-     */
-    protected void clearAnnotations(PDPage page) {
         try {
-            page.getAnnotations().clear();
-        } catch (IOException e) {
-            log.warn("the page annotation can not be cleared, will be ignored");
+            // 设置新值
+            field.setValue(newValue);
+        } catch (UnsupportedOperationException e) {
+            throw new UnsupportedOperationException("the font is not supported, please use an other font");
         }
     }
 }

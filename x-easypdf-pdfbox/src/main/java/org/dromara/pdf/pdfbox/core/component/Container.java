@@ -47,6 +47,10 @@ public class Container extends AbstractComponent {
      */
     private List<Component> components;
     /**
+     * 分页事件
+     */
+    private PagingEvent pagingEvent;
+    /**
      * 是否分页边框
      */
     private Boolean isPagingBorder;
@@ -76,14 +80,14 @@ public class Container extends AbstractComponent {
      * @return 返回分页事件
      */
     public PagingEvent getPagingEvent() {
-        return new ContainerPagingEvent();
+        return this.pagingEvent;
     }
 
     /**
      * 初始化
      */
     @Override
-    public void init() {
+    protected void init() {
         // 校验宽度
         Objects.requireNonNull(this.width, "the width can not be null");
         // 校验高度
@@ -97,12 +101,45 @@ public class Container extends AbstractComponent {
     }
 
     /**
+     * 虚拟渲染
+     */
+    @Override
+    @SneakyThrows
+    public void virtualRender() {
+        // 初始化
+        this.init();
+        // 设置虚拟分页事件
+        this.setPagingEvent(new DefaultContainerVirtualPagingEvent());
+        // 非自定义Y轴
+        if (!this.getIsCustomY()) {
+            // 检查分页
+            if (this.isPaging(this, this.getBeginY())) {
+                // 重置容器信息Y轴起始坐标
+                this.getContext().getContainerInfo().setBeginY(this.getContext().getCursor().getY());
+            }
+        }
+        // 渲染之前X轴坐标
+        Float beforeX = this.getBeginX();
+        // 渲染之前Y轴坐标
+        Float beforeY = this.getContext().getCursor().getY();
+        // 渲染组件
+        Optional.ofNullable(this.getComponents()).orElse(Collections.emptyList()).forEach(this::virtualRenderComponent);
+        // 添加虚拟边框
+        this.addVirtualBorder(beforeY, this.getContext().getContainerInfo());
+        // 重置
+        this.reset(beforeX);
+    }
+
+    /**
      * 渲染
      */
+    @SneakyThrows
     @Override
     public void render() {
         // 初始化
         this.init();
+        // 设置分页事件
+        this.setPagingEvent(new DefaultContainerPagingEvent());
         // // 非自定义Y轴
         if (!this.getIsCustomY()) {
             // 检查分页
@@ -139,7 +176,7 @@ public class Container extends AbstractComponent {
      *
      * @param beforeX X轴起始坐标
      */
-    private void reset(Float beforeX) {
+    protected void reset(Float beforeX) {
         // 重置X轴坐标
         this.getContext().getCursor().setX(beforeX + this.getWidth());
         // 重置换行宽度
@@ -148,12 +185,14 @@ public class Container extends AbstractComponent {
         this.getContext().resetWrapHeight(this.getContext().getContainerInfo().getHeight());
         // 重置
         super.reset(this.getType());
+        // 重置换行高度
+        this.getContext().setWrapHeight(this.getHeight());
     }
 
     /**
      * 初始化其他
      */
-    private void initOthers() {
+    protected void initOthers() {
         // 是否自定义X轴坐标
         if (!this.getIsCustomX()) {
             this.setBeginX(this.getContext().getPage().getMarginLeft() + this.getMarginLeft());
@@ -169,11 +208,25 @@ public class Container extends AbstractComponent {
     }
 
     /**
+     * 虚拟渲染组件
+     *
+     * @param component 组件
+     */
+    protected void virtualRenderComponent(Component component) {
+        // 初始化X轴换行起始坐标
+        this.getContext().setWrapBeginX(this.getBeginX());
+        // 渲染组件
+        component.virtualRender();
+        // 重置是否第一个组件
+        this.getContext().getContainerInfo().setIsFirstComponent(Boolean.FALSE);
+    }
+
+    /**
      * 渲染组件
      *
      * @param component 组件
      */
-    private void renderComponent(Component component) {
+    protected void renderComponent(Component component) {
         // 初始化X轴换行起始坐标
         this.getContext().setWrapBeginX(this.getBeginX());
         // 渲染组件
@@ -183,13 +236,43 @@ public class Container extends AbstractComponent {
     }
 
     /**
+     * 添加虚拟边框
+     *
+     * @param beforeY 组件渲染前Y轴坐标
+     * @param info    容器信息
+     */
+    @SneakyThrows
+    protected void addVirtualBorder(Float beforeY, ContainerInfo info) {
+        // 是否分页
+        if (info.isPaging()) {
+            // 非分页边框
+            if (!this.getIsPagingBorder()) {
+                // 重置是否上边框
+                info.setIsBorderTop(Boolean.FALSE);
+            }
+            // 重置Y轴坐标
+            beforeY = info.getBeginY();
+        }
+        // 需要分页
+        if (this.checkPaging(beforeY - info.getHeight())) {
+            // 分页
+            this.paging();
+            // 递归添加边框
+            this.addVirtualBorder(info.getBeginY(), info);
+        } else {
+            // 重置光标
+            this.getContext().getCursor().setY(beforeY - info.getHeight());
+        }
+    }
+
+    /**
      * 添加边框
      *
      * @param beforeY 组件渲染前Y轴坐标
      * @param info    容器信息
      */
     @SneakyThrows
-    public void addBorder(Float beforeY, ContainerInfo info) {
+    protected void addBorder(Float beforeY, ContainerInfo info) {
         // 是否分页
         if (info.isPaging()) {
             // 非分页边框
@@ -223,9 +306,48 @@ public class Container extends AbstractComponent {
     }
 
     /**
-     * 容器分页事件
+     * 默认虚拟容器分页事件
      */
-    public static class ContainerPagingEvent extends AbstractPagingEvent {
+    public static class DefaultContainerVirtualPagingEvent extends AbstractPagingEvent {
+
+        /**
+         * 分页之前
+         *
+         * @param component 当前组件
+         */
+        @Override
+        public void before(Component component) {
+            // 获取上下文
+            Context context = component.getContext();
+            // 获取容器信息
+            ContainerInfo info = context.getContainerInfo();
+            // 存在容器信息
+            if (Objects.nonNull(info)) {
+                // 重置高度
+                info.setHeight(info.getHeight() - info.getBeginY() + component.getBottom());
+                // 分页次数累计
+                info.pagingCount();
+            }
+        }
+
+        /**
+         * 分页之后
+         *
+         * @param component 当前组件
+         */
+        @Override
+        public void after(Component component) {
+            // 获取上下文
+            Context context = component.getContext();
+            // 重置Y轴起始坐标
+            Optional.ofNullable(context.getContainerInfo()).ifPresent(info -> info.setBeginY(context.getCursor().getY()));
+        }
+    }
+
+    /**
+     * 默认容器分页事件
+     */
+    public static class DefaultContainerPagingEvent extends AbstractPagingEvent {
 
         /**
          * 分页之前

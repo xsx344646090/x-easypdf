@@ -19,78 +19,71 @@ import org.junit.Test;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public class DocumentTest {
+public class DocumentTest extends BaseTest {
 
     @Test
     public void helloWorld() {
-        TemplateHandler.Document.build().addPage(TemplateHandler.Page.build().addBodyComponent(TemplateHandler.Text.build().setText("hello world").setHorizontalStyle("center"))).transform("D:\\PDF\\fo\\document.pdf");
+        this.test(() -> {
+            TemplateHandler.Document
+                    .build()
+                    .addPage(
+                            TemplateHandler.Page
+                                    .build()
+                                    .addBodyComponent(
+                                            TemplateHandler.Text
+                                                    .build()
+                                                    .setText("hello world")
+                                                    .setHorizontalStyle("center")
+                                    )
+                    ).transform("E:\\PDF\\fop\\document.pdf");
+        });
     }
 
     @Test
-    public void testXmlContent() {
-        System.out.println(TemplateHandler.Document.build().addPage(TemplateHandler.Page.build()).getContent());
-    }
-
-
-    @Test
-    public void testBlankPage() {
-        // 定义fop配置文件路径
-        String configPath = "E:\\pdf\\test\\fo\\fop.xconf";
-        // 定义输出路径
-        String outputPath = "E:\\pdf\\test\\fo\\template-document.pdf";
-        // 转换pdf
-        TemplateHandler.Document.build().setConfigPath(configPath).addPage(
-                TemplateHandler.Page.build()
-                        .setBodyBackgroundImage("url('/E:\\pdf\\test\\fo\\a-test.png')")
-                        .setBodyBackgroundImageWidth("100pt")
-                        .setBodyBackgroundImageHeight("100pt")
-                        .setFooterHeight("20pt")
-                        .setFooterBackgroundImage("url('/E:\\pdf\\test\\fo\\test.png')")
-                        .addFooterComponent(
-                                TemplateHandler.Text.build().setText("111")
-                        ),
-                TemplateHandler.Page.build()
-        ).transform(outputPath);
+    public void xmlContentTest() {
+        this.test(() -> {
+            System.out.println(
+                    TemplateHandler.Document
+                            .build()
+                            .addPage(TemplateHandler.Page.build())
+                            .getContent()
+            );
+        });
     }
 
     @Test
-    public void testChinese() {
-        TemplateHandler.Document.build().addPage(
-                TemplateHandler.Page.build().addBodyComponent(
-                        TemplateHandler.Text.build().setText("你好贵阳")
-                                .setHorizontalStyle("center")
-                                .setFontFamily("微软雅黑")
-                )
-        ).transform("E:\\pdf\\test\\fo\\document.pdf");
+    public void blankPageTest() {
+        this.test(() -> {
+            // 定义fop配置文件路径
+            String configPath = "E:\\PDF\\fop\\fop.xconf";
+            // 定义输出路径
+            String outputPath = "E:\\PDF\\fop\\template-document.pdf";
+            // 转换pdf
+            TemplateHandler.Document.build().setConfigPath(configPath).addPage(
+                    TemplateHandler.Page.build()
+                            .setBodyBackgroundImage("url('/E:\\PDF\\fop\\watermark.png')")
+                            .setBodyBackgroundImageWidth("100pt")
+                            .setBodyBackgroundImageHeight("100pt")
+                            .setFooterHeight("20pt")
+                            .setFooterBackgroundImage("url('/E:\\PDF\\fop\\watermark.png')")
+                            .addFooterComponent(
+                                    TemplateHandler.Text.build().setText("111")
+                            ),
+                    TemplateHandler.Page.build()
+            ).transform(outputPath);
+        });
     }
 
     @Test
-    public void testTemp() {
-        TemplateHandler.Document.build().addPage(
-                TemplateHandler.Page.build().addBodyComponent(
-                        TemplateHandler.Table.build().setFontFamily("微软雅黑").setBody(
-                                TemplateHandler.Table.Body.build()
-                                        .addRow(
-                                                TemplateHandler.Table.Row.build().addCell(
-                                                        TemplateHandler.Table.Cell.build().addComponent(
-                                                                TemplateHandler.Text.build().setText("姓名：张三")
-                                                                // XEasyPdfTemplateHandler.Image.build()
-                                                                //         .setPath("/".concat("")).setWidth("100px").setHeight("100px")
-                                                        ).setBorder("1").setBorderStyle("solid").setRowSpan(2),
-                                                        TemplateHandler.Table.Cell.build().addComponent(
-                                                                TemplateHandler.Text.build().setText("姓名：张三").setHorizontalStyle("left")
-                                                        ).setBorder("1 solid")
-                                                )
-                                        )
-                                        .addRow(
-                                                TemplateHandler.Table.Row.build().addCell(
-                                                        TemplateHandler.Table.Cell.build().addComponent(
-                                                                TemplateHandler.Text.build().setText("电话：15123456789").setHorizontalStyle("left")
-                                                        ).setBorder("1 solid")
-                                                )
-                                        )
-                        )
-                )
-        ).transform("E:\\pdf\\test\\fo\\document.pdf");
+    public void chineseTest() {
+        this.test(() -> {
+            TemplateHandler.Document.build().addPage(
+                    TemplateHandler.Page.build().addBodyComponent(
+                            TemplateHandler.Text.build().setText("你好贵阳")
+                                    .setHorizontalStyle("center")
+                                    .setFontFamily("微软雅黑")
+                    )
+            ).transform("E:\\PDF\\fop\\chineseTest.pdf");
+        });
     }
 }

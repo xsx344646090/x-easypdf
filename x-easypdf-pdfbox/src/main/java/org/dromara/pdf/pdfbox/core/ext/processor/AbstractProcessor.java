@@ -1,8 +1,7 @@
 package org.dromara.pdf.pdfbox.core.ext.processor;
 
 import org.dromara.pdf.pdfbox.core.base.Document;
-
-import java.io.Closeable;
+import org.dromara.pdf.pdfbox.core.ext.base.AbstractExpander;
 
 /**
  * 抽象处理器
@@ -22,12 +21,7 @@ import java.io.Closeable;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public abstract class AbstractProcessor implements Closeable {
-
-    /**
-     * pdf文档
-     */
-    protected Document document;
+public abstract class AbstractProcessor extends AbstractExpander {
 
     /**
      * 有参构造
@@ -35,14 +29,6 @@ public abstract class AbstractProcessor implements Closeable {
      * @param document 文档
      */
     public AbstractProcessor(Document document) {
-        this.document = document;
-    }
-
-    /**
-     * 关闭
-     */
-    @Override
-    public void close() {
-        this.document = null;
+        super(document);
     }
 }

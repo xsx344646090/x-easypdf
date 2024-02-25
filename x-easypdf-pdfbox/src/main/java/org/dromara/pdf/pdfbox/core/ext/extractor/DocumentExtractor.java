@@ -1,6 +1,8 @@
 package org.dromara.pdf.pdfbox.core.ext.extractor;
 
+import lombok.Setter;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
+import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 import org.dromara.pdf.pdfbox.core.base.Document;
 
 import java.awt.*;
@@ -28,12 +30,29 @@ import java.util.Objects;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public class DocumentExtractor implements Closeable {
+@Setter
+public class DocumentExtractor extends AbstractExtractor implements Closeable {
 
     /**
-     * pdfbox文档
+     * 文本提取器
      */
-    private Document document;
+    protected AbstractTextExtractor textExtractor;
+    /**
+     * 图像提取器
+     */
+    protected AbstractImageExtractor imageExtractor;
+    /**
+     * 表单提取器
+     */
+    protected AbstractFormExtractor formExtractor;
+    /**
+     * 评论提取器
+     */
+    protected AbstractCommentExtractor commentExtractor;
+    /**
+     * 书签提取器
+     */
+    protected AbstractBookmarkExtractor bookmarkExtractor;
 
     /**
      * 构造方法
@@ -41,55 +60,58 @@ public class DocumentExtractor implements Closeable {
      * @param document 文档
      */
     public DocumentExtractor(Document document) {
-        this.document = document;
+        super(document);
     }
 
     /**
      * 提取文本
      *
      * @param pageIndexes 页面索引
-     * @return 返回文本字典（key=页面索引，value=提取文本）
+     * @return 返回文本字典 <p>key=页面索引，value=提取文本</p>
      */
     public Map<Integer, List<String>> extractText(int... pageIndexes) {
-        return this.extractTextForRegex(null, pageIndexes);
+        return this.extractTextByRegex(null, pageIndexes);
     }
 
     /**
-     * 提取文本（正则）
+     * 正则提取文本
      *
      * @param regex       正则表达式
      * @param pageIndexes 页面索引
-     * @return 返回文本字典（key=页面索引，value=提取文本）
+     * @return 返回文本字典 <p>key=页面索引，value=提取文本</p>
      */
-    public Map<Integer, List<String>> extractTextForRegex(String regex, int... pageIndexes) {
-        try (SimpleTextExtractor extractor = new SimpleTextExtractor(this.document)) {
-            return extractor.extract(regex, pageIndexes);
+    public Map<Integer, List<String>> extractTextByRegex(String regex, int... pageIndexes) {
+        // 初始化提取器
+        if (Objects.isNull(this.textExtractor)) {
+            this.textExtractor = new TextExtractor(this.document);
         }
+        // 提取文本
+        return this.textExtractor.extractByRegex(regex, pageIndexes);
     }
 
     /**
-     * 提取文本（区域）
+     * 区域提取文本
      *
      * @param regionArea  区域
      * @param pageIndexes 页面索引
-     * @return 返回文本字典（key = 页面索引，value = 提取文本字典（ key = 区域名称，value = 提取文本））
+     * @return 返回文本字典 <p>一级，key = 页面索引，value = 提取文本字典</p<p>二级，key = 区域名称，value = 提取文本</p>
      */
-    public Map<Integer, Map<String, String>> extractTextForRegionArea(
+    public Map<Integer, Map<String, String>> extractTextByRegionArea(
             Map<String, Rectangle> regionArea,
             int... pageIndexes
     ) {
-        return this.extractTextForRegionArea(regionArea, " ", pageIndexes);
+        return this.extractTextByRegionArea(regionArea, " ", pageIndexes);
     }
 
     /**
-     * 提取文本（区域）
+     * 区域提取文本
      *
      * @param regionArea    区域
      * @param wordSeparator 单词分隔符
      * @param pageIndexes   页面索引
-     * @return 返回文本字典（key = 页面索引，value = 提取文本字典（ key = 区域名称，value = 提取文本））
+     * @return 返回文本字典 <p>一级，key = 页面索引，value = 提取文本字典</p<p>二级，key = 区域名称，value = 提取文本</p>
      */
-    public Map<Integer, Map<String, String>> extractTextForRegionArea(
+    public Map<Integer, Map<String, String>> extractTextByRegionArea(
             Map<String, Rectangle> regionArea,
             String wordSeparator,
             int... pageIndexes
@@ -98,19 +120,21 @@ public class DocumentExtractor implements Closeable {
         Objects.requireNonNull(regionArea, "the region area can not be null");
         // 检查参数
         Objects.requireNonNull(wordSeparator, "the word separator can not be null");
-        // 创建提取器
-        try (RegionTextExtractor extractor = new RegionTextExtractor(this.document, regionArea)) {
-            // 提取文本
-            return extractor.extract(wordSeparator, pageIndexes);
+        // 初始化提取器
+        if (Objects.isNull(this.textExtractor)) {
+            this.textExtractor = new TextExtractor(this.document);
         }
+        // 提取文本
+        return this.textExtractor.extractByRegionArea(wordSeparator, regionArea, pageIndexes);
     }
 
     /**
-     * 提取文本（表格，单行单列）
+     * 表格提取文本
+     * <p>注：单行单列</p>
      *
      * @param regionArea  区域
      * @param pageIndexes 页面索引
-     * @return 返回文本字典（key = 页面索引，value = 提取文本字典（ key = 区域名称，value = 提取文本））
+     * @return 返回文本字典 <p>一级，key = 页面索引，value = 提取文本字典</p><p>二级，key = 区域名称，value = 提取文本</p>
      */
     public Map<Integer, Map<String, List<List<String>>>> extractTextForTable(
             Map<String, Rectangle> regionArea,
@@ -120,12 +144,13 @@ public class DocumentExtractor implements Closeable {
     }
 
     /**
-     * 提取文本（表格，单行单列）
+     * 表格提取文本
+     * <p>注：单行单列</p>
      *
      * @param regionArea    区域
      * @param wordSeparator 单词分隔符
      * @param pageIndexes   页面索引
-     * @return 返回文本字典（key = 页面索引，value = 提取文本字典（ key = 区域名称，value = 提取文本））
+     * @return 返回文本字典 <p>一级，key = 页面索引，value = 提取文本字典</p><p>二级，key = 区域名称，value = 提取文本</p>
      */
     public Map<Integer, Map<String, List<List<String>>>> extractTextForTable(
             Map<String, Rectangle> regionArea,
@@ -136,88 +161,110 @@ public class DocumentExtractor implements Closeable {
         Objects.requireNonNull(regionArea, "the region area can not be null");
         // 检查参数
         Objects.requireNonNull(wordSeparator, "the word separator can not be null");
-        // 创建提取器
-        try (SimpleTableTextExtractor extractor = new SimpleTableTextExtractor(this.document, regionArea)) {
-            // 提取文本
-            return extractor.extract(wordSeparator, pageIndexes);
+        // 初始化提取器
+        if (Objects.isNull(this.textExtractor)) {
+            this.textExtractor = new TextExtractor(this.document);
         }
-    }
-
-    /**
-     * 提取文本（表单）
-     *
-     * @return 返回文本字典（key = 字段名称，value = 提取文本）
-     */
-    public Map<String, String> extractTextForForm() {
-        try (SimpleTextExtractor extractor = new SimpleTextExtractor(this.document)) {
-            return extractor.extractForForm();
-        }
+        // 提取文本
+        return this.textExtractor.extractByTable(wordSeparator, regionArea, pageIndexes);
     }
 
     /**
      * 提取图像
      *
      * @param pageIndexes 页面索引
-     * @return 返回文本字典（key = 页面索引，value = 提取图像）
+     * @return 返回文本字典 <p>key = 页面索引，value = 提取图像</p>
      */
     public Map<Integer, List<BufferedImage>> extractImage(int... pageIndexes) {
-        // 创建提取器
-        try (ImageExtractor extractor = new ImageExtractor(this.document)) {
-            // 提取图像
-            return extractor.extract(pageIndexes);
+        // 初始化提取器
+        if (Objects.isNull(this.imageExtractor)) {
+            this.imageExtractor = new ImageExtractor(this.document);
         }
+        // 提取图像
+        return this.imageExtractor.extract(pageIndexes);
     }
 
     /**
-     * 提取图像（表单）
+     * 表单提取文本
      *
-     * @return 返回文本字典（key = 字段名称，value = 提取图像）
+     * @return 返回文本字典 <p>key = 字段名称，value = 提取文本</p>
      */
-    public Map<String, BufferedImage> extractImageForForm() {
-        // 创建提取器
-        try (ImageExtractor extractor = new ImageExtractor(this.document)) {
-            // 提取图像
-            return extractor.extractForForm();
+    public Map<String, String> extractFormText() {
+        // 初始化提取器
+        if (Objects.isNull(this.formExtractor)) {
+            this.formExtractor = new FormExtractor(this.document);
         }
+        // 提取文本
+        return this.formExtractor.extractText();
+    }
+
+    /**
+     * 表单提取图像
+     *
+     * @return 返回图像字典 <p>key = 字段名称，value = 提取图像</p>
+     */
+    public Map<String, BufferedImage> extractFormImage() {
+        // 初始化提取器
+        if (Objects.isNull(this.formExtractor)) {
+            this.formExtractor = new FormExtractor(this.document);
+        }
+        // 提取图像
+        return this.formExtractor.extractImage();
+    }
+
+    /**
+     * 表单提取字段
+     *
+     * @return 返回字段字典 <p>key = 字段名称，value = 提取字段</p>
+     */
+    public Map<String, PDField> extractFormField() {
+        // 初始化提取器
+        if (Objects.isNull(this.formExtractor)) {
+            this.formExtractor = new FormExtractor(this.document);
+        }
+        // 提取字段
+        return this.formExtractor.extractField();
     }
 
     /**
      * 提取评论
      *
      * @param pageIndexes 页面索引
-     * @return 返回文本字典（key=页面索引，value=提取评论）
+     * @return 返回文本字典 <p>key=页面索引，value=提取评论</p>
      */
     public Map<Integer, List<String>> extractComment(int... pageIndexes) {
-        return this.extractCommentForRegex(null, pageIndexes);
+        return this.extractCommentByRegex(null, pageIndexes);
     }
 
     /**
-     * 提取评论（正则）
+     * 正则提取评论
      *
      * @param regex       正则表达式
      * @param pageIndexes 页面索引
-     * @return 返回文本字典（key=页面索引，value=提取评论）
+     * @return 返回文本字典 <p>key=页面索引，value=提取评论</p>
      */
-    public Map<Integer, List<String>> extractCommentForRegex(String regex, int... pageIndexes) {
-        // 创建提取器
-        try (CommentExtractor extractor = new CommentExtractor(this.document)) {
-            // 提取评论
-            return extractor.extract(regex, pageIndexes);
+    public Map<Integer, List<String>> extractCommentByRegex(String regex, int... pageIndexes) {
+        // 初始化提取器
+        if (Objects.isNull(this.commentExtractor)) {
+            this.commentExtractor = new CommentExtractor(document);
         }
+        // 提取评论
+        return this.commentExtractor.extract(regex, pageIndexes);
     }
 
     /**
      * 提取书签
      *
      * @param bookmarkIndexes 书签索引
-     * @return 返回书签字典（key=书签索引，value=提取书签）
+     * @return 返回书签字典 <p>key=书签索引，value=提取书签</p>
      */
     public Map<Integer, PDOutlineItem> extractBookmark(int... bookmarkIndexes) {
-        // 创建提取器
-        try (BookmarkExtractor extractor = new BookmarkExtractor(this.document)) {
-            // 提取书签
-            return extractor.extract(bookmarkIndexes);
+        // 初始化提取器
+        if (Objects.isNull(this.bookmarkExtractor)) {
+            this.bookmarkExtractor = new BookmarkExtractor(this.document);
         }
+        // 提取书签
+        return this.bookmarkExtractor.extract(bookmarkIndexes);
     }
 
     /**
@@ -225,6 +272,10 @@ public class DocumentExtractor implements Closeable {
      */
     @Override
     public void close() {
-        this.document = null;
+        this.textExtractor = null;
+        this.imageExtractor = null;
+        this.formExtractor = null;
+        this.commentExtractor = null;
+        this.bookmarkExtractor = null;
     }
 }

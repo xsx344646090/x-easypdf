@@ -106,44 +106,17 @@ public class TextareaWatermark extends AbstractBaseFont implements Watermark {
     }
 
     /**
-     * 初始化
-     */
-    @Override
-    public void init() {
-
-    }
-
-    /**
      * 初始化基础
      */
     @Override
     public void initBase() {
-
-    }
-
-    /**
-     * 初始化
-     *
-     * @param page 页面
-     */
-    public void init(Page page) {
         // 检查文本列表
         if (Objects.isNull(this.textList) || this.textList.isEmpty()) {
             throw new IllegalArgumentException("the text list can not be empty");
         }
-        // 初始化参数
-        super.init(page, false);
         // 初始化当前执行组件类型
         if (Objects.isNull(this.getContext().getExecutingComponentType())) {
             this.getContext().setExecutingComponentType(this.getType());
-        }
-        // 初始化自定义起始X轴坐标
-        if (Objects.isNull(this.beginX)) {
-            this.beginX = 0F;
-        }
-        // 初始化自定义起始Y轴坐标
-        if (Objects.isNull(this.beginY)) {
-            this.beginY = page.getHeight() - this.getFontSize();
         }
         // 初始化字体
         if (Objects.nonNull(this.getFontName())) {
@@ -197,12 +170,32 @@ public class TextareaWatermark extends AbstractBaseFont implements Watermark {
     }
 
     /**
+     * 初始化
+     *
+     * @param page 页面
+     */
+    protected void init(Page page) {
+        // 初始化参数
+        super.init(page, false);
+        // 初始化基础
+        this.initBase();
+        // 初始化自定义起始X轴坐标
+        if (Objects.isNull(this.beginX)) {
+            this.beginX = 0F;
+        }
+        // 初始化自定义起始Y轴坐标
+        if (Objects.isNull(this.beginY)) {
+            this.beginY = page.getHeight() - this.getFontSize();
+        }
+    }
+
+    /**
      * 渲染文本
      *
      * @param page 页面
      */
     @SneakyThrows
-    private void renderText(Page page) {
+    protected void renderText(Page page) {
         // 获取X轴起始坐标
         float beginX = this.getBeginX();
         // 获取Y轴起始坐标
@@ -267,7 +260,7 @@ public class TextareaWatermark extends AbstractBaseFont implements Watermark {
      * @return 返回内容流
      */
     @SneakyThrows
-    private PDPageContentStream initContentStream(Page page) {
+    protected PDPageContentStream initContentStream(Page page) {
         // 获取上下文
         Context context = this.getContext();
         // 初始化内容流
@@ -294,7 +287,7 @@ public class TextareaWatermark extends AbstractBaseFont implements Watermark {
      * @param stream pdfbox内容流
      */
     @SneakyThrows
-    private void initFontColor(PDPageContentStream stream) {
+    protected void initFontColor(PDPageContentStream stream) {
         // 填充
         if (this.getFontStyle().isFill()) {
             // 设置字体颜色
@@ -322,7 +315,7 @@ public class TextareaWatermark extends AbstractBaseFont implements Watermark {
      * @param beginY 起始Y轴坐标
      */
     @SneakyThrows
-    private void initPosition(PDPageContentStream stream, float beginX, float beginY) {
+    protected void initPosition(PDPageContentStream stream, float beginX, float beginY) {
         // 斜体
         if (this.getFontStyle().isItalic()) {
             // 设置文本矩阵

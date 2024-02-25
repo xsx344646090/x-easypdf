@@ -82,8 +82,9 @@ public abstract class AbstractComponent extends AbstractBaseFont implements Comp
      * @param page 页面
      */
     public AbstractComponent(Page page) {
-        this.setContext(page.getContext());
-        this.getContext().reset(page);
+        Page lastPage = page.getLastPage();
+        this.setContext(lastPage.getContext());
+        this.getContext().reset(lastPage);
         this.pagingEvents = new HashSet<>();
     }
 
@@ -124,60 +125,6 @@ public abstract class AbstractComponent extends AbstractBaseFont implements Comp
      */
     public Page getPage() {
         return this.getContext().getPage();
-    }
-
-    /**
-     * 初始化
-     */
-    @Override
-    public void init() {
-        // 初始化基础
-        this.initBase();
-        // 初始化当前执行组件类型
-        if (Objects.isNull(this.getContext().getExecutingComponentType())) {
-            this.getContext().setExecutingComponentType(this.getType());
-        }
-        // 初始化页眉分页事件
-        if (Objects.nonNull(this.getContext().getPageHeader())) {
-            if (this.getContext().getExecutingComponentType().isNotPageHeaderOrFooter()) {
-                this.getPagingEvents().add(this.getContext().getPageHeader().getPagingEvent());
-            }
-        }
-        // 初始化页脚分页事件
-        if (Objects.nonNull(this.getContext().getPageFooter())) {
-            if (this.getContext().getExecutingComponentType().isNotPageHeaderOrFooter()) {
-                this.getPagingEvents().add(this.getContext().getPageFooter().getPagingEvent());
-            }
-        }
-        // 初始化是否自定义X轴坐标
-        if (Objects.isNull(this.getIsCustomX())) {
-            this.setIsCustomX(Boolean.FALSE);
-        }
-        // 初始化是否自定义Y轴坐标
-        if (Objects.isNull(this.getIsCustomY())) {
-            this.setIsCustomY(Boolean.FALSE);
-        }
-        // 初始化分页
-        if (this.getIsBreak()) {
-            // 非容器
-            if (Objects.isNull(this.getContext().getContainerInfo()) || Objects.isNull(this.getContext().getContainerInfo().getPagingEvent())) {
-                this.executeBreak();
-            } else {
-                this.getContext().getContainerInfo().getPagingEvent().before(this);
-                this.executeBreak();
-                this.getContext().getContainerInfo().getPagingEvent().after(this);
-            }
-        }
-        // 检查换行
-        this.checkWrap();
-        // 初始化相对起始X轴坐标
-        if (Objects.isNull(this.getRelativeBeginX())) {
-            this.setRelativeBeginX(0F);
-        }
-        // 初始化相对起始Y轴坐标
-        if (Objects.isNull(this.getRelativeBeginY())) {
-            this.setRelativeBeginY(0F);
-        }
     }
 
     /**
@@ -244,7 +191,7 @@ public abstract class AbstractComponent extends AbstractBaseFont implements Comp
             return Boolean.FALSE;
         }
         // 换行宽度-X轴起始坐标是否小于0
-        return this.getContext().getWrapWidth() - this.getBeginX() <= 0;
+        return this.getContext().getWrapWidth() - this.getBeginX() < 0;
     }
 
     /**
@@ -285,12 +232,16 @@ public abstract class AbstractComponent extends AbstractBaseFont implements Comp
      * 执行分页
      */
     public void paging() {
-        // 设置分页
-        this.setIsBreak(Boolean.TRUE);
-        // 重新初始化参数
-        this.init();
-        // 重置分页
-        this.setIsBreak(Boolean.FALSE);
+        // 处理分页
+        this.processBreak();
+        // 初始化X轴坐标
+        if (Objects.isNull(this.getBeginX())) {
+            this.setBeginX(this.getContext().getCursor().getX() + this.getMarginLeft(), Boolean.FALSE);
+        }
+        // 初始化Y轴坐标
+        if (Objects.isNull(this.getBeginY())) {
+            this.setBeginY(this.getContext().getCursor().getY() - this.getMarginTop(), Boolean.FALSE);
+        }
     }
 
     /**
@@ -359,12 +310,59 @@ public abstract class AbstractComponent extends AbstractBaseFont implements Comp
     }
 
     /**
+     * 初始化
+     */
+    @Override
+    protected void init() {
+        // 初始化基础
+        this.initBase();
+        // 初始化当前执行组件类型
+        if (Objects.isNull(this.getContext().getExecutingComponentType())) {
+            this.getContext().setExecutingComponentType(this.getType());
+        }
+        // 初始化页眉分页事件
+        if (Objects.nonNull(this.getContext().getPageHeader())) {
+            if (this.getContext().getExecutingComponentType().isNotPageHeaderOrFooter()) {
+                this.getPagingEvents().add(this.getContext().getPageHeader().getPagingEvent());
+            }
+        }
+        // 初始化页脚分页事件
+        if (Objects.nonNull(this.getContext().getPageFooter())) {
+            if (this.getContext().getExecutingComponentType().isNotPageHeaderOrFooter()) {
+                this.getPagingEvents().add(this.getContext().getPageFooter().getPagingEvent());
+            }
+        }
+        // 初始化是否自定义X轴坐标
+        if (Objects.isNull(this.getIsCustomX())) {
+            this.setIsCustomX(Boolean.FALSE);
+        }
+        // 初始化是否自定义Y轴坐标
+        if (Objects.isNull(this.getIsCustomY())) {
+            this.setIsCustomY(Boolean.FALSE);
+        }
+        // 初始化分页
+        if (this.getIsBreak()) {
+            this.processBreak();
+        }
+        // 检查换行
+        this.checkWrap();
+        // 初始化相对起始X轴坐标
+        if (Objects.isNull(this.getRelativeBeginX())) {
+            this.setRelativeBeginX(0F);
+        }
+        // 初始化相对起始Y轴坐标
+        if (Objects.isNull(this.getRelativeBeginY())) {
+            this.setRelativeBeginY(0F);
+        }
+    }
+
+    /**
      * 设置X轴坐标
      *
      * @param beginX    X轴坐标
      * @param isCustomX 是否自定义
      */
-    private void setBeginX(Float beginX, boolean isCustomX) {
+    protected void setBeginX(Float beginX, boolean isCustomX) {
         this.beginX = beginX;
         this.isCustomX = isCustomX;
     }
@@ -375,15 +373,30 @@ public abstract class AbstractComponent extends AbstractBaseFont implements Comp
      * @param beginY    Y轴坐标
      * @param isCustomY 是否自定义
      */
-    private void setBeginY(Float beginY, boolean isCustomY) {
+    protected void setBeginY(Float beginY, boolean isCustomY) {
         this.beginY = beginY;
         this.isCustomY = isCustomY;
     }
 
     /**
+     * 处理分页
+     */
+    protected void processBreak() {
+        // 非容器
+        if (Objects.isNull(this.getContext().getContainerInfo()) || Objects.isNull(this.getContext().getContainerInfo().getPagingEvent())) {
+            this.executeBreak();
+        } else {
+            this.getContext().getContainerInfo().getPagingEvent().before(this);
+            this.executeBreak();
+            this.getContext().getContainerInfo().getPagingEvent().after(this);
+        }
+        this.getContext().setWrapHeight(this.getContext().getPage().getFontSize());
+    }
+
+    /**
      * 执行分页
      */
-    private void executeBreak() {
+    protected void executeBreak() {
         // 分页前事件
         Optional.ofNullable(this.pagingEvents).ifPresent(events -> events.forEach(event -> event.before(this)));
         // 重建页面
@@ -399,7 +412,7 @@ public abstract class AbstractComponent extends AbstractBaseFont implements Comp
     /**
      * 重置起始XY轴坐标
      */
-    private void resetXY() {
+    protected void resetXY() {
         this.beginX = null;
         this.beginY = null;
     }

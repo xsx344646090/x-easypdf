@@ -330,11 +330,6 @@ public class FontMapperImpl implements FontMapper {
      * @param postScriptName PostScript font name
      */
     private FontBoxFont findFontBoxFont(String postScriptName) {
-        Type1Font t1 = (Type1Font) findFont(FontFormat.PFB, postScriptName);
-        if (t1 != null) {
-            return t1;
-        }
-
         TrueTypeFont ttf = (TrueTypeFont) findFont(FontFormat.TTF, postScriptName);
         if (ttf != null) {
             return ttf;
@@ -343,6 +338,11 @@ public class FontMapperImpl implements FontMapper {
         OpenTypeFont otf = (OpenTypeFont) findFont(FontFormat.OTF, postScriptName);
         if (otf != null) {
             return otf;
+        }
+
+        Type1Font t1 = (Type1Font) findFont(FontFormat.PFB, postScriptName);
+        if (t1 != null) {
+            return t1;
         }
 
         return null;
@@ -426,16 +426,25 @@ public class FontMapperImpl implements FontMapper {
      */
     @Override
     public CIDFontMapping getCIDFont(String baseFont, PDFontDescriptor fontDescriptor, PDCIDSystemInfo cidSystemInfo) {
-        // try name match or substitute with OTF
-        OpenTypeFont otf1 = (OpenTypeFont) findFont(FontFormat.OTF, baseFont);
-        if (otf1 != null) {
-            return new CIDFontMapping(otf1, null, false);
+
+        try {
+            // try name match or substitute with TTF
+            TrueTypeFont ttf = (TrueTypeFont) findFont(FontFormat.TTF, baseFont);
+            if (ttf != null) {
+                return new CIDFontMapping(null, ttf, false);
+            }
+        } catch (Exception ignored) {
+
         }
 
-        // try name match or substitute with TTF
-        TrueTypeFont ttf = (TrueTypeFont) findFont(FontFormat.TTF, baseFont);
-        if (ttf != null) {
-            return new CIDFontMapping(null, ttf, false);
+        try {
+            // try name match or substitute with OTF
+            OpenTypeFont otf1 = (OpenTypeFont) findFont(FontFormat.OTF, baseFont);
+            if (otf1 != null) {
+                return new CIDFontMapping(otf1, null, false);
+            }
+        } catch (Exception ignored) {
+
         }
 
         if (cidSystemInfo != null) {

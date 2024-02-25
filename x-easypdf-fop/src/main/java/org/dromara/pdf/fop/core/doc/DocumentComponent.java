@@ -1,8 +1,10 @@
 package org.dromara.pdf.fop.core.doc;
 
 import lombok.SneakyThrows;
+import org.dromara.pdf.fop.util.FileUtil;
 import org.w3c.dom.Document;
 
+import java.io.BufferedOutputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -34,7 +36,7 @@ public interface DocumentComponent {
      */
     @SneakyThrows
     default void transform(String outputPath) {
-        try (OutputStream outputStream = Files.newOutputStream(Paths.get(outputPath))) {
+        try (OutputStream outputStream = new BufferedOutputStream(Files.newOutputStream(FileUtil.createDirectories(Paths.get(outputPath))))) {
             this.transform(outputStream);
         }
     }

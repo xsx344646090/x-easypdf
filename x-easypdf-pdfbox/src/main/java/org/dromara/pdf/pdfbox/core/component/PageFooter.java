@@ -33,7 +33,7 @@ public class PageFooter extends AbstractPageHeaderOrFooter {
     /**
      * 分页事件
      */
-    private final PagingEvent pagingEvent = new DefaultPagingEvent();
+    private PagingEvent pagingEvent;
 
     /**
      * 原始Y轴坐标
@@ -71,10 +71,48 @@ public class PageFooter extends AbstractPageHeaderOrFooter {
     }
 
     /**
+     * 初始化基础
+     */
+    @Override
+    public void initBase() {
+        // 初始化参数
+        super.init(this.getContext().getPage(), false);
+    }
+
+    /**
+     * 虚拟渲染
+     */
+    @Override
+    public void virtualRender() {
+        this.pagingEvent = new DefaultVirtualPagingEvent();
+        super.virtualRender();
+    }
+
+    /**
+     * 渲染
+     */
+    @Override
+    public void render() {
+        this.pagingEvent = new DefaultPagingEvent();
+        super.render();
+    }
+
+    /**
+     * 重置
+     */
+    @Override
+    public void reset() {
+        // 重置光标
+        this.getContext().getCursor().reset(this.getBeginX(), this.originalY);
+        // 重置当前执行组件类型
+        this.getContext().resetExecutingComponentType(this.getType());
+    }
+
+    /**
      * 初始化
      */
     @Override
-    public void init() {
+    protected void init() {
         // 初始化基础
         this.initBase();
         // 初始化X轴起始坐标
@@ -92,23 +130,28 @@ public class PageFooter extends AbstractPageHeaderOrFooter {
     }
 
     /**
-     * 初始化基础
+     * 默认虚拟分页事件
      */
-    @Override
-    public void initBase() {
-        // 初始化参数
-        super.init(this.getContext().getPage(), false);
-    }
+    public static class DefaultVirtualPagingEvent extends AbstractPagingEvent {
 
-    /**
-     * 重置
-     */
-    @Override
-    public void reset() {
-        // 重置光标
-        this.getContext().getCursor().reset(this.getBeginX(), this.originalY);
-        // 重置当前执行组件类型
-        this.getContext().resetExecutingComponentType(this.getType());
+        /**
+         * 分页之后
+         *
+         * @param component 当前组件
+         */
+        @Override
+        public void after(Component component) {
+            // 获取换行起始坐标
+            Float wrapBeginX = component.getContext().getWrapBeginX();
+            // 获取执行组件类型
+            ComponentType currentExecutingComponentType = component.getContext().getExecutingComponentType();
+            // 渲染组件
+            Optional.ofNullable(component.getContext().getPageFooter()).ifPresent(AbstractPageHeaderOrFooter::virtualRender);
+            // 重置执行组件类型
+            component.getContext().setExecutingComponentType(currentExecutingComponentType);
+            // 重置换行起始坐标
+            component.getContext().setWrapBeginX(wrapBeginX);
+        }
     }
 
     /**

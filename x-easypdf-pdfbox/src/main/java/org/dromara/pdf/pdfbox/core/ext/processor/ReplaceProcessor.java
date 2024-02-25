@@ -19,6 +19,7 @@ import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationText;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDDocumentOutline;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 import org.dromara.pdf.pdfbox.core.base.Document;
+import org.dromara.pdf.pdfbox.core.enums.ImageType;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.dromara.pdf.pdfbox.support.COSBaseInfo;
 import org.dromara.pdf.pdfbox.util.ImageUtil;
@@ -75,7 +76,7 @@ public class ReplaceProcessor extends AbstractProcessor {
      */
     public void replaceText(PDFont font, Map<String, String> replaceMap, int... pageIndexes) {
         // 获取页面树
-        PDPageTree pageTree = this.document.getTarget().getPages();
+        PDPageTree pageTree = this.getDocument().getPages();
         // 页面索引非空
         if (Objects.nonNull(pageIndexes)) {
             // 遍历页面索引
@@ -100,7 +101,7 @@ public class ReplaceProcessor extends AbstractProcessor {
      */
     public void replaceComment(Map<String, String> replaceMap, int... pageIndexes) {
         // 获取页面树
-        PDPageTree pageTree = this.document.getTarget().getPages();
+        PDPageTree pageTree = this.getDocument().getPages();
         // 页面索引非空
         if (Objects.nonNull(pageIndexes)) {
             // 遍历页面索引
@@ -126,7 +127,7 @@ public class ReplaceProcessor extends AbstractProcessor {
      */
     public void replaceImage(BufferedImage image, List<Integer> pageIndexes, int... imageIndexes) {
         // 获取页面树
-        PDPageTree pageTree = this.document.getTarget().getPages();
+        PDPageTree pageTree = this.getDocument().getPages();
         // 页面索引非空
         if (Objects.nonNull(pageIndexes)) {
             // 遍历页面索引
@@ -139,6 +140,65 @@ public class ReplaceProcessor extends AbstractProcessor {
             for (PDPage page : pageTree) {
                 // 替换图像
                 this.replaceImage(page, image, imageIndexes);
+            }
+        }
+    }
+
+    /**
+     * 替换书签（标题）
+     *
+     * @param replaceMap      替换字典（key可为正则）
+     * @param bookmarkIndexes 书签索引
+     */
+    public void replaceBookmark(Map<String, String> replaceMap, int... bookmarkIndexes) {
+        // 获取pdfbox目录
+        PDDocumentCatalog documentCatalog = this.getDocument().getDocumentCatalog();
+        // 获取pdfbox文档概要
+        PDDocumentOutline documentOutline = documentCatalog.getDocumentOutline();
+        // 文档概要非空
+        if (Objects.nonNull(documentOutline)) {
+            // 定义索引
+            int index = 0;
+            // 获取书签列表
+            Iterable<PDOutlineItem> items = documentOutline.children();
+            // 书签索引非空
+            if (Objects.nonNull(bookmarkIndexes) && bookmarkIndexes.length > 0) {
+                // 获取书签列表
+                PrimitiveIterator.OfInt iterator = Arrays.stream(bookmarkIndexes).sorted().iterator();
+                // 定义书签索引
+                int bookmarkIndex = 0;
+                // 遍历获取书签列表
+                for (PDOutlineItem outlineItem : items) {
+                    // 跳过小于书签索引
+                    if (index < bookmarkIndex) {
+                        // 索引自增
+                        index++;
+                        // 跳过
+                        continue;
+                    }
+                    // 没有书签
+                    if (!iterator.hasNext()) {
+                        // 结束
+                        break;
+                    }
+                    // 重置书签索引
+                    bookmarkIndex = iterator.next();
+                    // 当前索引等于书签索引
+                    if (index == bookmarkIndex) {
+                        // 替换书签
+                        this.replaceBookmark(outlineItem, replaceMap);
+                    }
+                    // 索引自增
+                    index++;
+                }
+            } else {
+                // 遍历书签列表
+                for (PDOutlineItem outlineItem : items) {
+                    // 替换书签
+                    this.replaceBookmark(outlineItem, replaceMap);
+                    // 索引自增
+                    index++;
+                }
             }
         }
     }
@@ -161,7 +221,7 @@ public class ReplaceProcessor extends AbstractProcessor {
         // 如果替换文本标记成功，则更新内容
         if (this.replaceTextToken(font, page.getResources(), tokens, replaceMap)) {
             // 定义更新流
-            PDStream updatedStream = new PDStream(this.document.getTarget());
+            PDStream updatedStream = new PDStream(this.getDocument());
             // 创建输出流
             try (OutputStream outputStream = updatedStream.createOutputStream(COSName.FLATE_DECODE)) {
                 // 创建内容写入器
@@ -227,9 +287,9 @@ public class ReplaceProcessor extends AbstractProcessor {
         if (Objects.nonNull(image)) {
             // 重置pdf图像
             imageObject = PDImageXObject.createFromByteArray(
-                    this.document.getTarget(),
-                    ImageUtil.toBytes(image, "png"),
-                    "unknown"
+                    this.getDocument(),
+                    ImageUtil.toBytes(image, ImageType.PNG.getType()),
+                    ImageType.PNG.getType()
             );
         }
         // 获取页面资源
@@ -271,63 +331,6 @@ public class ReplaceProcessor extends AbstractProcessor {
                         }
                     }
                     // 当前图像索引自增
-                    index++;
-                }
-            }
-        }
-    }
-
-    /**
-     * 替换书签（标题）
-     *
-     * @param replaceMap      替换字典（key可为正则）
-     * @param bookmarkIndexes 书签索引
-     */
-    protected void replaceBookmark(Map<String, String> replaceMap, int... bookmarkIndexes) {
-        // 获取pdfbox目录
-        PDDocumentCatalog documentCatalog = this.document.getTarget().getDocumentCatalog();
-        // 获取pdfbox文档概要
-        PDDocumentOutline documentOutline = documentCatalog.getDocumentOutline();
-        // 文档概要非空
-        if (Objects.nonNull(documentOutline)) {
-            // 定义索引
-            int index = 0;
-            // 获取书签列表
-            Iterable<PDOutlineItem> items = documentOutline.children();
-            // 书签索引非空
-            if (Objects.nonNull(bookmarkIndexes) && bookmarkIndexes.length > 0) {
-                // 获取书签列表
-                PrimitiveIterator.OfInt iterator = Arrays.stream(bookmarkIndexes).sorted().iterator();
-                // 定义书签索引
-                int bookmarkIndex = 0;
-                // 遍历获取书签列表
-                for (PDOutlineItem outlineItem : items) {
-                    // 跳过小于书签索引
-                    if (index < bookmarkIndex) {
-                        // 索引自增
-                        index++;
-                        // 跳过
-                        continue;
-                    }
-                    // 没有书签
-                    if (!iterator.hasNext()) {
-                        // 结束
-                        break;
-                    }
-                    // 重置书签索引
-                    bookmarkIndex = iterator.next();
-                    // 当前索引等于书签索引
-                    if (index == bookmarkIndex) {
-                        this.replaceBookmark(outlineItem, replaceMap);
-                    }
-                    // 索引自增
-                    index++;
-                }
-            } else {
-                // 遍历获取书签列表
-                for (PDOutlineItem outlineItem : items) {
-                    this.replaceBookmark(outlineItem, replaceMap);
-                    // 索引自增
                     index++;
                 }
             }
@@ -446,8 +449,8 @@ public class ReplaceProcessor extends AbstractProcessor {
             if (Objects.isNull(replaceString) || Objects.equals(replaceString, source)) {
                 return false;
             }
-            // 添加文本关联
-            PdfHandler.getFontHandler().addToSubset(replaceFont, replaceString);
+            // 嵌入字体
+            PdfHandler.getFontHandler().addToSubset(this.getDocument(), replaceFont, replaceString);
             // cos数组
             if (cosBase instanceof COSArray) {
                 // 转换为cos数组

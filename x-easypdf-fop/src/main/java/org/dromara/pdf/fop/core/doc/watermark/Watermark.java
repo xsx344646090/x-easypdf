@@ -5,8 +5,9 @@ import org.apache.fop.util.ColorUtil;
 import org.apache.xmlgraphics.util.UnitConv;
 import org.dromara.pdf.fop.core.base.TemplateAttributes;
 import org.dromara.pdf.fop.core.doc.page.PageRectangle;
-import org.dromara.pdf.fop.util.XEasyPdfTemplateFontStyleUtil;
-import org.dromara.pdf.fop.util.XEasyPdfTemplateImageUtil;
+import org.dromara.pdf.fop.util.FileUtil;
+import org.dromara.pdf.fop.util.FontStyleUtil;
+import org.dromara.pdf.fop.util.ImageUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -14,6 +15,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
@@ -366,7 +368,7 @@ public class Watermark implements WatermarkComponent {
     @SneakyThrows
     private File getImageFile() {
         // 创建文件
-        File file = new File(this.param.getTempDir(), this.param.getId() + ".png");
+        File file = new File(FileUtil.createDirectories(Paths.get(this.param.getTempDir())).toString(), this.param.getId() + ".png");
         // 如果文件不存在或开启文件覆盖，则创建新图像
         if (!file.exists() || this.param.getIsOverwrite()) {
             // 如果水印id为空，则提示信息
@@ -423,7 +425,7 @@ public class Watermark implements WatermarkComponent {
         // 设置文字颜色
         graphics.setColor(new Color(fontColor.getRed(), fontColor.getGreen(), fontColor.getBlue(), fontAlpha));
         // 设置字体
-        graphics.setFont(new Font(this.param.getFontFamily(), XEasyPdfTemplateFontStyleUtil.getStyle(this.param.getFontStyle()), fontSize));
+        graphics.setFont(new Font(this.param.getFontFamily(), FontStyleUtil.getStyle(this.param.getFontStyle()), fontSize));
         // 获取文本列表
         List<String> texts = this.param.getTexts();
         // 定义Y轴开始坐标（居中显示）
@@ -442,7 +444,7 @@ public class Watermark implements WatermarkComponent {
         // 资源释放
         graphics.dispose();
         // 返回旋转后的图像
-        return XEasyPdfTemplateImageUtil.rotate(image, PageRectangle.getRotateRectangle(width, height, radians), radians);
+        return ImageUtil.rotate(image, PageRectangle.getRotateRectangle(width, height, radians), radians);
     }
 
     /**

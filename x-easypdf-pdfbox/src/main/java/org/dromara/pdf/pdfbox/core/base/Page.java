@@ -51,7 +51,7 @@ public class Page extends AbstractBaseFont implements Closeable {
     /**
      * 页面尺寸
      */
-    private PageSize rectangle;
+    private PageSize pageSize;
     /**
      * 页面索引
      */
@@ -68,11 +68,11 @@ public class Page extends AbstractBaseFont implements Closeable {
     /**
      * 有参构造
      *
-     * @param context   上下文
-     * @param rectangle 尺寸
+     * @param context  上下文
+     * @param pageSize 页面尺寸
      */
-    public Page(Context context, PageSize rectangle) {
-        this(context, new PDPage(rectangle.getSize()));
+    public Page(Context context, PageSize pageSize) {
+        this(context, new PDPage(pageSize.getSize()));
     }
 
     /**
@@ -162,7 +162,7 @@ public class Page extends AbstractBaseFont implements Closeable {
      * @return 返回页面宽度
      */
     public Float getWidth() {
-        return this.rectangle.getWidth();
+        return this.pageSize.getWidth();
     }
 
     /**
@@ -171,7 +171,7 @@ public class Page extends AbstractBaseFont implements Closeable {
      * @return 返回页面高度
      */
     public Float getHeight() {
-        return this.rectangle.getHeight();
+        return this.pageSize.getHeight();
     }
 
     /**
@@ -232,6 +232,15 @@ public class Page extends AbstractBaseFont implements Closeable {
     }
 
     /**
+     * 获取最新页面
+     *
+     * @return 返回最新页面
+     */
+    public Page getLastPage() {
+        return Optional.ofNullable(this.getLastSubPage()).orElse(this);
+    }
+
+    /**
      * 获取最新索引
      *
      * @return 返回索引
@@ -285,11 +294,11 @@ public class Page extends AbstractBaseFont implements Closeable {
         // 校验
         Objects.requireNonNull(rectangle, "the rectangle can not be null");
         // 设置原尺寸
-        this.getTarget().setArtBox(this.getRectangle().getSize());
+        this.getTarget().setArtBox(this.getPageSize().getSize());
         // 重置尺寸
         this.getTarget().setMediaBox(rectangle.getSize());
         this.getTarget().setCropBox(null);
-        this.setRectangle(rectangle);
+        this.setPageSize(rectangle);
     }
 
     /**
@@ -301,10 +310,10 @@ public class Page extends AbstractBaseFont implements Closeable {
         // 校验
         Objects.requireNonNull(rectangle, "the rectangle can not be null");
         // 设置原尺寸
-        this.getTarget().setArtBox(this.getRectangle().getSize());
+        this.getTarget().setArtBox(this.getPageSize().getSize());
         // 重置尺寸
         this.getTarget().setCropBox(rectangle.getSize());
-        this.setRectangle(rectangle);
+        this.setPageSize(rectangle);
     }
 
     /**
@@ -317,9 +326,9 @@ public class Page extends AbstractBaseFont implements Closeable {
         if (Objects.nonNull(artBox)) {
             PDRectangle rectangle = new PDRectangle(artBox);
             this.getTarget().setMediaBox(rectangle);
-            this.setRectangle(new PageSize(rectangle));
+            this.setPageSize(new PageSize(rectangle));
         } else {
-            this.setRectangle(new PageSize(this.getTarget().getMediaBox()));
+            this.setPageSize(new PageSize(this.getTarget().getMediaBox()));
         }
         // 重置尺寸
         this.getTarget().setCropBox(null);
@@ -331,7 +340,7 @@ public class Page extends AbstractBaseFont implements Closeable {
      */
     public void createSubPage() {
         // 获取子页面
-        Page subPage = new Page(this.getContext(), this.getRectangle());
+        Page subPage = new Page(this.getContext(), this.getPageSize());
         // 初始化
         subPage.init(this, true);
         // 设置父页面
@@ -371,7 +380,7 @@ public class Page extends AbstractBaseFont implements Closeable {
         // 初始化任务页面
         this.target = target;
         // 初始化页面尺寸
-        this.rectangle = new PageSize(target.getCropBox());
+        this.pageSize = new PageSize(target.getCropBox());
     }
 
     /**

@@ -1,6 +1,7 @@
 package org.dromara.pdf.pdfbox.core.enums;
 
 import lombok.Getter;
+import org.apache.pdfbox.printing.Orientation;
 
 /**
  * 打印方向
@@ -25,26 +26,26 @@ public enum PrintOrientation {
     /**
      * 横向
      */
-    LANDSCAPE(0),
+    LANDSCAPE(Orientation.LANDSCAPE),
     /**
      * 纵向
      */
-    PORTRAIT(1),
+    PORTRAIT(Orientation.PORTRAIT),
     /**
-     * 反向横向
+     * 自动
      */
-    REVERSE_LANDSCAPE(2);
+    AUTO(Orientation.AUTO);
     /**
      * 方向
      */
-    private final int orientation;
+    private final Orientation orientation;
 
     /**
      * 有参构造
      *
      * @param orientation 方向
      */
-    PrintOrientation(int orientation) {
+    PrintOrientation(Orientation orientation) {
         this.orientation = orientation;
     }
 }

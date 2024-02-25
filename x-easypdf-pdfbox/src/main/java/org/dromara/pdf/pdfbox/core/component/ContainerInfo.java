@@ -89,22 +89,6 @@ public class ContainerInfo extends AbstractBaseBorder {
     }
 
     /**
-     * 初始化
-     */
-    @Override
-    public void init() {
-
-    }
-
-    /**
-     * 初始化基础
-     */
-    @Override
-    public void initBase() {
-
-    }
-
-    /**
      * 分页次数累计
      */
     public void pagingCount() {
@@ -118,5 +102,13 @@ public class ContainerInfo extends AbstractBaseBorder {
      */
     public boolean isPaging() {
         return this.pagingCount > 0;
+    }
+
+    /**
+     * 初始化基础
+     */
+    @Override
+    public void initBase() {
+
     }
 }

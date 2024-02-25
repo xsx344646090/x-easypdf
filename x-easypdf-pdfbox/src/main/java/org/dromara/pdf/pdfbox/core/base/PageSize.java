@@ -5,6 +5,8 @@ import org.apache.fontbox.util.BoundingBox;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.dromara.pdf.pdfbox.support.Constants;
 
+import java.awt.*;
+
 /**
  * 页面尺寸
  *
@@ -275,5 +277,14 @@ public class PageSize {
      */
     public float getTopY() {
         return this.size.getUpperRightY();
+    }
+
+    /**
+     * 转为矩形
+     *
+     * @return 返回矩形
+     */
+    public Rectangle toRectangle() {
+        return new Rectangle((int) this.getLeftX(), (int) this.getBottomY(), this.getWidth().intValue(), this.getHeight().intValue());
     }
 }

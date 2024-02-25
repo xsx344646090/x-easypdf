@@ -20,26 +20,28 @@ import org.junit.Test;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public class SplitLineTest {
+public class SplitLineTest extends BaseTest {
 
     @Test
-    public void test() {
-        // 定义fop配置文件路径
-        String configPath = "E:\\pdf\\test\\fo\\fop.xconf";
-        // 定义输出路径
-        String outputPath = "E:\\pdf\\test\\fo\\template-split-line.pdf";
-        // 转换pdf
-        Document document = TemplateHandler.Document.build().setConfigPath(configPath).addPage(
-                TemplateHandler.Page.build().addBodyComponent(
-                        TemplateHandler.SplitLine.build().setStyle("dotted").setLength("100%"),
-                        TemplateHandler.SplitLine.build().setStyle("dashed").setLength("100%"),
-                        TemplateHandler.SplitLine.build().setStyle("solid").setLength("100%"),
-                        TemplateHandler.SplitLine.build().setStyle("double").setLength("100%"),
-                        TemplateHandler.SplitLine.build().setStyle("groove").setLength("100%"),
-                        TemplateHandler.SplitLine.build().setStyle("ridge").setLength("100%")
-                )
-        );
-        // 转换pdf
-        document.transform(outputPath);
+    public void splitLineTest() {
+        this.test(() -> {
+            // 定义fop配置文件路径
+            String configPath = "E:\\PDF\\fop\\fop.xconf";
+            // 定义输出路径
+            String outputPath = "E:\\PDF\\fop\\splitLine\\splitLineTest.pdf";
+            // 转换pdf
+            Document document = TemplateHandler.Document.build().setConfigPath(configPath).addPage(
+                    TemplateHandler.Page.build().addBodyComponent(
+                            TemplateHandler.SplitLine.build().setStyle("dotted").setLength("100%"),
+                            TemplateHandler.SplitLine.build().setStyle("dashed").setLength("100%"),
+                            TemplateHandler.SplitLine.build().setStyle("solid").setLength("100%"),
+                            TemplateHandler.SplitLine.build().setStyle("double").setLength("100%"),
+                            TemplateHandler.SplitLine.build().setStyle("groove").setLength("100%"),
+                            TemplateHandler.SplitLine.build().setStyle("ridge").setLength("100%")
+                    )
+            );
+            // 转换pdf
+            document.transform(outputPath);
+        });
     }
 }

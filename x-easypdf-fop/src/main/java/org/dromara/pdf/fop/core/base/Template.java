@@ -4,6 +4,7 @@ import lombok.SneakyThrows;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dromara.pdf.fop.core.datasource.DataSource;
+import org.dromara.pdf.fop.util.FileUtil;
 import org.dromara.pdf.pdfbox.core.base.Document;
 
 import java.io.*;
@@ -30,6 +31,10 @@ import java.util.Date;
  * </p>
  */
 public class Template {
+
+    static {
+        Banner.print();
+    }
 
     /**
      * 日志
@@ -197,7 +202,7 @@ public class Template {
     @SneakyThrows
     public void transform(String outputPath) {
         // 创建输出流
-        try (OutputStream outputStream = new BufferedOutputStream(Files.newOutputStream(Paths.get(outputPath)))) {
+        try (OutputStream outputStream = new BufferedOutputStream(Files.newOutputStream(FileUtil.createDirectories(Paths.get(outputPath))))) {
             // 转换pdf
             this.transform(outputStream);
         }

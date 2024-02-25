@@ -1,8 +1,7 @@
 package org.dromara.pdf.pdfbox.core.ext.analyzer;
 
 import org.dromara.pdf.pdfbox.core.base.Document;
-
-import java.io.Closeable;
+import org.dromara.pdf.pdfbox.core.ext.base.AbstractExpander;
 
 /**
  * 抽象分析器
@@ -22,12 +21,7 @@ import java.io.Closeable;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public abstract class AbstractAnalyzer implements Closeable {
-
-    /**
-     * 文档
-     */
-    protected Document document;
+public abstract class AbstractAnalyzer extends AbstractExpander {
 
     /**
      * 有参构造
@@ -35,14 +29,6 @@ public abstract class AbstractAnalyzer implements Closeable {
      * @param document 文档
      */
     public AbstractAnalyzer(Document document) {
-        this.document = document;
-    }
-
-    /**
-     * 关闭
-     */
-    @Override
-    public void close() {
-        this.document = null;
+        super(document);
     }
 }

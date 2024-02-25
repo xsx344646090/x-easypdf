@@ -2,6 +2,7 @@ package org.dromara.pdf.pdfbox.core.component;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.dromara.pdf.pdfbox.core.base.*;
 import org.dromara.pdf.pdfbox.util.BorderUtil;
@@ -132,6 +133,25 @@ public abstract class AbstractPageHeaderOrFooter extends AbstractBaseBorder {
     }
 
     /**
+     * 虚拟渲染
+     */
+    @SneakyThrows
+    public void virtualRender() {
+        // 校验宽度
+        Objects.requireNonNull(this.getWidth(), "the width can not be null");
+        // 校验高度
+        Objects.requireNonNull(this.getHeight(), "the height can not be null");
+        // 初始化
+        this.init();
+        // 渲染组件
+        Optional.ofNullable(this.getComponents())
+                .orElse(Collections.emptyList())
+                .forEach(this::virtualRenderComponent);
+        // 重置
+        this.reset();
+    }
+
+    /**
      * 渲染
      */
     public void render() {
@@ -170,6 +190,20 @@ public abstract class AbstractPageHeaderOrFooter extends AbstractBaseBorder {
     }
 
     /**
+     * 虚拟渲染组件
+     *
+     * @param component 组件
+     */
+    public void virtualRenderComponent(Component component) {
+        // 初始化类型
+        component.getContext().setExecutingComponentType(this.getType());
+        // 初始化X轴换行起始坐标
+        this.getContext().setWrapBeginX(this.getBeginX());
+        // 虚拟渲染组件
+        component.virtualRender();
+    }
+
+    /**
      * 渲染组件
      *
      * @param component 组件
@@ -191,6 +225,8 @@ public abstract class AbstractPageHeaderOrFooter extends AbstractBaseBorder {
         this.getContext().getCursor().reset(this.getBeginX(), this.getBeginY() - this.getHeight());
         // 重置当前执行组件类型
         this.getContext().resetExecutingComponentType(this.getType());
+        // 重置换行宽度
+        this.getContext().setWrapWidth(this.getContext().getPage().getWithoutMarginWidth());
     }
 
     /**
@@ -211,20 +247,12 @@ public abstract class AbstractPageHeaderOrFooter extends AbstractBaseBorder {
             switch (component.getType()) {
                 // 文本域
                 case TEXTAREA: {
-                    offset = ((Textarea) component).getFontSize();
+                    offset = Optional.ofNullable(((Textarea) component).getFontSize()).orElse(this.getContext().getPage().getFontSize());
                     break;
-                }
-                // 图像
-                case IMAGE: {
-                    //TODO 待添加图像逻辑
-                }
-                // 条形码
-                case BARCODE: {
-                    //TODO 待添加条形码逻辑
                 }
                 // 自定义
                 case CUSTOM: {
-                    //TODO 待添加自定义类型逻辑
+                    // TODO 待添加自定义类型逻辑
                 }
             }
         }

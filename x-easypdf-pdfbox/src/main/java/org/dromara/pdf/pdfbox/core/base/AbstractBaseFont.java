@@ -112,7 +112,7 @@ public abstract class AbstractBaseFont extends AbstractBaseBorder {
      *
      * @param base 基础参数
      */
-    private void initFont(AbstractBaseFont base) {
+    protected void initFont(AbstractBaseFont base) {
         // 初始化pdfbox字体
         if (Objects.isNull(this.font)) {
             this.font = base.font;

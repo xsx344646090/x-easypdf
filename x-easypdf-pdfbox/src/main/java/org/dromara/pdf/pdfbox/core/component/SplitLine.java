@@ -91,10 +91,69 @@ public class SplitLine extends AbstractComponent {
     }
 
     /**
+     * 虚拟渲染
+     */
+    @Override
+    public void virtualRender() {
+        // 初始化
+        this.init();
+        // 非自定义Y轴
+        if (!this.getIsCustomY()) {
+            // 检查分页
+            this.isPaging(this, this.getBeginY());
+        }
+        // 重置光标
+        this.getContext().getCursor().setX(this.getBeginX() + this.getLineLength() + this.getMarginRight());
+        // 重置
+        super.reset(this.getType());
+        // 重置换行高度
+        this.getContext().setWrapHeight(this.getLineWidth());
+    }
+
+    /**
+     * 渲染
+     */
+    @SneakyThrows
+    @Override
+    public void render() {
+        // 初始化
+        this.init();
+        // 非自定义Y轴
+        if (!this.getIsCustomY()) {
+            // 检查分页
+            this.isPaging(this, this.getBeginY());
+        }
+        // 新建内容流
+        PDPageContentStream stream = this.initContentStream();
+        // 定义X轴起始坐标
+        float beginX = this.getBeginX() + this.getRelativeBeginX();
+        // 定义Y轴起始坐标
+        float beginY = this.getBeginY() - this.getRelativeBeginY();
+        // 实线
+        if (this.getDottedSpacing() == 0F) {
+            // 渲染实线
+            this.renderSolid(stream, beginX, beginY);
+        } else {
+            // 渲染虚线
+            this.renderDotted(stream, beginX, beginY);
+        }
+        // 结束
+        stream.stroke();
+        // 关闭内容流
+        stream.close();
+        // 重置光标
+        this.getContext().getCursor().setX(this.getBeginX() + this.getLineLength() + this.getMarginRight());
+        // 重置
+        super.reset(this.getType());
+        // 重置换行高度
+        this.getContext().setWrapHeight(this.getLineWidth());
+    }
+
+    /**
      * 初始化
      */
     @Override
-    public void init() {
+    protected void init() {
         // 初始化
         super.init();
         // 初始化字体
@@ -133,49 +192,12 @@ public class SplitLine extends AbstractComponent {
     }
 
     /**
-     * 渲染
-     */
-    @SneakyThrows
-    @Override
-    public void render() {
-        // 初始化
-        this.init();
-        // 非自定义Y轴
-        if (!this.getIsCustomY()) {
-            // 检查分页
-            this.isPaging(this, this.getBeginY());
-        }
-        // 新建内容流
-        PDPageContentStream stream = this.initContentStream();
-        // 定义X轴起始坐标
-        float beginX = this.getBeginX() + this.getRelativeBeginX();
-        // 定义Y轴起始坐标
-        float beginY = this.getBeginY() - this.getRelativeBeginY();
-        // 实线
-        if (this.getDottedSpacing() == 0F) {
-            // 渲染实线
-            this.renderSolid(stream, beginX, beginY);
-        } else {
-            // 渲染虚线
-            this.renderDotted(stream, beginX, beginY);
-        }
-        // 结束
-        stream.stroke();
-        // 关闭内容流
-        stream.close();
-        // 重置光标
-        this.getContext().getCursor().setX(this.getBeginX() + this.getLineLength() + this.getMarginRight());
-        // 重置
-        super.reset(this.getType());
-    }
-
-    /**
      * 初始化内容流
      *
      * @return 返回内容流
      */
     @SneakyThrows
-    private PDPageContentStream initContentStream() {
+    protected PDPageContentStream initContentStream() {
         // 创建内容流
         PDPageContentStream stream = new PDPageContentStream(
                 this.getContext().getTargetDocument(),
@@ -204,7 +226,7 @@ public class SplitLine extends AbstractComponent {
      * @param beginY Y轴起始坐标
      */
     @SneakyThrows
-    private void renderSolid(PDPageContentStream stream, float beginX, float beginY) {
+    protected void renderSolid(PDPageContentStream stream, float beginX, float beginY) {
         // 移动
         stream.moveTo(beginX, beginY);
         // 连线
@@ -219,7 +241,7 @@ public class SplitLine extends AbstractComponent {
      * @param beginY Y轴起始坐标
      */
     @SneakyThrows
-    private void renderDotted(PDPageContentStream stream, float beginX, float beginY) {
+    protected void renderDotted(PDPageContentStream stream, float beginX, float beginY) {
         // 定义X轴结束坐标
         float endX = beginX + this.getLineLength();
         // 移动

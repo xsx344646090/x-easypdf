@@ -1,13 +1,9 @@
 package org.dromara.pdf.pdfbox.core.ext.extractor;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
-import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDDocumentOutline;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 import org.dromara.pdf.pdfbox.core.base.Document;
 
-import java.io.Closeable;
-import java.util.*;
+import java.util.Map;
 
 /**
  * 书签提取器
@@ -27,12 +23,7 @@ import java.util.*;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public class BookmarkExtractor implements Closeable {
-
-    /**
-     * pdfbox文档
-     */
-    private PDDocument document;
+public class BookmarkExtractor extends AbstractBookmarkExtractor {
 
     /**
      * 有参构造
@@ -40,77 +31,17 @@ public class BookmarkExtractor implements Closeable {
      * @param document 文档
      */
     public BookmarkExtractor(Document document) {
-        this.document = document.getTarget();
+        super(document);
     }
 
     /**
      * 提取书签
      *
      * @param bookmarkIndexes 书签索引
-     * @return 返回书签字典（key = 书签索引，value = 提取书签）
-     */
-    public Map<Integer, PDOutlineItem> extract(int... bookmarkIndexes) {
-        // 定义书签字典
-        Map<Integer, PDOutlineItem> data = new HashMap<>(32);
-        // 获取pdfbox目录
-        PDDocumentCatalog documentCatalog = this.document.getDocumentCatalog();
-        // 获取pdfbox文档概要
-        PDDocumentOutline documentOutline = documentCatalog.getDocumentOutline();
-        // 文档概要非空
-        if (Objects.nonNull(documentOutline)) {
-            // 定义索引
-            int index = 0;
-            // 获取书签列表
-            Iterable<PDOutlineItem> items = documentOutline.children();
-            // 书签索引非空
-            if (Objects.nonNull(bookmarkIndexes) && bookmarkIndexes.length > 0) {
-                // 获取书签列表
-                PrimitiveIterator.OfInt iterator = Arrays.stream(bookmarkIndexes).sorted().iterator();
-                // 定义书签索引
-                int bookmarkIndex = 0;
-                // 遍历获取书签列表
-                for (PDOutlineItem outlineItem : items) {
-                    // 跳过小于书签索引
-                    if (index < bookmarkIndex) {
-                        // 索引自增
-                        index++;
-                        // 跳过
-                        continue;
-                    }
-                    // 没有书签
-                    if (!iterator.hasNext()) {
-                        // 结束
-                        break;
-                    }
-                    // 重置书签索引
-                    bookmarkIndex = iterator.next();
-                    // 当前索引等于书签索引
-                    if (index == bookmarkIndex) {
-                        // 添加数据
-                        data.put(index, outlineItem);
-                    }
-                    // 索引自增
-                    index++;
-                }
-            } else {
-                // 遍历获取书签列表
-                for (PDOutlineItem outlineItem : items) {
-                    // 添加数据
-                    data.put(index, outlineItem);
-                    // 索引自增
-                    index++;
-                }
-            }
-        }
-        // 返回书签字典
-        return data;
-    }
-
-    /**
-     * 关闭
+     * @return 返回书签字典 <p>key = 书签索引，value = 提取书签</p>
      */
     @Override
-    public void close() {
-        this.document = null;
+    public Map<Integer, PDOutlineItem> extract(int... bookmarkIndexes) {
+        return this.processBookmark(bookmarkIndexes);
     }
 }

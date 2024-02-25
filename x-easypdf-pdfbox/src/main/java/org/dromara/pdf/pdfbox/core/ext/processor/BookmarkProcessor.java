@@ -38,7 +38,7 @@ public class BookmarkProcessor extends AbstractProcessor {
     /**
      * pdfbox书签节点列表
      */
-    private List<PDOutlineItem> itemList;
+    protected List<PDOutlineItem> itemList;
 
     /**
      * 有参构造
@@ -66,6 +66,7 @@ public class BookmarkProcessor extends AbstractProcessor {
      * @param item  书签
      */
     public void insert(int index, PDOutlineItem item) {
+        Objects.requireNonNull(item, "the item can not be null");
         try {
             // 插入书签
             this.itemList.add(index, item);
@@ -81,6 +82,7 @@ public class BookmarkProcessor extends AbstractProcessor {
      * @param item 书签
      */
     public void append(PDOutlineItem item) {
+        Objects.requireNonNull(item, "the item can not be null");
         // 添加书签
         this.itemList.add(item);
     }
@@ -92,6 +94,7 @@ public class BookmarkProcessor extends AbstractProcessor {
      * @param item  书签
      */
     public void set(int index, PDOutlineItem item) {
+        Objects.requireNonNull(item, "the item can not be null");
         try {
             // 设置书签
             this.itemList.set(index, item);

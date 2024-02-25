@@ -1,6 +1,7 @@
 package org.dromara.pdf.pdfbox.core.ext.processor;
 
 import lombok.SneakyThrows;
+import org.apache.pdfbox.pdfwriter.compress.CompressParameters;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageTree;
@@ -12,10 +13,11 @@ import java.io.File;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * 拆分处理器
@@ -74,7 +76,6 @@ public class SplitProcessor extends AbstractProcessor {
     public void split(OutputStream outputStream, int... pageIndexes) {
         // 检查参数
         Objects.requireNonNull(outputStream, "the output stream can not be null");
-        // 检查参数
         Objects.requireNonNull(pageIndexes, "the page indexes can not be null");
         // 拆分文档
         this.split(outputStream, this.toIntegerList(pageIndexes));
@@ -90,12 +91,11 @@ public class SplitProcessor extends AbstractProcessor {
     public void split(OutputStream outputStream, List<Integer> pageIndexes) {
         // 检查参数
         Objects.requireNonNull(outputStream, "the output stream can not be null");
-        // 检查参数
         Objects.requireNonNull(pageIndexes, "the page indexes can not be null");
         // 新建任务文档
         PDDocument target = new PDDocument();
         // 获取源文档页面树
-        PDPageTree sourcePages = this.document.getTarget().getPages();
+        PDPageTree sourcePages = this.getDocument().getPages();
         // 遍历页面索引
         for (int index : pageIndexes) {
             // 获取源文档页面
@@ -123,7 +123,7 @@ public class SplitProcessor extends AbstractProcessor {
         // 定义拆分文档列表索引
         int index = 1;
         // 获取pdfbox页面树
-        PDPageTree pageTree = this.document.getTarget().getPages();
+        PDPageTree pageTree = this.getDocument().getPages();
         // 遍历页面树
         for (PDPage sourcePage : pageTree) {
             // 创建任务
@@ -154,14 +154,16 @@ public class SplitProcessor extends AbstractProcessor {
      */
     @SneakyThrows
     protected void saveTarget(PDDocument target, OutputStream outputStream) {
+        // 刷新元数据
+        if (Optional.ofNullable(this.document.getIsFlushMetadata()).orElse(Boolean.TRUE)) {
+            new MetadataProcessor(this.document).flush();
+        }
         // 设置文档版本
         target.setVersion(this.document.getVersion());
-        // 设置文档信息
-        target.setDocumentInformation(this.document.getInfo());
         // 设置元数据
-        target.getDocumentCatalog().setMetadata(this.document.getMetadata());
+        target.getDocumentCatalog().setMetadata(this.document.getTarget().getDocumentCatalog().getMetadata());
         // 保存文档
-        target.save(outputStream);
+        target.save(outputStream, new CompressParameters(Integer.MAX_VALUE));
         // 关闭文档
         target.close();
     }
@@ -173,11 +175,6 @@ public class SplitProcessor extends AbstractProcessor {
      * @return 返回列表
      */
     protected List<Integer> toIntegerList(int[] array) {
-        // 定义列表
-        List<Integer> list = new ArrayList<>(array.length);
-        // 添加数据
-        Arrays.stream(array).forEach(list::add);
-        // 返回列表
-        return list;
+        return Arrays.stream(array).boxed().collect(Collectors.toList());
     }
 }

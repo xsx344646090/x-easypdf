@@ -25,6 +25,11 @@ import java.util.Set;
 public interface Component {
 
     /**
+     * 虚拟渲染
+     */
+    void virtualRender();
+
+    /**
      * 渲染
      */
     void render();

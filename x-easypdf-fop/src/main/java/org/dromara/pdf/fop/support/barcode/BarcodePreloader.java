@@ -7,7 +7,7 @@ import lombok.SneakyThrows;
 import org.apache.xmlgraphics.image.loader.ImageContext;
 import org.apache.xmlgraphics.image.loader.ImageInfo;
 import org.apache.xmlgraphics.image.loader.impl.AbstractImagePreloader;
-import org.dromara.pdf.fop.util.XEasyPdfTemplateImageUtil;
+import org.dromara.pdf.fop.util.ImageUtil;
 import org.w3c.dom.Node;
 
 import javax.xml.transform.Source;
@@ -149,7 +149,7 @@ public class BarcodePreloader extends AbstractImagePreloader {
         // 如果需要旋转，则重置图像为旋转后的图像
         if (config.isRotate()) {
             // 重置图像为旋转后的图像
-            barCodeImage = XEasyPdfTemplateImageUtil.rotate(barCodeImage, config.getRotateRectangle(), config.getRadians());
+            barCodeImage = ImageUtil.rotate(barCodeImage, config.getRotateRectangle(), config.getRadians());
         }
         // 返回图像
         return barCodeImage;

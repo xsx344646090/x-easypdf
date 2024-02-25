@@ -13,6 +13,7 @@ import org.dromara.pdf.pdfbox.support.fonts.FontMapperImpl;
 
 import java.io.File;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.util.*;
 
 /**
@@ -96,6 +97,18 @@ public class FontHandler {
     }
 
     /**
+     * 获取pdfbox字体
+     *
+     * @param document    pdf文档
+     * @param fontName    字体名称
+     * @return 返回pdfBox字体
+     */
+    @SneakyThrows
+    public PDFont getPDFont(PDDocument document, String fontName) {
+        return this.getPDFont(document, fontName, true);
+    }
+
+    /**
      * 获取字体
      *
      * @param fontName 字体名称
@@ -150,7 +163,8 @@ public class FontHandler {
      * @param font pdfbox字体
      * @param text 文本
      */
-    public void addToSubset(PDFont font, String text) {
+    @SneakyThrows
+    public void addToSubset(PDDocument document, PDFont font, String text) {
         // 如果字体不为空且字体为子集，则添加文本到子集
         if (Objects.nonNull(font) && font.willBeSubset()) {
             // 定义偏移量
@@ -166,6 +180,10 @@ public class FontHandler {
                 // 重置偏移量
                 offset += Character.charCount(codePoint);
             }
+            Method method = document.getClass().getDeclaredMethod("getFontsToSubset");
+            method.setAccessible(true);
+            ((Set<PDFont>) method.invoke(document)).add(font);
         }
+
     }
 }

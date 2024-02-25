@@ -17,7 +17,6 @@ import org.dromara.pdf.pdfbox.core.base.*;
 import org.dromara.pdf.pdfbox.core.info.CatalogInfo;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.dromara.pdf.pdfbox.support.Constants;
-import org.dromara.pdf.pdfbox.support.Position;
 import org.dromara.pdf.pdfbox.util.BorderUtil;
 import org.dromara.pdf.pdfbox.util.TextUtil;
 
@@ -50,59 +49,59 @@ public class Textarea extends AbstractComponent {
     /**
      * 目录
      */
-    private CatalogInfo catalog;
+    protected CatalogInfo catalog;
     /**
      * 制表符大小
      */
-    private Integer tabSize;
+    protected Integer tabSize;
     /**
      * 文本内容
      */
-    private String text;
+    protected String text;
     /**
      * 文本列表
      */
-    private List<String> textList;
+    protected List<String> textList;
     /**
      * 高亮颜色
      */
-    private Color highlightColor;
+    protected Color highlightColor;
     /**
      * 是否高亮
      */
-    private Boolean isHighlight;
+    protected Boolean isHighlight;
     /**
      * 下划线宽度
      */
-    private Float underlineWidth;
+    protected Float underlineWidth;
     /**
      * 下划线颜色
      */
-    private Color underlineColor;
+    protected Color underlineColor;
     /**
      * 是否下划线
      */
-    private Boolean isUnderline;
+    protected Boolean isUnderline;
     /**
      * 删除线宽度
      */
-    private Float deleteLineWidth;
+    protected Float deleteLineWidth;
     /**
      * 删除线颜色
      */
-    private Color deleteLineColor;
+    protected Color deleteLineColor;
     /**
      * 是否删除线
      */
-    private Boolean isDeleteLine;
+    protected Boolean isDeleteLine;
     /**
      * 内部目标
      */
-    private InnerDest innerDest;
+    protected InnerDest innerDest;
     /**
      * 外部目标
      */
-    private OuterDest outerDest;
+    protected OuterDest outerDest;
 
     /**
      * 有参构造
@@ -170,10 +169,111 @@ public class Textarea extends AbstractComponent {
     }
 
     /**
+     * 虚拟渲染
+     */
+    @SneakyThrows
+    public void virtualRender() {
+        // 初始化
+        this.init();
+        // 非自定义Y轴
+        if (!this.getIsCustomY()) {
+            // 检查分页
+            this.isPaging(this, this.getBeginY());
+        }
+        // 创建坐标
+        Position position = new Position(
+                this.getBeginX() + this.getRelativeBeginX(),
+                this.getBeginY() - this.getRelativeBeginY()
+        );
+        // 文本列表不为空
+        if (!this.getTextList().isEmpty()) {
+            // 遍历文本列表
+            for (String text : this.getTextList()) {
+                // 虚拟写入
+                this.virtualWrite(text, position);
+                // 重置坐标
+                position.reset(
+                        this.getContext().getWrapBeginX(),
+                        position.getY() - this.getFontSize() - this.getLeading() - this.getUnderlineWidth()
+                );
+            }
+            // 定义最后一行文本宽度
+            float lastTextWidth = TextUtil.getTextRealWidth(
+                    this.getTextList().get(this.getTextList().size() - 1),
+                    this.getFont(),
+                    this.getFontSize(),
+                    this.getCharacterSpacing()
+            );
+            // 重置Y轴坐标
+            position.setY(position.getY() + this.getFontSize() + this.getLeading() + this.getUnderlineWidth());
+            // 重置页面位置坐标
+            this.resetPagePosition(position.getY(), lastTextWidth);
+        }
+        // 重置
+        super.reset(this.getType());
+        // 重置换行高度
+        this.getContext().setWrapHeight(this.getFontSize());
+    }
+
+    /**
+     * 渲染
+     */
+    @SneakyThrows
+    @Override
+    public void render() {
+        // 初始化
+        this.init();
+        // 非自定义Y轴
+        if (!this.getIsCustomY()) {
+            // 检查分页
+            this.isPaging(this, this.getBeginY());
+        }
+        // 创建坐标
+        Position position = new Position(
+                this.getBeginX() + this.getRelativeBeginX(),
+                this.getBeginY() - this.getRelativeBeginY()
+        );
+        // 初始化目录
+        this.initCatalog(position);
+        // 文本列表不为空
+        if (!this.getTextList().isEmpty()) {
+            // 初始化内容流
+            PDPageContentStream contentStream = this.initContentStream();
+            // 遍历文本列表
+            for (String text : this.getTextList()) {
+                // 写入
+                contentStream = this.write(text, contentStream, position);
+                // 重置坐标
+                position.reset(
+                        this.getContext().getWrapBeginX(),
+                        position.getY() - this.getFontSize() - this.getLeading() - this.getUnderlineWidth()
+                );
+            }
+            // 获取最后一行文本宽度
+            float lastTextWidth = TextUtil.getTextRealWidth(
+                    this.getTextList().get(this.getTextList().size() - 1),
+                    this.getFont(),
+                    this.getFontSize(),
+                    this.getCharacterSpacing()
+            );
+            // 关闭内容流
+            contentStream.close();
+            // 重置Y轴坐标
+            position.setY(position.getY() + this.getFontSize() + this.getLeading() + this.getUnderlineWidth());
+            // 重置页面位置坐标
+            this.resetPagePosition(position.getY(), lastTextWidth);
+        }
+        // 重置
+        super.reset(this.getType());
+        // 重置换行高度
+        this.getContext().setWrapHeight(this.getFontSize());
+    }
+
+    /**
      * 初始化
      */
     @Override
-    public void init() {
+    protected void init() {
         // 初始化
         super.init();
         // 获取当前页面
@@ -228,89 +328,17 @@ public class Textarea extends AbstractComponent {
     }
 
     /**
-     * 渲染
-     */
-    @SneakyThrows
-    @Override
-    public void render() {
-        // 初始化
-        this.init();
-        // 非自定义Y轴
-        if (!this.getIsCustomY()) {
-            // 检查分页
-            this.isPaging(this, this.getBeginY());
-        }
-        // 创建坐标
-        Position position = Position.create(
-                this.getBeginX() + this.getRelativeBeginX(),
-                this.getBeginY() - this.getRelativeBeginY()
-        );
-        // 初始化目录
-        this.initCatalog(position);
-        // 文本列表不为空
-        if (!this.getTextList().isEmpty()) {
-            // 定义文本行数
-            int count = this.getTextList().size();
-            // 定义最后一行索引
-            int lastIndex = count - 1;
-            // 定义最后一行文本宽度
-            float lastTextWidth = 0F;
-            // 初始化内容流
-            PDPageContentStream contentStream = this.initContentStream();
-            // 遍历文本列表
-            for (int i = 0; i < count; i++) {
-                // 获取文本
-                String text = this.getTextList().get(i);
-                // 写入
-                contentStream = this.write(text, contentStream, position);
-                // 重置坐标
-                position.reset(
-                        this.getContext().getWrapBeginX(),
-                        position.getY() - this.getFontSize() - this.getLeading() - this.getUnderlineWidth()
-                );
-                // 最后一行
-                if (i == lastIndex) {
-                    // 重置文本宽度
-                    lastTextWidth = TextUtil.getTextRealWidth(
-                            text,
-                            this.getFont(),
-                            this.getFontSize(),
-                            this.getCharacterSpacing()
-                    );
-                }
-            }
-            // 关闭内容流
-            contentStream.close();
-            // 重置Y轴坐标
-            position.setY(position.getY() + this.getFontSize() + this.getLeading() + this.getUnderlineWidth());
-            // 重置页面位置坐标
-            this.resetPagePosition(position.getY(), lastTextWidth);
-        }
-        // 重置
-        super.reset(this.getType());
-    }
-
-    /**
      * 初始化文本
      */
-    private void initText() {
+    protected void initText() {
         // 创建临时文本列表
-        List<String> tempTextList = new ArrayList<>(128);
-        // 文本不为空
+        List<String> tempTextList = new LinkedList<>();
+        // 添加文本
         if (Objects.nonNull(this.text)) {
-            // 添加文本
             tempTextList.addAll(this.processText(this.text));
-        }
-        // 文本列表不为空
-        else if (Objects.nonNull(this.textList)) {
-            // 遍历文本列表
-            this.textList.forEach(text -> {
-                // 添加文本
-                tempTextList.addAll(this.processText(text));
-            });
-        }
-        // 文本为空
-        else {
+        } else if (Objects.nonNull(this.textList)) {
+            this.textList.forEach(text -> tempTextList.addAll(this.processText(text)));
+        } else {
             this.textList = Collections.emptyList();
             return;
         }
@@ -324,7 +352,7 @@ public class Textarea extends AbstractComponent {
      * @param text 文本
      * @return 返回文本列表
      */
-    private List<String> processText(String text) {
+    protected List<String> processText(String text) {
         // 过滤特殊字符
         String temp = TextUtil.filterAll(text);
         // 替换当前页码
@@ -340,15 +368,15 @@ public class Textarea extends AbstractComponent {
      *
      * @param tempTextList 临时文本列表
      */
-    private void initTextList(List<String> tempTextList) {
+    protected void initTextList(List<String> tempTextList) {
         // 获取换行宽度
         float wrapWidth = this.getContext().getWrapWidth();
-        // 获取首行宽度
-        float firstLineWidth = wrapWidth - (this.getBeginX() - Optional.ofNullable(this.getContext().getWrapBeginX()).orElse(this.getContext().getPage().getMarginLeft()));
         // 换行小于字体大小
         if (wrapWidth < this.getFontSize()) {
             throw new IllegalArgumentException("the font size is larger, must set less font size");
         }
+        // 获取首行宽度
+        float firstLineWidth = wrapWidth - (this.getBeginX() - Optional.ofNullable(this.getContext().getWrapBeginX()).orElse(this.getContext().getPage().getMarginLeft()));
         // 初始化文本列表
         this.initTextList(tempTextList, firstLineWidth, wrapWidth);
     }
@@ -360,9 +388,14 @@ public class Textarea extends AbstractComponent {
      * @param firstLineWidth 首行宽度
      * @param newLineWidth   新行宽度
      */
-    private void initTextList(List<String> tempTextList, float firstLineWidth, float newLineWidth) {
+    protected void initTextList(List<String> tempTextList, float firstLineWidth, float newLineWidth) {
         // 重置文本列表
-        this.textList = new ArrayList<>(tempTextList.size());
+        this.textList = new LinkedList<>();
+        // 临时文本列表无内容
+        if (tempTextList.isEmpty()) {
+            // 返回
+            return;
+        }
         // 获取首行文本
         String text = tempTextList.get(0);
         // 首行文本不为空
@@ -430,7 +463,7 @@ public class Textarea extends AbstractComponent {
      *
      * @param position 坐标
      */
-    private void initCatalog(Position position) {
+    protected void initCatalog(Position position) {
         // 初始化目录
         if (Objects.nonNull(this.catalog)) {
             // 获取上下文
@@ -447,6 +480,24 @@ public class Textarea extends AbstractComponent {
     }
 
     /**
+     * 虚拟写入
+     *
+     * @param text     文本
+     * @param position 坐标
+     */
+    @SneakyThrows
+    protected void virtualWrite(String text, Position position) {
+        // 文本不为空
+        if (TextUtil.isNotBlank(text)) {
+            // 检查分页
+            if (this.isPaging(this, position.getY())) {
+                // 重置Y轴坐标
+                position.setY(this.getBeginY());
+            }
+        }
+    }
+
+    /**
      * 写入
      *
      * @param text          文本
@@ -454,7 +505,7 @@ public class Textarea extends AbstractComponent {
      * @param position      坐标
      */
     @SneakyThrows
-    private PDPageContentStream write(String text, PDPageContentStream contentStream, Position position) {
+    protected PDPageContentStream write(String text, PDPageContentStream contentStream, Position position) {
         // 文本不为空
         if (TextUtil.isNotBlank(text)) {
             // 检查分页
@@ -493,7 +544,7 @@ public class Textarea extends AbstractComponent {
      * @param contentStream 内容流
      */
     @SneakyThrows
-    private void addHighlight(PDRectangle rectangle, PDPageContentStream contentStream) {
+    protected void addHighlight(PDRectangle rectangle, PDPageContentStream contentStream) {
         // 开启高亮
         if (this.getIsHighlight()) {
             // 绘制矩形
@@ -515,7 +566,7 @@ public class Textarea extends AbstractComponent {
      * @param contentStream 内容流
      */
     @SneakyThrows
-    private void addText(String text, PDRectangle rectangle, PDPageContentStream contentStream) {
+    protected void addText(String text, PDRectangle rectangle, PDPageContentStream contentStream) {
         // 开始写入
         contentStream.beginText();
         // 初始化字体颜色
@@ -535,7 +586,7 @@ public class Textarea extends AbstractComponent {
      * @param stream    内容流
      */
     @SneakyThrows
-    private void addDeleteLine(PDRectangle rectangle, PDPageContentStream stream) {
+    protected void addDeleteLine(PDRectangle rectangle, PDPageContentStream stream) {
         // 开启删除线
         if (this.getIsDeleteLine()) {
             // 初始化Y轴起始坐标为Y轴起始坐标-删除线宽度/2+字体高度/2-字体高度/10
@@ -560,11 +611,9 @@ public class Textarea extends AbstractComponent {
      * @param stream    内容流
      */
     @SneakyThrows
-    private void addUnderline(PDRectangle rectangle, PDPageContentStream stream) {
+    protected void addUnderline(PDRectangle rectangle, PDPageContentStream stream) {
         // 开启下划线
         if (this.getIsUnderline()) {
-            // 初始化Y轴起始坐标为Y轴起始坐标-下划线宽度/2
-            // float beginY = rectangle.getLowerLeftY() - this.param.getUnderlineWidth() / 2;
             // 设置颜色
             stream.setStrokingColor(this.getUnderlineColor());
             // 设置线宽
@@ -584,7 +633,7 @@ public class Textarea extends AbstractComponent {
      * @param rectangle 尺寸
      */
     @SneakyThrows
-    private void addInnerDest(PDRectangle rectangle) {
+    protected void addInnerDest(PDRectangle rectangle) {
         // 设置内部目标
         if (Objects.nonNull(this.getInnerDest())) {
             // 判断非空
@@ -610,7 +659,7 @@ public class Textarea extends AbstractComponent {
      * @param rectangle 尺寸
      */
     @SneakyThrows
-    private void addOuterDest(PDRectangle rectangle) {
+    protected void addOuterDest(PDRectangle rectangle) {
         // 设置外部目标
         if (Objects.nonNull(this.getOuterDest())) {
             // 判断非空
@@ -632,7 +681,7 @@ public class Textarea extends AbstractComponent {
      * @param rectangle 尺寸
      */
     @SneakyThrows
-    private void addLink(PDAction action, String name, PDRectangle rectangle, HighlightMode mode) {
+    protected void addLink(PDAction action, String name, PDRectangle rectangle, HighlightMode mode) {
         // 获取任务页面
         PDPage target = this.getContext().getPage().getTarget();
         // 创建链接
@@ -657,8 +706,10 @@ public class Textarea extends AbstractComponent {
      * @param rectangle 尺寸
      * @param stream    内容流
      */
-    private void addBorder(PDRectangle rectangle, PDPageContentStream stream) {
+    protected void addBorder(PDRectangle rectangle, PDPageContentStream stream) {
+        // 重置Y轴起始坐标
         rectangle.setLowerLeftY(rectangle.getLowerLeftY() - this.getFontSize() / 6);
+        // 绘制边框
         BorderUtil.drawNormalBorder(stream, rectangle, this);
     }
 
@@ -668,7 +719,7 @@ public class Textarea extends AbstractComponent {
      * @return 返回内容流
      */
     @SneakyThrows
-    private PDPageContentStream initContentStream() {
+    protected PDPageContentStream initContentStream() {
         // 获取上下文
         Context context = this.getContext();
         // 初始化内容流
@@ -677,7 +728,7 @@ public class Textarea extends AbstractComponent {
                 context.getTargetPage(),
                 this.getContentMode().getMode(),
                 true,
-                this.getIsResetContentStream()
+                true
         );
         // 初始化字体
         contentStream.setFont(this.getFont(), this.getFontSize());
@@ -687,6 +738,8 @@ public class Textarea extends AbstractComponent {
         contentStream.setLeading(this.getLeading());
         // 初始化文本间隔
         contentStream.setCharacterSpacing(this.getCharacterSpacing());
+        // 保存图形状态
+        contentStream.saveGraphicsState();
         // 返回内容流
         return contentStream;
     }
@@ -697,7 +750,7 @@ public class Textarea extends AbstractComponent {
      * @param stream pdfbox内容流
      */
     @SneakyThrows
-    private void initFontColor(PDPageContentStream stream) {
+    protected void initFontColor(PDPageContentStream stream) {
         // 填充
         if (this.getFontStyle().isFill()) {
             // 设置字体颜色
@@ -725,7 +778,7 @@ public class Textarea extends AbstractComponent {
      * @param beginY 起始Y轴坐标
      */
     @SneakyThrows
-    private void initPosition(PDPageContentStream stream, float beginX, float beginY) {
+    protected void initPosition(PDPageContentStream stream, float beginX, float beginY) {
         // 斜体
         if (this.getFontStyle().isItalic()) {
             // 设置文本矩阵
@@ -743,7 +796,7 @@ public class Textarea extends AbstractComponent {
      * @param position 坐标
      * @return 返回尺寸
      */
-    private PDRectangle getLineRectangle(String text, Position position) {
+    protected PDRectangle getLineRectangle(String text, Position position) {
         // Y轴偏移量
         float offsetY = this.getFontSize() / 8;
         // 创建尺寸
@@ -766,7 +819,7 @@ public class Textarea extends AbstractComponent {
      * @param beginY        Y轴坐标
      * @param lastTextWidth 最后一行文本宽度
      */
-    private void resetPagePosition(float beginY, float lastTextWidth) {
+    protected void resetPagePosition(float beginY, float lastTextWidth) {
         // 获取上下文
         Context context = this.getContext();
         // 定义X轴坐标

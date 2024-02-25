@@ -143,7 +143,7 @@ public abstract class AbstractBaseBorder extends AbstractBaseMargin {
      * @param base                基础参数
      * @param isInitMarginByParam 是否使用参数初始化边距
      */
-    public void init(AbstractBaseBorder base, boolean isInitMarginByParam) {
+    protected void init(AbstractBaseBorder base, boolean isInitMarginByParam) {
         // 初始化
         super.init(base, isInitMarginByParam);
         // 初始化边框
@@ -155,7 +155,7 @@ public abstract class AbstractBaseBorder extends AbstractBaseMargin {
      *
      * @param base 基础参数
      */
-    private void initBorder(AbstractBaseBorder base) {
+    protected void initBorder(AbstractBaseBorder base) {
         // 初始化边框样式
         if (Objects.isNull(this.borderStyle)) {
             this.borderStyle = base.borderStyle;

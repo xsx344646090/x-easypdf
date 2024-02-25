@@ -1,5 +1,7 @@
 package org.dromara.pdf.pdfbox.core.enums;
 
+import lombok.Getter;
+
 /**
  * 图像类型
  *
@@ -18,6 +20,7 @@ package org.dromara.pdf.pdfbox.core.enums;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
+@Getter
 public enum ImageType {
     /**
      * jpeg
@@ -44,7 +47,6 @@ public enum ImageType {
      */
     GIF("gif");
 
-
     /**
      * 类型
      */
@@ -59,12 +61,4 @@ public enum ImageType {
         this.type = type;
     }
 
-    /**
-     * 获取类型
-     *
-     * @return 返回类型
-     */
-    public String getType() {
-        return this.type;
-    }
 }

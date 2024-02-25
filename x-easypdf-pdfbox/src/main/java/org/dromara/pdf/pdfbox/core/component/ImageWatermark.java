@@ -6,6 +6,7 @@ import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.apache.pdfbox.util.Matrix;
 import org.dromara.pdf.pdfbox.core.base.AbstractBaseBorder;
 import org.dromara.pdf.pdfbox.core.base.ComponentType;
 import org.dromara.pdf.pdfbox.core.base.Document;
@@ -77,6 +78,10 @@ public class ImageWatermark extends AbstractBaseBorder implements Watermark {
      * 每行图像间距
      */
     private Float spacingOfLine;
+    /**
+     * 旋转角度
+     */
+    private Float angle;
 
     /**
      * 有参构造
@@ -165,42 +170,15 @@ public class ImageWatermark extends AbstractBaseBorder implements Watermark {
     }
 
     /**
-     * 初始化
-     */
-    @Override
-    public void init() {
-
-    }
-
-    /**
      * 初始化基础
      */
     @Override
     public void initBase() {
-
-    }
-
-    /**
-     * 初始化
-     *
-     * @param page 页面
-     */
-    public void init(Page page) {
         // 检查图像
         Objects.requireNonNull(this.image, "the image can not be null");
-        // 初始化参数
-        super.init(page, false);
         // 初始化当前执行组件类型
         if (Objects.isNull(this.getContext().getExecutingComponentType())) {
             this.getContext().setExecutingComponentType(this.getType());
-        }
-        // 初始化自定义起始X轴坐标
-        if (Objects.isNull(this.beginX)) {
-            this.beginX = 0F;
-        }
-        // 初始化自定义起始Y轴坐标
-        if (Objects.isNull(this.beginY)) {
-            this.beginY = page.getHeight() - this.height;
         }
         // 初始化宽度
         if (Objects.isNull(this.width)) {
@@ -225,6 +203,10 @@ public class ImageWatermark extends AbstractBaseBorder implements Watermark {
         // 初始化每行图像间距
         if (Objects.isNull(this.spacingOfLine)) {
             this.spacingOfLine = Float.valueOf(this.width);
+        }
+        // 初始化旋转角度
+        if (Objects.isNull(this.angle)) {
+            this.angle = 0F;
         }
     }
 
@@ -257,30 +239,47 @@ public class ImageWatermark extends AbstractBaseBorder implements Watermark {
     }
 
     /**
-     * 写入文本
+     * 初始化
+     *
+     * @param page 页面
+     */
+    protected void init(Page page) {
+        // 初始化参数
+        super.init(page, false);
+        // 初始化基础
+        this.initBase();
+        // 初始化自定义起始X轴坐标
+        if (Objects.isNull(this.beginX)) {
+            this.beginX = 0F;
+        }
+        // 初始化自定义起始Y轴坐标
+        if (Objects.isNull(this.beginY)) {
+            this.beginY = page.getHeight() - this.height;
+        }
+
+    }
+
+    /**
+     * 渲染图像
      *
      * @param page 页面
      */
     @SneakyThrows
-    private void renderImage(Page page) {
+    protected void renderImage(Page page) {
         // 获取X轴起始坐标
         float beginX = this.getBeginX();
         // 获取Y轴起始坐标
         float beginY = this.getBeginY();
-        // 初始化内容流
-        PDPageContentStream stream = new PDPageContentStream(
-                this.getContext().getTargetDocument(),
-                page.getTarget(),
-                this.getContentMode().getMode(),
-                true,
-                this.getIsResetContentStream()
-        );
+        // 获取X轴偏移量
+        float offsetX = 0.5F * this.getWidth();
+        // 获取Y轴偏移量
+        float offsetY = 0.5F * this.getHeight();
         // 循环写入图像
         for (int i = 0; i < this.getLines(); i++) {
             // 循环写入图像
             for (int j = 0; j < this.getCountOfLine(); j++) {
-                // 添加图片
-                stream.drawImage(this.getImage(), beginX, beginY, this.getWidth(), this.getHeight());
+                // 写入图像
+                this.writeImage(page, beginX, beginY, offsetX, offsetY);
                 // 重置X轴起始坐标
                 beginX = beginX + this.getWidth() + this.getSpacingOfLine();
             }
@@ -289,7 +288,38 @@ public class ImageWatermark extends AbstractBaseBorder implements Watermark {
             // 重置Y轴起始坐标
             beginY = beginY - this.getHeight() - this.getLeading();
         }
+    }
+
+    /**
+     * 写入图像
+     *
+     * @param page    页面
+     * @param beginX  X轴起始坐标
+     * @param beginY  Y轴起始坐标
+     * @param offsetX X轴偏移量
+     * @param offsetY Y轴偏移量
+     */
+    @SneakyThrows
+    protected void writeImage(Page page, float beginX, float beginY, float offsetX, float offsetY) {
+        // 初始化内容流
+        PDPageContentStream contentStream = new PDPageContentStream(
+                this.getContext().getTargetDocument(),
+                page.getTarget(),
+                this.getContentMode().getMode(),
+                true,
+                this.getIsResetContentStream()
+        );
+        // 保存图形状态
+        contentStream.saveGraphicsState();
+        // 移动到中心点
+        contentStream.transform(Matrix.getTranslateInstance(beginX + offsetX, beginY + offsetY));
+        // 旋转
+        contentStream.transform(Matrix.getRotateInstance(Math.toRadians(this.getAngle()), 0, 0));
+        // 移动到左下角
+        contentStream.transform(Matrix.getTranslateInstance(-offsetX, -offsetY));
+        // 添加图片
+        contentStream.drawImage(this.getImage(), 0, 0, this.getWidth(), this.getHeight());
         // 关闭流
-        stream.close();
+        contentStream.close();
     }
 }

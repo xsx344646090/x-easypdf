@@ -26,77 +26,83 @@ import java.util.List;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public class ImageTest {
+public class ImageTest extends BaseTest {
 
     @Test
-    public void testImage() {
-        // 定义输出路径
-        String outputPath = "E:\\pdf\\test\\fo\\test.pdf";
-        // 创建文档
-        Document document = TemplateHandler.Document.build();
-        // 创建页面
-        Page page = TemplateHandler.Page.build();
-        // 创建图像
-        Image image = TemplateHandler.Image.build()
-                // 设置图像路径（绝对路径）
-                .setPath("/E:\\pdf\\test\\fo\\test.svg")
-                // 设置图像宽度
-                .setWidth("150px")
-                // 设置图像高度
-                .setHeight("150px")
-                // 设置水平居中
-                .setHorizontalStyle("center");
-        // 添加图像
-        page.addBodyComponent(image);
-        // 添加页面
-        document.addPage(page);
-        // 转换pdf
-        document.transform(outputPath);
+    public void pngTest() {
+        this.test(() -> {
+            // 定义输出路径
+            String outputPath = "E:\\PDF\\fop\\image\\pngTest.pdf";
+            // 创建文档
+            Document document = TemplateHandler.Document.build();
+            // 创建页面
+            Page page = TemplateHandler.Page.build();
+            // 创建图像
+            Image image = TemplateHandler.Image.build()
+                    // 设置图像路径（绝对路径）
+                    .setPath("/E:\\PDF\\fop\\test.png")
+                    // 设置图像宽度
+                    .setWidth("150px")
+                    // 设置图像高度
+                    .setHeight("150px")
+                    // 设置水平居中
+                    .setHorizontalStyle("center");
+            // 添加图像
+            page.addBodyComponent(image);
+            // 添加页面
+            document.addPage(page);
+            // 转换pdf
+            document.transform(outputPath);
+        });
     }
 
     @Test
-    public void testSvg() {
-        // 定义输出路径
-        String outputPath = "E:\\pdf\\test\\fo\\template-svg.pdf";
-        // 转换pdf
-        Document document = TemplateHandler.Document.build().addPage(
-                TemplateHandler.Page.build().addBodyComponent(
-                        TemplateHandler.Image.build()
-                                // 相对路径
-                                .setPath("src/test/resources/wiki/xsx/core/pdf/template/svg/test.svg")
-                                .setWidth("100pt")
-                                .setHeight("100pt")
-                                .setHorizontalStyle("center")
-                )
-        );
-        // 转换pdf
-        document.transform(outputPath);
+    public void svgTest() {
+        this.test(() -> {
+            // 定义输出路径
+            String outputPath = "E:\\PDF\\fop\\image\\svgTest.pdf";
+            // 转换pdf
+            Document document = TemplateHandler.Document.build().addPage(
+                    TemplateHandler.Page.build().addBodyComponent(
+                            TemplateHandler.Image.build()
+                                    // 相对路径
+                                    .setPath("org/dromara/pdf/fop/svg/test.svg")
+                                    .setWidth("100pt")
+                                    .setHeight("100pt")
+                                    .setHorizontalStyle("center")
+                    )
+            );
+            // 转换pdf
+            document.transform(outputPath);
+        });
     }
 
     @Test
     public void test100Image() {
-        // 定义输出路径
-        String outputPath = "E:\\pdf\\test\\fo\\t\\template-image-100";
-        for (int k = 0; k < 100; k++) {
-            long begin = System.currentTimeMillis();
-            List<Component> imageList = new ArrayList<>(100);
-            for (int i = 0; i < 20; i++) {
-                imageList.add(
-                        TemplateHandler.Image.build()
-                                // 绝对路径
-                                .setPath("/E:\\pdf\\test\\fo\\test.jpg")
-                                .setWidth("21cm")
-                                .setHeight("29.7cm")
-                );
+        this.test(() -> {
+            // 定义输出路径
+            String outputPath = "E:\\PDF\\fop\\image\\template-image-";
+            for (int k = 0; k < 10; k++) {
+                String finalK = String.valueOf(k);
+                this.test(() -> {
+                    List<Component> imageList = new ArrayList<>(20);
+                    for (int i = 0; i < 20; i++) {
+                        imageList.add(
+                                TemplateHandler.Image.build()
+                                        // 绝对路径
+                                        .setPath("/E:\\PDF\\fop\\test.jpg")
+                                        .setWidth("21cm")
+                                        .setHeight("29.7cm")
+                        );
+                    }
+                    // 转换pdf
+                    Document document = TemplateHandler.Document.build().addPage(
+                            TemplateHandler.Page.build().addBodyComponent(imageList)
+                    );
+                    // 转换pdf
+                    document.transform(String.join("", outputPath, finalK, ".pdf"));
+                }, String.format("第%s次", finalK));
             }
-            // 转换pdf
-            Document document = TemplateHandler.Document.build().addPage(
-                    TemplateHandler.Page.build().addBodyComponent(imageList)
-            );
-            // 转换pdf
-            document.transform(outputPath+k+".pdf");
-            long end = System.currentTimeMillis();
-            System.out.printf("第%s次，耗时：%s\n", k, (end-begin));
-        }
+        });
     }
 }

@@ -9,21 +9,19 @@ import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.io.RandomAccessReadBuffer;
 import org.apache.pdfbox.pdfwriter.compress.CompressParameters;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDDocumentInformation;
 import org.apache.pdfbox.pdmodel.PDPageTree;
-import org.apache.pdfbox.pdmodel.common.PDMetadata;
+import org.apache.pdfbox.pdmodel.ResourceCache;
 import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
 import org.apache.pdfbox.pdmodel.encryption.PublicKeyProtectionPolicy;
 import org.apache.pdfbox.pdmodel.encryption.PublicKeyRecipient;
 import org.apache.pdfbox.pdmodel.encryption.StandardProtectionPolicy;
-import org.apache.xmpbox.XMPMetadata;
-import org.apache.xmpbox.schema.AdobePDFSchema;
-import org.apache.xmpbox.xml.XmpSerializer;
 import org.dromara.pdf.pdfbox.core.enums.*;
+import org.dromara.pdf.pdfbox.core.ext.processor.MetadataProcessor;
 import org.dromara.pdf.pdfbox.core.ext.processor.PageProcessor;
 import org.dromara.pdf.pdfbox.core.info.CatalogInfo;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.dromara.pdf.pdfbox.support.Constants;
+import org.dromara.pdf.pdfbox.support.DefaultResourceCache;
 import org.dromara.pdf.pdfbox.util.FileUtil;
 
 import java.awt.*;
@@ -59,30 +57,23 @@ import java.util.stream.Collectors;
 @EqualsAndHashCode(callSuper = true)
 public class Document extends AbstractBaseFont implements Closeable {
 
+    static {
+        Banner.print();
+    }
+
     /**
      * 日志
      */
     private static final Log log = LogFactory.getLog(Document.class);
-    /**
-     * 生产者
-     */
-    private static final String PRODUCER = Constants.PDFBOX_PRODUCER;
+
     /**
      * pdf访问权限
      */
     private AccessPermission accessPermission;
     /**
-     * 文档信息
-     */
-    private PDDocumentInformation info;
-    /**
      * 文档版本
      */
     private Float version;
-    /**
-     * 文档元数据
-     */
-    private PDMetadata metadata;
     /**
      * 任务文档
      */
@@ -95,6 +86,10 @@ public class Document extends AbstractBaseFont implements Closeable {
      * 总页码
      */
     private Integer totalPageNumber;
+    /**
+     * 是否刷新元数据
+     */
+    private Boolean isFlushMetadata;
 
     /**
      * 无参构造
@@ -119,6 +114,34 @@ public class Document extends AbstractBaseFont implements Closeable {
     /**
      * 有参构造
      *
+     * @param file     文件
+     * @param password 文件密码
+     * @param keyStore 证书输入流
+     * @param alias    证书别名
+     * @param policy   内存策略
+     */
+    public Document(File file, String password, InputStream keyStore, String alias, MemoryPolicy policy) {
+        // 初始化参数
+        this.init(file, password, keyStore, alias, policy);
+    }
+
+    /**
+     * 有参构造
+     *
+     * @param bytes    字节数组
+     * @param password 文件密码
+     * @param keyStore 证书输入流
+     * @param alias    证书别名
+     * @param policy   内存策略
+     */
+    public Document(byte[] bytes, String password, InputStream keyStore, String alias, MemoryPolicy policy) {
+        // 初始化参数
+        this.init(bytes, password, keyStore, alias, policy);
+    }
+
+    /**
+     * 有参构造
+     *
      * @param inputStream 文件输入流
      * @param password    文件密码
      * @param keyStore    证书输入流
@@ -128,70 +151,6 @@ public class Document extends AbstractBaseFont implements Closeable {
     public Document(InputStream inputStream, String password, InputStream keyStore, String alias, MemoryPolicy policy) {
         // 初始化参数
         this.init(inputStream, password, keyStore, alias, policy);
-    }
-
-    /**
-     * 初始化
-     */
-    @Override
-    public void init() {
-        this.init(MemoryPolicy.setupMainMemoryOnly());
-    }
-
-    /**
-     * 初始化
-     */
-    public void init(MemoryPolicy policy) {
-        // 初始化任务文档
-        this.target = new PDDocument(policy.getSetting().streamCache);
-        // 初始化版本
-        this.target.setVersion(Constants.DEFAULT_VERSION);
-        // 初始化基础参数
-        this.initBase();
-        // 初始化页面
-        this.initPages();
-    }
-
-    /**
-     * 初始化基础
-     */
-    @Override
-    public void initBase() {
-        // 初始化上下文
-        super.setContext(new Context(this));
-        // 初始化字体参数
-        this.initFontParams();
-        // 初始化边框参数
-        this.initBorderParams();
-        // 初始化边距
-        this.initMargin();
-        // 初始化其他参数
-        this.initOtherParams();
-    }
-
-    @SneakyThrows
-    public void init(InputStream inputStream, String password, InputStream keyStore, String alias, MemoryPolicy policy) {
-        // 检查参数
-        Objects.requireNonNull(policy, "the policy can not be null");
-        // 初始化任务文档
-        this.target = Loader.loadPDF(new RandomAccessReadBuffer(inputStream), password, keyStore, alias, policy.getSetting().streamCache);
-        // 初始化基础参数
-        this.initBase();
-        // 初始化页面
-        this.initPages();
-        // 重置上下文
-        if (!this.pages.isEmpty()) {
-            // 获取最新页面
-            Page page = this.pages.get(this.pages.size() - 1);
-            // 获取上下文
-            Context context = this.getContext();
-            // 设置页面
-            context.setPage(page);
-            // 设置是否分页
-            context.setIsAlreadyPaging(Boolean.FALSE);
-            // 重置光标
-            context.getCursor().reset(page.getMarginLeft(), page.getHeight() - page.getMarginTop());
-        }
     }
 
     /**
@@ -221,6 +180,17 @@ public class Document extends AbstractBaseFont implements Closeable {
         }
         // 重置版本
         this.version = version;
+    }
+
+    /**
+     * 设置缓存
+     *
+     * @param cache 缓存
+     */
+    public void setResourceCache(ResourceCache cache) {
+        // 检查参数
+        Objects.requireNonNull(cache, "the cache can not be null");
+        this.target.setResourceCache(cache);
     }
 
     /**
@@ -346,10 +316,9 @@ public class Document extends AbstractBaseFont implements Closeable {
      * @param page  页面
      */
     public void insertPage(int index, Page page) {
-        try (PageProcessor processor = new PageProcessor(this)) {
-            processor.insert(index, page);
-            processor.flush();
-        }
+        PageProcessor processor = new PageProcessor(this);
+        processor.insert(index, page);
+        processor.flush();
     }
 
     /**
@@ -358,12 +327,11 @@ public class Document extends AbstractBaseFont implements Closeable {
      * @param pages 页面
      */
     public void appendPage(Page... pages) {
-        try (PageProcessor processor = new PageProcessor(this)) {
-            for (Page page : pages) {
-                processor.append(page);
-            }
-            processor.flush();
+        PageProcessor processor = new PageProcessor(this);
+        for (Page page : pages) {
+            processor.append(page);
         }
+        processor.flush();
     }
 
     /**
@@ -382,10 +350,9 @@ public class Document extends AbstractBaseFont implements Closeable {
      * @param page  页面
      */
     public void setPage(int index, Page page) {
-        try (PageProcessor processor = new PageProcessor(this)) {
-            processor.set(index, page);
-            processor.flush();
-        }
+        PageProcessor processor = new PageProcessor(this);
+        processor.set(index, page);
+        processor.flush();
     }
 
     /**
@@ -423,7 +390,7 @@ public class Document extends AbstractBaseFont implements Closeable {
     public void save(String path) {
         // 参数校验
         Objects.requireNonNull(path, "the path can not be null");
-        try (OutputStream outputStream = Files.newOutputStream(FileUtil.createDirectories(Paths.get(path)))) {
+        try (OutputStream outputStream = new BufferedOutputStream(Files.newOutputStream(FileUtil.createDirectories(Paths.get(path))))) {
             this.save(outputStream);
         }
     }
@@ -441,12 +408,13 @@ public class Document extends AbstractBaseFont implements Closeable {
         if (this.getTarget().getNumberOfPages() == 0) {
             log.error("the document has no pages");
         }
+        // 刷新元数据
+        if (Optional.ofNullable(this.getIsFlushMetadata()).orElse(Boolean.TRUE)) {
+            MetadataProcessor processor = new MetadataProcessor(this);
+            processor.flush();
+        }
         // 设置文档版本
         this.getTarget().setVersion(this.getVersion());
-        // 设置文档信息
-        this.getTarget().setDocumentInformation(this.getInfo());
-        // 设置元数据
-        this.getTarget().getDocumentCatalog().setMetadata(this.getMetadata());
         // 保存文档
         this.getTarget().save(outputStream, new CompressParameters(Integer.MAX_VALUE));
     }
@@ -471,9 +439,141 @@ public class Document extends AbstractBaseFont implements Closeable {
     }
 
     /**
+     * 初始化基础
+     */
+    @Override
+    public void initBase() {
+        // 初始化上下文
+        super.setContext(new Context(this));
+        // 初始化字体参数
+        this.initFontParams();
+        // 初始化边框参数
+        this.initBorderParams();
+        // 初始化边距
+        this.initMargin();
+        // 初始化其他参数
+        this.initOtherParams();
+    }
+
+    /**
+     * 初始化
+     */
+    @Override
+    protected void init() {
+        this.init(MemoryPolicy.setupMainMemoryOnly());
+    }
+
+    /**
+     * 初始化
+     */
+    protected void init(MemoryPolicy policy) {
+        // 初始化任务文档
+        this.target = new PDDocument(policy.getSetting().streamCache);
+        // 初始化版本
+        this.target.setVersion(Constants.DEFAULT_VERSION);
+        // 初始化资源缓存
+        this.target.setResourceCache(new DefaultResourceCache());
+        // 初始化基础参数
+        this.initBase();
+        // 初始化页面
+        this.initPages();
+    }
+
+    /**
+     * 初始化
+     *
+     * @param file     文件
+     * @param password 密码
+     * @param keyStore 证书
+     * @param alias    证书别名
+     * @param policy   内存策略
+     */
+    @SneakyThrows
+    protected void init(File file, String password, InputStream keyStore, String alias, MemoryPolicy policy) {
+        // 检查参数
+        Objects.requireNonNull(policy, "the policy can not be null");
+        // 初始化任务文档
+        this.target = Loader.loadPDF(file, password, keyStore, alias, policy.getSetting().streamCache);
+        // 初始化加载
+        this.initLoad();
+    }
+
+    /**
+     * 初始化
+     *
+     * @param bytes    字节数组
+     * @param password 密码
+     * @param keyStore 证书
+     * @param alias    证书别名
+     * @param policy   内存策略
+     */
+    @SneakyThrows
+    protected void init(byte[] bytes, String password, InputStream keyStore, String alias, MemoryPolicy policy) {
+        this.initLoad(new RandomAccessReadBuffer(bytes), password, keyStore, alias, policy);
+    }
+
+    /**
+     * 初始化
+     *
+     * @param inputStream 输入流
+     * @param password    密码
+     * @param keyStore    证书
+     * @param alias       证书别名
+     * @param policy      内存策略
+     */
+    @SneakyThrows
+    protected void init(InputStream inputStream, String password, InputStream keyStore, String alias, MemoryPolicy policy) {
+        this.initLoad(new RandomAccessReadBuffer(inputStream), password, keyStore, alias, policy);
+    }
+
+    /**
+     * 初始化
+     *
+     * @param buffer   访问缓冲
+     * @param password 密码
+     * @param keyStore 证书
+     * @param alias    证书别名
+     * @param policy   内存策略
+     */
+    @SneakyThrows
+    protected void initLoad(RandomAccessReadBuffer buffer, String password, InputStream keyStore, String alias, MemoryPolicy policy) {
+        // 检查参数
+        Objects.requireNonNull(policy, "the policy can not be null");
+        // 初始化任务文档
+        this.target = Loader.loadPDF(buffer, password, keyStore, alias, policy.getSetting().streamCache);
+        // 初始化加载
+        this.initLoad();
+    }
+
+    /**
+     * 初始化加载
+     */
+    protected void initLoad() {
+        // 初始化资源缓存
+        this.target.setResourceCache(new DefaultResourceCache());
+        // 初始化基础参数
+        this.initBase();
+        // 初始化页面
+        this.initPages();
+        // 重置上下文
+        if (!this.pages.isEmpty()) {
+            // 获取最新页面
+            Page page = this.pages.get(this.pages.size() - 1);
+            // 获取上下文
+            Context context = this.getContext();
+            // 设置页面
+            context.setPage(page);
+            // 设置是否分页
+            context.setIsAlreadyPaging(Boolean.FALSE);
+            // 重置光标
+            context.getCursor().reset(page.getMarginLeft(), page.getHeight() - page.getMarginTop());
+        }
+    }
+
+    /**
      * 初始化页面列表
      */
-    private void initPages() {
+    protected void initPages() {
         // 获取总页数
         int count = this.getTarget().getNumberOfPages();
         // 初始化页面列表
@@ -490,7 +590,7 @@ public class Document extends AbstractBaseFont implements Closeable {
     /**
      * 初始化边框参数
      */
-    private void initBorderParams() {
+    protected void initBorderParams() {
         // 初始化样式
         super.setBorderStyle(BorderStyle.SOLID);
         // 初始化线宽
@@ -520,7 +620,7 @@ public class Document extends AbstractBaseFont implements Closeable {
     /**
      * 初始化字体参数
      */
-    private void initFontParams() {
+    protected void initFontParams() {
         // 初始化字体
         super.setFont(PdfHandler.getFontHandler().getPDFont(this.target, Constants.DEFAULT_FONT_NAME, true));
         // 初始化字体大小
@@ -540,7 +640,7 @@ public class Document extends AbstractBaseFont implements Closeable {
     /**
      * 初始化其他参数
      */
-    private void initOtherParams() {
+    protected void initOtherParams() {
         // 初始化水平对齐方式
         super.setHorizontalAlignment(HorizontalAlignment.LEFT);
         // 初始化垂直对齐方式
@@ -548,51 +648,14 @@ public class Document extends AbstractBaseFont implements Closeable {
         // 初始化内容模式
         super.setContentMode(ContentMode.APPEND);
         // 初始化是否重置内容流
-        super.setIsResetContentStream(Boolean.FALSE);
+        super.setIsResetContentStream(Boolean.TRUE);
         // 初始化背景颜色
         super.setBackgroundColor(Color.WHITE);
         // 初始化文档访问权限
         this.accessPermission = this.target.getCurrentAccessPermission();
-        // 初始化文档信息
-        this.info = this.target.getDocumentInformation();
         // 初始化文档版本
         this.version = this.target.getVersion();
-        // 初始化文档元数据
-        this.metadata = this.initXMPMetadata();
-    }
-
-    /**
-     * 初始化文档元数据
-     *
-     * @return 返回文档元数据
-     */
-    @SneakyThrows
-    private PDMetadata initXMPMetadata() {
-        // 获取pdf元数据
-        PDMetadata pdMetadata = this.getTarget().getDocumentCatalog().getMetadata();
-        // pdf元数据不存在
-        if (Objects.isNull(pdMetadata)) {
-            // 创建pdf元数据
-            pdMetadata = new PDMetadata(this.getTarget());
-            // 创建xmp元数据
-            XMPMetadata xmpMetadata = XMPMetadata.createXMPMetadata();
-            // 创建adobe纲要
-            AdobePDFSchema adobePdfSchema = xmpMetadata.createAndAddAdobePDFSchema();
-            // 设置pdf版本
-            adobePdfSchema.setPDFVersion(this.getVersion().toString());
-            // 设置生产者
-            adobePdfSchema.setProducer(PRODUCER);
-            // 添加adobe纲要
-            xmpMetadata.addSchema(adobePdfSchema);
-            // 定义输出流
-            try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-                // 序列化xmp元数据
-                new XmpSerializer().serialize(xmpMetadata, outputStream, true);
-                // 导入xmp元数据
-                pdMetadata.importXMPMetadata(outputStream.toByteArray());
-            }
-        }
-        // 返回pdf元数据
-        return pdMetadata;
+        // 初始化是否刷新元数据
+        this.isFlushMetadata = Boolean.TRUE;
     }
 }

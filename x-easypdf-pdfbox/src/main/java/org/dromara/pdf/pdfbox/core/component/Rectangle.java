@@ -94,30 +94,26 @@ public class Rectangle extends AbstractComponent {
     }
 
     /**
-     * 初始化
+     * 虚拟渲染
      */
     @Override
-    public void init() {
+    public void virtualRender() {
         // 初始化
-        super.init();
-        // 初始化宽度与高度
-        this.initWidthAndHeight();
-        // 初始化旋转角度
-        if (Objects.isNull(this.angle)) {
-            this.angle = 0F;
+        this.init();
+        // 非自定义Y轴
+        if (!this.getIsCustomY()) {
+            // 检查分页
+            this.isPaging(this, this.getBeginY());
         }
-        // 初始化边框颜色
-        if (Objects.isNull(this.borderColor)) {
-            this.borderColor = Color.BLACK;
-        }
-        // 初始化首行
-        if (!this.getIsCustomY() && this.getContext().isFirstLine()) {
-            this.setBeginY(this.getBeginY() - this.getHeight());
-        }
-        // 检查换行
-        if (this.isWrap()) {
-            this.wrap();
-        }
+        // 重置光标
+        this.getContext().getCursor().reset(
+                this.getBeginX() + this.getWidth() + this.getMarginRight(),
+                this.getBeginY() - this.getHeight() - this.getMarginBottom()
+        );
+        // 重置
+        super.reset(this.getType());
+        // 重置换行高度
+        this.getContext().setWrapHeight(this.getHeight());
     }
 
     /**
@@ -151,7 +147,7 @@ public class Rectangle extends AbstractComponent {
         contentStream.transform(
                 Matrix.getTranslateInstance(
                         this.getBeginX() + this.getRelativeBeginX() + offsetX,
-                        this.getBeginY() + this.getRelativeBeginY() + offsetY
+                        this.getBeginY() - this.getRelativeBeginY() + offsetY
                 )
         );
         // 旋转
@@ -164,7 +160,6 @@ public class Rectangle extends AbstractComponent {
         contentStream.setNonStrokingColor(this.getBorderColor());
         // 填充矩形（边框矩形）
         contentStream.fill();
-
         // 定义背景偏移量
         float offSet = this.getBorderWidth();
         // 定义背景宽高偏移量
@@ -186,6 +181,35 @@ public class Rectangle extends AbstractComponent {
         );
         // 重置
         super.reset(this.getType());
+        // 重置换行高度
+        this.getContext().setWrapHeight(this.getHeight());
+    }
+
+    /**
+     * 初始化
+     */
+    @Override
+    protected void init() {
+        // 初始化
+        super.init();
+        // 初始化宽度与高度
+        this.initWidthAndHeight();
+        // 初始化旋转角度
+        if (Objects.isNull(this.angle)) {
+            this.angle = 0F;
+        }
+        // 初始化边框颜色
+        if (Objects.isNull(this.borderColor)) {
+            this.borderColor = Color.BLACK;
+        }
+        // 初始化首行
+        if (!this.getIsCustomY() && this.getContext().isFirstLine()) {
+            this.setBeginY(this.getBeginY() - this.getHeight());
+        }
+        // 检查换行
+        if (this.isWrap()) {
+            this.wrap();
+        }
     }
 
     /**

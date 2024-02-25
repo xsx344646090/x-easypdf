@@ -1,11 +1,13 @@
 package org.dromara.pdf.fop.core.datasource;
 
 import freemarker.cache.ClassTemplateLoader;
+import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateExceptionHandler;
 import lombok.SneakyThrows;
 import lombok.experimental.Accessors;
 import org.dromara.pdf.fop.core.base.Constants;
+import org.dromara.pdf.fop.support.freemarker.DefaultURLTemplateLoader;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -46,6 +48,10 @@ public class FreemarkerDataSource extends AbstractDataSource {
      */
     public FreemarkerDataSource setTemplateName(String templateName) {
         this.templatePath = templateName;
+        TemplateLoader templateLoader = CONFIGURATION.getTemplateLoader();
+        if (templateLoader instanceof DefaultURLTemplateLoader) {
+            ((DefaultURLTemplateLoader) templateLoader).setTemplateName(templateName);
+        }
         return this;
     }
 
@@ -103,11 +109,14 @@ public class FreemarkerDataSource extends AbstractDataSource {
         String templatePath = System.getProperty(Constants.FREEMARKER_TEMPLATE_PATH_KEY);
         // 如果非资源路径，则为文件目录
         if (Thread.currentThread().getContextClassLoader().getResource(templatePath) == null) {
-            // 设置文件目录解析器
-            config.setDirectoryForTemplateLoading(Paths.get(templatePath).toFile());
-        }
-        // 否则为资源目录
-        else {
+            try {
+                // 设置文件目录解析器
+                config.setDirectoryForTemplateLoading(Paths.get(templatePath).toFile());
+            } catch (Exception e) {
+                // 设置远程资源解析器
+                config.setTemplateLoader(new DefaultURLTemplateLoader(templatePath));
+            }
+        } else {
             // 设置资源解析器
             config.setTemplateLoader(new ClassTemplateLoader(FreemarkerDataSource.class, File.separator + templatePath));
         }

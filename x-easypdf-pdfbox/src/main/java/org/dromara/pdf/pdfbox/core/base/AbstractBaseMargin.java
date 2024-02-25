@@ -109,7 +109,7 @@ public abstract class AbstractBaseMargin extends AbstractBase {
      * @param base                基础参数
      * @param isInitMarginByParam 是否使用参数初始化边距
      */
-    public void init(AbstractBaseMargin base, boolean isInitMarginByParam) {
+    protected void init(AbstractBaseMargin base, boolean isInitMarginByParam) {
         // 是否使用参数初始化边距
         if (isInitMarginByParam) {
             // 使用参数初始化边距
@@ -163,7 +163,7 @@ public abstract class AbstractBaseMargin extends AbstractBase {
      *
      * @param base 基础参数
      */
-    private void initMarginWithParam(AbstractBaseMargin base) {
+    protected void initMarginWithParam(AbstractBaseMargin base) {
         // 初始化上边距
         if (Objects.isNull(this.marginTop)) {
             this.marginTop = base.marginTop;

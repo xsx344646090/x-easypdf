@@ -274,7 +274,7 @@ public class Barcode extends AbstractComponent {
      * 初始化
      */
     @Override
-    public void init() {
+    protected void init() {
         // 初始化
         super.init();
         // 初始化编码为utf-8
@@ -326,6 +326,36 @@ public class Barcode extends AbstractComponent {
     }
 
     /**
+     * 虚拟渲染
+     */
+    @Override
+    @SneakyThrows
+    public void virtualRender() {
+        // 初始化
+        this.init();
+        // 创建图像
+        Image image = new Image(this.getContext().getPage());
+        // 图像初始化
+        image.init(this, true);
+        // 设置宽度
+        image.setWidth(this.getWidth());
+        // 设置高度
+        image.setHeight(this.getHeight());
+        // 设置旋转角度
+        image.setAngle(this.getAngle());
+        // 设置图像
+        image.setImage(ImageUtil.toBytes(this.getBarcodeImage(), "png"));
+        // 设置X轴相对坐标
+        image.setRelativeBeginX(this.getRelativeBeginX());
+        // 设置Y轴相对坐标
+        image.setRelativeBeginY(this.getRelativeBeginY());
+        // 虚拟渲染图像
+        image.virtualRender();
+        // 重置
+        super.reset(this.getType());
+    }
+
+    /**
      * 渲染
      */
     @Override
@@ -357,7 +387,7 @@ public class Barcode extends AbstractComponent {
     /**
      * 初始化纠错级别
      */
-    private void initErrorLevel() {
+    protected void initErrorLevel() {
         // 获取纠错级别
         Object errorLevel = this.encodeHints.get(EncodeHintType.ERROR_CORRECTION);
         // 初始化纠错级别
@@ -387,7 +417,7 @@ public class Barcode extends AbstractComponent {
      *
      * @return 返回布尔值，是为true，否为false
      */
-    private boolean isShowWords() {
+    protected boolean isShowWords() {
         return this.getIsShowWords();
     }
 
@@ -397,7 +427,7 @@ public class Barcode extends AbstractComponent {
      * @return 返回条形码图像
      */
     @SneakyThrows
-    private BufferedImage getBarcodeImage() {
+    protected BufferedImage getBarcodeImage() {
         // 是否缓存
         if (this.getIsCache()) {
             // 获取图像
@@ -434,7 +464,7 @@ public class Barcode extends AbstractComponent {
      * @return 返回条形码图像
      */
     @SneakyThrows
-    private BufferedImage createBarcodeImage() {
+    protected BufferedImage createBarcodeImage() {
         // 获取图像
         BufferedImage bufferedImage = this.toBufferedImage(
                 new MultiFormatWriter().encode(
@@ -461,7 +491,7 @@ public class Barcode extends AbstractComponent {
      * @return 返回图像
      */
     @SneakyThrows
-    private BufferedImage toBufferedImage(BitMatrix matrix) {
+    protected BufferedImage toBufferedImage(BitMatrix matrix) {
         // 获取前景色
         final int onColor = this.getOnColor().getRGB();
         // 获取背景色
@@ -499,7 +529,7 @@ public class Barcode extends AbstractComponent {
      * @return 返回添加文字后的图像
      */
     @SuppressWarnings("all")
-    private BufferedImage addImageWords(BufferedImage image) {
+    protected BufferedImage addImageWords(BufferedImage image) {
         // 获取图像宽度
         int width = image.getWidth();
         // 获取图像高度
@@ -553,7 +583,7 @@ public class Barcode extends AbstractComponent {
      *
      * @return 返回缓存key
      */
-    private int cacheKey() {
+    protected int cacheKey() {
         return Objects.hash(
                 this.encodeHints,
                 this.width,

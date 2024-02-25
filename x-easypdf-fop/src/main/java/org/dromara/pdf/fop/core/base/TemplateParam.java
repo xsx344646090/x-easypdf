@@ -192,7 +192,7 @@ class TemplateParam {
                 )
         );
         // 设置生产者
-        userAgent.setProducer(Constants.FOP_PRODUCER);
+        userAgent.setProducer(Constants.PRODUCER);
         // 设置开启辅助功能
         userAgent.setAccessibility(this.isAccessibility);
         // 设置作者

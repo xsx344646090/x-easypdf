@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.awt.*;
-import java.util.List;
+import java.util.Set;
 
 /**
  * 书签信息
@@ -74,5 +74,5 @@ public class BookmarkInfo {
     /**
      * 子书签
      */
-    private List<BookmarkInfo> children;
+    private Set<BookmarkInfo> children;
 }

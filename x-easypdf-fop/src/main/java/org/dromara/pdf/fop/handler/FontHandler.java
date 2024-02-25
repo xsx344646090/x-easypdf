@@ -34,6 +34,10 @@ public class FontHandler {
      * 输出路径
      */
     private String outputPath;
+    /**
+     * 字体集合名称（使用的字体名称）
+     */
+    private String ttcName;
 
     /**
      * 转换
@@ -49,12 +53,20 @@ public class FontHandler {
             // 提示错误
             throw new IllegalArgumentException("the output path can not be null");
         }
+        // 如果字体集合名称未初始化，则初始化
+        if (this.ttcName == null) {
+            this.ttcName = "";
+        }
         // 定义参数
-        String[] args = new String[2];
+        String[] args = new String[4];
         // 设置字体路径
         args[0] = this.fontPath;
         // 设置输出路径
         args[1] = this.outputPath;
+        // 定义字体集合
+        args[2] = "-ttcname";
+        // 设置字体集合名称
+        args[3] = this.ttcName;
         // 生成字体xml
         TTFReader.main(args);
     }

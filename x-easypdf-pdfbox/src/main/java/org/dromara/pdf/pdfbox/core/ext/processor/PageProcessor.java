@@ -62,6 +62,8 @@ public class PageProcessor extends AbstractProcessor {
      * @param page  页面
      */
     public void insert(int index, Page page) {
+        // 参数校验
+        Objects.requireNonNull(page, "the page can not be null");
         try {
             // 添加页面
             this.document.getPages().add(index, page);
@@ -90,6 +92,8 @@ public class PageProcessor extends AbstractProcessor {
      * @param page 页面
      */
     public void append(Page page) {
+        // 参数校验
+        Objects.requireNonNull(page, "the page can not be null");
         // 添加页面
         this.document.getPages().add(page);
         // 遍历
@@ -112,6 +116,8 @@ public class PageProcessor extends AbstractProcessor {
      * @param page  页面
      */
     public void set(int index, Page page) {
+        // 参数校验
+        Objects.requireNonNull(page, "the page can not be null");
         try {
             // 设置页面
             this.document.getPages().set(index, page);

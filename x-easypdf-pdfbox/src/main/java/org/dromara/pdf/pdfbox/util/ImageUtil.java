@@ -9,6 +9,7 @@ import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.graphics.PDXObject;
 import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImage;
+import org.apache.pdfbox.tools.imageio.ImageIOUtil;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -156,7 +157,7 @@ public class ImageUtil {
         // 创建字节数组输出流
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream(8192)) {
             // 写入图片
-            ImageIO.write(sourceImage, imageType, outputStream);
+            ImageIOUtil.writeImage(sourceImage, imageType, outputStream);
             // 返回字节数组
             return outputStream.toByteArray();
         }
@@ -178,7 +179,7 @@ public class ImageUtil {
         // 创建字节数组输出流
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             // 写入图片
-            ImageIO.write(sourceImage, imageType, outputStream);
+            ImageIOUtil.writeImage(sourceImage, imageType, outputStream);
             // 返回字节数组输入流
             return new ByteArrayInputStream(outputStream.toByteArray());
         }
@@ -352,14 +353,8 @@ public class ImageUtil {
         Objects.requireNonNull(image, "the image can not be null");
         // 创建2d图像
         Graphics2D graphics = image.createGraphics();
-        // 设置插值
-        graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
-        // 设置图像抗锯齿
-        graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        // 设置文本抗锯齿
-        graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        // 设置笔划规范化控制参数
-        graphics.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
+        // 设置渲染提示
+        graphics.setRenderingHints(RenderingHintUtil.createDefaultRenderingHints());
         // 设置笔划
         graphics.setStroke(new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER));
         // 返回图像

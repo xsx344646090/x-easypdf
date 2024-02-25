@@ -2,13 +2,15 @@ package org.dromara.pdf.pdfbox.core.ext.processor;
 
 import lombok.SneakyThrows;
 import org.apache.pdfbox.rendering.PDFRenderer;
+import org.apache.pdfbox.tools.imageio.ImageIOUtil;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.enums.ImageType;
 import org.dromara.pdf.pdfbox.core.enums.RenderType;
 import org.dromara.pdf.pdfbox.util.FileUtil;
 import org.dromara.pdf.pdfbox.util.ImageUtil;
+import org.dromara.pdf.pdfbox.util.RenderingHintUtil;
 
-import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -42,27 +44,35 @@ public class ImageProcessor extends AbstractProcessor {
     /**
      * 图像DPI
      */
-    private Float dpi;
+    protected Float dpi;
     /**
      * 渲染类型
      */
-    private RenderType renderType;
+    protected RenderType renderType;
+    /**
+     * 渲染提示
+     */
+    protected RenderingHints renderingHints;
     /**
      * 是否内存优化（可能降低图像质量）
      */
-    private Boolean isMemoryOptimization;
+    protected Boolean isMemoryOptimization;
+    /**
+     * 是否黑白
+     */
+    protected Boolean isBinary;
     /**
      * 是否灰度
      */
-    private Boolean isGray;
+    protected Boolean isGray;
     /**
      * 是否透明
      */
-    private Boolean isAlpha;
+    protected Boolean isAlpha;
     /**
      * 合并类型
      */
-    private MergeType mergeType;
+    protected MergeType mergeType;
 
     /**
      * 有参构造
@@ -93,6 +103,16 @@ public class ImageProcessor extends AbstractProcessor {
     }
 
     /**
+     * 设置渲染提示
+     *
+     * @param renderingHints 渲染提示
+     */
+    public void setRenderingHints(RenderingHints renderingHints) {
+        Objects.requireNonNull(renderingHints, "the render hints can not be null");
+        this.renderingHints = renderingHints;
+    }
+
+    /**
      * 开启内存优化（可能降低图像质量）
      */
     public void enableOptimization() {
@@ -100,10 +120,21 @@ public class ImageProcessor extends AbstractProcessor {
     }
 
     /**
+     * 开启黑白
+     */
+    public void enableBinary() {
+        this.isBinary = Boolean.TRUE;
+        this.isGray = Boolean.FALSE;
+        this.isAlpha = Boolean.FALSE;
+    }
+
+    /**
      * 开启灰度
      */
     public void enableGray() {
         this.isGray = Boolean.TRUE;
+        this.isBinary = Boolean.FALSE;
+        this.isAlpha = Boolean.FALSE;
     }
 
     /**
@@ -111,6 +142,8 @@ public class ImageProcessor extends AbstractProcessor {
      */
     public void enableAlpha() {
         this.isAlpha = Boolean.TRUE;
+        this.isBinary = Boolean.FALSE;
+        this.isGray = Boolean.FALSE;
     }
 
     /**
@@ -150,7 +183,6 @@ public class ImageProcessor extends AbstractProcessor {
     public void image(String outputPath, ImageType imageType, String prefix) {
         // 检查参数
         Objects.requireNonNull(outputPath, "the output path can not be null");
-        // 检查参数
         Objects.requireNonNull(imageType, "the image type can not be null");
         // 初始化
         this.init();
@@ -178,6 +210,32 @@ public class ImageProcessor extends AbstractProcessor {
     /**
      * 转为图片（根据页面索引）
      *
+     * @param imageType 图像类型
+     * @param pageIndex 页面索引
+     */
+    @SneakyThrows
+    public BufferedImage image(ImageType imageType, int pageIndex) {
+        // 检查参数
+        Objects.requireNonNull(imageType, "the image type can not be null");
+        // 初始化
+        this.init();
+        // 初始化pdfBox文档渲染器
+        PDFRenderer renderer = new PDFRenderer(this.document.getTarget());
+        // 设置二次采样
+        renderer.setSubsamplingAllowed(this.isMemoryOptimization);
+        // 设置渲染目的
+        renderer.setDefaultDestination(this.renderType.getDestination());
+        // 返回图片
+        return renderer.renderImageWithDPI(
+                Math.min(Math.max(pageIndex, 0), this.document.getTarget().getNumberOfPages() - 1),
+                this.dpi,
+                this.getColorType()
+        );
+    }
+
+    /**
+     * 转为图片（根据页面索引）
+     *
      * @param outputStream 输出流
      * @param imageType    图像类型
      * @param pageIndexes  页面索引
@@ -186,9 +244,7 @@ public class ImageProcessor extends AbstractProcessor {
     public void image(OutputStream outputStream, ImageType imageType, int... pageIndexes) {
         // 检查参数
         Objects.requireNonNull(outputStream, "the output stream can not be null");
-        // 检查参数
         Objects.requireNonNull(imageType, "the image type can not be null");
-        // 检查参数
         Objects.requireNonNull(pageIndexes, "the page indexes can not be null");
         // 初始化
         this.init();
@@ -216,10 +272,8 @@ public class ImageProcessor extends AbstractProcessor {
             // 拼接图片
             BufferedImage bufferedImage = ImageUtil.join(imageList, this.mergeType == MergeType.HORIZONTAL);
             // 写出图片
-            ImageIO.write(bufferedImage, imageType.name().toLowerCase(), outputStream);
-        }
-        // 否则单页保存图片
-        else {
+            ImageIOUtil.writeImage(bufferedImage, imageType.name().toLowerCase(), outputStream, this.dpi.intValue());
+        } else {
             // 遍历页面索引
             for (int index : pageIndexes) {
                 // 渲染图片
@@ -229,7 +283,7 @@ public class ImageProcessor extends AbstractProcessor {
                         this.getColorType()
                 );
                 // 写出图片
-                ImageIO.write(bufferedImage, imageType.name().toLowerCase(), outputStream);
+                ImageIOUtil.writeImage(bufferedImage, imageType.name(), outputStream, this.dpi.intValue());
             }
         }
     }
@@ -246,9 +300,17 @@ public class ImageProcessor extends AbstractProcessor {
         if (Objects.isNull(this.renderType)) {
             this.renderType = RenderType.EXPORT;
         }
+        // 初始化渲染提示
+        if (Objects.isNull(this.renderingHints)) {
+            this.renderingHints = RenderingHintUtil.createDefaultRenderingHints();
+        }
         // 初始化是否内存优化（可能降低图像质量）
         if (Objects.isNull(this.isMemoryOptimization)) {
             this.isMemoryOptimization = Boolean.FALSE;
+        }
+        // 初始化是否黑白
+        if (Objects.isNull(this.isBinary)) {
+            this.isBinary = Boolean.FALSE;
         }
         // 初始化是否灰度
         if (Objects.isNull(this.isGray)) {
@@ -286,7 +348,7 @@ public class ImageProcessor extends AbstractProcessor {
         // 获取输出流
         try (OutputStream outputStream = new BufferedOutputStream(Files.newOutputStream(FileUtil.createDirectories(Paths.get(outputPath + File.separator + prefix + '.' + imageTypeName))))) {
             // 写出图片
-            ImageIO.write(bufferedImage, imageTypeName, outputStream);
+            ImageIOUtil.writeImage(bufferedImage, imageTypeName, outputStream, this.dpi.intValue());
         }
     }
 
@@ -300,24 +362,24 @@ public class ImageProcessor extends AbstractProcessor {
      */
     @SneakyThrows
     protected void writeImageBySingle(PDFRenderer renderer, ImageType imageType, String outputPath, String prefix) {
-        // 图片格式名称
+        // 定义图片格式名称
         String imageTypeName = imageType.getType();
+        // 定义文件名称构造器
+        StringBuilder fileNameBuilder;
         // 任务文档页面总数
         int pageCount = this.document.getTarget().getNumberOfPages();
-        // 文件名称构造器
-        StringBuilder fileNameBuilder;
         // 遍历页面索引
-        for (int i = 0; i < pageCount; i++) {
-            // 新建文件名称构造器
+        for (int index = 0; index < pageCount; index++) {
+            // 重置名称构造器
             fileNameBuilder = new StringBuilder();
             // 构建文件名称
-            fileNameBuilder.append(outputPath).append(File.separator).append(prefix).append(i + 1).append('.').append(imageTypeName);
+            fileNameBuilder.append(outputPath).append(File.separator).append(prefix).append(index + 1).append('.').append(imageTypeName);
             // 获取输出流
             try (OutputStream outputStream = new BufferedOutputStream(Files.newOutputStream(FileUtil.createDirectories(Paths.get(fileNameBuilder.toString()))))) {
                 // 渲染图片
-                BufferedImage bufferedImage = renderer.renderImageWithDPI(i, this.dpi, this.getColorType());
+                BufferedImage bufferedImage = renderer.renderImageWithDPI(index, this.dpi, this.getColorType());
                 // 写出图片
-                ImageIO.write(bufferedImage, imageTypeName, outputStream);
+                ImageIOUtil.writeImage(bufferedImage, imageTypeName, outputStream, this.dpi.intValue());
             }
         }
     }
@@ -328,15 +390,20 @@ public class ImageProcessor extends AbstractProcessor {
      * @return 返回颜色类型
      */
     protected org.apache.pdfbox.rendering.ImageType getColorType() {
-        // 如果透明，则返回ARGB类型
-        if (this.isAlpha) {
-            // 返回ARGB类型
-            return org.apache.pdfbox.rendering.ImageType.ARGB;
+        // 如果黑白，则返回BINARY类型
+        if (this.isBinary) {
+            // 返回BINARY类型
+            return org.apache.pdfbox.rendering.ImageType.BINARY;
         }
         // 如果灰度，则返回GRAY类型
         if (this.isGray) {
             // 返回GRAY类型
             return org.apache.pdfbox.rendering.ImageType.GRAY;
+        }
+        // 如果透明，则返回ARGB类型
+        if (this.isAlpha) {
+            // 返回ARGB类型
+            return org.apache.pdfbox.rendering.ImageType.ARGB;
         }
         // 返回RGB类型
         return org.apache.pdfbox.rendering.ImageType.RGB;
@@ -345,7 +412,7 @@ public class ImageProcessor extends AbstractProcessor {
     /**
      * 合并类型
      */
-    private enum MergeType {
+    protected enum MergeType {
         /**
          * 水平
          */
