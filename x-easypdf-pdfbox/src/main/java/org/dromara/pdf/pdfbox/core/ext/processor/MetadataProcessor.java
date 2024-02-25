@@ -426,7 +426,11 @@ public class MetadataProcessor extends AbstractProcessor {
     @SneakyThrows
     protected void initMetadata() {
         this.metadata = Optional.ofNullable(this.document.getTarget().getDocumentCatalog().getMetadata()).orElse(new PDMetadata(this.document.getTarget()));
-        this.xmpMetadata = new DomXmpParser().parse(this.metadata.exportXMPMetadata());
+        try {
+            this.xmpMetadata = new DomXmpParser().parse(this.metadata.exportXMPMetadata());
+        }catch (Exception e) {
+            this.xmpMetadata = XMPMetadata.createXMPMetadata();
+        }
         this.adobeSchema = this.xmpMetadata.getAdobePDFSchema();
         this.basicSchema = this.xmpMetadata.getXMPBasicSchema();
         this.dcSchema = this.xmpMetadata.getDublinCoreSchema();
