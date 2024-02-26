@@ -1,4 +1,4 @@
-package org.dromara.pdf.pdfbox.core.ext.base;
+package org.dromara.pdf.pdfbox.core.ext;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.dromara.pdf.pdfbox.core.base.Document;

@@ -9,8 +9,8 @@ import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.component.Textarea;
 import org.dromara.pdf.pdfbox.core.enums.ImageType;
-import org.dromara.pdf.pdfbox.core.ext.processor.ImageProcessor;
 import org.dromara.pdf.pdfbox.core.ext.processor.LayerProcessor;
+import org.dromara.pdf.pdfbox.core.ext.processor.RenderProcessor;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.junit.Test;
 
@@ -55,7 +55,7 @@ public class LayerProcessorTest extends BaseTest {
             try (
                     Document document = PdfHandler.getDocumentHandler().load(file)
             ) {
-                ImageProcessor processor = PdfHandler.getImageProcessor(document);
+                RenderProcessor processor = PdfHandler.getDocumentProcessor(document).getRenderProcessor();
 
                 // pdf转图片
                 float scale = 300 / 72f;
@@ -83,7 +83,7 @@ public class LayerProcessorTest extends BaseTest {
                 textarea.render();
 
                 // 添加图层
-                LayerProcessor layerProcessor = PdfHandler.getLayerProcessor(doc);
+                LayerProcessor layerProcessor = PdfHandler.getDocumentProcessor(doc).getLayerProcessor();
                 layerProcessor.append("layer1", image, page);
 
                 doc.appendPage(page);

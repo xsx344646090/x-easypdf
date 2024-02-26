@@ -1,8 +1,6 @@
 package org.dromara.pdf.pdfbox.core.ext.processor;
 
 import lombok.SneakyThrows;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.apache.pdfbox.pdmodel.font.PDFont;
@@ -11,7 +9,7 @@ import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationFreeText;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationText;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
-import org.dromara.pdf.pdfbox.support.FreeTextAppearanceHandler;
+import org.dromara.pdf.pdfbox.support.DefaultFreeTextAppearanceHandler;
 import org.dromara.pdf.pdfbox.util.ColorUtil;
 
 import java.awt.*;
@@ -37,11 +35,6 @@ import java.util.*;
  * </p>
  */
 public class CommentProcessor extends AbstractProcessor {
-
-    /**
-     * 日志
-     */
-    private static final Log log = LogFactory.getLog(CommentProcessor.class);
 
     /**
      * 有参构造
@@ -82,7 +75,7 @@ public class CommentProcessor extends AbstractProcessor {
         // 定义列表
         List<PDAnnotation> list = new ArrayList<>(64);
         // 获取页面树
-        PDPageTree pageTree = this.document.getTarget().getPages();
+        PDPageTree pageTree = this.getDocument().getPages();
         // 给定页面索引
         if (Objects.nonNull(pageIndexes) && pageIndexes.length > 0) {
             // 遍历页面索引
@@ -158,20 +151,20 @@ public class CommentProcessor extends AbstractProcessor {
         try {
             // 获取字体
             PDFont font = Optional.ofNullable(fontName)
-                    .map(name -> PdfHandler.getFontHandler().getPDFont(this.document.getTarget(), name, true))
+                    .map(name -> PdfHandler.getFontHandler().getPDFont(this.getDocument(), name, true))
                     .orElse(this.document.getFont());
             // 获取字体大小
             fontSize = Optional.ofNullable(fontSize).orElse(10F);
             // 获取字体颜色
             fontColor = Optional.ofNullable(fontColor).orElse(Color.BLACK);
             // 获取页面
-            PDPage page = this.document.getTarget().getPage(pageIndex);
+            PDPage page = this.getDocument().getPage(pageIndex);
             // 设置页面
             comment.setPage(page);
             // 设置默认样式
             comment.setDefaultStyleString(this.initDefaultStyleString(font, fontSize, fontColor));
             // 设置自定义外观助手
-            comment.setCustomAppearanceHandler(new FreeTextAppearanceHandler(this.document, comment, font));
+            comment.setCustomAppearanceHandler(new DefaultFreeTextAppearanceHandler(this.document, comment, font));
             // 构建外观
             comment.constructAppearances();
             // 添加评论
@@ -206,7 +199,7 @@ public class CommentProcessor extends AbstractProcessor {
         }
         try {
             // 获取页面
-            PDPage page = this.document.getTarget().getPage(pageIndex);
+            PDPage page = this.getDocument().getPage(pageIndex);
             // 获取注解
             List<PDAnnotation> annotations = page.getAnnotations();
             // 定义新列表
@@ -268,7 +261,7 @@ public class CommentProcessor extends AbstractProcessor {
         }
         try {
             // 获取页面
-            PDPage page = this.document.getTarget().getPage(pageIndex);
+            PDPage page = this.getDocument().getPage(pageIndex);
             // 获取注解
             List<PDAnnotation> annotations = page.getAnnotations();
             // 定义新列表

@@ -414,7 +414,7 @@ public class MetadataProcessor extends AbstractProcessor {
             // 导入xmp元数据
             this.metadata.importXMPMetadata(outputStream.toByteArray());
             // 设置元数据
-            this.document.getTarget().getDocumentCatalog().setMetadata(this.metadata);
+            this.getDocument().getDocumentCatalog().setMetadata(this.metadata);
             // 设置是否刷新元数据
             this.document.setIsFlushMetadata(Boolean.FALSE);
         }
@@ -425,7 +425,7 @@ public class MetadataProcessor extends AbstractProcessor {
      */
     @SneakyThrows
     protected void initMetadata() {
-        this.metadata = Optional.ofNullable(this.document.getTarget().getDocumentCatalog().getMetadata()).orElse(new PDMetadata(this.document.getTarget()));
+        this.metadata = Optional.ofNullable(this.getDocument().getDocumentCatalog().getMetadata()).orElse(new PDMetadata(this.document.getTarget()));
         try {
             this.xmpMetadata = new DomXmpParser().parse(this.metadata.exportXMPMetadata());
         }catch (Exception e) {

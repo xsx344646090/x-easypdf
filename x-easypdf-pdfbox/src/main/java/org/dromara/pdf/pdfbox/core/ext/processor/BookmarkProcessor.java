@@ -1,7 +1,5 @@
 package org.dromara.pdf.pdfbox.core.ext.processor;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDDocumentOutline;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 import org.dromara.pdf.pdfbox.core.base.Document;
@@ -31,14 +29,9 @@ import java.util.Objects;
 public class BookmarkProcessor extends AbstractProcessor {
 
     /**
-     * 日志
-     */
-    private static final Log log = LogFactory.getLog(BookmarkProcessor.class);
-
-    /**
      * pdfbox书签节点列表
      */
-    protected List<PDOutlineItem> itemList;
+    protected List<PDOutlineItem> itemList = new ArrayList<>(16);
 
     /**
      * 有参构造
@@ -133,11 +126,11 @@ public class BookmarkProcessor extends AbstractProcessor {
      */
     public void flush() {
         // 创建书签
-        PDDocumentOutline outline = new PDDocumentOutline();
+        PDDocumentOutline root = new PDDocumentOutline();
         // 添加书签
-        this.itemList.forEach(outline::addLast);
+        this.itemList.forEach(root::addLast);
         // 设置书签
-        this.document.getTarget().getDocumentCatalog().setDocumentOutline(outline);
+        this.getDocument().getDocumentCatalog().setDocumentOutline(root);
     }
 
     /**
@@ -145,9 +138,9 @@ public class BookmarkProcessor extends AbstractProcessor {
      */
     protected void initOutlineItem() {
         // 获取书签
-        PDDocumentOutline documentOutline = this.document.getTarget().getDocumentCatalog().getDocumentOutline();
+        PDDocumentOutline documentOutline = this.getDocument().getDocumentCatalog().getDocumentOutline();
         // 如果书签不为空，则获取书签节点
-        if (documentOutline != null) {
+        if (Objects.nonNull(documentOutline)) {
             // 添加书签节点列表
             documentOutline.children().forEach(this.itemList::add);
         }

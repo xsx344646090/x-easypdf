@@ -2,8 +2,6 @@ package org.dromara.pdf.pdfbox.core.ext.extractor;
 
 import lombok.Getter;
 import lombok.SneakyThrows;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.apache.pdfbox.text.PDFTextStripper;
@@ -39,11 +37,6 @@ import java.util.stream.Collectors;
  * </p>
  */
 public abstract class AbstractTextExtractor extends AbstractExtractor {
-
-    /**
-     * 日志
-     */
-    private static final Log log = LogFactory.getLog(AbstractTextExtractor.class);
 
     /**
      * 表格正则（单行单列）

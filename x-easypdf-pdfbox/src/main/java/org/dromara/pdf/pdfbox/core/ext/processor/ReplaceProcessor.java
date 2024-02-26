@@ -1,8 +1,6 @@
 package org.dromara.pdf.pdfbox.core.ext.processor;
 
 import lombok.SneakyThrows;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdfparser.PDFStreamParser;
 import org.apache.pdfbox.pdfwriter.ContentStreamWriter;
@@ -52,11 +50,6 @@ import java.util.regex.Pattern;
  * </p>
  */
 public class ReplaceProcessor extends AbstractProcessor {
-
-    /**
-     * 日志
-     */
-    private final Log log = LogFactory.getLog(ReplaceProcessor.class);
 
     /**
      * 有参构造
@@ -214,8 +207,8 @@ public class ReplaceProcessor extends AbstractProcessor {
     protected void replaceText(PDPage page, PDFont font, Map<String, String> replaceMap) {
         // 获取pdf解析器
         PDFStreamParser parser = new PDFStreamParser(page);
-        // 解析页面
-        parser.parse();
+        // // 解析页面
+        // parser.parse();
         // 获取标记列表
         List<Object> tokens = parser.parse();
         // 如果替换文本标记成功，则更新内容
@@ -334,6 +327,29 @@ public class ReplaceProcessor extends AbstractProcessor {
                     index++;
                 }
             }
+        }
+    }
+
+    /**
+     * 替换书签
+     *
+     * @param outlineItem 书签
+     * @param replaceMap  替换字典（key可为正则）
+     */
+    protected void replaceBookmark(PDOutlineItem outlineItem, Map<String, String> replaceMap) {
+        // 获取替换标题
+        String title = this.getReplaceString(outlineItem.getTitle(), replaceMap);
+        // 非空
+        if (Objects.nonNull(title)) {
+            // 替换
+            outlineItem.setTitle(title);
+        }
+        // 获取子书签
+        Iterable<PDOutlineItem> children = outlineItem.children();
+        // 遍历子书签
+        for (PDOutlineItem child : children) {
+            // 替换书签
+            this.replaceBookmark(child, replaceMap);
         }
     }
 
@@ -570,34 +586,14 @@ public class ReplaceProcessor extends AbstractProcessor {
     protected Map<COSName, PDFont> initResourceFontMap(PDResources resources) {
         // 定义资源字体字典
         Map<COSName, PDFont> resourceFontMap = new HashMap<>(16);
-        // 获取资源字体名称迭代器
-        for (COSName cosName : resources.getFontNames()) {
-            // 添加资源字体
-            resourceFontMap.put(cosName, resources.getFont(cosName));
+        // 添加资源字体
+        if (Objects.nonNull(resources)) {
+            // 遍历字体名称
+            for (COSName cosName : resources.getFontNames()) {
+                // 添加资源字体
+                resourceFontMap.put(cosName, resources.getFont(cosName));
+            }
         }
         return resourceFontMap;
-    }
-
-    /**
-     * 替换书签
-     *
-     * @param outlineItem 书签
-     * @param replaceMap  替换字典（key可为正则）
-     */
-    protected void replaceBookmark(PDOutlineItem outlineItem, Map<String, String> replaceMap) {
-        // 获取替换标题
-        String title = this.getReplaceString(outlineItem.getTitle(), replaceMap);
-        // 非空
-        if (Objects.nonNull(title)) {
-            // 替换
-            outlineItem.setTitle(title);
-        }
-        // 获取子书签
-        Iterable<PDOutlineItem> children = outlineItem.children();
-        // 遍历子书签
-        for (PDOutlineItem child : children) {
-            // 替换书签
-            this.replaceBookmark(child, replaceMap);
-        }
     }
 }

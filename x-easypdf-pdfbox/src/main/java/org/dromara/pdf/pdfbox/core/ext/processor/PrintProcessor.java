@@ -104,12 +104,13 @@ public class PrintProcessor extends AbstractProcessor {
 
     /**
      * 设置起始页码
+     * <p>注：从1开始</p>
      *
      * @param beginPageNo 起始页码
      */
     public void setBeginPageNo(Integer beginPageNo) {
         if (Objects.nonNull(beginPageNo) && beginPageNo < 1) {
-            throw new IllegalArgumentException("the begin page no must be greater than 0");
+            throw new IllegalArgumentException("the begin page no must be greater than 1");
         }
         this.beginPageNo = beginPageNo;
     }
@@ -159,7 +160,7 @@ public class PrintProcessor extends AbstractProcessor {
             this.beginPageNo = 1;
         }
         if (Objects.isNull(this.endPageNo)) {
-            this.endPageNo = this.document.getTarget().getNumberOfPages();
+            this.endPageNo = this.getDocument().getNumberOfPages();
         }
         if (Objects.isNull(this.scaling)) {
             this.scaling = PrintScaling.ACTUAL_SIZE;

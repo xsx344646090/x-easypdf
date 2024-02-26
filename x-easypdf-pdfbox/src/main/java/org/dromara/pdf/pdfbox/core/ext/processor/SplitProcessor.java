@@ -161,7 +161,7 @@ public class SplitProcessor extends AbstractProcessor {
         // 设置文档版本
         target.setVersion(this.document.getVersion());
         // 设置元数据
-        target.getDocumentCatalog().setMetadata(this.document.getTarget().getDocumentCatalog().getMetadata());
+        target.getDocumentCatalog().setMetadata(this.getDocument().getDocumentCatalog().getMetadata());
         // 保存文档
         target.save(outputStream, new CompressParameters(Integer.MAX_VALUE));
         // 关闭文档

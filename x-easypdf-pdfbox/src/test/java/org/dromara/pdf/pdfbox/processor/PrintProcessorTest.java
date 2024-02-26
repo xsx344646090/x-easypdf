@@ -28,7 +28,7 @@ public class PrintProcessorTest extends BaseTest {
     public void printTest() {
         this.test(() -> {
             try (Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\千家妙方（上册）（扫描版）-0.pdf")) {
-                PrintProcessor processor = PdfHandler.getPrintProcessor(document);
+                PrintProcessor processor = PdfHandler.getDocumentProcessor(document).getPrintProcessor();
                 processor.setBeginPageNo(1);
                 processor.setEndPageNo(1);
                 processor.print();

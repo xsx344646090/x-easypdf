@@ -59,7 +59,7 @@ public class MergeProcessor extends AbstractProcessor {
         // 遍历文档列表
         for (Document document : documents) {
             // 导入页面
-            this.importPage(this.document.getTarget(), document.getTarget());
+            this.importPage(this.getDocument(), document.getTarget());
         }
     }
 

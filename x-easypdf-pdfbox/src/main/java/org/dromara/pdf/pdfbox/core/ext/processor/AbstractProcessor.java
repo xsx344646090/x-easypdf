@@ -1,7 +1,9 @@
 package org.dromara.pdf.pdfbox.core.ext.processor;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.dromara.pdf.pdfbox.core.base.Document;
-import org.dromara.pdf.pdfbox.core.ext.base.AbstractExpander;
+import org.dromara.pdf.pdfbox.core.ext.AbstractExpander;
 
 /**
  * 抽象处理器
@@ -22,6 +24,11 @@ import org.dromara.pdf.pdfbox.core.ext.base.AbstractExpander;
  * </p>
  */
 public abstract class AbstractProcessor extends AbstractExpander {
+
+    /**
+     * 日志
+     */
+    protected static final Log log = LogFactory.getLog(AbstractProcessor.class);
 
     /**
      * 有参构造

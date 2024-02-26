@@ -2,8 +2,6 @@ package org.dromara.pdf.pdfbox.core.ext.processor;
 
 import lombok.Getter;
 import lombok.SneakyThrows;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
@@ -45,10 +43,6 @@ import java.util.*;
 @Getter
 public class FormProcessor extends AbstractProcessor {
 
-    /**
-     * 日志
-     */
-    private static final Log log = LogFactory.getLog(FormProcessor.class);
     /**
      * 字体替换正则（未包含字体大小）
      */
@@ -107,7 +101,7 @@ public class FormProcessor extends AbstractProcessor {
             }
         });
         // 重置表单
-        this.document.getTarget().getDocumentCatalog().setAcroForm(this.form);
+        this.getDocument().getDocumentCatalog().setAcroForm(this.form);
     }
 
     /**
@@ -156,7 +150,7 @@ public class FormProcessor extends AbstractProcessor {
         // 刷新外观
         this.form.refreshAppearances();
         // 重置表单
-        this.document.getTarget().getDocumentCatalog().setAcroForm(this.form);
+        this.getDocument().getDocumentCatalog().setAcroForm(this.form);
     }
 
     /**
@@ -192,7 +186,7 @@ public class FormProcessor extends AbstractProcessor {
                             appearanceCharacteristics.getCOSObject().setItem(
                                     COSName.I,
                                     PDImageXObject.createFromByteArray(
-                                            this.document.getTarget(),
+                                            this.getDocument(),
                                             ImageUtil.toBytes(image, ImageType.PNG.getType()),
                                             ImageType.PNG.getType()
                                     ).getCOSObject()
@@ -206,7 +200,7 @@ public class FormProcessor extends AbstractProcessor {
             }
         }
         // 重置表单
-        this.document.getTarget().getDocumentCatalog().setAcroForm(this.form);
+        this.getDocument().getDocumentCatalog().setAcroForm(this.form);
     }
 
     /**
@@ -237,7 +231,7 @@ public class FormProcessor extends AbstractProcessor {
             this.form.flatten();
         }
         // 重置表单
-        this.document.getTarget().getDocumentCatalog().setAcroForm(this.form);
+        this.getDocument().getDocumentCatalog().setAcroForm(this.form);
     }
 
     /**
@@ -248,7 +242,7 @@ public class FormProcessor extends AbstractProcessor {
         // 清空字段
         this.form.flatten();
         // 重置表单
-        this.document.getTarget().getDocumentCatalog().setAcroForm(this.form);
+        this.getDocument().getDocumentCatalog().setAcroForm(this.form);
     }
 
     /**
@@ -319,7 +313,7 @@ public class FormProcessor extends AbstractProcessor {
             // 添加字体
             this.form.getDefaultResources().put(COSName.getPDFName(font.getName()), font);
             // 嵌入字体
-            PdfHandler.getFontHandler().addToSubset(this.document.getTarget(), font, newValue);
+            PdfHandler.getFontHandler().addToSubset(this.getDocument(), font, newValue);
         }
         try {
             // 设置新值

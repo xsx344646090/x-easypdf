@@ -2,8 +2,6 @@ package org.dromara.pdf.pdfbox.core.ext.analyzer;
 
 import lombok.Getter;
 import lombok.SneakyThrows;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.apache.pdfbox.pdmodel.interactive.action.PDAction;
@@ -36,11 +34,6 @@ import java.util.*;
  */
 @Getter
 public abstract class AbstractBookmarkAnalyzer extends AbstractAnalyzer {
-
-    /**
-     * 日志
-     */
-    private static final Log log = LogFactory.getLog(AbstractBookmarkAnalyzer.class);
 
     /**
      * 书签信息列表

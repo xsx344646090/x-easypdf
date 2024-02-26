@@ -2,7 +2,6 @@ package org.dromara.pdf.pdfbox.base;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.Before;
 
 import java.util.Optional;
 
@@ -24,18 +23,16 @@ import java.util.Optional;
  */
 public class BaseTest {
 
-    /**
-     * 日志
-     */
-    public static final Log log = LogFactory.getLog(BaseTest.class);
-
-    @Before
-    public void setup() {
+    static {
         // 初始化日志实现
         System.setProperty("org.apache.commons.logging.log", "org.apache.commons.logging.impl.SimpleLog");
         // 初始化日志级别
-        System.setProperty("org.apache.commons.logging.simplelog.defaultlog", "info");
+        // System.setProperty("org.apache.commons.logging.simplelog.defaultlog", "info");
+        System.setProperty("org.apache.commons.logging.simplelog.showdatetime", "true");
+        System.setProperty("org.apache.commons.logging.simplelog.log.org.dromara.pdf.pdfbox.core.ext.processor.AbstractProcessor", "debug");
     }
+
+    protected static final Log log = LogFactory.getLog(BaseTest.class);
 
     public void test(Function function) {
         this.test(function, null);

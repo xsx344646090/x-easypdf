@@ -1,7 +1,5 @@
 package org.dromara.pdf.pdfbox.core.ext.processor;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.base.Page;
@@ -31,11 +29,6 @@ import java.util.Objects;
  * </p>
  */
 public class PageProcessor extends AbstractProcessor {
-
-    /**
-     * 日志
-     */
-    private static final Log log = LogFactory.getLog(PageProcessor.class);
 
     /**
      * 有参构造
@@ -310,9 +303,9 @@ public class PageProcessor extends AbstractProcessor {
     }
 
     /**
-     * 重置页面（恢复原有尺寸）
+     * 重置尺寸（恢复原有尺寸）
      */
-    public void reset() {
+    public void resetSize() {
         this.document.getPages().forEach(Page::resetRectangle);
     }
 
@@ -326,10 +319,10 @@ public class PageProcessor extends AbstractProcessor {
             this.document.getPages().get(i).setIndex(i);
         }
         // 获取pdfbox页面树
-        PDPageTree pageTree = this.document.getTarget().getPages();
+        PDPageTree pageTree = this.getDocument().getPages();
         // 移除页面
         pageTree.forEach(pageTree::remove);
         // 重新添加
-        this.document.getPages().forEach(page -> this.document.getTarget().addPage(page.getTarget()));
+        this.document.getPages().forEach(page -> this.getDocument().addPage(page.getTarget()));
     }
 }

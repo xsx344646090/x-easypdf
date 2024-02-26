@@ -4,7 +4,7 @@ import org.dromara.pdf.pdfbox.base.BaseTest;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.base.MemoryPolicy;
 import org.dromara.pdf.pdfbox.core.enums.ImageType;
-import org.dromara.pdf.pdfbox.core.ext.processor.ImageProcessor;
+import org.dromara.pdf.pdfbox.core.ext.processor.RenderProcessor;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.dromara.pdf.pdfbox.util.FileUtil;
 import org.junit.Test;
@@ -29,7 +29,7 @@ import java.nio.file.Paths;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public class ImageProcessorTest extends BaseTest {
+public class RenderProcessorTest extends BaseTest {
 
     @Test
     public void testDocument() {
@@ -37,7 +37,7 @@ public class ImageProcessorTest extends BaseTest {
             try (
                     Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\document\\bigDataTest2.pdf", MemoryPolicy.setupTempFileOnly())
             ) {
-                ImageProcessor imager = new ImageProcessor(document);
+                RenderProcessor imager = new RenderProcessor(document);
 
                 imager.setDpi(72F);
                 imager.enableOptimization();
@@ -54,7 +54,7 @@ public class ImageProcessorTest extends BaseTest {
                     Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\hello-world.pdf");
                     OutputStream outputStream = Files.newOutputStream(FileUtil.createDirectories(Paths.get("E:\\PDF\\pdfbox\\imager\\testPage.png")))
             ) {
-                ImageProcessor imager = new ImageProcessor(document);
+                RenderProcessor imager = new RenderProcessor(document);
                 imager.setDpi(300F);
                 imager.image(outputStream, ImageType.PNG, 0);
             }

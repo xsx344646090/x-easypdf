@@ -3,8 +3,6 @@ package org.dromara.pdf.pdfbox.core.ext.analyzer;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.pdfbox.contentstream.PDFStreamEngine;
 import org.apache.pdfbox.contentstream.operator.DrawObject;
 import org.apache.pdfbox.contentstream.operator.Operator;
@@ -45,11 +43,6 @@ import java.util.Set;
  */
 @Getter
 public abstract class AbstractImageAnalyzer extends AbstractAnalyzer {
-
-    /**
-     * 日志
-     */
-    private static final Log log = LogFactory.getLog(AbstractImageAnalyzer.class);
 
     /**
      * 默认流引擎

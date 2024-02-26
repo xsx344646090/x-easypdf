@@ -27,7 +27,7 @@ import java.util.Objects;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public class FreeTextAppearanceHandler extends PDFreeTextAppearanceHandler {
+public class DefaultFreeTextAppearanceHandler extends PDFreeTextAppearanceHandler {
 
     /**
      * 文档
@@ -48,7 +48,7 @@ public class FreeTextAppearanceHandler extends PDFreeTextAppearanceHandler {
      * @param document   文档
      * @param annotation 注释
      */
-    public FreeTextAppearanceHandler(Document document, PDAnnotation annotation) {
+    public DefaultFreeTextAppearanceHandler(Document document, PDAnnotation annotation) {
         this(document, annotation, null);
     }
 
@@ -59,7 +59,7 @@ public class FreeTextAppearanceHandler extends PDFreeTextAppearanceHandler {
      * @param annotation 注释
      * @param font       字体
      */
-    public FreeTextAppearanceHandler(Document document, PDAnnotation annotation, PDFont font) {
+    public DefaultFreeTextAppearanceHandler(Document document, PDAnnotation annotation, PDFont font) {
         super(annotation, document.getTarget());
         this.document = document;
         this.annotation = annotation;

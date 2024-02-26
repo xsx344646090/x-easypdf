@@ -1,8 +1,6 @@
 package org.dromara.pdf.pdfbox.core.ext.extractor;
 
 import lombok.SneakyThrows;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.graphics.PDXObject;
@@ -40,11 +38,6 @@ import java.util.function.BiConsumer;
  * </p>
  */
 public abstract class AbstractFormExtractor extends AbstractExtractor {
-
-    /**
-     * 日志
-     */
-    private static final Log log = LogFactory.getLog(AbstractFormExtractor.class);
 
     /**
      * 有参构造

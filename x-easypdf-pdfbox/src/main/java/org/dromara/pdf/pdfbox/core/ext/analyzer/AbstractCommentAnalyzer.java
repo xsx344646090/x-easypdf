@@ -2,8 +2,6 @@ package org.dromara.pdf.pdfbox.core.ext.analyzer;
 
 import lombok.Getter;
 import lombok.SneakyThrows;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
@@ -37,11 +35,6 @@ import java.util.Set;
  */
 @Getter
 public abstract class AbstractCommentAnalyzer extends AbstractAnalyzer {
-
-    /**
-     * 日志
-     */
-    private static final Log log = LogFactory.getLog(AbstractCommentAnalyzer.class);
 
     /**
      * 评论信息列表

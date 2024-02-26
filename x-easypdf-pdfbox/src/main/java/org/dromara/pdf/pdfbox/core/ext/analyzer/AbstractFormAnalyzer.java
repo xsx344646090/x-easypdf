@@ -1,8 +1,6 @@
 package org.dromara.pdf.pdfbox.core.ext.analyzer;
 
 import lombok.Getter;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
@@ -34,11 +32,6 @@ import java.util.*;
  */
 @Getter
 public abstract class AbstractFormAnalyzer extends AbstractAnalyzer {
-
-    /**
-     * 日志
-     */
-    private static final Log log = LogFactory.getLog(AbstractFormAnalyzer.class);
 
     /**
      * 字段列表

@@ -4,7 +4,7 @@ package org.dromara.pdf.pdfbox.handler;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.ext.analyzer.DocumentAnalyzer;
 import org.dromara.pdf.pdfbox.core.ext.extractor.DocumentExtractor;
-import org.dromara.pdf.pdfbox.core.ext.processor.*;
+import org.dromara.pdf.pdfbox.core.ext.processor.DocumentProcessor;
 
 /**
  * @author xsx
@@ -43,93 +43,13 @@ public class PdfHandler {
     }
 
     /**
-     * 获取合并处理器
+     * 获取文档处理器
      *
      * @param document 文档
-     * @return 返回合并处理器
+     * @return 返回文档处理器
      */
-    public static MergeProcessor getMergeProcessor(Document document) {
-        return new MergeProcessor(document);
-    }
-
-    /**
-     * 获取拆分处理器
-     *
-     * @param document 文档
-     * @return 返回拆分处理器
-     */
-    public static SplitProcessor getSplitProcessor(Document document) {
-        return new SplitProcessor(document);
-    }
-
-    /**
-     * 获取图像处理器
-     *
-     * @param document 文档
-     * @return 返回图像处理器
-     */
-    public static ImageProcessor getImageProcessor(Document document) {
-        return new ImageProcessor(document);
-    }
-
-    /**
-     * 获取替换处理器
-     *
-     * @param document 文档
-     * @return 返回替换处理器
-     */
-    public static ReplaceProcessor getReplaceProcessor(Document document) {
-        return new ReplaceProcessor(document);
-    }
-
-    /**
-     * 获取打印处理器
-     *
-     * @param document 文档
-     * @return 返回打印处理器
-     */
-    public static PrintProcessor getPrintProcessor(Document document) {
-        return new PrintProcessor(document);
-    }
-
-    /**
-     * 获取页面处理器
-     *
-     * @param document 文档
-     * @return 返回页面处理器
-     */
-    public static PageProcessor getPageProcessor(Document document) {
-        return new PageProcessor(document);
-    }
-
-    /**
-     * 获取书签处理器
-     *
-     * @param document 文档
-     * @return 返回书签处理器
-     */
-    public static BookmarkProcessor getBookmarkProcessor(Document document) {
-        return new BookmarkProcessor(document);
-    }
-
-    /**
-     * 获取表单处理器
-     *
-     * @param document 文档
-     * @return 返回表单处理器
-     */
-    public static FormProcessor getFormProcessor(Document document) {
-        return new FormProcessor(document);
-    }
-
-    /**
-     * 获取图层处理器
-     *
-     * @param document 文档
-     * @return 返回图层处理器
-     */
-    public static LayerProcessor getLayerProcessor(Document document) {
-        return new LayerProcessor(document);
+    public static DocumentProcessor getDocumentProcessor(Document document) {
+        return new DocumentProcessor(document);
     }
 
     /**

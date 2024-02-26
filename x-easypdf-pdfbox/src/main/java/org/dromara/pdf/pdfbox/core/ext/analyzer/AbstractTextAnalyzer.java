@@ -1,8 +1,6 @@
 package org.dromara.pdf.pdfbox.core.ext.analyzer;
 
 import lombok.Getter;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.pdfbox.text.TextPosition;
@@ -34,11 +32,6 @@ import java.util.Set;
  */
 @Getter
 public abstract class AbstractTextAnalyzer extends AbstractAnalyzer {
-
-    /**
-     * 日志
-     */
-    private static final Log log = LogFactory.getLog(AbstractTextAnalyzer.class);
 
     /**
      * 文本信息列表

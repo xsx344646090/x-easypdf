@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * 图像处理器
+ * 渲染处理器
  *
  * @author xsx
  * @date 2023/10/20
@@ -39,7 +39,7 @@ import java.util.Objects;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public class ImageProcessor extends AbstractProcessor {
+public class RenderProcessor extends AbstractProcessor {
 
     /**
      * 图像DPI
@@ -79,7 +79,7 @@ public class ImageProcessor extends AbstractProcessor {
      *
      * @param document pdf文档
      */
-    public ImageProcessor(Document document) {
+    public RenderProcessor(Document document) {
         super(document);
     }
 
@@ -166,7 +166,6 @@ public class ImageProcessor extends AbstractProcessor {
      * @param outputPath 输出路径（目录）
      * @param imageType  图像类型
      */
-
     @SneakyThrows
     public void image(String outputPath, ImageType imageType) {
         this.image(outputPath, imageType, null);
@@ -192,7 +191,7 @@ public class ImageProcessor extends AbstractProcessor {
             prefix = "x-easypdf";
         }
         // 初始化pdfBox文档渲染器
-        PDFRenderer renderer = new PDFRenderer(this.document.getTarget());
+        PDFRenderer renderer = new PDFRenderer(this.getDocument());
         // 设置二次采样
         renderer.setSubsamplingAllowed(this.isMemoryOptimization);
         // 设置渲染目的
@@ -220,14 +219,14 @@ public class ImageProcessor extends AbstractProcessor {
         // 初始化
         this.init();
         // 初始化pdfBox文档渲染器
-        PDFRenderer renderer = new PDFRenderer(this.document.getTarget());
+        PDFRenderer renderer = new PDFRenderer(this.getDocument());
         // 设置二次采样
         renderer.setSubsamplingAllowed(this.isMemoryOptimization);
         // 设置渲染目的
         renderer.setDefaultDestination(this.renderType.getDestination());
         // 返回图片
         return renderer.renderImageWithDPI(
-                Math.min(Math.max(pageIndex, 0), this.document.getTarget().getNumberOfPages() - 1),
+                Math.min(Math.max(pageIndex, 0), this.getDocument().getNumberOfPages() - 1),
                 this.dpi,
                 this.getColorType()
         );
@@ -249,7 +248,7 @@ public class ImageProcessor extends AbstractProcessor {
         // 初始化
         this.init();
         // 初始化pdfBox文档渲染器
-        PDFRenderer renderer = new PDFRenderer(this.document.getTarget());
+        PDFRenderer renderer = new PDFRenderer(this.getDocument());
         // 设置二次采样
         renderer.setSubsamplingAllowed(this.isMemoryOptimization);
         // 设置渲染目的
@@ -263,7 +262,7 @@ public class ImageProcessor extends AbstractProcessor {
                 // 添加图片列表
                 imageList.add(
                         renderer.renderImageWithDPI(
-                                Math.min(Math.max(index, 0), this.document.getTarget().getNumberOfPages() - 1),
+                                Math.min(Math.max(index, 0), this.getDocument().getNumberOfPages() - 1),
                                 this.dpi,
                                 this.getColorType()
                         )
@@ -278,7 +277,7 @@ public class ImageProcessor extends AbstractProcessor {
             for (int index : pageIndexes) {
                 // 渲染图片
                 BufferedImage bufferedImage = renderer.renderImageWithDPI(
-                        Math.min(Math.max(index, 0), this.document.getTarget().getNumberOfPages() - 1),
+                        Math.min(Math.max(index, 0), this.getDocument().getNumberOfPages() - 1),
                         this.dpi,
                         this.getColorType()
                 );
@@ -335,7 +334,7 @@ public class ImageProcessor extends AbstractProcessor {
         // 图片格式名称
         String imageTypeName = imageType.getType();
         // 任务文档页面总数
-        int pageCount = this.document.getTarget().getNumberOfPages();
+        int pageCount = this.getDocument().getNumberOfPages();
         // 定义图片列表
         List<BufferedImage> imageList = new ArrayList<>(pageCount);
         // 遍历页面索引
@@ -367,7 +366,7 @@ public class ImageProcessor extends AbstractProcessor {
         // 定义文件名称构造器
         StringBuilder fileNameBuilder;
         // 任务文档页面总数
-        int pageCount = this.document.getTarget().getNumberOfPages();
+        int pageCount = this.getDocument().getNumberOfPages();
         // 遍历页面索引
         for (int index = 0; index < pageCount; index++) {
             // 重置名称构造器
