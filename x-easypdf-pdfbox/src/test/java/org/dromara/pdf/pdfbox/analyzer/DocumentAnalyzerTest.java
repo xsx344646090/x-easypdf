@@ -27,6 +27,9 @@ import java.util.Set;
  */
 public class DocumentAnalyzerTest extends BaseTest {
 
+    /**
+     * 测试文本
+     */
     @Test
     public void textTest() {
         this.test(() -> {
@@ -40,6 +43,9 @@ public class DocumentAnalyzerTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试评论
+     */
     @Test
     public void commentTest() {
         this.test(() -> {
@@ -53,6 +59,9 @@ public class DocumentAnalyzerTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试图片
+     */
     @Test
     public void imageTest() {
         this.test(() -> {
@@ -66,6 +75,9 @@ public class DocumentAnalyzerTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试书签
+     */
     @Test
     public void bookmarkTest() {
         this.test(() -> {
@@ -79,6 +91,9 @@ public class DocumentAnalyzerTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试表单
+     */
     @Test
     public void formTest() {
         this.test(() -> {

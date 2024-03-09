@@ -74,6 +74,26 @@ public abstract class AbstractBase {
     }
 
     /**
+     * 设置水平对齐方式
+     *
+     * @param horizontalAlignment 水平对齐方式
+     */
+    public void setHorizontalAlignment(HorizontalAlignment horizontalAlignment) {
+        Objects.requireNonNull(horizontalAlignment, "the horizontal alignment can not be null");
+        this.horizontalAlignment = horizontalAlignment;
+    }
+
+    /**
+     * 设置垂直对齐方式
+     *
+     * @param verticalAlignment 垂直对齐方式
+     */
+    public void setVerticalAlignment(VerticalAlignment verticalAlignment) {
+        Objects.requireNonNull(verticalAlignment, "the vertical alignment can not be null");
+        this.verticalAlignment = verticalAlignment;
+    }
+
+    /**
      * 初始化
      */
     protected void init(AbstractBase param) {

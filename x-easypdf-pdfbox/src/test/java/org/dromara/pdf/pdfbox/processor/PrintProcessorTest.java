@@ -24,10 +24,13 @@ import org.junit.Test;
  */
 public class PrintProcessorTest extends BaseTest {
 
+    /**
+     * 测试打印（使用默认打印机）
+     */
     @Test
     public void printTest() {
         this.test(() -> {
-            try (Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\千家妙方（上册）（扫描版）-0.pdf")) {
+            try (Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\hello-world.pdf")) {
                 PrintProcessor processor = PdfHandler.getDocumentProcessor(document).getPrintProcessor();
                 processor.setBeginPageNo(1);
                 processor.setEndPageNo(1);

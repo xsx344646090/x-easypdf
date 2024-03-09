@@ -36,6 +36,9 @@ import java.util.*;
  */
 public class DocumentProcessorTest extends BaseTest {
 
+    /**
+     * 测试文档合并
+     */
     @Test
     public void mergeTest() {
         this.test(() -> {
@@ -53,6 +56,9 @@ public class DocumentProcessorTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试文档拆分
+     */
     @Test
     public void splitTest() {
         this.test(() -> {
@@ -63,6 +69,9 @@ public class DocumentProcessorTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试文档转图片
+     */
     @Test
     public void imageTest() {
         this.test(() -> {
@@ -76,6 +85,9 @@ public class DocumentProcessorTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试文本替换
+     */
     @Test
     public void replaceTest() {
         this.test(() -> {
@@ -91,6 +103,9 @@ public class DocumentProcessorTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试打印
+     */
     @Test
     public void printTest() {
         this.test(() -> {
@@ -103,6 +118,9 @@ public class DocumentProcessorTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试重排序页面
+     */
     @Test
     public void pageTest() {
         this.test(() -> {
@@ -116,6 +134,9 @@ public class DocumentProcessorTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试添加书签
+     */
     @Test
     public void bookmarkTest() {
         this.test(() -> {
@@ -132,6 +153,9 @@ public class DocumentProcessorTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试添加评论
+     */
     @Test
     public void commentTest() {
         this.test(() -> {
@@ -166,6 +190,9 @@ public class DocumentProcessorTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试表单填写
+     */
     @Test
     public void formTest() {
         this.test(() -> {
@@ -181,6 +208,9 @@ public class DocumentProcessorTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试添加图层
+     */
     @Test
     public void layerTest() {
         this.test(() -> {

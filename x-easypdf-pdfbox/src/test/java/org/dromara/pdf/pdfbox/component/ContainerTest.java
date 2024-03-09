@@ -32,6 +32,9 @@ import java.util.Arrays;
  */
 public class ContainerTest extends BaseTest {
 
+    /**
+     * 测试简单容器
+     */
     @Test
     public void simpleContainerTest() {
         this.test(() -> {
@@ -74,8 +77,11 @@ public class ContainerTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试文本容器
+     */
     @Test
-    public void testTextContainer() {
+    public void textContainerTest() {
         this.test(() -> {
             Document document = PdfHandler.getDocumentHandler().create();
             document.setMargin(50F);
@@ -103,13 +109,16 @@ public class ContainerTest extends BaseTest {
             container.render();
 
             document.appendPage(page);
-            document.save("E:\\PDF\\pdfbox\\container\\testTextContainer.pdf");
+            document.save("E:\\PDF\\pdfbox\\container\\textContainerTest.pdf");
             document.close();
         });
     }
 
+    /**
+     * 测试分页容器
+     */
     @Test
-    public void testTextBreakContainer() {
+    public void textBreakContainerTest() {
         this.test(() -> {
             Document document = PdfHandler.getDocumentHandler().create();
             document.setMargin(50F);
@@ -152,7 +161,7 @@ public class ContainerTest extends BaseTest {
             }
 
             document.appendPage(page);
-            document.save("E:\\PDF\\pdfbox\\container\\testTextBreakContainer.pdf");
+            document.save("E:\\PDF\\pdfbox\\container\\textBreakContainerTest.pdf");
             document.close();
         });
     }

@@ -28,6 +28,9 @@ import java.awt.*;
  */
 public class RectangleTest extends BaseTest {
 
+    /**
+     * 测试矩形
+     */
     @Test
     public void rectangleTest() {
         this.test(
@@ -46,12 +49,15 @@ public class RectangleTest extends BaseTest {
                     rectangle.render();
 
                     document.appendPage(page);
-                    document.save("E:\\PDF\\rectangle\\rectangleTest.pdf");
+                    document.save("E:\\PDF\\pdfbox\\rectangle\\rectangleTest.pdf");
                     document.close();
                 }
         );
     }
 
+    /**
+     * 测试矩形
+     */
     @Test
     public void rectangleTest2() {
         this.test(
@@ -70,7 +76,7 @@ public class RectangleTest extends BaseTest {
                     rectangle.render();
 
                     document.appendPage(page);
-                    document.save("E:\\PDF\\rectangle\\rectangleTest2.pdf");
+                    document.save("E:\\PDF\\pdfbox\\rectangle\\rectangleTest2.pdf");
                     document.close();
                 }
         );

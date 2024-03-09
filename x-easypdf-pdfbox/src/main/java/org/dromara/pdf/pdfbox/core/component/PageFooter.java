@@ -84,7 +84,7 @@ public class PageFooter extends AbstractPageHeaderOrFooter {
      */
     @Override
     public void virtualRender() {
-        this.pagingEvent = new DefaultVirtualPagingEvent();
+        this.pagingEvent = new DefaultPageFooterVirtualPagingEvent();
         super.virtualRender();
     }
 
@@ -93,7 +93,7 @@ public class PageFooter extends AbstractPageHeaderOrFooter {
      */
     @Override
     public void render() {
-        this.pagingEvent = new DefaultPagingEvent();
+        this.pagingEvent = new DefaultPageFooterPagingEvent();
         super.render();
     }
 
@@ -132,7 +132,7 @@ public class PageFooter extends AbstractPageHeaderOrFooter {
     /**
      * 默认虚拟分页事件
      */
-    public static class DefaultVirtualPagingEvent extends AbstractPagingEvent {
+    public static class DefaultPageFooterVirtualPagingEvent extends AbstractPagingEvent {
 
         /**
          * 分页之后
@@ -157,7 +157,7 @@ public class PageFooter extends AbstractPageHeaderOrFooter {
     /**
      * 默认分页事件
      */
-    public static class DefaultPagingEvent extends AbstractPagingEvent {
+    public static class DefaultPageFooterPagingEvent extends AbstractPagingEvent {
 
         /**
          * 分页之后

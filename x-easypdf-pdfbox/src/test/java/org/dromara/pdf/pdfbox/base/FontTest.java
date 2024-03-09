@@ -33,6 +33,9 @@ import java.util.Collections;
  */
 public class FontTest extends BaseTest {
 
+    /**
+     * 测试获取字体名称
+     */
     @Test
     public void getFontNamesTest() {
         this.test(() -> {
@@ -40,6 +43,9 @@ public class FontTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试获取字体信息
+     */
     @Test
     public void getFontInfosTest() {
         this.test(() -> {
@@ -47,6 +53,9 @@ public class FontTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试获取pdfbox字体
+     */
     @Test
     public void getPDFontTest() {
         this.test(() -> {
@@ -58,6 +67,9 @@ public class FontTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试获取trueType字体
+     */
     @Test
     public void getTrueTypeFontTest() {
         this.test(() -> {
@@ -70,6 +82,9 @@ public class FontTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试添加字体
+     */
     @Test
     public void addFontTest1() {
         this.test(() -> {
@@ -78,6 +93,9 @@ public class FontTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试添加字体
+     */
     @Test
     public void addFontTest2() {
         this.test(() -> {
@@ -86,6 +104,9 @@ public class FontTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试添加字体
+     */
     @Test
     public void addFontTest3() {
         this.test(() -> {
@@ -96,6 +117,9 @@ public class FontTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试嵌入字体
+     */
     @Test
     public void addToSubsetTest() {
         this.test(() -> {

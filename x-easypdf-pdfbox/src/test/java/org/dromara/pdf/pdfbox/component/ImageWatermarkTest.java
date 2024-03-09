@@ -27,6 +27,9 @@ import java.nio.file.Paths;
  */
 public class ImageWatermarkTest extends BaseTest {
 
+    /**
+     * 测试文档水印
+     */
     @Test
     public void documentTest() {
         this.test(() -> {
@@ -35,7 +38,7 @@ public class ImageWatermarkTest extends BaseTest {
             document.appendPage(document.createPage(PageSize.A4));
 
             ImageWatermark watermark = new ImageWatermark(document);
-            watermark.setImage(Paths.get("E:\\PDF\\pdfbox\\image\\test.png").toFile());
+            watermark.setImage(Paths.get("E:\\PDF\\pdfbox\\image\\test.jpg").toFile());
             watermark.setBeginX(30F);
             watermark.setBeginY(470F);
             watermark.setWidth(100);
@@ -50,6 +53,9 @@ public class ImageWatermarkTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试页面水印
+     */
     @Test
     public void pageTest() {
         this.test(()->{

@@ -31,6 +31,9 @@ import java.util.UUID;
  */
 public class CommentProcessorTest extends BaseTest {
 
+    /**
+     * 测试添加评论
+     */
     @Test
     public void addCommentTest() {
         this.test(() -> {

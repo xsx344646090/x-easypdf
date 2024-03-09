@@ -30,6 +30,9 @@ import java.nio.file.Paths;
  */
 public class PageTest extends BaseTest {
 
+    /**
+     * 测试页面边距
+     */
     @Test
     public void setMarginTest() {
         this.test(
@@ -52,6 +55,9 @@ public class PageTest extends BaseTest {
         );
     }
 
+    /**
+     * 测试页面宽高
+     */
     @Test
     public void getWidthAndHeightTest() {
         this.test(
@@ -65,6 +71,9 @@ public class PageTest extends BaseTest {
         );
     }
 
+    /**
+     * 测试排除页面边距后的宽高
+     */
     @Test
     public void getWithoutMarginWidthAndHeightTest() {
         this.test(
@@ -79,6 +88,9 @@ public class PageTest extends BaseTest {
         );
     }
 
+    /**
+     * 测试首个页面
+     */
     @Test
     public void getFirstParentPageTest() {
         this.test(
@@ -91,6 +103,9 @@ public class PageTest extends BaseTest {
         );
     }
 
+    /**
+     * 测试最后一个页面
+     */
     @Test
     public void getLastSubPageTest() {
         this.test(
@@ -103,18 +118,24 @@ public class PageTest extends BaseTest {
         );
     }
 
+    /**
+     * 测试最新页码
+     */
     @Test
-    public void getLastIndexTest() {
+    public void getLastNoTest() {
         this.test(
                 () -> {
                     try (Document document = PdfHandler.getDocumentHandler().create()) {
                         Page page = document.createPage(PageSize.A4);
-                        Assert.assertEquals(1L, (long) page.getLastIndex());
+                        Assert.assertEquals(1L, (long) page.getLastNo());
                     }
                 }
         );
     }
 
+    /**
+     * 测试页面旋转
+     */
     @Test
     public void rotationTest() {
         this.test(
@@ -130,6 +151,9 @@ public class PageTest extends BaseTest {
         );
     }
 
+    /**
+     * 测试页面缩放
+     */
     @Test
     public void scaleTest() {
         this.test(
@@ -144,6 +168,9 @@ public class PageTest extends BaseTest {
         );
     }
 
+    /**
+     * 测试页面裁剪
+     */
     @Test
     public void cropTest() {
         this.test(
@@ -158,6 +185,9 @@ public class PageTest extends BaseTest {
         );
     }
 
+    /**
+     * 测试页面重置尺寸
+     */
     @Test
     public void resetRectangleTest() {
         this.test(
@@ -172,6 +202,9 @@ public class PageTest extends BaseTest {
         );
     }
 
+    /**
+     * 测试创建子页面
+     */
     @Test
     public void createSubPageTest() {
         this.test(

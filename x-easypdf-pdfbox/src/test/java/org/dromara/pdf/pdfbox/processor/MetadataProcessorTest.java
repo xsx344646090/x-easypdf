@@ -26,6 +26,9 @@ import java.util.Calendar;
  */
 public class MetadataProcessorTest extends BaseTest {
 
+    /**
+     * 测试元数据
+     */
     @Test
     public void metadataTest() {
         this.test(() -> {

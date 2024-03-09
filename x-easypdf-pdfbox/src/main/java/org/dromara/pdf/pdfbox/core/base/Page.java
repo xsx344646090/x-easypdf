@@ -241,11 +241,11 @@ public class Page extends AbstractBaseFont implements Closeable {
     }
 
     /**
-     * 获取最新索引
+     * 获取最新页码
      *
-     * @return 返回索引
+     * @return 返回页码
      */
-    public Integer getLastIndex() {
+    public Integer getLastNo() {
         // 定义索引
         int index = Optional.ofNullable(this.getParentPage()).map(p -> 0).orElse(1);
         // 获取子页面

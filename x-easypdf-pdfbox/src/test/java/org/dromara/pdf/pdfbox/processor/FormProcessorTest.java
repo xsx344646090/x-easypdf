@@ -28,6 +28,9 @@ import java.util.Map;
  */
 public class FormProcessorTest extends BaseTest {
 
+    /**
+     * 测试文本填写
+     */
     @Test
     public void fillTextTest() {
         this.test(() -> {
@@ -46,6 +49,9 @@ public class FormProcessorTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试图像填写
+     */
     @Test
     public void fillImageTest() {
         this.test(() -> {

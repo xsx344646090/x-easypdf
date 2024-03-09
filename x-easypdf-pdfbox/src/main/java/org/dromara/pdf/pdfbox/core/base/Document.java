@@ -30,10 +30,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * 文档
@@ -356,21 +356,6 @@ public class Document extends AbstractBaseFont implements Closeable {
     }
 
     /**
-     * 刷新目录
-     */
-    public void flushCatalog() {
-        // 获取目录
-        List<CatalogInfo> catalogs = this.getContext().getCatalogs();
-        // 目录不为空
-        if (Objects.nonNull(catalogs) && !catalogs.isEmpty()) {
-            // 获取页面字典
-            Map<String, Page> pageMap = this.getPages().stream().collect(Collectors.toMap(Page::getId, Function.identity()));
-            // 重置索引
-            catalogs.forEach(catalog -> catalog.setPageIndex(pageMap.get(catalog.getPageId()).getIndex()));
-        }
-    }
-
-    /**
      * 保存文档
      *
      * @param file 文件
@@ -406,7 +391,7 @@ public class Document extends AbstractBaseFont implements Closeable {
         Objects.requireNonNull(outputStream, "the output stream can not be null");
         // 检查页面
         if (this.getTarget().getNumberOfPages() == 0) {
-            log.error("the document has no pages");
+            log.error("the document has no page, please add a page before saving");
         }
         // 刷新元数据
         if (Optional.ofNullable(this.getIsFlushMetadata()).orElse(Boolean.TRUE)) {
@@ -627,8 +612,12 @@ public class Document extends AbstractBaseFont implements Closeable {
         super.setFontSize(12F);
         // 初始化字体颜色
         super.setFontColor(Color.BLACK);
+        // 初始化字体透明度
+        super.setFontAlpha(1.0F);
         // 初始化字体样式
         super.setFontStyle(FontStyle.NORMAL);
+        // 初始化字体斜率（斜体字）
+        super.setFontSlope(0F);
         // 初始化字符间距
         super.setCharacterSpacing(0F);
         // 初始化行间距

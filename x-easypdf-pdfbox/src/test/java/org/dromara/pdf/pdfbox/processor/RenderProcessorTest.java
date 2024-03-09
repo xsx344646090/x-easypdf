@@ -31,8 +31,11 @@ import java.nio.file.Paths;
  */
 public class RenderProcessorTest extends BaseTest {
 
+    /**
+     * 测试文档转图片
+     */
     @Test
-    public void testDocument() {
+    public void documentTest() {
         this.test(() -> {
             try (
                     Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\document\\bigDataTest2.pdf", MemoryPolicy.setupTempFileOnly())
@@ -47,8 +50,11 @@ public class RenderProcessorTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试页面转图片
+     */
     @Test
-    public void testPage() {
+    public void pageTest() {
         this.test(() -> {
             try (
                     Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\hello-world.pdf");

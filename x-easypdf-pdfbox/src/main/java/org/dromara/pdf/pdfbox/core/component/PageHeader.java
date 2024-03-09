@@ -79,7 +79,7 @@ public class PageHeader extends AbstractPageHeaderOrFooter {
      */
     @Override
     public void virtualRender() {
-        this.pagingEvent = new DefaultVirtualPagingEvent();
+        this.pagingEvent = new DefaultPageHeaderVirtualPagingEvent();
         super.virtualRender();
     }
 
@@ -88,7 +88,7 @@ public class PageHeader extends AbstractPageHeaderOrFooter {
      */
     @Override
     public void render() {
-        this.pagingEvent = new DefaultPagingEvent();
+        this.pagingEvent = new DefaultPageHeaderPagingEvent();
         super.render();
     }
 
@@ -110,13 +110,13 @@ public class PageHeader extends AbstractPageHeaderOrFooter {
             this.setBeginY(this.getContext().getPage().getHeight() - this.getContext().getPage().getMarginTop());
         }
         // 重置光标
-        this.getContext().getCursor().reset(this.getBeginX(), this.getBeginY() - this.getBeginYOffset());
+        this.getContext().getCursor().reset(this.getBeginX(), this.getBeginY()  - this.getBeginYOffset());
     }
 
     /**
      * 默认虚拟分页事件
      */
-    public static class DefaultVirtualPagingEvent extends AbstractPagingEvent {
+    public static class DefaultPageHeaderVirtualPagingEvent extends AbstractPagingEvent {
 
         /**
          * 分页之后
@@ -141,7 +141,7 @@ public class PageHeader extends AbstractPageHeaderOrFooter {
     /**
      * 默认分页事件
      */
-    public static class DefaultPagingEvent extends AbstractPagingEvent {
+    public static class DefaultPageHeaderPagingEvent extends AbstractPagingEvent {
 
         /**
          * 分页之后

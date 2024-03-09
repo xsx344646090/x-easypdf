@@ -32,6 +32,9 @@ import java.nio.file.Paths;
  */
 public class ImageTest extends BaseTest {
 
+    /**
+     * 测试png图片
+     */
     @Test
     public void pngTest() {
         this.test(() -> {
@@ -53,6 +56,9 @@ public class ImageTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试jpeg图片
+     */
     @Test
     public void jpegTest() {
         this.test(() -> {
@@ -71,6 +77,9 @@ public class ImageTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试svg图片
+     */
     @Test
     public void svgTest() {
         this.test(() -> {
@@ -89,8 +98,11 @@ public class ImageTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试图片尺寸
+     */
     @Test
-    public void testSize() {
+    public void sizeTest() {
         this.test(() -> {
             Document document = PdfHandler.getDocumentHandler().create();
             document.setMargin(50F);
@@ -104,13 +116,16 @@ public class ImageTest extends BaseTest {
             image.render();
 
             document.appendPage(page);
-            document.save("E:\\PDF\\pdfbox\\image\\testSize.pdf");
+            document.save("E:\\PDF\\pdfbox\\image\\sizeTest.pdf");
             document.close();
         });
     }
 
+    /**
+     * 测试文本+图片
+     */
     @Test
-    public void testMix() {
+    public void mixTest() {
         this.test(() ->{
             Document document = PdfHandler.getDocumentHandler().create();
             document.setMargin(50F);
@@ -135,13 +150,16 @@ public class ImageTest extends BaseTest {
             rightTextarea.render();
 
             document.appendPage(page);
-            document.save("E:\\PDF\\pdfbox\\image\\testMix.pdf");
+            document.save("E:\\PDF\\pdfbox\\image\\mixTest.pdf");
             document.close();
         });
     }
 
+    /**
+     * 测试大数据
+     */
     @Test
-    public void testBigData() {
+    public void bigDataTest() {
         this.test(() -> {
             Document document = PdfHandler.getDocumentHandler().create(MemoryPolicy.setupTempFileOnly());
             document.setMargin(50F);
@@ -161,7 +179,7 @@ public class ImageTest extends BaseTest {
             }, "渲染完成");
 
             document.appendPage(page);
-            document.save("E:\\PDF\\pdfbox\\image\\testBigData.pdf");
+            document.save("E:\\PDF\\pdfbox\\image\\bigDataTest.pdf");
             document.close();
         }, "生成文件");
     }

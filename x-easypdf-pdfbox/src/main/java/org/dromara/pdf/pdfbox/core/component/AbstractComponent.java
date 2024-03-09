@@ -137,154 +137,6 @@ public abstract class AbstractComponent extends AbstractBaseFont implements Comp
     }
 
     /**
-     * 检查换行
-     */
-    public void checkWrap() {
-        // 初始化换行
-        if (this.isWrap()) {
-            // 重置光标
-            this.getContext().getCursor().reset(
-                    this.getContext().getWrapBeginX(),
-                    this.getContext().getCursor().getY() - this.getContext().getWrapHeight()
-            );
-            // 重置是否换行
-            this.setIsWrap(Boolean.FALSE);
-        }
-        // 初始化X轴坐标
-        if (Objects.isNull(this.getBeginX())) {
-            this.setBeginX(this.getContext().getCursor().getX() + this.getMarginLeft(), Boolean.FALSE);
-        }
-        // 初始化Y轴坐标
-        if (Objects.isNull(this.getBeginY())) {
-            this.setBeginY(this.getContext().getCursor().getY() - this.getMarginTop(), Boolean.FALSE);
-        }
-    }
-
-    /**
-     * 换行
-     */
-    public void wrap() {
-        // 设置X轴起始坐标
-        this.setBeginX(null);
-        // 设置Y轴起始坐标
-        this.setBeginY(null);
-        // 设置是否换行
-        this.setIsWrap(Boolean.TRUE);
-        // 检查换行
-        this.checkWrap();
-        // 重置是否换行
-        this.setIsWrap(Boolean.FALSE);
-    }
-
-    /**
-     * 是否换行
-     *
-     * @return 返回布尔值，true为是，false为否
-     */
-    public boolean isWrap() {
-        // 是否手动设置
-        if (this.getIsWrap()) {
-            return Boolean.TRUE;
-        }
-        // 换行宽度或X轴起始坐标未初始化
-        if (Objects.isNull(this.getContext().getWrapWidth()) || Objects.isNull(this.getBeginX())) {
-            return Boolean.FALSE;
-        }
-        // 换行宽度-X轴起始坐标是否小于0
-        return this.getContext().getWrapWidth() - this.getBeginX() < 0;
-    }
-
-    /**
-     * 是否分页
-     *
-     * @param component 当前组件
-     * @param beginY    Y轴起始坐标
-     * @return 返回布尔值，true为是，false为否
-     */
-    public boolean isPaging(Component component, float beginY) {
-        // 获取分页标识
-        boolean flag = (
-                this.checkPaging(beginY) ||
-                        Optional.ofNullable(this.pagingCondition)
-                                .map(condition -> condition.isPaging(component, beginY))
-                                .orElse(false)
-        ) && this.isPagingComponent();
-        // 分页
-        if (flag) {
-            this.paging();
-        }
-        // 返回分页标识
-        return flag;
-    }
-
-    /**
-     * 是否分页组件
-     *
-     * @return 返回布尔值，true为是，false为否
-     */
-    public boolean isPagingComponent() {
-        return Optional.ofNullable(this.getContext().getExecutingComponentType())
-                .map(ComponentType::isNotPageHeaderOrFooter)
-                .orElse(Boolean.FALSE);
-    }
-
-    /**
-     * 执行分页
-     */
-    public void paging() {
-        // 处理分页
-        this.processBreak();
-        // 初始化X轴坐标
-        if (Objects.isNull(this.getBeginX())) {
-            this.setBeginX(this.getContext().getCursor().getX() + this.getMarginLeft(), Boolean.FALSE);
-        }
-        // 初始化Y轴坐标
-        if (Objects.isNull(this.getBeginY())) {
-            this.setBeginY(this.getContext().getCursor().getY() - this.getMarginTop(), Boolean.FALSE);
-        }
-    }
-
-    /**
-     * 重置
-     */
-    public void reset(ComponentType type) {
-        // 重置X轴起始坐标
-        this.beginX = null;
-        // 重置Y轴起始坐标
-        this.beginY = null;
-        // 重置X轴相对坐标
-        this.relativeBeginX = null;
-        // 重置Y轴相对坐标
-        this.relativeBeginY = null;
-        // 重置是否自定义X轴坐标
-        this.isCustomX = null;
-        // 重置是否自定义Y轴坐标
-        this.isCustomY = null;
-        // 重置换行起始坐标
-        this.getContext().setWrapBeginX(null);
-        // 重置当前执行组件类型
-        this.getContext().resetExecutingComponentType(type);
-    }
-
-    /**
-     * 检查分页
-     *
-     * @param beginY Y轴起始坐标
-     * @return 返回布尔值，true为是，false为否
-     */
-    public boolean checkPaging(float beginY) {
-        // 获取页面下边距
-        float bottom = this.getBottom();
-        // Y轴坐标小于下边距+页面下边距
-        if (beginY < this.getMarginBottom() + bottom) {
-            // 返回true
-            return true;
-        }
-        // 返回false
-        return false;
-    }
-
-    /**
      * 获取下边距
      *
      * @return 返回下边距
@@ -379,6 +231,154 @@ public abstract class AbstractComponent extends AbstractBaseFont implements Comp
     }
 
     /**
+     * 检查换行
+     */
+    protected void checkWrap() {
+        // 初始化X轴坐标
+        if (Objects.isNull(this.getBeginX())) {
+            this.setBeginX(this.getContext().getCursor().getX() + this.getMarginLeft(), Boolean.FALSE);
+        }
+        // 初始化换行
+        if (this.isWrap()) {
+            // 重置换行宽度
+            this.resetWrapWidth();
+            // 重置光标
+            this.getContext().getCursor().reset(
+                    this.getContext().getWrapBeginX(),
+                    this.getContext().getCursor().getY() - this.getContext().getWrapHeight()
+            );
+            // 重置X轴坐标
+            this.setBeginX(this.getContext().getCursor().getX() + this.getMarginLeft(), Boolean.FALSE);
+            // 重置是否换行
+            this.setIsWrap(Boolean.FALSE);
+        }
+        // 初始化Y轴坐标
+        if (Objects.isNull(this.getBeginY())) {
+            this.setBeginY(this.getContext().getCursor().getY() - this.getMarginTop(), Boolean.FALSE);
+        }
+    }
+
+    /**
+     * 换行
+     */
+    protected void wrap() {
+        // 设置X轴起始坐标
+        this.setBeginX(null);
+        // 设置Y轴起始坐标
+        this.setBeginY(null);
+        // 设置是否换行
+        this.setIsWrap(Boolean.TRUE);
+        // 检查换行
+        this.checkWrap();
+    }
+
+    /**
+     * 是否换行
+     *
+     * @return 返回布尔值，true为是，false为否
+     */
+    protected boolean isWrap() {
+        // 是否手动设置
+        if (this.getIsWrap()) {
+            return Boolean.TRUE;
+        }
+        // 换行宽度或X轴起始坐标未初始化
+        if (Objects.isNull(this.getContext().getWrapWidth()) || Objects.isNull(this.getBeginX())) {
+            return Boolean.FALSE;
+        }
+        // 换行宽度-X轴起始坐标是否小于0
+        return this.getContext().getWrapWidth() - this.getBeginX() < 0;
+    }
+
+    /**
+     * 是否分页
+     *
+     * @param component 当前组件
+     * @param beginY    Y轴起始坐标
+     * @return 返回布尔值，true为是，false为否
+     */
+    protected boolean isPaging(Component component, float beginY) {
+        // 获取分页标识
+        boolean flag = (
+                this.checkPaging(beginY) ||
+                        Optional.ofNullable(this.pagingCondition)
+                                .map(condition -> condition.isPaging(component, beginY))
+                                .orElse(false)
+        ) && this.isPagingComponent();
+        // 分页
+        if (flag) {
+            this.paging();
+        }
+        // 返回分页标识
+        return flag;
+    }
+
+    /**
+     * 是否分页组件
+     *
+     * @return 返回布尔值，true为是，false为否
+     */
+    protected boolean isPagingComponent() {
+        return Optional.ofNullable(this.getContext().getExecutingComponentType())
+                .map(ComponentType::isNotPageHeaderOrFooter)
+                .orElse(Boolean.FALSE);
+    }
+
+    /**
+     * 执行分页
+     */
+    protected void paging() {
+        // 处理分页
+        this.processBreak();
+        // 换行
+        this.wrap();
+        // // 初始化X轴坐标
+        // if (Objects.isNull(this.getBeginX())) {
+        //     this.setBeginX(this.getContext().getCursor().getX() + this.getMarginLeft(), Boolean.FALSE);
+        // }
+        // // 初始化Y轴坐标
+        // if (Objects.isNull(this.getBeginY())) {
+        //     this.setBeginY(this.getContext().getCursor().getY() - this.getMarginTop(), Boolean.FALSE);
+        // }
+    }
+
+    /**
+     * 重置
+     */
+    protected void reset(ComponentType type) {
+        // 重置X轴起始坐标
+        this.beginX = null;
+        // 重置Y轴起始坐标
+        this.beginY = null;
+        // 重置是否自定义X轴坐标
+        this.isCustomX = null;
+        // 重置是否自定义Y轴坐标
+        this.isCustomY = null;
+        // 重置换行起始坐标
+        this.getContext().setWrapBeginX(null);
+        // 重置当前执行组件类型
+        this.getContext().resetExecutingComponentType(type);
+    }
+
+    /**
+     * 检查分页
+     *
+     * @param beginY Y轴起始坐标
+     * @return 返回布尔值，true为是，false为否
+     */
+    protected boolean checkPaging(float beginY) {
+        // 获取页面下边距
+        float bottom = this.getBottom();
+        // Y轴坐标小于下边距+页面下边距
+        if (beginY < this.getMarginBottom() + bottom) {
+            // 返回true
+            return true;
+        }
+        // 返回false
+        return false;
+    }
+
+    /**
      * 处理分页
      */
     protected void processBreak() {
@@ -415,5 +415,19 @@ public abstract class AbstractComponent extends AbstractBaseFont implements Comp
     protected void resetXY() {
         this.beginX = null;
         this.beginY = null;
+    }
+
+    /**
+     * 重置换行宽度
+     */
+    protected void resetWrapWidth() {
+        // 获取组件类型
+        ComponentType type = this.getContext().getExecutingComponentType();
+        // 容器组件
+        if (Objects.nonNull(type) && ComponentType.CONTAINER == type) {
+            this.getContext().resetWrapWidth(this.getContext().getContainerInfo().getWidth());
+        } else {
+            this.getContext().resetWrapWidth(null);
+        }
     }
 }

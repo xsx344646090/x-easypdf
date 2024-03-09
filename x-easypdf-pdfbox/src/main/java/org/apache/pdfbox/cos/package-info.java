@@ -1,13 +1,8 @@
-package org.dromara.pdf.pdfbox.core.info;
-
-import lombok.Data;
-import org.dromara.pdf.pdfbox.core.base.Page;
-
 /**
- * 目录信息
+ * pdfbox重写
  *
  * @author xsx
- * @date 2023/9/5
+ * @date 2024/3/4
  * @since 1.8
  * <p>
  * Copyright (c) 2020 xsx All Rights Reserved.
@@ -21,31 +16,4 @@ import org.dromara.pdf.pdfbox.core.base.Page;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-@Data
-public class CatalogInfo {
-
-    /**
-     * 标题
-     */
-    private final String title;
-    /**
-     * 页面
-     */
-    private Page page;
-    /**
-     * X轴起始坐标
-     */
-    private Float beginX;
-    /**
-     * Y轴起始坐标
-     */
-    private Float beginY;
-    /**
-     * X轴起始坐标
-     */
-    private Float endX;
-    /**
-     * Y轴起始坐标
-     */
-    private Float endY;
-}
+package org.apache.pdfbox.cos;

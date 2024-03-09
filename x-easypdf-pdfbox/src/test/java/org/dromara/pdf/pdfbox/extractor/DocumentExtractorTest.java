@@ -31,6 +31,9 @@ import java.util.Map;
  */
 public class DocumentExtractorTest extends BaseTest {
 
+    /**
+     * 测试提取文本
+     */
     @Test
     public void extractTextTest() {
         this.test(() -> {
@@ -44,6 +47,9 @@ public class DocumentExtractorTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试正则提取文本
+     */
     @Test
     public void extractTextByRegexTest() {
         this.test(() -> {
@@ -57,6 +63,9 @@ public class DocumentExtractorTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试区域提取文本
+     */
     @Test
     public void extractTextByRegionAreaTest1() {
         this.test(() -> {
@@ -72,6 +81,9 @@ public class DocumentExtractorTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试区域提取文本
+     */
     @Test
     public void extractTextByRegionAreaTest2() {
         this.test(() -> {
@@ -88,6 +100,9 @@ public class DocumentExtractorTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试表格提取文本
+     */
     @Test
     public void extractTextForTableTest1() {
         this.test(() -> {
@@ -103,6 +118,9 @@ public class DocumentExtractorTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试表格提取文本
+     */
     @Test
     public void extractTextForTableTest2() {
         this.test(() -> {
@@ -119,6 +137,9 @@ public class DocumentExtractorTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试提取图片
+     */
     @Test
     public void extractImageTest() {
         this.test(() -> {
@@ -132,6 +153,9 @@ public class DocumentExtractorTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试提取表单文本
+     */
     @Test
     public void extractFormTextTest() {
         this.test(() -> {
@@ -145,6 +169,9 @@ public class DocumentExtractorTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试提取表单图片
+     */
     @Test
     public void extractFormImageTest() {
         this.test(() -> {
@@ -158,6 +185,9 @@ public class DocumentExtractorTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试提取表单字段
+     */
     @Test
     public void extractFormFieldTest() {
         this.test(() -> {
@@ -171,6 +201,9 @@ public class DocumentExtractorTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试提取评论
+     */
     @Test
     public void extractCommentTest() {
         this.test(() -> {
@@ -184,6 +217,9 @@ public class DocumentExtractorTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试正则提取评论
+     */
     @Test
     public void extractCommentByRegexTest() {
         this.test(() -> {
@@ -197,6 +233,9 @@ public class DocumentExtractorTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试提取书签
+     */
     @Test
     public void extractBookmarkTest() {
         this.test(() -> {

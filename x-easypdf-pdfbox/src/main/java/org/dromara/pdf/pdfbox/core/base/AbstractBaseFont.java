@@ -46,9 +46,17 @@ public abstract class AbstractBaseFont extends AbstractBaseBorder {
      */
     private Color fontColor;
     /**
+     * 字体透明度
+     */
+    private Float fontAlpha;
+    /**
      * 字体样式
      */
     private FontStyle fontStyle;
+    /**
+     * 字体斜率（斜体字）
+     */
+    private Float fontSlope;
     /**
      * 字符间距
      */
@@ -129,9 +137,21 @@ public abstract class AbstractBaseFont extends AbstractBaseBorder {
         if (Objects.isNull(this.fontColor)) {
             this.fontColor = base.fontColor;
         }
+        // 初始化字体透明度
+        if (Objects.isNull(this.fontAlpha)) {
+            this.fontAlpha = base.fontAlpha;
+        }
         // 初始化字体样式
         if (Objects.isNull(this.fontStyle)) {
             this.fontStyle = base.fontStyle;
+        }
+        // 初始化字体斜率
+        if (Objects.isNull(this.fontSlope)) {
+            if (this.fontStyle.isItalic()) {
+                this.fontSlope = 0.3F;
+            } else {
+                this.fontSlope = base.fontSlope;
+            }
         }
         // 初始化字符间距
         if (Objects.isNull(this.characterSpacing)) {

@@ -7,6 +7,8 @@ import org.dromara.pdf.pdfbox.core.ext.extractor.DocumentExtractor;
 import org.dromara.pdf.pdfbox.core.ext.processor.DocumentProcessor;
 
 /**
+ * pdf助手
+ *
  * @author xsx
  * @date 2023/6/1
  * @since 1.8

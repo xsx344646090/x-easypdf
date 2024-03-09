@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 import org.apache.pdfbox.util.Matrix;
 import org.dromara.pdf.pdfbox.core.base.*;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
@@ -63,6 +64,10 @@ public class TextareaWatermark extends AbstractBaseFont implements Watermark {
      * 文本列表
      */
     private List<String> textList;
+    /**
+     * 旋转角度
+     */
+    private Float angle;
 
     /**
      * 有参构造
@@ -138,6 +143,10 @@ public class TextareaWatermark extends AbstractBaseFont implements Watermark {
         // 初始化制表符大小
         if (Objects.isNull(this.tabSize)) {
             this.tabSize = 4;
+        }
+        // 初始化旋转角度
+        if (Objects.isNull(this.angle)) {
+            this.angle = 0F;
         }
     }
 
@@ -216,8 +225,8 @@ public class TextareaWatermark extends AbstractBaseFont implements Watermark {
                 for (String text : this.getTextList()) {
                     // 开始写入
                     stream.beginText();
-                    // 初始化字体颜色
-                    this.initFontColor(stream);
+                    // 初始化字体颜色及透明度
+                    this.initFontColorAndAlpha(stream);
                     // 初始化位置
                     this.initPosition(stream, beginX, beginY);
                     // 获取写入文本
@@ -282,21 +291,29 @@ public class TextareaWatermark extends AbstractBaseFont implements Watermark {
     }
 
     /**
-     * 初始化字体颜色
+     * 初始化字体颜色及透明度
      *
      * @param stream pdfbox内容流
      */
     @SneakyThrows
-    protected void initFontColor(PDPageContentStream stream) {
+    protected void initFontColorAndAlpha(PDPageContentStream stream) {
+        // 创建扩展图形状态
+        PDExtendedGraphicsState state = new PDExtendedGraphicsState();
+        // 设置图形状态参数
+        stream.setGraphicsStateParameters(state);
         // 填充
         if (this.getFontStyle().isFill()) {
             // 设置字体颜色
             stream.setNonStrokingColor(this.getFontColor());
+            // 设置透明度
+            state.setNonStrokingAlphaConstant(this.getFontAlpha());
         }
         // 空心
         if (this.getFontStyle().isStroke()) {
             // 设置字体颜色
             stream.setStrokingColor(this.getFontColor());
+            // 设置透明度
+            state.setStrokingAlphaConstant(this.getFontAlpha());
         }
         // 细体
         if (this.getFontStyle().isLight()) {
@@ -304,6 +321,8 @@ public class TextareaWatermark extends AbstractBaseFont implements Watermark {
             stream.setStrokingColor(this.getBackgroundColor());
             // 设置字体颜色
             stream.setNonStrokingColor(this.getFontColor());
+            // 设置透明度
+            state.setNonStrokingAlphaConstant(this.getFontAlpha());
         }
     }
 
@@ -316,13 +335,11 @@ public class TextareaWatermark extends AbstractBaseFont implements Watermark {
      */
     @SneakyThrows
     protected void initPosition(PDPageContentStream stream, float beginX, float beginY) {
-        // 斜体
-        if (this.getFontStyle().isItalic()) {
-            // 设置文本矩阵
-            stream.setTextMatrix(new Matrix(1, 0, 0.3F, 1, beginX, beginY));
-        } else {
-            // 设置文本定位
-            stream.newLineAtOffset(beginX, beginY);
-        }
+        // 创建矩阵
+        Matrix matrix = new Matrix(1, 0, this.getFontSlope(), 1, beginX, beginY);
+        // 设置旋转
+        matrix.rotate(Math.toRadians(this.getAngle()));
+        // 设置文本矩阵
+        stream.setTextMatrix(matrix);
     }
 }

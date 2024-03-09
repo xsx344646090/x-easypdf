@@ -132,6 +132,9 @@ public class TextUtil {
      */
     @SneakyThrows
     public static float getTextRealWidth(String text, PDFont font, float fontSize, float characterSpacing) {
+        if (Objects.isNull(text)) {
+            return 0F;
+        }
         return fontSize * font.getStringWidth(text) / 1000 + (text.length() - 1) * characterSpacing;
     }
 

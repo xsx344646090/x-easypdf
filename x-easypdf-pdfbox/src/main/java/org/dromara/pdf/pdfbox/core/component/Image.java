@@ -58,6 +58,10 @@ public class Image extends AbstractComponent {
      * 旋转角度
      */
     private Float angle;
+    /**
+     * 缩放比例
+     */
+    private Float scale;
 
     /**
      * 有参构造
@@ -203,29 +207,20 @@ public class Image extends AbstractComponent {
      * 初始化宽度与高度
      */
     protected void initWidthAndHeight() {
+        // 初始化缩放比例
+        if (Objects.isNull(this.scale)) {
+            // 初始化缩放比例
+            this.scale = 1F;
+        }
         // 初始化宽度
         if (Objects.isNull(this.width)) {
             // 初始化宽度
-            this.width = this.image.getWidth();
-        }
-        // 获取最大宽度
-        int maxWidth = this.getContext().getWrapWidth().intValue();
-        // 图片宽度大于最大宽度，则重置
-        if (this.width > maxWidth) {
-            // 重置图片宽度
-            this.width = maxWidth;
+            this.width = (int) (this.image.getWidth() * this.scale);
         }
         // 初始化高度
         if (Objects.isNull(this.height)) {
             // 初始化高度
-            this.height = this.image.getHeight();
-        }
-        // 获取最大高度
-        int maxHeight = (int) (this.getBeginY() - this.getMarginBottom() - this.getContext().getPage().getMarginBottom());
-        // 图片宽度大于最大高度，则重置
-        if (this.height > maxHeight) {
-            // 重置图片高度
-            this.height = maxHeight;
+            this.height = (int) (this.image.getHeight() * this.scale);
         }
     }
 

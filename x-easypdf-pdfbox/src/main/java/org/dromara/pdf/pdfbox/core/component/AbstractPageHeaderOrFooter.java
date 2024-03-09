@@ -227,6 +227,8 @@ public abstract class AbstractPageHeaderOrFooter extends AbstractBaseBorder {
         this.getContext().resetExecutingComponentType(this.getType());
         // 重置换行宽度
         this.getContext().setWrapWidth(this.getContext().getPage().getWithoutMarginWidth());
+        // 重置换行起始坐标
+        this.getContext().setWrapBeginX(this.getContext().getPage().getMarginLeft());
     }
 
     /**

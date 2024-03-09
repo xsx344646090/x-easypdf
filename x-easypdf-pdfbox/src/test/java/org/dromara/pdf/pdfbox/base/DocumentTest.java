@@ -5,14 +5,9 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.dromara.pdf.pdfbox.core.base.Document;
-import org.dromara.pdf.pdfbox.core.base.MemoryPolicy;
-import org.dromara.pdf.pdfbox.core.base.Page;
-import org.dromara.pdf.pdfbox.core.base.PageSize;
+import org.dromara.pdf.pdfbox.core.base.*;
 import org.dromara.pdf.pdfbox.core.component.Container;
-import org.dromara.pdf.pdfbox.core.component.PageFooter;
-import org.dromara.pdf.pdfbox.core.component.PageHeader;
-import org.dromara.pdf.pdfbox.core.component.Textarea;
+import org.dromara.pdf.pdfbox.core.component.*;
 import org.dromara.pdf.pdfbox.core.enums.PWLength;
 import org.dromara.pdf.pdfbox.core.info.CatalogInfo;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
@@ -44,6 +39,9 @@ import java.util.*;
  */
 public class DocumentTest extends BaseTest {
 
+    /**
+     * 测试原生pdfbox
+     */
     @Test
     public void pdfboxTest() {
         this.test(() -> {
@@ -71,6 +69,9 @@ public class DocumentTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试读取文档
+     */
     @Test
     public void loadTest() {
         this.test(() -> {
@@ -113,6 +114,9 @@ public class DocumentTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试修改版本
+     */
     @Test
     public void versionTest() {
         this.test(() -> {
@@ -123,6 +127,9 @@ public class DocumentTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试加密
+     */
     @Test
     public void encryptionTest() {
         this.test(() -> {
@@ -133,6 +140,9 @@ public class DocumentTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试解密
+     */
     @Test
     public void decryptTest() {
         this.test(() -> {
@@ -146,6 +156,9 @@ public class DocumentTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试插入页面
+     */
     @Test
     public void insertPageTest() {
         this.test(() -> {
@@ -161,6 +174,9 @@ public class DocumentTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试追加页面
+     */
     @Test
     public void appendPageTest() {
         this.test(() -> {
@@ -174,6 +190,9 @@ public class DocumentTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试替换页面
+     */
     @Test
     public void setPageTest() {
         this.test(() -> {
@@ -187,6 +206,9 @@ public class DocumentTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试创建页面
+     */
     @Test
     public void createPageTest() {
         this.test(() -> {
@@ -202,6 +224,9 @@ public class DocumentTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试获取当前页面
+     */
     @Test
     public void getCurrentPageTest() {
         this.test(() -> {
@@ -225,37 +250,78 @@ public class DocumentTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试目录
+     */
     @Test
     public void getCatalogsTest() {
         this.test(() -> {
             Document document = PdfHandler.getDocumentHandler().create();
+            document.setMargin(50F);
+            document.setFontSize(12F);
 
-            Page page1 = document.createPage();
+            Page page1 = document.createPage(PageSize.A4);
 
             Textarea textarea1 = new Textarea(page1);
-            textarea1.setText("Catalog-Title1");
-            textarea1.setCatalog(new CatalogInfo("Catalog-Title1"));
+            textarea1.setLeading(12F);
+            textarea1.setTextList(Arrays.asList("第一页，爽爽的贵阳", "避暑的天堂"));
+            textarea1.setCatalog(new CatalogInfo("第一页，爽爽的贵阳，避暑的天堂"));
             textarea1.render();
 
-            Page page2 = document.createPage();
+            Page page2 = document.createPage(PageSize.A4);
 
             Textarea textarea2 = new Textarea(page2);
-            textarea2.setText("Catalog-Title2");
-            textarea2.setCatalog(new CatalogInfo("Catalog-Title2"));
+            textarea2.setLeading(12F);
+            textarea2.setTextList(Arrays.asList("第二页，爽爽的贵阳", "避暑的天堂"));
+            textarea2.setCatalog(new CatalogInfo("第二页，爽爽的贵阳，避暑的天堂"));
             textarea2.render();
 
-            document.appendPage(page1);
-            document.appendPage(page2);
+            document.appendPage(page1, page2);
 
-            document.flushCatalog();
+            Page catalogPage = document.createPage(PageSize.A4);
+            Textarea textarea = new Textarea(catalogPage);
+            textarea.setText("目录");
+            textarea.setFontSize(20F);
+            textarea.render();
 
             List<CatalogInfo> catalogs = document.getCatalogs();
-            catalogs.forEach(log::info);
+            for (CatalogInfo catalog : catalogs) {
+                InnerDest dest = new InnerDest();
+                dest.setPage(catalog.getPage());
+                dest.setTopY(catalog.getBeginY().intValue());
 
+                Textarea content = new Textarea(catalogPage);
+                content.setMarginTop(10F);
+                content.setText(catalog.getTitle());
+                content.setInnerDest(dest);
+                content.setIsWrap(true);
+                content.render();
+
+                SplitLine splitLine = new SplitLine(catalogPage);
+                splitLine.setRelativeBeginY(-5F);
+                splitLine.setDottedLength(2F);
+                splitLine.setDottedSpacing(1F);
+                splitLine.setMarginLeft(20F);
+                splitLine.setMarginRight(20F);
+                splitLine.setLineLength(260F);
+                splitLine.render();
+
+                Textarea contentPageIndex = new Textarea(catalogPage);
+                contentPageIndex.setText(String.valueOf((catalog.getPage().getIndex() + 1)));
+                contentPageIndex.render();
+
+                log.info(catalog);
+            }
+
+            document.insertPage(0, catalogPage);
+            document.save("E:\\PDF\\pdfbox\\catalogTest.pdf");
             document.close();
         });
     }
 
+    /**
+     * 测试大数据
+     */
     @Test
     public void bigDataTest1() {
         // 单次渲染耗时：2.417s 页面数：290 耗时：3.369s 大小：448KB
@@ -283,6 +349,9 @@ public class DocumentTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试大数据
+     */
     @Test
     public void bigDataTest2() {
         // 单次渲染耗时：0.022s 页面数：300 耗时：3.321s 大小：446KB
@@ -315,13 +384,16 @@ public class DocumentTest extends BaseTest {
         });
     }
 
+    /**
+     * 测试总页数
+     */
     @Test
     public void totalPageNumberTest() {
         this.test(() -> {
             Document document = this.create(null);
 
             int totalPageNumber = document.getTotalPageNumber();
-            System.out.println("totalPageNumber = " + totalPageNumber);
+            log.info("总页数： " + totalPageNumber);
 
             document.close();
             document = this.create(totalPageNumber);
@@ -330,6 +402,9 @@ public class DocumentTest extends BaseTest {
         });
     }
 
+    /**
+     * 创建文档
+     */
     private Document create(Integer totalPage) {
         Document document = PdfHandler.getDocumentHandler().create();
         document.setMargin(50F);
