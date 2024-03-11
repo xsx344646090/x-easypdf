@@ -1,0 +1,56 @@
+package org.dromara.pdf.pdfbox.core.ext.analyzer;
+
+import lombok.SneakyThrows;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
+import org.dromara.pdf.pdfbox.core.base.Document;
+
+import java.util.List;
+
+/**
+ * 评论分析器
+ *
+ * @author xsx
+ * @date 2023/10/25
+ * @since 1.8
+ * <p>
+ * Copyright (c) 2020 xsx All Rights Reserved.
+ * x-easypdf-pdfbox is licensed under Mulan PSL v2.
+ * You can use this software according to the terms and conditions of the Mulan PSL v2.
+ * You may obtain a copy of Mulan PSL v2 at:
+ * http://license.coscl.org.cn/MulanPSL2
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+ * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+ * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * See the Mulan PSL v2 for more details.
+ * </p>
+ */
+public class CommentAnalyzer extends AbstractCommentAnalyzer {
+
+    /**
+     * 有参构造
+     *
+     * @param document 文档
+     */
+    public CommentAnalyzer(Document document) {
+        super(document);
+    }
+
+    /**
+     * 处理评论
+     *
+     * @param pageIndex 页面索引
+     * @param page      页面
+     */
+    @SneakyThrows
+    @Override
+    public void processComment(int pageIndex, PDPage page) {
+        // 获取页面注解
+        List<PDAnnotation> annotations = page.getAnnotations();
+        // 遍历页面注解
+        for (PDAnnotation annotation : annotations) {
+            // 处理评论
+            this.processComment(pageIndex, page, annotation);
+        }
+    }
+}

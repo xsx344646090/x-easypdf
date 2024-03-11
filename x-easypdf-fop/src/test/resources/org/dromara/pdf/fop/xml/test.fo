@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><!--根标签-->
 <fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format"
          xmlns:fox="http://xmlgraphics.apache.org/fop/extensions"
-         xmlns:svg="http://www.w3.org/2000/svg"
          xmlns:xe="http://www.x-easypdf.cn/ns">
     <!--页面模板-->
     <fo:layout-master-set>
