@@ -15,6 +15,9 @@
         <fo:flow flow-name="xsl-region-body">
             <!--块-->
             <fo:block text-align="center" th:text="${data}"/>
+            <fo:block th:each="signature:${signatureList}">
+                <fo:external-graphic th:src="${signature.nameUrl}"/>
+            </fo:block>
         </fo:flow>
     </fo:page-sequence>
 </fo:root>

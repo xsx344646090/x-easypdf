@@ -1,18 +1,216 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--根标签-->
-<fo:root xmlns="http://www.w3.org/2001/XMLSchema"
-         xmlns:fo="http://www.w3.org/1999/XSL/Format"
-         xmlns:fox="http://xmlgraphics.apache.org/fop/extensions"
-         xmlns:xe="http://www.x-easypdf.cn/ns"
-         xmlns:svg="http://www.w3.org/2000/svg">
+<?xml version="1.0" encoding="UTF-8"?><!--根标签-->
+<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format"
+>
+    <!--页面模板-->
     <fo:layout-master-set>
-        <fo:simple-page-master master-name="page">
+        <fo:simple-page-master master-name="page1" page-height="29.7cm" page-width="21cm">
             <fo:region-body/>
+            <fo:region-before/>
+            <fo:region-after/>
+            <fo:region-start/>
+            <fo:region-end/>
         </fo:simple-page-master>
     </fo:layout-master-set>
-    <fo:page-sequence master-reference="page">
+    <fo:page-sequence master-reference="page1">
         <fo:flow flow-name="xsl-region-body">
-            <fo:block>hello</fo:block>
+            <fo:block>
+                <fo:table table-layout="fixed">
+                    <fo:table-body>
+                        <fo:table-row>
+                            <fo:table-cell border-color="black" border-width="1pt" margin="0" padding="0">
+                                <fo:block text-align="center">
+                                    <fo:inline>1</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell border-color="black" border-width="1pt" margin="0" padding="0">
+                                <fo:block text-align="center">
+                                    <fo:inline>2</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                        </fo:table-row>
+                    </fo:table-body>
+                </fo:table>
+            </fo:block>
+            <fo:block>
+                <fo:table border-collapse="separate" table-layout="fixed">
+                    <fo:table-body>
+                        <fo:table-row border-style="none">
+                            <fo:table-cell margin="0" padding="0">
+                                <fo:block text-align="center">
+                                    <fo:inline>NONE</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell margin="0" padding="0">
+                                <fo:block text-align="center">
+                                    <fo:inline>NONE</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                        </fo:table-row>
+                    </fo:table-body>
+                </fo:table>
+            </fo:block>
+            <fo:block>
+                <fo:table border-collapse="separate" table-layout="fixed">
+                    <fo:table-body>
+                        <fo:table-row border-style="hidden">
+                            <fo:table-cell margin="0" padding="0">
+                                <fo:block text-align="center">
+                                    <fo:inline>HIDDEN</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell margin="0" padding="0">
+                                <fo:block text-align="center">
+                                    <fo:inline>HIDDEN</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                        </fo:table-row>
+                    </fo:table-body>
+                </fo:table>
+            </fo:block>
+            <fo:block>
+                <fo:table border-collapse="separate" table-layout="fixed">
+                    <fo:table-body>
+                        <fo:table-row border-style="dotted">
+                            <fo:table-cell margin="0" padding="0">
+                                <fo:block text-align="center">
+                                    <fo:inline>DOTTED</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell margin="0" padding="0">
+                                <fo:block text-align="center">
+                                    <fo:inline>DOTTED</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                        </fo:table-row>
+                    </fo:table-body>
+                </fo:table>
+            </fo:block>
+            <fo:block>
+                <fo:table border-collapse="separate" table-layout="fixed">
+                    <fo:table-body>
+                        <fo:table-row border-style="dashed">
+                            <fo:table-cell margin="0" padding="0">
+                                <fo:block text-align="center">
+                                    <fo:inline>DASHED</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell margin="0" padding="0">
+                                <fo:block text-align="center">
+                                    <fo:inline>DASHED</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                        </fo:table-row>
+                    </fo:table-body>
+                </fo:table>
+            </fo:block>
+            <fo:block>
+                <fo:table border-collapse="separate" table-layout="fixed">
+                    <fo:table-body>
+                        <fo:table-row border-style="solid">
+                            <fo:table-cell margin="0" padding="0">
+                                <fo:block text-align="center">
+                                    <fo:inline>SOLID</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell margin="0" padding="0">
+                                <fo:block text-align="center">
+                                    <fo:inline>SOLID</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                        </fo:table-row>
+                    </fo:table-body>
+                </fo:table>
+            </fo:block>
+            <fo:block>
+                <fo:table border-collapse="separate" table-layout="fixed">
+                    <fo:table-body>
+                        <fo:table-row border-style="double">
+                            <fo:table-cell margin="0" padding="0">
+                                <fo:block text-align="center">
+                                    <fo:inline>DOUBLE</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell margin="0" padding="0">
+                                <fo:block text-align="center">
+                                    <fo:inline>DOUBLE</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                        </fo:table-row>
+                    </fo:table-body>
+                </fo:table>
+            </fo:block>
+            <fo:block>
+                <fo:table border-collapse="separate" table-layout="fixed">
+                    <fo:table-body>
+                        <fo:table-row border-style="groove">
+                            <fo:table-cell margin="0" padding="0">
+                                <fo:block text-align="center">
+                                    <fo:inline>GROOVE</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell margin="0" padding="0">
+                                <fo:block text-align="center">
+                                    <fo:inline>GROOVE</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                        </fo:table-row>
+                    </fo:table-body>
+                </fo:table>
+            </fo:block>
+            <fo:block>
+                <fo:table border-collapse="separate" table-layout="fixed">
+                    <fo:table-body>
+                        <fo:table-row border-style="ridge">
+                            <fo:table-cell margin="0" padding="0">
+                                <fo:block text-align="center">
+                                    <fo:inline>RIDGE</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell margin="0" padding="0">
+                                <fo:block text-align="center">
+                                    <fo:inline>RIDGE</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                        </fo:table-row>
+                    </fo:table-body>
+                </fo:table>
+            </fo:block>
+            <fo:block>
+                <fo:table border-collapse="separate" table-layout="fixed">
+                    <fo:table-body>
+                        <fo:table-row border-style="inset">
+                            <fo:table-cell margin="0" padding="0">
+                                <fo:block text-align="center">
+                                    <fo:inline>INSET</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell margin="0" padding="0">
+                                <fo:block text-align="center">
+                                    <fo:inline>INSET</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                        </fo:table-row>
+                    </fo:table-body>
+                </fo:table>
+            </fo:block>
+            <fo:block>
+                <fo:table border-collapse="separate" table-layout="fixed">
+                    <fo:table-body>
+                        <fo:table-row border-style="outset">
+                            <fo:table-cell margin="0" padding="0">
+                                <fo:block text-align="center">
+                                    <fo:inline>OUTSET</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell margin="0" padding="0">
+                                <fo:block text-align="center">
+                                    <fo:inline>OUTSET</fo:inline>
+                                </fo:block>
+                            </fo:table-cell>
+                        </fo:table-row>
+                    </fo:table-body>
+                </fo:table>
+            </fo:block>
         </fo:flow>
     </fo:page-sequence>
 </fo:root>
