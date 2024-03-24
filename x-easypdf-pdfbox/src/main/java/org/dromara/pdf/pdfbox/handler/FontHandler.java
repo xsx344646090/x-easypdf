@@ -163,6 +163,7 @@ public class FontHandler {
      * @param font pdfbox字体
      * @param text 文本
      */
+    @SuppressWarnings("unchecked")
     @SneakyThrows
     public void addToSubset(PDDocument document, PDFont font, String text) {
         // 如果字体不为空且字体为子集，则添加文本到子集
@@ -184,6 +185,5 @@ public class FontHandler {
             method.setAccessible(true);
             ((Set<PDFont>) method.invoke(document)).add(font);
         }
-
     }
 }

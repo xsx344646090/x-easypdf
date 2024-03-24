@@ -14,6 +14,7 @@ import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
@@ -70,13 +71,7 @@ public class BarcodePreloader extends AbstractImagePreloader {
                 // 初始化条形码配置
                 BarCodeConfig config = BarCodeConfig.init(barcode.getAttributes());
                 // 生成条形码uri
-                String uri = String.join(
-                        "-",
-                        config.getType().name(),
-                        config.getWidth().toString(),
-                        config.getHeight().toString(),
-                        config.getContent()
-                ).intern();
+                String uri = new String(MessageDigest.getInstance("MD5").digest(config.toString().getBytes())).intern();
                 // 创建图像信息
                 ImageInfo imageInfo = new ImageInfo(uri, BarcodeImageHandler.MIME_TYPE);
                 // 添加条形码图像
