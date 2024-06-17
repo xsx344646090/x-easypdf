@@ -3,7 +3,6 @@ package org.dromara.pdf.pdfbox.component;
 import org.dromara.pdf.pdfbox.base.BaseTest;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.base.Page;
-import org.dromara.pdf.pdfbox.core.base.PageSize;
 import org.dromara.pdf.pdfbox.core.component.TextareaWatermark;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.junit.Test;
@@ -35,8 +34,8 @@ public class TextareaWatermarkTest extends BaseTest {
     public void documentTest() {
         this.test(() -> {
             Document document = PdfHandler.getDocumentHandler().create();
-            document.appendPage(document.createPage(PageSize.A4));
-            document.appendPage(document.createPage(PageSize.A4));
+            document.appendPage(new Page(document));
+            document.appendPage(new Page(document));
 
             TextareaWatermark watermark = new TextareaWatermark(document);
             watermark.setTextList(Arrays.asList("test\ttest", "test123"));
@@ -58,9 +57,9 @@ public class TextareaWatermarkTest extends BaseTest {
     @Test
     public void pageTest() {
         Document document = PdfHandler.getDocumentHandler().create();
-        Page page = document.createPage(PageSize.A4);
+        Page page = new Page(document);
         document.appendPage(page);
-        document.appendPage(document.createPage(PageSize.A4));
+        document.appendPage(new Page(document));
 
         TextareaWatermark watermark = new TextareaWatermark(document);
         watermark.setTextList(Arrays.asList("test\ttest", "test123"));

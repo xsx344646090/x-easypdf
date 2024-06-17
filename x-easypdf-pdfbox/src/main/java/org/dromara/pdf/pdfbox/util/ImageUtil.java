@@ -64,7 +64,7 @@ public class ImageUtil {
         // 如果图片数据流为空，则提示错误信息
         Objects.requireNonNull(imageStream, "the image stream can not be null");
         // 读取图片
-        return ImageIO.read(imageStream);
+        return ImageIO.read(new BufferedInputStream(imageStream));
     }
 
     /**
@@ -180,8 +180,8 @@ public class ImageUtil {
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             // 写入图片
             ImageIOUtil.writeImage(sourceImage, imageType, outputStream);
-            // 返回字节数组输入流
-            return new ByteArrayInputStream(outputStream.toByteArray());
+            // 返回输入流
+            return new BufferedInputStream(new ByteArrayInputStream(outputStream.toByteArray()));
         }
     }
 

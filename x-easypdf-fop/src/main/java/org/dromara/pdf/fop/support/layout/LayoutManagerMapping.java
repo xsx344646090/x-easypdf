@@ -41,14 +41,14 @@ import java.util.*;
  * </p>
  */
 @Slf4j
-public class LayoutManagerMapping implements LayoutManagerMaker {
+public class LayoutManagerMapping implements ExpandLayoutManagerMaker {
 
     /**
      * The map of LayoutManagerMakers
      */
-    private final Map<Object, Object> makers = new HashMap<>();
+    protected final Map<Object, Object> makers = new HashMap<>();
 
-    private FOUserAgent userAgent;
+    protected FOUserAgent userAgent;
 
     /**
      * default constructor
@@ -57,11 +57,12 @@ public class LayoutManagerMapping implements LayoutManagerMaker {
     }
 
     /**
-     * Initializes the set of maker objects associated with this XEasyPdfTemplateLayoutManagerMapping
+     * Initializes the set of maker objects associated with this LayoutManagerMapping
      */
+    @Override
     public void initialize(FOUserAgent userAgent) {
         this.userAgent = userAgent;
-        registerMaker(FOText.class, new FOTextLayoutManagerMaker());
+        registerMaker(FOText.class, new TextLayoutManagerMaker());
         registerMaker(FObjMixed.class, new Maker());
         registerMaker(BidiOverride.class, new BidiOverrideLayoutManagerMaker());
         registerMaker(Inline.class, new InlineLayoutManagerMaker());
@@ -132,7 +133,7 @@ public class LayoutManagerMapping implements LayoutManagerMaker {
     public LayoutManager makeLayoutManager(FONode node) {
         List<Object> lms = new ArrayList<>();
         makeLayoutManagers(node, lms);
-        if (lms.size() == 0) {
+        if (lms.isEmpty()) {
             throw new IllegalStateException("LayoutManager for class " + node.getClass() + " is missing.");
         } else if (lms.size() > 1) {
             throw new IllegalStateException("Duplicate LayoutManagers for class " + node.getClass() + " found, only one may be declared.");
@@ -200,7 +201,7 @@ public class LayoutManagerMapping implements LayoutManagerMaker {
     /**
      * a layout manager maker
      */
-    public static class FOTextLayoutManagerMaker extends Maker {
+    public static class TextLayoutManagerMaker extends Maker {
         /**
          * {@inheritDoc}
          */
@@ -322,7 +323,7 @@ public class LayoutManagerMapping implements LayoutManagerMaker {
          */
         public void make(FONode node, List<Object> lms, FOUserAgent userAgent) {
             ExternalGraphic eg = (ExternalGraphic) node;
-            if (!eg.getSrc().equals("")) {
+            if (!"".equals(eg.getSrc())) {
                 lms.add(new ExternalGraphicLayoutManager(eg));
             }
         }

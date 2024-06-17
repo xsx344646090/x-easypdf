@@ -7,10 +7,10 @@ import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.util.Matrix;
-import org.dromara.pdf.pdfbox.core.base.AbstractBaseBorder;
-import org.dromara.pdf.pdfbox.core.base.ComponentType;
+import org.dromara.pdf.pdfbox.core.base.AbstractBase;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.base.Page;
+import org.dromara.pdf.pdfbox.core.enums.ComponentType;
 import org.dromara.pdf.pdfbox.util.ImageUtil;
 
 import java.io.BufferedInputStream;
@@ -40,7 +40,7 @@ import java.util.Objects;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ImageWatermark extends AbstractBaseBorder implements Watermark {
+public class ImageWatermark extends AbstractBase implements Watermark {
 
     /**
      * 自定义起始X轴坐标
@@ -170,47 +170,6 @@ public class ImageWatermark extends AbstractBaseBorder implements Watermark {
     }
 
     /**
-     * 初始化基础
-     */
-    @Override
-    public void initBase() {
-        // 检查图像
-        Objects.requireNonNull(this.image, "the image can not be null");
-        // 初始化当前执行组件类型
-        if (Objects.isNull(this.getContext().getExecutingComponentType())) {
-            this.getContext().setExecutingComponentType(this.getType());
-        }
-        // 初始化宽度
-        if (Objects.isNull(this.width)) {
-            this.width = this.image.getWidth();
-        }
-        // 初始化高度
-        if (Objects.isNull(this.height)) {
-            this.height = this.image.getHeight();
-        }
-        // 初始化行数
-        if (Objects.isNull(this.lines)) {
-            this.lines = 1;
-        }
-        // 初始化每行图像数
-        if (Objects.isNull(this.countOfLine)) {
-            this.countOfLine = 1;
-        }
-        // 初始化行间距
-        if (Objects.isNull(this.leading)) {
-            this.leading = Float.valueOf(this.height);
-        }
-        // 初始化每行图像间距
-        if (Objects.isNull(this.spacingOfLine)) {
-            this.spacingOfLine = Float.valueOf(this.width);
-        }
-        // 初始化旋转角度
-        if (Objects.isNull(this.angle)) {
-            this.angle = 0F;
-        }
-    }
-
-    /**
      * 渲染
      *
      * @param page 页面
@@ -244,10 +203,42 @@ public class ImageWatermark extends AbstractBaseBorder implements Watermark {
      * @param page 页面
      */
     protected void init(Page page) {
+        // 检查图像
+        Objects.requireNonNull(this.image, "the image can not be null");
         // 初始化参数
-        super.init(page, false);
-        // 初始化基础
-        this.initBase();
+        super.init(page);
+        // 初始化当前执行组件类型
+        if (Objects.isNull(this.getContext().getExecutingComponentType())) {
+            this.getContext().setExecutingComponentType(this.getType());
+        }
+        // 初始化宽度
+        if (Objects.isNull(this.width)) {
+            this.width = this.image.getWidth();
+        }
+        // 初始化高度
+        if (Objects.isNull(this.height)) {
+            this.height = this.image.getHeight();
+        }
+        // 初始化行数
+        if (Objects.isNull(this.lines)) {
+            this.lines = 1;
+        }
+        // 初始化每行图像数
+        if (Objects.isNull(this.countOfLine)) {
+            this.countOfLine = 1;
+        }
+        // 初始化行间距
+        if (Objects.isNull(this.leading)) {
+            this.leading = Float.valueOf(this.height);
+        }
+        // 初始化每行图像间距
+        if (Objects.isNull(this.spacingOfLine)) {
+            this.spacingOfLine = Float.valueOf(this.width);
+        }
+        // 初始化旋转角度
+        if (Objects.isNull(this.angle)) {
+            this.angle = 0F;
+        }
         // 初始化自定义起始X轴坐标
         if (Objects.isNull(this.beginX)) {
             this.beginX = 0F;

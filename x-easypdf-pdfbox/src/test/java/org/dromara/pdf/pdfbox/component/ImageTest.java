@@ -4,7 +4,6 @@ import org.dromara.pdf.pdfbox.base.BaseTest;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.base.MemoryPolicy;
 import org.dromara.pdf.pdfbox.core.base.Page;
-import org.dromara.pdf.pdfbox.core.base.PageSize;
 import org.dromara.pdf.pdfbox.core.component.Image;
 import org.dromara.pdf.pdfbox.core.component.Textarea;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
@@ -39,15 +38,19 @@ public class ImageTest extends BaseTest {
     public void pngTest() {
         this.test(() -> {
             Document document = PdfHandler.getDocumentHandler().create();
-            document.setMargin(50F);
+            // document.setMargin(50F);
 
-            Page page = document.createPage(PageSize.A4);
+            Page page = new Page(document);
 
             Image image = new Image(page);
             image.setImage(Paths.get("E:\\PDF\\pdfbox\\image\\test.png").toFile());
             image.setWidth(100);
             image.setHeight(100);
-            image.setAngle(45F);
+            // image.setAngle(45F);
+            image.setBeginX(0F);
+            image.setBeginY(0F);
+            // image.setHorizontalAlignment(HorizontalAlignment.CENTER);
+            image.setIsBorder(true);
             image.render();
 
             document.appendPage(page);
@@ -65,7 +68,7 @@ public class ImageTest extends BaseTest {
             Document document = PdfHandler.getDocumentHandler().create();
             document.setMargin(50F);
 
-            Page page = document.createPage(PageSize.A4);
+            Page page = new Page(document);
 
             Image image = new Image(page);
             image.setImage(Paths.get("E:\\PDF\\pdfbox\\image\\test.jpg").toFile());
@@ -86,7 +89,7 @@ public class ImageTest extends BaseTest {
             Document document = PdfHandler.getDocumentHandler().create();
             document.setMargin(50F);
 
-            Page page = document.createPage(PageSize.A4);
+            Page page = new Page(document);
 
             Image image = new Image(page);
             image.setImage(new File("E:\\PDF\\pdfbox\\image\\test.svg"));
@@ -107,7 +110,7 @@ public class ImageTest extends BaseTest {
             Document document = PdfHandler.getDocumentHandler().create();
             document.setMargin(50F);
 
-            Page page = document.createPage(PageSize.A4);
+            Page page = new Page(document);
 
             Image image = new Image(page);
             image.setWidth(200);
@@ -130,7 +133,7 @@ public class ImageTest extends BaseTest {
             Document document = PdfHandler.getDocumentHandler().create();
             document.setMargin(50F);
 
-            Page page = document.createPage(PageSize.A4);
+            Page page = new Page(document);
 
             Textarea leftTextarea = new Textarea(page);
             leftTextarea.setText("左侧文本");
@@ -164,7 +167,7 @@ public class ImageTest extends BaseTest {
             Document document = PdfHandler.getDocumentHandler().create(MemoryPolicy.setupTempFileOnly());
             document.setMargin(50F);
 
-            Page page = document.createPage(PageSize.A4);
+            Page page = new Page(document);
             int width = page.getWidth().intValue();
             int height = page.getHeight().intValue();
 

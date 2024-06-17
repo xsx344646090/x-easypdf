@@ -4,13 +4,19 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.dromara.pdf.pdfbox.core.base.*;
+import org.dromara.pdf.pdfbox.core.base.AbstractPagingEvent;
+import org.dromara.pdf.pdfbox.core.base.Context;
+import org.dromara.pdf.pdfbox.core.base.Page;
+import org.dromara.pdf.pdfbox.core.base.PagingEvent;
+import org.dromara.pdf.pdfbox.core.enums.ComponentType;
 import org.dromara.pdf.pdfbox.util.BorderUtil;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /**
  * 容器组件
@@ -75,15 +81,6 @@ public class Container extends AbstractComponent {
     }
 
     /**
-     * 获取分页事件
-     *
-     * @return 返回分页事件
-     */
-    public PagingEvent getPagingEvent() {
-        return this.pagingEvent;
-    }
-
-    /**
      * 初始化
      */
     @Override
@@ -96,8 +93,6 @@ public class Container extends AbstractComponent {
         super.init();
         // 初始化其他
         this.initOthers();
-        // 重置X轴起始坐标
-        this.getContext().getCursor().setX(this.getBeginX());
     }
 
     /**
@@ -106,28 +101,7 @@ public class Container extends AbstractComponent {
     @Override
     @SneakyThrows
     public void virtualRender() {
-        // 初始化
-        this.init();
-        // 设置虚拟分页事件
-        this.setPagingEvent(new DefaultContainerVirtualPagingEvent());
-        // 非自定义Y轴
-        if (!this.getIsCustomY()) {
-            // 检查分页
-            if (this.isPaging(this, this.getBeginY())) {
-                // 重置容器信息Y轴起始坐标
-                this.getContext().getContainerInfo().setBeginY(this.getContext().getCursor().getY());
-            }
-        }
-        // 渲染之前X轴坐标
-        Float beforeX = this.getBeginX();
-        // 渲染之前Y轴坐标
-        Float beforeY = this.getContext().getCursor().getY();
-        // 渲染组件
-        Optional.ofNullable(this.getComponents()).orElse(Collections.emptyList()).forEach(this::virtualRenderComponent);
-        // 添加虚拟边框
-        this.addVirtualBorder(beforeY, this.getContext().getContainerInfo());
-        // 重置
-        this.reset(beforeX);
+        this.processRender(new DefaultContainerVirtualPagingEvent(), this::virtualRenderComponent, this::addVirtualBorder);
     }
 
     /**
@@ -136,28 +110,7 @@ public class Container extends AbstractComponent {
     @SneakyThrows
     @Override
     public void render() {
-        // 初始化
-        this.init();
-        // 设置分页事件
-        this.setPagingEvent(new DefaultContainerPagingEvent());
-        // // 非自定义Y轴
-        if (!this.getIsCustomY()) {
-            // 检查分页
-            if (this.isPaging(this, this.getBeginY())) {
-                // 重置容器信息Y轴起始坐标
-                this.getContext().getContainerInfo().setBeginY(this.getContext().getCursor().getY());
-            }
-        }
-        // 渲染之前X轴坐标
-        Float beforeX = this.getBeginX();
-        // 渲染之前Y轴坐标
-        Float beforeY = this.getContext().getCursor().getY();
-        // 渲染组件
-        Optional.ofNullable(this.getComponents()).orElse(Collections.emptyList()).forEach(this::renderComponent);
-        // 添加边框
-        this.addBorder(beforeY, this.getContext().getContainerInfo());
-        // 重置
-        this.reset(beforeX);
+        this.processRender(new DefaultContainerPagingEvent(), this::renderComponent, this::addBorder);
     }
 
     /**
@@ -166,7 +119,7 @@ public class Container extends AbstractComponent {
     @Override
     public void close() {
         // 重置容器信息
-        this.getContext().setContainerInfo(null);
+        this.getContext().setBorderInfo(null);
         // 关闭
         super.close();
     }
@@ -176,17 +129,15 @@ public class Container extends AbstractComponent {
      *
      * @param beforeX X轴起始坐标
      */
-    protected void reset(Float beforeX) {
+    protected void reset(Float beforeX, PagingEvent event) {
         // 重置X轴坐标
         this.getContext().getCursor().setX(beforeX + this.getWidth());
         // 重置换行宽度
         this.getContext().resetWrapWidth(null);
-        // 重置换行高度
-        this.getContext().resetWrapHeight(this.getContext().getContainerInfo().getHeight());
         // 重置
         super.reset(this.getType());
-        // 重置换行高度
-        this.getContext().setWrapHeight(this.getHeight());
+        // 重置分页事件
+        this.setPagingEvent(event);
     }
 
     /**
@@ -201,10 +152,14 @@ public class Container extends AbstractComponent {
         if (Objects.isNull(this.getIsPagingBorder())) {
             this.setIsPagingBorder(Boolean.FALSE);
         }
+        // 初始化起始X轴坐标
+        this.initBeginX(this.getWidth());
         // 初始化容器信息
-        this.getContext().setContainerInfo(new ContainerInfo(this));
+        this.getContext().setBorderInfo(new BorderInfo(this, this.getBorderConfiguration(), this.getWidth(), this.getHeight(), this.getBeginX(), this.getBeginY(), this.getPagingEvent(), this.getIsPagingBorder()));
         // 初始化换行宽度
-        this.getContext().resetWrapWidth(this.getWidth());
+        this.getContext().resetWrapWidth(this.getBeginX() + this.getWidth());
+        // 重置X轴起始坐标
+        this.getContext().getCursor().setX(this.getBeginX());
     }
 
     /**
@@ -218,7 +173,7 @@ public class Container extends AbstractComponent {
         // 渲染组件
         component.virtualRender();
         // 重置是否第一个组件
-        this.getContext().getContainerInfo().setIsFirstComponent(Boolean.FALSE);
+        this.getContext().getBorderInfo().setIsFirstComponent(Boolean.FALSE);
     }
 
     /**
@@ -232,7 +187,7 @@ public class Container extends AbstractComponent {
         // 渲染组件
         component.render();
         // 重置是否第一个组件
-        this.getContext().getContainerInfo().setIsFirstComponent(Boolean.FALSE);
+        this.getContext().getBorderInfo().setIsFirstComponent(Boolean.FALSE);
     }
 
     /**
@@ -242,7 +197,7 @@ public class Container extends AbstractComponent {
      * @param info    容器信息
      */
     @SneakyThrows
-    protected void addVirtualBorder(Float beforeY, ContainerInfo info) {
+    protected void addVirtualBorder(Float beforeY, BorderInfo info) {
         // 是否分页
         if (info.isPaging()) {
             // 非分页边框
@@ -272,7 +227,7 @@ public class Container extends AbstractComponent {
      * @param info    容器信息
      */
     @SneakyThrows
-    protected void addBorder(Float beforeY, ContainerInfo info) {
+    protected void addBorder(Float beforeY, BorderInfo info) {
         // 是否分页
         if (info.isPaging()) {
             // 非分页边框
@@ -290,19 +245,54 @@ public class Container extends AbstractComponent {
             // 递归添加边框
             this.addBorder(info.getBeginY(), info);
         } else {
-            // 绘制边框
-            BorderUtil.drawBorderWithBase(
-                    info,
-                    new PDRectangle(
-                            info.getBeginX(),
-                            info.getBeginY() - info.getHeight(),
-                            info.getWidth(),
-                            info.getHeight()
-                    )
+            // 创建尺寸
+            PDRectangle rectangle = new PDRectangle(
+                    info.getBeginX(),
+                    info.getBeginY() - info.getHeight(),
+                    info.getWidth(),
+                    info.getHeight()
             );
+            // 绘制边框
+            BorderUtil.drawBorderWithData(info, rectangle);
             // 重置光标
             this.getContext().getCursor().setY(beforeY - info.getHeight());
         }
+    }
+
+    /**
+     * 处理渲染
+     *
+     * @param pagingEvent    分页事件
+     * @param consumer       消费者
+     * @param borderConsumer 边框消费者
+     */
+    protected void processRender(PagingEvent pagingEvent, Consumer<Component> consumer, BiConsumer<Float, BorderInfo> borderConsumer) {
+        // 初始化
+        this.init();
+        // 获取自定义分页事件
+        PagingEvent customPagingEvent = this.getPagingEvent();
+        // 重置分页事件
+        if (Objects.isNull(customPagingEvent)) {
+            this.setPagingEvent(pagingEvent);
+        }
+        // 非自定义Y轴
+        if (!this.getIsCustomY()) {
+            // 检查分页
+            if (this.isPaging(this, this.getBeginY())) {
+                // 重置容器信息Y轴起始坐标
+                this.getContext().getBorderInfo().setBeginY(this.getContext().getCursor().getY());
+            }
+        }
+        // 渲染之前X轴坐标
+        Float beforeX = this.getBeginX();
+        // 渲染之前Y轴坐标
+        Float beforeY = this.getContext().getCursor().getY();
+        // 渲染组件
+        Optional.ofNullable(this.getComponents()).orElse(Collections.emptyList()).forEach(consumer);
+        // 添加边框
+        borderConsumer.accept(beforeY, this.getContext().getBorderInfo());
+        // 重置
+        this.reset(beforeX, customPagingEvent);
     }
 
     /**
@@ -317,30 +307,24 @@ public class Container extends AbstractComponent {
          */
         @Override
         public void before(Component component) {
-            // 获取上下文
             Context context = component.getContext();
-            // 获取容器信息
-            ContainerInfo info = context.getContainerInfo();
+            BorderInfo info = context.getBorderInfo();
             // 存在容器信息
             if (Objects.nonNull(info)) {
-                // 重置高度
-                info.setHeight(info.getHeight() - info.getBeginY() + component.getBottom());
-                // 分页次数累计
+                Float height = info.getHeight();
+                Float beginY = info.getBeginY();
+                if (beginY < 0) {
+                    beginY = height + beginY;
+                }
+                if (beginY - component.getBottom() < 0) {
+                    beginY = component.getBottom() - beginY;
+                    info.setHeight(beginY);
+                } else {
+                    info.setHeight(beginY - component.getBottom());
+                }
+                info.setHeight(height - info.getHeight());
                 info.pagingCount();
             }
-        }
-
-        /**
-         * 分页之后
-         *
-         * @param component 当前组件
-         */
-        @Override
-        public void after(Component component) {
-            // 获取上下文
-            Context context = component.getContext();
-            // 重置Y轴起始坐标
-            Optional.ofNullable(context.getContainerInfo()).ifPresent(info -> info.setBeginY(context.getCursor().getY()));
         }
     }
 
@@ -349,74 +333,5 @@ public class Container extends AbstractComponent {
      */
     public static class DefaultContainerPagingEvent extends AbstractPagingEvent {
 
-        /**
-         * 分页之前
-         *
-         * @param component 当前组件
-         */
-        @Override
-        public void before(Component component) {
-            // 获取上下文
-            Context context = component.getContext();
-            // 获取容器信息
-            ContainerInfo info = context.getContainerInfo();
-            // 存在容器信息
-            if (Objects.nonNull(info)) {
-                // 获取高度
-                Float height = info.getHeight();
-                // 重置高度
-                info.setHeight(info.getBeginY() - component.getBottom());
-                // 是否上边框
-                Boolean isBorderTop = info.getIsBorderTop();
-                // 是否下边框
-                Boolean isBorderBottom = info.getIsBorderBottom();
-                // 是否分页边框
-                if (info.getIsPagingBorder()) {
-                    // 重置是否上边框
-                    info.setIsBorderTop(Boolean.TRUE);
-                    // 重置是否下边框
-                    info.setIsBorderBottom(Boolean.TRUE);
-                } else {
-                    // 是否分页
-                    if (info.isPaging()) {
-                        // 重置是否上边框
-                        info.setIsBorderTop(Boolean.FALSE);
-                    }
-                    // 重置是否下边框
-                    info.setIsBorderBottom(Boolean.FALSE);
-                }
-                // 绘制边框
-                BorderUtil.drawBorderWithBase(
-                        info,
-                        new PDRectangle(
-                                info.getBeginX(),
-                                info.getBeginY() - info.getHeight(),
-                                info.getWidth(),
-                                info.getHeight()
-                        )
-                );
-                // 重置是否上边框
-                info.setIsBorderTop(isBorderTop);
-                // 重置是否下边框
-                info.setIsBorderBottom(isBorderBottom);
-                // 重置高度
-                info.setHeight(height - info.getHeight());
-                // 分页次数累计
-                info.pagingCount();
-            }
-        }
-
-        /**
-         * 分页之后
-         *
-         * @param component 当前组件
-         */
-        @Override
-        public void after(Component component) {
-            // 获取上下文
-            Context context = component.getContext();
-            // 重置Y轴起始坐标
-            Optional.ofNullable(context.getContainerInfo()).ifPresent(info -> info.setBeginY(context.getCursor().getY()));
-        }
     }
 }

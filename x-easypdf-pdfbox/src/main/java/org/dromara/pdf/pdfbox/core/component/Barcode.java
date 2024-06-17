@@ -10,11 +10,11 @@ import com.google.zxing.qrcode.encoder.QRCode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
-import org.dromara.pdf.pdfbox.core.base.ComponentType;
 import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.enums.BarcodeErrorLevel;
 import org.dromara.pdf.pdfbox.core.enums.BarcodeType;
 import org.dromara.pdf.pdfbox.core.enums.BarcodeWordsStyle;
+import org.dromara.pdf.pdfbox.core.enums.ComponentType;
 import org.dromara.pdf.pdfbox.util.ImageUtil;
 
 import java.awt.*;
@@ -309,7 +309,7 @@ public class Barcode extends AbstractComponent {
         }
         // 初始化背景颜色
         if (Objects.isNull(this.offColor)) {
-            this.offColor = this.getContext().getPage().getBackgroundColor();
+            this.offColor = this.getPage().getBackgroundColor();
         }
         // 初始化旋转角度
         if (Objects.isNull(this.angle)) {
@@ -323,34 +323,51 @@ public class Barcode extends AbstractComponent {
         if (Objects.isNull(this.isCache)) {
             this.isCache = Boolean.FALSE;
         }
+        // 初始化起始X轴坐标
+        this.initBeginX(this.width);
+        // 检查换行
+        this.checkWrap();
+    }
+
+    /**
+     * 检查换行
+     */
+    protected void checkWrap() {
+        // 初始化X轴坐标
+        if (Objects.isNull(this.getBeginX())) {
+            this.setBeginX(this.getContext().getCursor().getX() + this.getMarginLeft(), Boolean.FALSE);
+        }
+        // 初始化换行
+        if (this.isWrap()) {
+            this.getContext().getCursor().reset(
+                    this.getContext().getWrapBeginX(),
+                    this.getContext().getCursor().getY() - this.getHeight()
+            );
+            this.setBeginX(this.getContext().getCursor().getX() + this.getMarginLeft(), Boolean.FALSE);
+        }
+        // 初始化Y轴坐标
+        if (Objects.isNull(this.getBeginY())) {
+            this.setBeginY(this.getContext().getCursor().getY() - this.getMarginTop(), Boolean.FALSE);
+        }
+    }
+
+    /**
+     * 是否需要换行
+     *
+     * @return 返回布尔值，true为是，false为否
+     */
+    @Override
+    protected boolean isNeedWrap() {
+        return this.getContext().getWrapWidth() - this.getBeginX() < this.getWidth();
     }
 
     /**
      * 虚拟渲染
      */
     @Override
-    @SneakyThrows
     public void virtualRender() {
-        // 初始化
-        this.init();
-        // 创建图像
-        Image image = new Image(this.getContext().getPage());
-        // 图像初始化
-        image.init(this, true);
-        // 设置宽度
-        image.setWidth(this.getWidth());
-        // 设置高度
-        image.setHeight(this.getHeight());
-        // 设置旋转角度
-        image.setAngle(this.getAngle());
-        // 设置图像
-        image.setImage(ImageUtil.toBytes(this.getBarcodeImage(), "png"));
-        // 设置X轴相对坐标
-        image.setRelativeBeginX(this.getRelativeBeginX());
-        // 设置Y轴相对坐标
-        image.setRelativeBeginY(this.getRelativeBeginY());
         // 虚拟渲染图像
-        image.virtualRender();
+        this.createImage().virtualRender();
         // 重置
         super.reset(this.getType());
     }
@@ -360,12 +377,22 @@ public class Barcode extends AbstractComponent {
      */
     @Override
     public void render() {
+        // 渲染图像
+        this.createImage().render();
+        // 重置
+        super.reset(this.getType());
+    }
+
+    /**
+     * 创建图像组件
+     *
+     * @return 返回图像组件
+     */
+    protected Image createImage() {
         // 初始化
         this.init();
         // 创建图像
-        Image image = new Image(this.getContext().getPage());
-        // 图像初始化
-        image.init(this, true);
+        Image image = new Image(this);
         // 设置宽度
         image.setWidth(this.getWidth());
         // 设置高度
@@ -374,14 +401,17 @@ public class Barcode extends AbstractComponent {
         image.setAngle(this.getAngle());
         // 设置图像
         image.setImage(ImageUtil.toBytes(this.getBarcodeImage(), "png"));
+        // 设置X轴坐标
+        image.setBeginX(this.getBeginX());
+        // 设置Y轴坐标
+        image.setBeginY(this.getBeginY() - this.getHeight());
         // 设置X轴相对坐标
         image.setRelativeBeginX(this.getRelativeBeginX());
         // 设置Y轴相对坐标
         image.setRelativeBeginY(this.getRelativeBeginY());
-        // 渲染图像
-        image.render();
-        // 重置
-        super.reset(this.getType());
+        // 设置水平对齐方式
+        image.setHorizontalAlignment(this.getHorizontalAlignment());
+        return image;
     }
 
     /**
@@ -426,6 +456,7 @@ public class Barcode extends AbstractComponent {
      *
      * @return 返回条形码图像
      */
+    @SuppressWarnings("all")
     @SneakyThrows
     protected BufferedImage getBarcodeImage() {
         // 是否缓存
@@ -445,6 +476,10 @@ public class Barcode extends AbstractComponent {
                         bufferedImage = this.createBarcodeImage();
                         // 放入缓存
                         CACHE.put(this.cacheKey(), bufferedImage);
+                        // 日志打印
+                        if (log.isDebugEnabled()) {
+                            log.debug("Added barcode image: " + this.cacheKey());
+                        }
                     }
                 } finally {
                     // 解锁

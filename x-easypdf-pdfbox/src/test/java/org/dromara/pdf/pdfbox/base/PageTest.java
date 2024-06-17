@@ -39,7 +39,7 @@ public class PageTest extends BaseTest {
                 () -> {
                     Document document = PdfHandler.getDocumentHandler().create();
 
-                    Page page = document.createPage(PageSize.A4);
+                    Page page = new Page(document);
                     page.setMargin(50F);
                     page.setBackgroundColor(Color.CYAN);
                     page.setFontName("仿宋");
@@ -63,7 +63,7 @@ public class PageTest extends BaseTest {
         this.test(
                 () -> {
                     try (Document document = PdfHandler.getDocumentHandler().create()) {
-                        Page page = document.createPage(PageSize.A4);
+                        Page page = new Page(document);
                         Assert.assertEquals(PageSize.A4.getWidth(), page.getWidth());
                         Assert.assertEquals(PageSize.A4.getHeight(), page.getHeight());
                     }
@@ -79,7 +79,7 @@ public class PageTest extends BaseTest {
         this.test(
                 () -> {
                     try (Document document = PdfHandler.getDocumentHandler().create()) {
-                        Page page = document.createPage(PageSize.A4);
+                        Page page = new Page(document);
                         page.setMargin(50F);
                         Assert.assertEquals((Object) (PageSize.A4.getWidth() - 100), page.getWithoutMarginWidth());
                         Assert.assertEquals((Object) (PageSize.A4.getHeight() - 100), page.getWithoutMarginHeight());
@@ -96,7 +96,7 @@ public class PageTest extends BaseTest {
         this.test(
                 () -> {
                     try (Document document = PdfHandler.getDocumentHandler().create()) {
-                        Page page = document.createPage(PageSize.A4);
+                        Page page = new Page(document);
                         Assert.assertNull(page.getParentPage());
                     }
                 }
@@ -111,7 +111,7 @@ public class PageTest extends BaseTest {
         this.test(
                 () -> {
                     try (Document document = PdfHandler.getDocumentHandler().create()) {
-                        Page page = document.createPage(PageSize.A4);
+                        Page page = new Page(document);
                         Assert.assertNull(page.getLastSubPage());
                     }
                 }
@@ -126,7 +126,7 @@ public class PageTest extends BaseTest {
         this.test(
                 () -> {
                     try (Document document = PdfHandler.getDocumentHandler().create()) {
-                        Page page = document.createPage(PageSize.A4);
+                        Page page = new Page(document);
                         Assert.assertEquals(1L, (long) page.getLastNo());
                     }
                 }
@@ -141,7 +141,7 @@ public class PageTest extends BaseTest {
         this.test(
                 () -> {
                     try (Document document = PdfHandler.getDocumentHandler().create()) {
-                        Page page = document.createPage(PageSize.A4);
+                        Page page = new Page(document);
                         page.rotation(RotationAngle.ROTATION_90);
 
                         document.appendPage(page);
@@ -210,7 +210,7 @@ public class PageTest extends BaseTest {
         this.test(
                 () -> {
                     try (Document document = PdfHandler.getDocumentHandler().create()) {
-                        Page page = document.createPage();
+                        Page page = new Page(document);
                         page.setFontName("微软雅黑");
                         page.createSubPage();
                         Page subPage = page.getSubPage();

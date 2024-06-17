@@ -4,11 +4,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.dromara.pdf.pdfbox.core.base.ComponentType;
 import org.dromara.pdf.pdfbox.core.base.Page;
+import org.dromara.pdf.pdfbox.core.base.config.FontConfiguration;
+import org.dromara.pdf.pdfbox.core.enums.ComponentType;
 import org.dromara.pdf.pdfbox.core.enums.LineCapStyle;
-import org.dromara.pdf.pdfbox.handler.PdfHandler;
 
 import java.awt.*;
 import java.util.Objects;
@@ -35,6 +34,10 @@ import java.util.Objects;
 @EqualsAndHashCode(callSuper = true)
 public class SplitLine extends AbstractComponent {
 
+    /**
+     * 字体配置
+     */
+    protected FontConfiguration fontConfiguration;
     /**
      * 颜色
      */
@@ -67,6 +70,7 @@ public class SplitLine extends AbstractComponent {
      */
     public SplitLine(Page page) {
         super(page);
+        this.fontConfiguration = new FontConfiguration(page.getFontConfiguration());
     }
 
     /**
@@ -75,8 +79,8 @@ public class SplitLine extends AbstractComponent {
      * @param fontName 字体名称
      */
     public void setFontName(String fontName) {
-        super.setFontName(fontName);
-        super.setFont(null);
+        this.fontConfiguration.setFontName(fontName);
+        this.getContext().addFontCache(fontName);
     }
 
 
@@ -106,8 +110,6 @@ public class SplitLine extends AbstractComponent {
         this.getContext().getCursor().setX(this.getBeginX() + this.getLineLength() + this.getMarginRight());
         // 重置
         super.reset(this.getType());
-        // 重置换行高度
-        this.getContext().setWrapHeight(this.getLineWidth());
     }
 
     /**
@@ -145,8 +147,6 @@ public class SplitLine extends AbstractComponent {
         this.getContext().getCursor().setX(this.getBeginX() + this.getLineLength() + this.getMarginRight());
         // 重置
         super.reset(this.getType());
-        // 重置换行高度
-        this.getContext().setWrapHeight(this.getLineWidth());
     }
 
     /**
@@ -156,11 +156,6 @@ public class SplitLine extends AbstractComponent {
     protected void init() {
         // 初始化
         super.init();
-        // 初始化字体
-        if (Objects.nonNull(this.getFontName())) {
-            PDFont pdFont = PdfHandler.getFontHandler().getPDFont(this.getContext().getTargetDocument(), this.getFontName(), true);
-            super.setFont(pdFont);
-        }
         // 初始化颜色
         if (Objects.isNull(this.getLineColor())) {
             this.lineColor = Color.BLACK;
@@ -186,9 +181,11 @@ public class SplitLine extends AbstractComponent {
             this.dottedSpacing = 0F;
         }
         // 初始化容器换行或首行
-        if (this.getContext().isContainerWrap() || (!this.getIsCustomY() && this.getContext().isFirstLine())) {
+        if (this.getContext().getIsFirstComponent()) {
             super.setBeginY(this.getBeginY() - this.getLineWidth());
         }
+        // 初始化起始X轴坐标
+        this.initBeginX(this.getLineLength());
     }
 
     /**
@@ -207,7 +204,7 @@ public class SplitLine extends AbstractComponent {
                 this.getIsResetContentStream()
         );
         // 设置字体
-        stream.setFont(this.getFont(), this.getFontSize());
+        stream.setFont(this.getContext().getFont(this.getFontConfiguration().getFontName()), this.getFontConfiguration().getFontSize());
         // 设置线宽
         stream.setLineWidth(this.getLineWidth());
         // 设置颜色

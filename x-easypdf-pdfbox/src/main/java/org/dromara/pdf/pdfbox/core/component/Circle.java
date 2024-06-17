@@ -4,9 +4,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.dromara.pdf.pdfbox.core.base.ComponentType;
 import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.base.Position;
+import org.dromara.pdf.pdfbox.core.enums.ComponentType;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -38,11 +38,15 @@ public class Circle extends AbstractComponent {
     /**
      * 半径
      */
-    private Float radius;
+    protected Float radius;
     /**
      * 边框颜色
      */
-    private Color borderColor;
+    protected Color borderColor;
+    /**
+     * 背景颜色
+     */
+    protected Color backgroundColor;
 
     /**
      * 有参构造
@@ -88,17 +92,26 @@ public class Circle extends AbstractComponent {
         if (Objects.isNull(this.borderColor)) {
             this.borderColor = Color.BLACK;
         }
-        // 初始化首行
-        if (!this.getIsCustomY() && this.getContext().isFirstLine()) {
-            this.setBeginY(this.getBeginY() - this.getRadius());
-        }
         // 检查换行
         if (this.isWrap()) {
             this.wrap();
             this.setBeginY(this.getBeginY() - (this.getRadius() * 0.5F));
         }
+        this.setBeginY(this.getBeginY() - this.getRadius());
         // 重置X轴坐标
         this.setBeginX(this.getBeginX() + this.getRadius());
+        // 初始化起始X轴坐标
+        this.initBeginX(this.getRadius());
+    }
+
+    /**
+     * 是否需要换行
+     *
+     * @return 返回布尔值，true为是，false为否
+     */
+    @Override
+    protected boolean isNeedWrap() {
+        return this.getContext().getWrapWidth() - this.getBeginX() < this.getRadius();
     }
 
     /**
@@ -121,8 +134,6 @@ public class Circle extends AbstractComponent {
         );
         // 重置
         super.reset(this.getType());
-        // 重置换行高度
-        this.getContext().setWrapHeight(this.getRadius());
     }
 
     /**
@@ -149,18 +160,19 @@ public class Circle extends AbstractComponent {
         // 绘制边框圆形
         this.renderCircle(contentStream, this.getRadius(), this.getBorderColor());
         // 绘制背景圆形
-        this.renderCircle(contentStream, this.getRadius() - this.getBorderWidth(), this.getBackgroundColor());
+        if (Objects.nonNull(this.getBackgroundColor())) {
+            // 绘制背景圆形
+            this.renderCircle(contentStream, this.getRadius() - this.getBorderConfiguration().getBorderWidth(), this.getBackgroundColor());
+        }
         // 关闭内容流
         contentStream.close();
         // 重置光标
-        this.getContext().getCursor().reset(
+        this.getContext().resetCursor(
                 this.getBeginX() + this.getRadius() + this.getMarginRight(),
                 this.getBeginY() + this.getMarginTop()
         );
         // 重置
         super.reset(this.getType());
-        // 重置换行高度
-        this.getContext().setWrapHeight(this.getRadius());
     }
 
     /**

@@ -8,8 +8,9 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.util.Matrix;
-import org.dromara.pdf.pdfbox.core.base.ComponentType;
+import org.dromara.pdf.pdfbox.core.base.BorderData;
 import org.dromara.pdf.pdfbox.core.base.Page;
+import org.dromara.pdf.pdfbox.core.enums.ComponentType;
 import org.dromara.pdf.pdfbox.util.BorderUtil;
 import org.dromara.pdf.pdfbox.util.ImageUtil;
 
@@ -45,23 +46,23 @@ public class Image extends AbstractComponent {
     /**
      * pdfbox图像对象
      */
-    private PDImageXObject image;
+    protected PDImageXObject image;
     /**
      * 宽度
      */
-    private Integer width;
+    protected Integer width;
     /**
      * 高度
      */
-    private Integer height;
+    protected Integer height;
     /**
      * 旋转角度
      */
-    private Float angle;
+    protected Float angle;
     /**
      * 缩放比例
      */
-    private Float scale;
+    protected Float scale;
 
     /**
      * 有参构造
@@ -70,6 +71,24 @@ public class Image extends AbstractComponent {
      */
     public Image(Page page) {
         super(page);
+    }
+
+    /**
+     * 有参构造
+     *
+     * @param component 组件
+     */
+    protected Image(AbstractComponent component) {
+        super(component);
+    }
+
+    /**
+     * 有参构造
+     *
+     * @param page 页面
+     */
+    protected Image(Page page, boolean isResetPage) {
+        super(page, isResetPage);
     }
 
     /**
@@ -184,22 +203,42 @@ public class Image extends AbstractComponent {
         super.init();
         // 初始化宽度与高度
         this.initWidthAndHeight();
+        // 初始化起始X轴坐标
+        this.initBeginX(this.width);
         // 初始化旋转角度
         if (Objects.isNull(this.angle)) {
             this.angle = 0F;
         }
         // 检查换行
-        if (this.isWrap()) {
-            this.wrap();
-        }
-        // 重置Y轴坐标
-        super.setBeginY(this.getBeginY() - this.getHeight(), false);
+        this.checkWrap();
         // 非自定义Y轴
         if (!this.getIsCustomY()) {
             // 检查分页
             if (this.isPaging(this, this.getBeginY())) {
                 super.setBeginY(this.getBeginY() - this.getHeight(), false);
             }
+        }
+    }
+
+    /**
+     * 检查换行
+     */
+    protected void checkWrap() {
+        // 初始化X轴坐标
+        if (Objects.isNull(this.getBeginX())) {
+            this.setBeginX(this.getContext().getCursor().getX() + this.getMarginLeft(), Boolean.FALSE);
+        }
+        // 初始化换行
+        if (this.isWrap()) {
+            this.getContext().getCursor().reset(
+                    this.getContext().getWrapBeginX(),
+                    this.getContext().getCursor().getY() - this.getHeight()
+            );
+            this.setBeginX(this.getContext().getCursor().getX() + this.getMarginLeft(), Boolean.FALSE);
+        }
+        // 初始化Y轴坐标
+        if (Objects.isNull(this.getBeginY())) {
+            this.setBeginY(this.getContext().getCursor().getY() - this.getMarginTop(), Boolean.FALSE);
         }
     }
 
@@ -222,6 +261,16 @@ public class Image extends AbstractComponent {
             // 初始化高度
             this.height = (int) (this.image.getHeight() * this.scale);
         }
+    }
+
+    /**
+     * 是否需要换行
+     *
+     * @return 返回布尔值，true为是，false为否
+     */
+    @Override
+    protected boolean isNeedWrap() {
+        return this.getContext().getWrapWidth() - this.getBeginX() < this.getWidth();
     }
 
     /**
@@ -257,7 +306,7 @@ public class Image extends AbstractComponent {
         // 添加图片
         contentStream.drawImage(this.getImage(), 0, 0, this.getWidth(), this.getHeight());
         // 添加边框
-        BorderUtil.drawNormalBorder(contentStream, this.getRectangle(), this);
+        BorderUtil.drawNormalBorder(contentStream, this.getRectangle(), this.getBorderData());
         // 关闭内容流
         contentStream.close();
     }
@@ -271,15 +320,24 @@ public class Image extends AbstractComponent {
         // 创建尺寸
         PDRectangle rectangle = new PDRectangle();
         // 设置起始X轴坐标
-        rectangle.setLowerLeftX(0);
+        rectangle.setLowerLeftX(0F);
         // 设置结束X轴坐标
         rectangle.setUpperRightX(this.getWidth());
         // 设置起始Y轴坐标
-        rectangle.setLowerLeftY(0);
+        rectangle.setLowerLeftY(0F);
         // 设置结束Y轴坐标
         rectangle.setUpperRightY(this.getHeight());
         // 返回尺寸
         return rectangle;
+    }
+
+    /**
+     * 获取边框数据
+     *
+     * @return 返回边框数据
+     */
+    protected BorderData getBorderData() {
+        return new BorderData(this, this.getBorderConfiguration());
     }
 
     /**
@@ -290,7 +348,5 @@ public class Image extends AbstractComponent {
         this.getContext().getCursor().setX(this.getBeginX() + this.getWidth() + this.getMarginRight());
         // 重置
         super.reset(this.getType());
-        // 重置换行高度
-        this.getContext().setWrapHeight(Float.valueOf(this.getHeight()));
     }
 }

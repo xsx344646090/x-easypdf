@@ -3,10 +3,10 @@ package org.dromara.pdf.pdfbox.component;
 import org.dromara.pdf.pdfbox.base.BaseTest;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.base.Page;
-import org.dromara.pdf.pdfbox.core.base.PageSize;
 import org.dromara.pdf.pdfbox.core.component.Barcode;
 import org.dromara.pdf.pdfbox.core.enums.BarcodeType;
 import org.dromara.pdf.pdfbox.core.enums.BorderStyle;
+import org.dromara.pdf.pdfbox.core.enums.HorizontalAlignment;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.junit.Test;
 
@@ -40,7 +40,7 @@ public class BarcodeTest extends BaseTest {
             document.setMargin(50F);
 
             // 创建 A4 大小的页面
-            Page page = document.createPage(PageSize.A4);
+            Page page = new Page(document);
 
             // 创建二维码对象
             Barcode barcode = new Barcode(document.getCurrentPage());
@@ -74,6 +74,8 @@ public class BarcodeTest extends BaseTest {
             barcode.setIsCache(Boolean.FALSE);
             // 设置二维码旋转角度
             barcode.setAngle(30F);
+            // 设置二维码居中
+            barcode.setHorizontalAlignment(HorizontalAlignment.CENTER);
             // 渲染二维码
             barcode.render();
 
@@ -98,7 +100,7 @@ public class BarcodeTest extends BaseTest {
             document.setMargin(50F);
 
             // 创建一个 A4 大小的页面
-            Page page = document.createPage(PageSize.A4);
+            Page page = new Page(document);
 
             // 创建一个条形码对象
             Barcode barcode = new Barcode(document.getCurrentPage());

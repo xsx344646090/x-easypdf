@@ -1,7 +1,5 @@
 package org.dromara.pdf.pdfbox.core.ext.extractor;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.ext.AbstractExpander;
 
@@ -24,11 +22,6 @@ import org.dromara.pdf.pdfbox.core.ext.AbstractExpander;
  * </p>
  */
 public abstract class AbstractExtractor extends AbstractExpander {
-
-    /**
-     * 日志
-     */
-    protected static final Log log = LogFactory.getLog(AbstractExtractor.class);
 
     /**
      * 有参构造

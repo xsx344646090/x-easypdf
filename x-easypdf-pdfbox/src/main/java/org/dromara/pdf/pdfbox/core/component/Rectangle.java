@@ -5,8 +5,8 @@ import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.util.Matrix;
-import org.dromara.pdf.pdfbox.core.base.ComponentType;
 import org.dromara.pdf.pdfbox.core.base.Page;
+import org.dromara.pdf.pdfbox.core.enums.ComponentType;
 
 import java.awt.*;
 import java.util.Objects;
@@ -36,19 +36,23 @@ public class Rectangle extends AbstractComponent {
     /**
      * 宽度
      */
-    private Float width;
+    protected Float width;
     /**
      * 高度
      */
-    private Float height;
+    protected Float height;
     /**
      * 旋转角度
      */
-    private Float angle;
+    protected Float angle;
     /**
      * 边框颜色
      */
-    private Color borderColor;
+    protected Color borderColor;
+    /**
+     * 背景颜色
+     */
+    protected Color backgroundColor;
 
     /**
      * 有参构造
@@ -112,8 +116,6 @@ public class Rectangle extends AbstractComponent {
         );
         // 重置
         super.reset(this.getType());
-        // 重置换行高度
-        this.getContext().setWrapHeight(this.getHeight());
     }
 
     /**
@@ -124,11 +126,6 @@ public class Rectangle extends AbstractComponent {
     public void render() {
         // 初始化
         this.init();
-        // 非自定义Y轴
-        if (!this.getIsCustomY()) {
-            // 检查分页
-            this.isPaging(this, this.getBeginY());
-        }
         // 定义X轴偏移量
         float offsetX = 0.5F * this.getWidth();
         // 定义Y轴偏移量
@@ -155,21 +152,20 @@ public class Rectangle extends AbstractComponent {
         // 移动到左下角
         contentStream.transform(Matrix.getTranslateInstance(-offsetX, -offsetY));
         // 添加矩形（边框矩形）
-        contentStream.addRect(0, 0, this.getWidth(), this.getHeight());
+        contentStream.addRect(-this.getBorderConfiguration().getBorderWidth() / 2, this.getBorderConfiguration().getBorderWidth() / 2, this.getWidth(), this.getHeight());
         // 设置矩形颜色（边框颜色）
         contentStream.setNonStrokingColor(this.getBorderColor());
         // 填充矩形（边框矩形）
         contentStream.fill();
-        // 定义背景偏移量
-        float offSet = this.getBorderWidth();
-        // 定义背景宽高偏移量
-        float whOffSet = this.getBorderWidth() * 2;
-        // 添加矩形（背景矩形）
-        contentStream.addRect(offSet, offSet, this.getWidth() - whOffSet, this.getHeight() - whOffSet);
-        // 设置矩形颜色（背景颜色）
-        contentStream.setNonStrokingColor(this.getBackgroundColor());
-        // 填充矩形（背景矩形）
-        contentStream.fill();
+        // 添加背景
+        if (Objects.nonNull(this.getBackgroundColor())) {
+            // 添加矩形（背景矩形）
+            contentStream.addRect(this.getBorderConfiguration().getBorderWidth() / 2, this.getBorderConfiguration().getBorderWidth() * 1.5F, this.getWidth() - this.getBorderConfiguration().getBorderWidth() * 2, this.getHeight() - this.getBorderConfiguration().getBorderWidth() * 2);
+            // 设置矩形颜色（背景颜色）
+            contentStream.setNonStrokingColor(this.getBackgroundColor());
+            // 填充矩形（背景矩形）
+            contentStream.fill();
+        }
         // 恢复图形状态
         contentStream.restoreGraphicsState();
         // 关闭内容流
@@ -177,12 +173,10 @@ public class Rectangle extends AbstractComponent {
         // 重置光标
         this.getContext().getCursor().reset(
                 this.getBeginX() + this.getWidth() + this.getMarginRight(),
-                this.getBeginY() - this.getHeight() - this.getMarginBottom()
+                this.getBeginY() + this.getHeight() - this.getMarginBottom()
         );
         // 重置
         super.reset(this.getType());
-        // 重置换行高度
-        this.getContext().setWrapHeight(this.getHeight());
     }
 
     /**
@@ -193,7 +187,9 @@ public class Rectangle extends AbstractComponent {
         // 初始化
         super.init();
         // 初始化宽度与高度
-        this.initWidthAndHeight();
+        // this.initWidthAndHeight();
+        // 初始化起始X轴坐标
+        this.initBeginX(this.getWidth());
         // 初始化旋转角度
         if (Objects.isNull(this.angle)) {
             this.angle = 0F;
@@ -202,13 +198,36 @@ public class Rectangle extends AbstractComponent {
         if (Objects.isNull(this.borderColor)) {
             this.borderColor = Color.BLACK;
         }
-        // 初始化首行
-        if (!this.getIsCustomY() && this.getContext().isFirstLine()) {
-            this.setBeginY(this.getBeginY() - this.getHeight());
-        }
         // 检查换行
+        this.checkWrap();
+        // 非自定义Y轴
+        if (!this.getIsCustomY()) {
+            // 检查分页
+            if (this.isPaging(this, this.getBeginY())) {
+                this.setBeginY(this.getBeginY(), false);
+            }
+        }
+    }
+
+    /**
+     * 检查换行
+     */
+    protected void checkWrap() {
+        // 初始化X轴坐标
+        if (Objects.isNull(this.getBeginX())) {
+            this.setBeginX(this.getContext().getCursor().getX() + this.getMarginLeft(), Boolean.FALSE);
+        }
+        // 初始化换行
         if (this.isWrap()) {
-            this.wrap();
+            this.getContext().getCursor().reset(
+                    this.getContext().getWrapBeginX(),
+                    this.getContext().getCursor().getY() - this.getHeight()
+            );
+            this.setBeginX(this.getContext().getCursor().getX() + this.getMarginLeft(), Boolean.FALSE);
+        }
+        // 初始化Y轴坐标
+        if (Objects.isNull(this.getBeginY())) {
+            this.setBeginY(this.getContext().getCursor().getY() - this.getMarginTop(), Boolean.FALSE);
         }
     }
 
@@ -240,5 +259,15 @@ public class Rectangle extends AbstractComponent {
             // 重置图片高度
             this.height = maxHeight;
         }
+    }
+
+    /**
+     * 是否需要换行
+     *
+     * @return 返回布尔值，true为是，false为否
+     */
+    @Override
+    protected boolean isNeedWrap() {
+        return this.getContext().getWrapWidth() - this.getBeginX() < this.getWidth();
     }
 }

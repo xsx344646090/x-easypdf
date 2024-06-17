@@ -137,6 +137,8 @@ public class AllTest extends BaseTest {
             ).setMinRowHeight("30pt").setVerticalStyle("center");
             // 创建文档
             Document document = TemplateHandler.Document.build();
+            // 总页数文本
+            Text totalPageText = TemplateHandler.Text.build();
             // 创建页面
             Page page = TemplateHandler.Page.build()
                     // 设置页面id
@@ -160,8 +162,9 @@ public class AllTest extends BaseTest {
                                     // 创建当前页码
                                     TemplateHandler.CurrentPageNumber.build(),
                                     TemplateHandler.Text.build().setText(" 页，共 "),
+                                    totalPageText,
                                     // 创建总页码并设置页面id
-                                    TemplateHandler.TotalPageNumber.build().setPageId("pageId"),
+                                    // TemplateHandler.TotalPageNumber.build().setPageId("pageId"),
                                     TemplateHandler.Text.build().setText(" 页")
                             ).setHorizontalStyle("center")
                     )
@@ -192,8 +195,16 @@ public class AllTest extends BaseTest {
                                     // 开启文件覆盖
                                     .enableOverwrite()
                     );
-            // 添加页面、书签并转换
-            document.addPage(page).addBookmark(bookmark).transform(outputPath);
+            // 添加页面、书签
+            document.addPage(page).addBookmark(bookmark);
+            // 获取总页数
+            Integer totalPage = document.getTotalPage();
+            // 设置总页数
+            totalPageText.setText(totalPage.toString());
+            // 打印总页数
+            log.info("Total pages: " + totalPage);
+            // 转换pdf
+            document.transform(outputPath);
         });
     }
 

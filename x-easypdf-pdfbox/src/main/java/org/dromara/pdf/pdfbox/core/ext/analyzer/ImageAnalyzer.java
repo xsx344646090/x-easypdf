@@ -46,7 +46,7 @@ public class ImageAnalyzer extends AbstractImageAnalyzer {
     public void processImage(int pageIndex, PDPage page) {
         // 初始化流引擎
         if (Objects.isNull(this.streamEngine)) {
-            this.streamEngine = new DefaultStreamEngine();
+            this.streamEngine = new DefaultStreamEngine(this.log);
         }
         // 重置页面索引
         this.streamEngine.setPageIndex(pageIndex);

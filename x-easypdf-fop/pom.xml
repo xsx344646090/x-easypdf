@@ -16,7 +16,7 @@
     <description>A framework based on fop</description>
 
     <properties>
-        <font-box.version>2.0.30</font-box.version>
+        <font-box.version>2.0.31</font-box.version>
         <skipTests>true</skipTests>
     </properties>
 

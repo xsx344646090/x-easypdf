@@ -3,9 +3,8 @@ package org.dromara.pdf.pdfbox.component;
 import org.dromara.pdf.pdfbox.base.BaseTest;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.base.Page;
-import org.dromara.pdf.pdfbox.core.base.PageSize;
+import org.dromara.pdf.pdfbox.core.base.PageFooter;
 import org.dromara.pdf.pdfbox.core.component.Image;
-import org.dromara.pdf.pdfbox.core.component.PageFooter;
 import org.dromara.pdf.pdfbox.core.component.Textarea;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.junit.Test;
@@ -41,13 +40,12 @@ public class PageFooterTest extends BaseTest {
             Document document = PdfHandler.getDocumentHandler().create();
             document.setMargin(50F);
 
-            Page page = document.createPage(PageSize.A4);
+            Page page = new Page(document);
             PageFooter pageFooter = new PageFooter(document.getCurrentPage());
 
             Textarea text = new Textarea(pageFooter.getPage());
             text.setText("页脚");
 
-            pageFooter.setWidth(490F);
             pageFooter.setHeight(100F);
             pageFooter.setComponents(Collections.singletonList(text));
             pageFooter.setIsBorder(true);
@@ -84,7 +82,7 @@ public class PageFooterTest extends BaseTest {
             Document document = PdfHandler.getDocumentHandler().create();
             document.setMargin(50F);
 
-            Page page = document.createPage(PageSize.A4);
+            Page page = new Page(document);
             PageFooter pageFooter = new PageFooter(document.getCurrentPage());
 
             Image image1 = new Image(pageFooter.getPage());
@@ -105,7 +103,6 @@ public class PageFooterTest extends BaseTest {
             image3.setHeight(50);
             image3.setIsBorder(true);
 
-            pageFooter.setWidth(100F);
             pageFooter.setHeight(100F);
             pageFooter.setComponents(Arrays.asList(image1, image2, image3));
             pageFooter.setIsBorder(true);
@@ -142,7 +139,7 @@ public class PageFooterTest extends BaseTest {
             Document document = PdfHandler.getDocumentHandler().create();
             document.setMargin(50F);
 
-            Page page = document.createPage(PageSize.A4);
+            Page page = new Page(document);
             PageFooter pageFooter = new PageFooter(document.getCurrentPage());
 
             Textarea text1 = new Textarea(pageFooter.getPage());
@@ -159,7 +156,6 @@ public class PageFooterTest extends BaseTest {
             text2.setText("页脚2");
             text2.setFontSize(30F);
 
-            pageFooter.setWidth(490F);
             pageFooter.setHeight(100F);
             pageFooter.setComponents(Arrays.asList(text1, image, text2));
             pageFooter.setIsBorder(true);

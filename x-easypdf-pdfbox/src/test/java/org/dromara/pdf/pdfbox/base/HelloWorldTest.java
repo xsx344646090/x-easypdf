@@ -1,11 +1,11 @@
 package org.dromara.pdf.pdfbox.base;
 
-import org.dromara.pdf.pdfbox.core.base.Document;
-import org.dromara.pdf.pdfbox.core.base.OuterDest;
-import org.dromara.pdf.pdfbox.core.base.Page;
+import org.dromara.pdf.pdfbox.core.base.*;
+import org.dromara.pdf.pdfbox.core.component.Barcode;
 import org.dromara.pdf.pdfbox.core.component.Image;
-import org.dromara.pdf.pdfbox.core.component.*;
+import org.dromara.pdf.pdfbox.core.component.Textarea;
 import org.dromara.pdf.pdfbox.core.enums.BarcodeType;
+import org.dromara.pdf.pdfbox.core.enums.ContentMode;
 import org.dromara.pdf.pdfbox.core.enums.HorizontalAlignment;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.junit.Test;
@@ -42,7 +42,7 @@ public class HelloWorldTest extends BaseTest {
             Document document = PdfHandler.getDocumentHandler().create();
             document.setFontName("微软雅黑");
 
-            Page page = document.createPage();
+            Page page = new Page(document);
 
             Textarea textarea = new Textarea(page);
             textarea.setText("Hello World!");
@@ -64,7 +64,7 @@ public class HelloWorldTest extends BaseTest {
             document.setFontName("微软雅黑");
             document.setMargin(20F);
 
-            Page page = document.createPage();
+            Page page = new Page(document);
 
             PageHeader pageHeader = new PageHeader(document.getCurrentPage());
 
@@ -79,17 +79,16 @@ public class HelloWorldTest extends BaseTest {
             headerBarcode.setImageWidth(180);
             headerBarcode.setImageHeight(180);
             headerBarcode.setCodeMargin(1);
-            headerBarcode.setMarginLeft(320F);
-            headerBarcode.setRelativeBeginY(-12F);
+            headerBarcode.setHorizontalAlignment(HorizontalAlignment.RIGHT);
             headerBarcode.setWords("扫一扫");
             headerBarcode.setWordsSize(20);
             headerBarcode.setWordsOffsetY(10);
             headerBarcode.setIsShowWords(true);
+            headerBarcode.setContentMode(ContentMode.APPEND);
 
-            pageHeader.setWidth(page.getWithoutMarginWidth());
             pageHeader.setHeight(90F);
             pageHeader.setComponents(Arrays.asList(headerText, headerBarcode));
-            pageHeader.setIsBorder(false);
+            pageHeader.setIsBorder(true);
             pageHeader.render();
 
             PageFooter pageFooter = new PageFooter(document.getCurrentPage());
@@ -98,7 +97,6 @@ public class HelloWorldTest extends BaseTest {
             footerText.setText("当前第" + footerText.getPlaceholder() + "页");
             footerText.setHorizontalAlignment(HorizontalAlignment.CENTER);
 
-            pageFooter.setWidth(page.getWithoutMarginWidth());
             pageFooter.setHeight(20F);
             pageFooter.setComponents(Collections.singletonList(footerText));
             pageFooter.setIsBorder(true);
@@ -106,12 +104,14 @@ public class HelloWorldTest extends BaseTest {
 
             Textarea title = new Textarea(document.getCurrentPage());
             title.setText("贵阳市简介");
+            title.setMarginTop(12F);
             title.setHorizontalAlignment(HorizontalAlignment.CENTER);
             title.setFontSize(20F);
             title.render();
 
             Textarea text = new Textarea(document.getCurrentPage());
             text.setText("\t\t贵阳市，简称“筑”，别称林城、筑城，贵州省辖地级市、省会、Ⅰ型大城市，中国西南地区重要的中心城市之一、重要的区域创新中心和中国重要的生态休闲度假旅游城市。介于东经106°07′—107°17′，北纬26°11′—26°55′之间，总面积8043平方千米，地处黔中山原丘陵中部，东南与黔南布依族苗族自治州的瓮安、龙里、惠水、长顺4县接壤，西靠安顺市的平坝区和毕节市的织金县，北邻毕节市的黔西市、金沙县和遵义市的播州区。截至2022年4月，贵阳市下辖6个区、3个县，代管1个县级市。2022年末，贵阳市常住人口622.04万人");
+            text.setMarginTop(12F);
             text.setIsWrap(true);
             text.render();
 
@@ -144,6 +144,7 @@ public class HelloWorldTest extends BaseTest {
             text.render();
 
             document.appendPage(page);
+
             document.save("E:\\PDF\\pdfbox\\allTest.pdf");
             document.close();
         });

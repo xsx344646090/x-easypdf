@@ -31,28 +31,31 @@ public class ImageTest extends BaseTest {
     @Test
     public void pngTest() {
         this.test(() -> {
-            // 定义输出路径
-            String outputPath = "E:\\PDF\\fop\\image\\pngTest.pdf";
-            // 创建文档
-            Document document = TemplateHandler.Document.build();
-            // 创建页面
-            Page page = TemplateHandler.Page.build();
-            // 创建图像
-            Image image = TemplateHandler.Image.build()
-                    // 设置图像路径（绝对路径）
-                    .setPath("/E:\\PDF\\fop\\test.png")
-                    // 设置图像宽度
-                    .setWidth("150px")
-                    // 设置图像高度
-                    .setHeight("150px")
-                    // 设置水平居中
-                    .setHorizontalStyle("center");
-            // 添加图像
-            page.addBodyComponent(image);
-            // 添加页面
-            document.addPage(page);
-            // 转换pdf
-            document.transform(outputPath);
+            for (int i = 0; i < 10; i++) {
+                // 定义输出路径
+                String outputPath = "E:\\PDF\\fop\\image\\pngTest"+i+".pdf";
+                // 创建文档
+                Document document = TemplateHandler.Document.build();
+                // 创建页面
+                Page page = TemplateHandler.Page.build();
+                // 创建图像
+                Image image = TemplateHandler.Image.build()
+                        // 设置图像路径（绝对路径）
+                        // .setPath("/E:\\PDF\\fop\\test.png")
+                        .setPath(" https://down-cdn.dingtalk.com/ddmedia/iAELAqNwbmcDBgTNA3QFzQKIBtoAI4QBpCErfQcCqgylyrA7dF4N8tMDzwAAAY70KUwNBM4CmXdbBwAIAA1.png")
+                        // 设置图像宽度
+                        .setWidth("150px")
+                        // 设置图像高度
+                        .setHeight("150px")
+                        // 设置水平居中
+                        .setHorizontalStyle("center");
+                // 添加图像
+                page.addBodyComponent(image);
+                // 添加页面
+                document.addPage(page);
+                // 转换pdf
+                document.transform(outputPath);
+            }
         });
     }
 
@@ -63,13 +66,8 @@ public class ImageTest extends BaseTest {
             String outputPath = "E:\\PDF\\fop\\image\\svgTest.pdf";
             // 转换pdf
             Document document = TemplateHandler.Document.build().addPage(
-                    TemplateHandler.Page.build().addBodyComponent(
-                            TemplateHandler.Image.build()
-                                    // 相对路径
-                                    .setPath("org/dromara/pdf/fop/svg/test.svg")
-                                    .setWidth("100pt")
-                                    .setHeight("100pt")
-                                    .setHorizontalStyle("center")
+                    TemplateHandler.Page.build().setBodyBackgroundImage(
+                            "org/dromara/pdf/fop/svg/test.svg"
                     )
             );
             // 转换pdf

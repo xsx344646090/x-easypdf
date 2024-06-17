@@ -1,6 +1,7 @@
 package org.dromara.pdf.pdfbox.core.ext.processor;
 
 import org.dromara.pdf.pdfbox.core.base.Document;
+import org.dromara.pdf.pdfbox.core.ext.processor.sign.SignProcessor;
 
 /**
  * 文档处理器
@@ -128,5 +129,14 @@ public class DocumentProcessor extends AbstractProcessor {
      */
     public MetadataProcessor getMetadataProcessor() {
         return new MetadataProcessor(this.document);
+    }
+
+    /**
+     * 获取签名处理器
+     *
+     * @return 返回签名处理器
+     */
+    public SignProcessor getSignProcessor() {
+        return new SignProcessor(this.document);
     }
 }

@@ -3,7 +3,6 @@ package org.dromara.pdf.pdfbox.component;
 import org.dromara.pdf.pdfbox.base.BaseTest;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.base.Page;
-import org.dromara.pdf.pdfbox.core.base.PageSize;
 import org.dromara.pdf.pdfbox.core.component.SplitLine;
 import org.dromara.pdf.pdfbox.core.component.Textarea;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
@@ -36,7 +35,7 @@ public class SplitLineTest extends BaseTest {
             Document document = PdfHandler.getDocumentHandler().create();
             document.setMargin(50F);
 
-            Page page = document.createPage(PageSize.A4);
+            Page page = new Page(document);
 
             SplitLine splitLine = new SplitLine(page);
             splitLine.setMarginTop(100F);
@@ -57,7 +56,7 @@ public class SplitLineTest extends BaseTest {
             Document document = PdfHandler.getDocumentHandler().create();
             document.setMargin(50F);
 
-            Page page = document.createPage(PageSize.A4);
+            Page page = new Page(document);
 
             SplitLine splitLine = new SplitLine(page);
             splitLine.setMarginTop(50F);
@@ -82,7 +81,7 @@ public class SplitLineTest extends BaseTest {
             Document document = PdfHandler.getDocumentHandler().create();
             document.setMargin(50F);
 
-            Page page = document.createPage(PageSize.A4);
+            Page page = new Page(document);
 
             Textarea textarea = new Textarea(page);
             textarea.setText("目录");

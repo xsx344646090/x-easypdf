@@ -7,18 +7,17 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.dromara.pdf.pdfbox.core.base.*;
 import org.dromara.pdf.pdfbox.core.component.Container;
-import org.dromara.pdf.pdfbox.core.component.*;
+import org.dromara.pdf.pdfbox.core.component.SplitLine;
+import org.dromara.pdf.pdfbox.core.component.Textarea;
 import org.dromara.pdf.pdfbox.core.enums.PWLength;
 import org.dromara.pdf.pdfbox.core.info.CatalogInfo;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.awt.*;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.*;
 
 /**
@@ -164,7 +163,7 @@ public class DocumentTest extends BaseTest {
         this.test(() -> {
             Document document = PdfHandler.getDocumentHandler().load(Paths.get("E:\\PDF\\pdfbox\\document\\test.pdf").toFile());
 
-            Page page = document.createPage(PageSize.A4);
+            Page page = new Page(document, PageSize.A4);
 
             document.insertPage(1, page);
             document.save("E:\\PDF\\pdfbox\\document\\insertPageTest1.pdf");
@@ -182,7 +181,7 @@ public class DocumentTest extends BaseTest {
         this.test(() -> {
             Document document = PdfHandler.getDocumentHandler().load(Paths.get("E:\\PDF\\pdfbox\\document\\test.pdf").toFile());
 
-            Page page = document.createPage(PageSize.A4);
+            Page page = new Page(document, PageSize.A4);
 
             document.appendPage(page);
             document.save("E:\\PDF\\pdfbox\\document\\appendPageTest.pdf");
@@ -198,7 +197,7 @@ public class DocumentTest extends BaseTest {
         this.test(() -> {
             Document document = PdfHandler.getDocumentHandler().load(Paths.get("E:\\PDF\\pdfbox\\document\\insertPageTest1.pdf").toFile());
 
-            Page page = document.createPage(PageSize.A4);
+            Page page = new Page(document);
 
             document.setPage(0, page);
             document.save("E:\\PDF\\pdfbox\\document\\setPageTest.pdf");
@@ -214,10 +213,10 @@ public class DocumentTest extends BaseTest {
         this.test(() -> {
             Document document = PdfHandler.getDocumentHandler().create();
 
-            Page page = document.createPage(PageSize.A4);
+            Page page = new Page(document);
             log.info(page.getWidth());
 
-            page = document.createPage();
+            page = new Page(document);
             log.info(page.getWidth());
 
             document.close();
@@ -235,7 +234,7 @@ public class DocumentTest extends BaseTest {
             Page page = document.getCurrentPage();
             System.out.println(page);
 
-            page = document.createPage();
+            page = new Page(document);
             System.out.println(page);
 
             document.appendPage(page);
@@ -260,7 +259,7 @@ public class DocumentTest extends BaseTest {
             document.setMargin(50F);
             document.setFontSize(12F);
 
-            Page page1 = document.createPage(PageSize.A4);
+            Page page1 = new Page(document);
 
             Textarea textarea1 = new Textarea(page1);
             textarea1.setLeading(12F);
@@ -268,7 +267,7 @@ public class DocumentTest extends BaseTest {
             textarea1.setCatalog(new CatalogInfo("第一页，爽爽的贵阳，避暑的天堂"));
             textarea1.render();
 
-            Page page2 = document.createPage(PageSize.A4);
+            Page page2 = new Page(document);
 
             Textarea textarea2 = new Textarea(page2);
             textarea2.setLeading(12F);
@@ -278,7 +277,7 @@ public class DocumentTest extends BaseTest {
 
             document.appendPage(page1, page2);
 
-            Page catalogPage = document.createPage(PageSize.A4);
+            Page catalogPage = new Page(document);
             Textarea textarea = new Textarea(catalogPage);
             textarea.setText("目录");
             textarea.setFontSize(20F);
@@ -326,10 +325,10 @@ public class DocumentTest extends BaseTest {
     public void bigDataTest1() {
         // 单次渲染耗时：2.417s 页面数：290 耗时：3.369s 大小：448KB
         this.test(() -> {
-            Document document = PdfHandler.getDocumentHandler().create(MemoryPolicy.setupTempFileOnly("E:\\PDF\\pdfbox\\document"));
+            Document document = PdfHandler.getDocumentHandler().create(MemoryPolicy.setupMix(2L * 1024 * 1024 * 1024, "E:\\PDF\\pdfbox\\document"));
             document.setMargin(50F);
 
-            Page page = document.createPage();
+            Page page = new Page(document);
 
             this.test(() -> {
                 StringBuilder builder = new StringBuilder();
@@ -364,7 +363,7 @@ public class DocumentTest extends BaseTest {
             for (int i = 0; i < total; i++) {
                 int finalI = i;
                 this.test(() -> {
-                    Page page = document.createPage();
+                    Page page = new Page(document);
                     pages.add(page);
                     StringBuilder builder = new StringBuilder();
                     for (int j = 0; j < 1000; j++) {
@@ -410,13 +409,11 @@ public class DocumentTest extends BaseTest {
         document.setMargin(50F);
         document.setTotalPageNumber(totalPage);
 
-        Page page = document.createPage(PageSize.A4);
-        page.setBorderColor(Color.LIGHT_GRAY);
+        Page page = new Page(document);
 
         PageHeader pageHeader = new PageHeader(document.getCurrentPage());
         Textarea headerText = new Textarea(pageHeader.getPage());
         headerText.setText("页眉，当前第" + headerText.getContext().getPage().getPlaceholder() + "页");
-        pageHeader.setWidth(490F);
         pageHeader.setHeight(100F);
         pageHeader.setComponents(Collections.singletonList(headerText));
         pageHeader.setIsBorder(true);
@@ -429,7 +426,6 @@ public class DocumentTest extends BaseTest {
         PageFooter pageFooter = new PageFooter(document.getCurrentPage());
         Textarea footerText = new Textarea(pageHeader.getPage());
         footerText.setText("页脚，共" + totalPage + "页");
-        pageFooter.setWidth(490F);
         pageFooter.setHeight(350F);
         pageFooter.setComponents(Collections.singletonList(footerText));
         pageFooter.setIsBorder(true);

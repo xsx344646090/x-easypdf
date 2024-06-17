@@ -1,12 +1,11 @@
-package org.dromara.pdf.pdfbox.core.base;
+package org.dromara.pdf.pdfbox.core.base.config;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.util.Objects;
 
 /**
- * 抽象基础边距类
+ * 边距配置
  *
  * @author xsx
  * @date 2023/6/2
@@ -24,8 +23,7 @@ import java.util.Objects;
  * </p>
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
-public abstract class AbstractBaseMargin extends AbstractBase {
+public class MarginConfiguration {
     /**
      * 上边距
      */
@@ -44,6 +42,21 @@ public abstract class AbstractBaseMargin extends AbstractBase {
     private Float marginRight;
 
     /**
+     * 无参构造
+     */
+    public MarginConfiguration() {
+        this.init();
+    }
+
+    /**
+     * 有参构造
+     * @param configuration 配置
+     */
+    public MarginConfiguration(MarginConfiguration configuration) {
+        this.init(configuration);
+    }
+
+    /**
      * 设置边距（上下左右）
      *
      * @param margin 边距
@@ -52,7 +65,10 @@ public abstract class AbstractBaseMargin extends AbstractBase {
         if (margin < 0) {
             throw new IllegalArgumentException("the margin must be positive");
         }
-        this.initMargin(margin);
+        this.marginTop = margin;
+        this.marginBottom = margin;
+        this.marginLeft = margin;
+        this.marginRight = margin;
     }
 
     /**
@@ -105,27 +121,8 @@ public abstract class AbstractBaseMargin extends AbstractBase {
 
     /**
      * 初始化
-     *
-     * @param base                基础参数
-     * @param isInitMarginByParam 是否使用参数初始化边距
      */
-    protected void init(AbstractBaseMargin base, boolean isInitMarginByParam) {
-        // 是否使用参数初始化边距
-        if (isInitMarginByParam) {
-            // 使用参数初始化边距
-            this.initMarginWithParam(base);
-        } else {
-            // 初始化边距
-            this.initMargin();
-        }
-        // 初始化
-        super.init(base);
-    }
-
-    /**
-     * 初始化边距
-     */
-    protected void initMargin() {
+    public void init() {
         // 初始化上边距
         if (Objects.isNull(this.marginTop)) {
             this.marginTop = 0F;
@@ -145,40 +142,26 @@ public abstract class AbstractBaseMargin extends AbstractBase {
     }
 
     /**
-     * 初始化边距
-     */
-    protected void initMargin(float margin) {
-        // 初始化上边距
-        this.setMarginTop(margin);
-        // 初始化下边距
-        this.setMarginBottom(margin);
-        // 初始化左边距
-        this.setMarginLeft(margin);
-        // 初始化右边距
-        this.setMarginRight(margin);
-    }
-
-    /**
-     * 初始化边距
+     * 初始化
      *
-     * @param base 基础参数
+     * @param configuration 配置
      */
-    protected void initMarginWithParam(AbstractBaseMargin base) {
+    public void init(MarginConfiguration configuration) {
         // 初始化上边距
         if (Objects.isNull(this.marginTop)) {
-            this.marginTop = base.marginTop;
+            this.marginTop = configuration.marginTop;
         }
         // 初始化下边距
         if (Objects.isNull(this.marginBottom)) {
-            this.marginBottom = base.marginBottom;
+            this.marginBottom = configuration.marginBottom;
         }
         // 初始化左边距
         if (Objects.isNull(this.marginLeft)) {
-            this.marginLeft = base.marginLeft;
+            this.marginLeft = configuration.marginLeft;
         }
         // 初始化右边距
         if (Objects.isNull(this.marginRight)) {
-            this.marginRight = base.marginRight;
+            this.marginRight = configuration.marginRight;
         }
     }
 }

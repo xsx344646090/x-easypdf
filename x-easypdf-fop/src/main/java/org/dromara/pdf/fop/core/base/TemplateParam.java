@@ -12,6 +12,7 @@ import org.apache.fop.configuration.DefaultConfigurationBuilder;
 import org.apache.xmlgraphics.io.Resource;
 import org.apache.xmlgraphics.io.ResourceResolver;
 import org.dromara.pdf.fop.core.datasource.DataSource;
+import org.dromara.pdf.fop.support.layout.ExpandLayoutManagerMaker;
 import org.dromara.pdf.fop.support.layout.LayoutManagerMapping;
 
 import java.io.File;
@@ -24,6 +25,7 @@ import java.nio.file.Paths;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * pdf模板参数
@@ -89,7 +91,7 @@ class TemplateParam {
     /**
      * 布局管理器
      */
-    private LayoutManagerMapping layoutManagerMaker = new LayoutManagerMapping();
+    private ExpandLayoutManagerMaker layoutManagerMaker;
     /**
      * 数据源
      */
@@ -116,24 +118,29 @@ class TemplateParam {
      */
     void initParams() {
         // 如果配置路径未初始化，则初始化为默认配置
-        if (this.configPath == null) {
+        if (Objects.isNull(this.configPath)) {
             // 初始化默认配置
             this.configPath = Constants.DEFAULT_CONFIG_PATH;
         }
         // 如果数据源未初始化，则提示错误信息
-        if (this.dataSource == null) {
+        if (Objects.isNull(this.dataSource)) {
             // 提示错误信息
             throw new IllegalArgumentException("the data source can not be null");
         }
         // 如果fop工厂未初始化，则初始化
-        if (this.fopFactory == null) {
+        if (Objects.isNull(this.fopFactory)) {
             // 初始化fop工厂
             this.fopFactory = this.initFopFactory();
         }
         // 如果用户代理未初始化，则初始化
-        if (this.userAgent == null) {
+        if (Objects.isNull(this.userAgent)) {
             // 初始化用户代理
             this.userAgent = this.initUserAgent();
+        }
+        // 如果布局管理器未初始化，则初始化
+        if (Objects.isNull(this.layoutManagerMaker)) {
+            // 初始化布局管理器
+            layoutManagerMaker = new LayoutManagerMapping();
         }
         // 初始化布局管理器
         this.layoutManagerMaker.initialize(this.userAgent);

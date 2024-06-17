@@ -3,8 +3,6 @@ package org.dromara.pdf.pdfbox.core.base;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.io.RandomAccessReadBuffer;
 import org.apache.pdfbox.pdfwriter.compress.CompressParameters;
@@ -15,11 +13,14 @@ import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
 import org.apache.pdfbox.pdmodel.encryption.PublicKeyProtectionPolicy;
 import org.apache.pdfbox.pdmodel.encryption.PublicKeyRecipient;
 import org.apache.pdfbox.pdmodel.encryption.StandardProtectionPolicy;
-import org.dromara.pdf.pdfbox.core.enums.*;
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.dromara.pdf.pdfbox.core.base.config.FontConfiguration;
+import org.dromara.pdf.pdfbox.core.base.config.MarginConfiguration;
+import org.dromara.pdf.pdfbox.core.enums.FontStyle;
+import org.dromara.pdf.pdfbox.core.enums.PWLength;
 import org.dromara.pdf.pdfbox.core.ext.processor.MetadataProcessor;
 import org.dromara.pdf.pdfbox.core.ext.processor.PageProcessor;
 import org.dromara.pdf.pdfbox.core.info.CatalogInfo;
-import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.dromara.pdf.pdfbox.support.Constants;
 import org.dromara.pdf.pdfbox.support.DefaultResourceCache;
 import org.dromara.pdf.pdfbox.util.FileUtil;
@@ -30,10 +31,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * 文档
@@ -55,41 +54,44 @@ import java.util.Optional;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class Document extends AbstractBaseFont implements Closeable {
-
-    static {
-        Banner.print();
-    }
+public class Document extends AbstractBase implements Closeable {
 
     /**
-     * 日志
+     * 边框配置
      */
-    private static final Log log = LogFactory.getLog(Document.class);
-
+    protected MarginConfiguration marginConfiguration;
     /**
-     * pdf访问权限
+     * 字体配置
      */
-    private AccessPermission accessPermission;
+    protected FontConfiguration fontConfiguration;
     /**
-     * 文档版本
+     * 背景颜色
      */
-    private Float version;
+    protected Color backgroundColor;
     /**
      * 任务文档
      */
-    private PDDocument target;
+    protected PDDocument target;
     /**
      * 页面列表
      */
-    private List<Page> pages;
+    protected List<Page> pages;
+    /**
+     * pdf访问权限
+     */
+    protected AccessPermission accessPermission;
+    /**
+     * 文档版本
+     */
+    protected Float version;
     /**
      * 总页码
      */
-    private Integer totalPageNumber;
+    protected Integer totalPageNumber;
     /**
      * 是否刷新元数据
      */
-    private Boolean isFlushMetadata;
+    protected Boolean isFlushMetadata;
 
     /**
      * 无参构造
@@ -154,16 +156,6 @@ public class Document extends AbstractBaseFont implements Closeable {
     }
 
     /**
-     * 设置字体名称
-     *
-     * @param fontName 字体名称
-     */
-    public void setFontName(String fontName) {
-        super.setFontName(fontName);
-        super.setFont(PdfHandler.getFontHandler().getPDFont(this.target, fontName, true));
-    }
-
-    /**
      * 设置版本
      *
      * @param version 版本
@@ -191,6 +183,217 @@ public class Document extends AbstractBaseFont implements Closeable {
         // 检查参数
         Objects.requireNonNull(cache, "the cache can not be null");
         this.target.setResourceCache(cache);
+    }
+
+    /**
+     * 设置边距（上下左右）
+     *
+     * @param margin 边距
+     */
+    public void setMargin(float margin) {
+        this.marginConfiguration.setMargin(margin);
+    }
+
+    /**
+     * 设置上边距
+     *
+     * @param margin 边距
+     */
+    public void setMarginTop(float margin) {
+        // 设置上边距
+        this.marginConfiguration.setMarginTop(margin);
+    }
+
+    /**
+     * 设置下边距
+     *
+     * @param margin 边距
+     */
+    public void setMarginBottom(float margin) {
+        this.marginConfiguration.setMarginBottom(margin);
+    }
+
+    /**
+     * 设置左边距
+     *
+     * @param margin 边距
+     */
+    public void setMarginLeft(float margin) {
+        // 重置左边距
+        this.marginConfiguration.setMarginLeft(margin);
+    }
+
+    /**
+     * 设置右边距
+     *
+     * @param margin 边距
+     */
+    public void setMarginRight(float margin) {
+        this.marginConfiguration.setMarginRight(margin);
+    }
+
+    /**
+     * 设置字体名称
+     *
+     * @param fontName 字体名称
+     */
+    public void setFontName(String fontName) {
+        this.fontConfiguration.setFontName(fontName);
+        this.getContext().addFontCache(fontName);
+    }
+
+    /**
+     * 设置特殊字体名称
+     *
+     * @param fontNames 字体名称
+     */
+    public void setSpecialFontNames(String... fontNames) {
+        this.getContext().addFontCache(fontNames);
+        Collections.addAll(this.fontConfiguration.getSpecialFontNames(), fontNames);
+    }
+
+    /**
+     * 设置字体大小
+     *
+     * @param size 大小
+     */
+    public void setFontSize(float size) {
+        this.fontConfiguration.setFontSize(size);
+    }
+
+    /**
+     * 设置字体颜色
+     *
+     * @param color 颜色
+     */
+    public void setFontColor(Color color) {
+        this.fontConfiguration.setFontColor(color);
+    }
+
+    /**
+     * 设置字体透明度
+     *
+     * @param alpha 透明度
+     */
+    public void setFontAlpha(float alpha) {
+        this.fontConfiguration.setFontAlpha(alpha);
+    }
+
+    /**
+     * 设置字体样式
+     *
+     * @param style 样式
+     */
+    public void setFontStyle(FontStyle style) {
+        this.fontConfiguration.setFontStyle(style);
+    }
+
+    /**
+     * 设置字体斜率（斜体字）
+     *
+     * @param slope 斜率
+     */
+    public void setFontSlope(float slope) {
+        this.fontConfiguration.setFontSlope(slope);
+    }
+
+    /**
+     * 设置字符间距
+     *
+     * @param spacing 间距
+     */
+    public void setCharacterSpacing(float spacing) {
+        this.fontConfiguration.setCharacterSpacing(spacing);
+    }
+
+    /**
+     * 设置行间距
+     *
+     * @param leading 行间距
+     */
+    public void setLeading(float leading) {
+        this.fontConfiguration.setLeading(leading);
+    }
+
+    /**
+     * 获取字体
+     *
+     * @return 返回字体
+     */
+    public PDFont getFont() {
+        return this.getContext().getFont(this.fontConfiguration.getFontName());
+    }
+
+    /**
+     * 获取上边距
+     *
+     * @return 返回上边距
+     */
+    public Float getMarginTop() {
+        return this.marginConfiguration.getMarginTop();
+    }
+
+    /**
+     * 获取下边距
+     *
+     * @return 返回下边距
+     */
+    public Float getMarginBottom() {
+        return this.marginConfiguration.getMarginBottom();
+    }
+
+    /**
+     * 获取左边距
+     *
+     * @return 返回左边距
+     */
+    public Float getMarginLeft() {
+        return this.marginConfiguration.getMarginLeft();
+    }
+
+    /**
+     * 获取右边距
+     *
+     * @return 返回右边距
+     */
+    public Float getMarginRight() {
+        return this.marginConfiguration.getMarginRight();
+    }
+
+    public String getFontName() {
+        return this.fontConfiguration.getFontName();
+    }
+
+    public List<String> getSpecialFontNames() {
+        return this.fontConfiguration.getSpecialFontNames();
+    }
+
+    public Float getFontSize() {
+        return this.fontConfiguration.getFontSize();
+    }
+
+    public Color getFontColor() {
+        return this.fontConfiguration.getFontColor();
+    }
+
+    public Float getFontAlpha() {
+        return this.fontConfiguration.getFontAlpha();
+    }
+
+    public FontStyle getFontStyle() {
+        return this.fontConfiguration.getFontStyle();
+    }
+
+    public Float getFontSlope() {
+        return this.fontConfiguration.getFontSlope();
+    }
+
+    public Float getCharacterSpacing() {
+        return this.fontConfiguration.getCharacterSpacing();
+    }
+
+    public Float getLeading() {
+        return this.fontConfiguration.getLeading();
     }
 
     /**
@@ -288,25 +491,6 @@ public class Document extends AbstractBaseFont implements Closeable {
      */
     public void decrypt() {
         this.getTarget().setAllSecurityToBeRemoved(true);
-    }
-
-    /**
-     * 创建页面
-     *
-     * @param rectangle 页面尺寸
-     * @return 返回页面
-     */
-    public Page createPage(PageSize rectangle) {
-        return new Page(Optional.ofNullable(this.getContext()).orElse(new Context(this)), rectangle);
-    }
-
-    /**
-     * 创建页面
-     *
-     * @return 返回页面
-     */
-    public Page createPage() {
-        return this.createPage(PageSize.A4);
     }
 
     /**
@@ -411,8 +595,6 @@ public class Document extends AbstractBaseFont implements Closeable {
     public void close() {
         // 关闭页面
         this.getPages().forEach(Page::close);
-        // 重置字体
-        super.setFont(null);
         // 清理上下文
         this.getContext().clear();
         try {
@@ -426,24 +608,16 @@ public class Document extends AbstractBaseFont implements Closeable {
     /**
      * 初始化基础
      */
-    @Override
     public void initBase() {
-        // 初始化上下文
-        super.setContext(new Context(this));
-        // 初始化字体参数
-        this.initFontParams();
-        // 初始化边框参数
-        this.initBorderParams();
-        // 初始化边距
-        this.initMargin();
-        // 初始化其他参数
+        super.init(new Context(this));
+        this.marginConfiguration = new MarginConfiguration();
+        this.fontConfiguration = new FontConfiguration();
         this.initOtherParams();
     }
 
     /**
      * 初始化
      */
-    @Override
     protected void init() {
         this.init(MemoryPolicy.setupMainMemoryOnly());
     }
@@ -540,19 +714,6 @@ public class Document extends AbstractBaseFont implements Closeable {
         this.initBase();
         // 初始化页面
         this.initPages();
-        // 重置上下文
-        if (!this.pages.isEmpty()) {
-            // 获取最新页面
-            Page page = this.pages.get(this.pages.size() - 1);
-            // 获取上下文
-            Context context = this.getContext();
-            // 设置页面
-            context.setPage(page);
-            // 设置是否分页
-            context.setIsAlreadyPaging(Boolean.FALSE);
-            // 重置光标
-            context.getCursor().reset(page.getMarginLeft(), page.getHeight() - page.getMarginTop());
-        }
     }
 
     /**
@@ -568,83 +729,29 @@ public class Document extends AbstractBaseFont implements Closeable {
         // 遍历页面树
         for (int i = 0; i < count; i++) {
             // 添加页面
-            this.pages.add(new Page(this.getContext(), pageTree.get(i)));
+            this.pages.add(new Page(this, pageTree.get(i)));
         }
-    }
-
-    /**
-     * 初始化边框参数
-     */
-    protected void initBorderParams() {
-        // 初始化样式
-        super.setBorderStyle(BorderStyle.SOLID);
-        // 初始化线宽
-        super.setBorderWidth(1F);
-        // 初始化线长
-        super.setBorderLineLength(1F);
-        // 初始化间隔
-        super.setBorderLineSpacing(1F);
-        // 初始化上边框颜色
-        super.setBorderTopColor(Color.BLACK);
-        // 初始化下边框颜色
-        super.setBorderBottomColor(Color.BLACK);
-        // 初始化左边框颜色
-        super.setBorderLeftColor(Color.BLACK);
-        // 初始化右边框颜色
-        super.setBorderRightColor(Color.BLACK);
-        // 初始化是否上边框
-        super.setIsBorderTop(Boolean.FALSE);
-        // 初始化是否下边框
-        super.setIsBorderBottom(Boolean.FALSE);
-        // 初始化是否左边框
-        super.setIsBorderLeft(Boolean.FALSE);
-        // 初始化是否右边框
-        super.setIsBorderRight(Boolean.FALSE);
-    }
-
-    /**
-     * 初始化字体参数
-     */
-    protected void initFontParams() {
-        // 初始化字体
-        super.setFont(PdfHandler.getFontHandler().getPDFont(this.target, Constants.DEFAULT_FONT_NAME, true));
-        // 初始化字体大小
-        super.setFontSize(12F);
-        // 初始化字体颜色
-        super.setFontColor(Color.BLACK);
-        // 初始化字体透明度
-        super.setFontAlpha(1.0F);
-        // 初始化字体样式
-        super.setFontStyle(FontStyle.NORMAL);
-        // 初始化字体斜率（斜体字）
-        super.setFontSlope(0F);
-        // 初始化字符间距
-        super.setCharacterSpacing(0F);
-        // 初始化行间距
-        super.setLeading(0F);
-        // 初始化换行高度
-        super.getContext().setWrapHeight(this.getFontSize());
     }
 
     /**
      * 初始化其他参数
      */
     protected void initOtherParams() {
-        // 初始化水平对齐方式
-        super.setHorizontalAlignment(HorizontalAlignment.LEFT);
-        // 初始化垂直对齐方式
-        super.setVerticalAlignment(VerticalAlignment.TOP);
-        // 初始化内容模式
-        super.setContentMode(ContentMode.APPEND);
-        // 初始化是否重置内容流
-        super.setIsResetContentStream(Boolean.TRUE);
-        // 初始化背景颜色
-        super.setBackgroundColor(Color.WHITE);
         // 初始化文档访问权限
         this.accessPermission = this.target.getCurrentAccessPermission();
         // 初始化文档版本
         this.version = this.target.getVersion();
         // 初始化是否刷新元数据
         this.isFlushMetadata = Boolean.TRUE;
+        // 初始化背景颜色
+        this.backgroundColor = Color.WHITE;
+        // 添加字体缓存
+        this.context.addFontCache(this.fontConfiguration.getFontName());
+        // 初始化特殊字体
+        if (Objects.nonNull(this.fontConfiguration.getSpecialFontNames())) {
+            for (String specialFontName : this.fontConfiguration.getSpecialFontNames()) {
+                this.getContext().addFontCache(specialFontName);
+            }
+        }
     }
 }

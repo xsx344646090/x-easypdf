@@ -23,11 +23,8 @@ import java.io.*;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.security.AccessControlException;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A FontProvider which searches for fonts on the local filesystem.
@@ -68,8 +65,7 @@ public class FileSystemFontProvider extends FontProvider {
             this.ulCodePageRange1 = ulCodePageRange1;
             this.ulCodePageRange2 = ulCodePageRange2;
             this.macStyle = macStyle;
-            this.panose = panose != null && panose.length >= PDPanoseClassification.LENGTH ?
-                    new PDPanoseClassification(panose) : null;
+            this.panose = panose != null && panose.length >= PDPanoseClassification.LENGTH ? new PDPanoseClassification(panose) : null;
             this.parent = parent;
         }
 
@@ -264,38 +260,44 @@ public class FileSystemFontProvider extends FontProvider {
      */
     FileSystemFontProvider(FontCache cache) {
         this.cache = cache;
-        try {
-            if (LOG.isTraceEnabled()) {
-                LOG.trace("Will search the local system for fonts");
-            }
-
-            // scan the local system for font files
-            FontFileFinder fontFileFinder = new FontFileFinder();
-            List<URI> fonts = fontFileFinder.find();
-            List<File> files = new ArrayList<>(fonts.size());
-            for (URI font : fonts) {
-                files.add(new File(font));
-            }
-
-            if (LOG.isTraceEnabled()) {
-                LOG.trace("Found " + files.size() + " fonts on the local system");
-            }
-
-            if (!files.isEmpty()) {
-                // load cached FontInfo objects
-                List<FSFontInfo> cachedInfos = loadDiskCache(files);
-                if (cachedInfos != null && !cachedInfos.isEmpty()) {
-                    fontInfoList.addAll(cachedInfos);
-                } else {
-                    LOG.warn("Building on-disk font cache, this may take a while");
-                    scanFonts(files);
-                    saveDiskCache();
-                    LOG.warn("Finished building on-disk font cache, found " + fontInfoList.size()
-                            + " fonts");
+        boolean scanDiskFont = true;
+        if (Objects.equals("false", System.getProperty("org.dromara.pdfbox.scanfont"))) {
+            scanDiskFont = false;
+        }
+        if (scanDiskFont) {
+            try {
+                if (LOG.isTraceEnabled()) {
+                    LOG.trace("Will search the local system for fonts");
                 }
+
+                // scan the local system for font files
+                FontFileFinder fontFileFinder = new FontFileFinder();
+                List<URI> fonts = fontFileFinder.find();
+                List<File> files = new ArrayList<>(fonts.size());
+                for (URI font : fonts) {
+                    files.add(new File(font));
+                }
+
+                if (LOG.isTraceEnabled()) {
+                    LOG.trace("Found " + files.size() + " fonts on the local system");
+                }
+
+                if (!files.isEmpty()) {
+                    // load cached FontInfo objects
+                    List<FSFontInfo> cachedInfos = loadDiskCache(files);
+                    if (cachedInfos != null && !cachedInfos.isEmpty()) {
+                        fontInfoList.addAll(cachedInfos);
+                    } else {
+                        LOG.warn("Building on-disk font cache, this may take a while");
+                        scanFonts(files);
+                        saveDiskCache();
+                        LOG.warn("Finished building on-disk font cache, found " + fontInfoList.size()
+                                + " fonts");
+                    }
+                }
+            } catch (SecurityException e) {
+                LOG.error("Error accessing the file system", e);
             }
-        } catch (AccessControlException e) {
-            LOG.error("Error accessing the file system", e);
         }
     }
 
@@ -313,7 +315,7 @@ public class FileSystemFontProvider extends FontProvider {
         } catch (IOException e) {
             LOG.warn("Error parsing font " + file.getPath(), e);
         }
-        return "";
+        return this.fontInfoList.get(this.fontInfoList.size()-1).getFontName();
     }
 
     @Override
@@ -329,7 +331,7 @@ public class FileSystemFontProvider extends FontProvider {
         } catch (IOException e) {
             LOG.warn("Error parsing font " + type, e);
         }
-        return "";
+        return this.fontInfoList.get(this.fontInfoList.size()-1).getFontName();
     }
 
     private void scanFonts(List<File> files) {

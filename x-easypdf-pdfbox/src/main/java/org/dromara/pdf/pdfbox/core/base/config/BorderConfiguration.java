@@ -1,14 +1,13 @@
-package org.dromara.pdf.pdfbox.core.base;
+package org.dromara.pdf.pdfbox.core.base.config;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import org.dromara.pdf.pdfbox.core.enums.BorderStyle;
 
 import java.awt.*;
 import java.util.Objects;
 
 /**
- * 抽象基础边框类
+ * 边框配置
  *
  * @author xsx
  * @date 2023/9/22
@@ -26,8 +25,7 @@ import java.util.Objects;
  * </p>
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
-public abstract class AbstractBaseBorder extends AbstractBaseMargin {
+public class BorderConfiguration {
     /**
      * 边框样式
      */
@@ -76,6 +74,22 @@ public abstract class AbstractBaseBorder extends AbstractBaseMargin {
      * 是否右边框
      */
     private Boolean isBorderRight;
+
+    /**
+     * 无参构造
+     */
+    public BorderConfiguration() {
+        this.init();
+    }
+
+    /**
+     * 有参构造
+     *
+     * @param configuration 配置
+     */
+    public BorderConfiguration(BorderConfiguration configuration) {
+        this.init(configuration);
+    }
 
     /**
      * 设置边框
@@ -138,16 +152,66 @@ public abstract class AbstractBaseBorder extends AbstractBaseMargin {
     }
 
     /**
-     * 初始化
+     * 是否有边框
      *
-     * @param base                基础参数
-     * @param isInitMarginByParam 是否使用参数初始化边距
+     * @return 返回是否有边框
      */
-    protected void init(AbstractBaseBorder base, boolean isInitMarginByParam) {
-        // 初始化
-        super.init(base, isInitMarginByParam);
-        // 初始化边框
-        this.initBorder(base);
+    public boolean hasBorder() {
+        return this.isBorderTop || this.isBorderBottom || this.isBorderLeft || this.isBorderRight;
+    }
+
+    /**
+     * 初始化
+     */
+    public void init() {
+        // 初始化边框样式
+        if (Objects.isNull(this.borderStyle)) {
+            this.borderStyle = BorderStyle.SOLID;
+        }
+        // 初始化边框线宽
+        if (Objects.isNull(this.borderWidth)) {
+            this.borderWidth = 1F;
+        }
+        // 初始化边框点线长度
+        if (Objects.isNull(this.borderLineLength)) {
+            this.borderLineLength = 1F;
+        }
+        // 初始化边框点线间隔
+        if (Objects.isNull(this.borderLineSpacing)) {
+            this.borderLineSpacing = 1F;
+        }
+        // 初始化上边框颜色
+        if (Objects.isNull(this.borderTopColor)) {
+            this.borderTopColor = Color.GRAY;
+        }
+        // 初始化下边框颜色
+        if (Objects.isNull(this.borderBottomColor)) {
+            this.borderBottomColor = Color.GRAY;
+        }
+        // 初始化左边框颜色
+        if (Objects.isNull(this.borderLeftColor)) {
+            this.borderLeftColor = Color.GRAY;
+        }
+        // 初始化右边框颜色
+        if (Objects.isNull(this.borderRightColor)) {
+            this.borderRightColor = Color.GRAY;
+        }
+        // 初始化是否上边框
+        if (Objects.isNull(this.isBorderTop)) {
+            this.isBorderTop = Boolean.FALSE;
+        }
+        // 初始化是否下边框
+        if (Objects.isNull(this.isBorderBottom)) {
+            this.isBorderBottom = Boolean.FALSE;
+        }
+        // 初始化是否左边框
+        if (Objects.isNull(this.isBorderLeft)) {
+            this.isBorderLeft = Boolean.FALSE;
+        }
+        // 初始化是否右边框
+        if (Objects.isNull(this.isBorderRight)) {
+            this.isBorderRight = Boolean.FALSE;
+        }
     }
 
     /**
@@ -155,7 +219,7 @@ public abstract class AbstractBaseBorder extends AbstractBaseMargin {
      *
      * @param base 基础参数
      */
-    protected void initBorder(AbstractBaseBorder base) {
+    public void init(BorderConfiguration base) {
         // 初始化边框样式
         if (Objects.isNull(this.borderStyle)) {
             this.borderStyle = base.borderStyle;
