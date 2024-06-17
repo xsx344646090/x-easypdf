@@ -3,6 +3,7 @@ package org.dromara.pdf.fop.core.datasource;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.experimental.Accessors;
+import org.apache.commons.io.output.NullOutputStream;
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.FopFactory;
 
@@ -50,6 +51,28 @@ public class XMLDataSource implements DataSource {
      * xml数据输入流
      */
     private InputStream xmlInputStream;
+
+    /**
+     * 获取总页数
+     *
+     * @param fopFactory fop工厂
+     * @param foAgent    fo代理
+     * @return 返回总页数
+     */
+    @Override
+    public Integer getTotalPage(FopFactory fopFactory, FOUserAgent foAgent) {
+        Integer totalPage = this.domTransform(fopFactory, foAgent, this.templatePath, NullOutputStream.INSTANCE);
+        Optional.ofNullable(this.xmlInputStream).ifPresent(
+                v -> {
+                    try {
+                        v.close();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+        );
+        return totalPage;
+    }
 
     /**
      * 获取数据源读取器

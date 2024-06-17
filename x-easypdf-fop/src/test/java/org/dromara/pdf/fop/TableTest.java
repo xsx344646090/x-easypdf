@@ -25,6 +25,7 @@ import org.junit.Test;
  * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  * </p>
+ * jdbc:mysql://10.88.99.52:3306/test_middlestage_order_center?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&connectTimeout=5000&socketTimeout=5000&autoReconnect=true&rewriteBatchedStatements=true
  */
 public class TableTest extends BaseTest {
 
@@ -55,7 +56,23 @@ public class TableTest extends BaseTest {
                                                     TemplateHandler.Table.Cell.build().addComponent(
                                                             TemplateHandler.Text.build().setText("2-hello-world-2")
                                                     ).setBorder("1 solid black")
-                                            )
+                                            ),
+                                            TemplateHandler.Table.Row.build().addCell(
+                                                    TemplateHandler.Table.Cell.build().addComponent(
+                                                            TemplateHandler.Text.build().setText("2-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-1")
+                                                    ).setBorder("1 solid black"),
+                                                    TemplateHandler.Table.Cell.build().addComponent(
+                                                            TemplateHandler.Text.build().setText("2-hello-world-2")
+                                                    ).setBorder("1 solid black")
+                                            ).enableKeepTogether(),
+                                            TemplateHandler.Table.Row.build().addCell(
+                                                    TemplateHandler.Table.Cell.build().addComponent(
+                                                            TemplateHandler.Text.build().setText("2-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-1")
+                                                    ).setBorder("1 solid black"),
+                                                    TemplateHandler.Table.Cell.build().addComponent(
+                                                            TemplateHandler.Text.build().setText("2-hello-world-2")
+                                                    ).setBorder("1 solid black")
+                                            ).enableKeepTogether()
                                     )
                             ).setWidth("200pt").setMargin("10pt")
                     )
@@ -76,7 +93,7 @@ public class TableTest extends BaseTest {
             Table table = TemplateHandler.Table.build();
             // 创建表格体
             TableBody tableBody = TemplateHandler.Table.Body.build();
-            for (int i = 1; i <= 3; i++) {
+            for (int i = 1; i <= 300; i++) {
                 // 创建表格行
                 TableRow row = TemplateHandler.Table.Row.build();
                 for (int j = 1; j <= 3; j++) {

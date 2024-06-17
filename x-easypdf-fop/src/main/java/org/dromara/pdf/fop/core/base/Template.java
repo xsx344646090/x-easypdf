@@ -4,6 +4,7 @@ import lombok.SneakyThrows;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dromara.pdf.fop.core.datasource.DataSource;
+import org.dromara.pdf.fop.support.layout.ExpandLayoutManagerMaker;
 import org.dromara.pdf.fop.util.FileUtil;
 import org.dromara.pdf.pdfbox.core.base.Document;
 
@@ -65,6 +66,17 @@ public class Template {
      */
     public Template setDataSource(DataSource dataSource) {
         this.param.setDataSource(dataSource);
+        return this;
+    }
+
+    /**
+     * 设置布局管理器
+     *
+     * @param maker 布局管理器
+     * @return 返回pdf模板
+     */
+    public Template setLayoutManagerMaker(ExpandLayoutManagerMaker maker) {
+        this.param.setLayoutManagerMaker(maker);
         return this;
     }
 
@@ -173,6 +185,18 @@ public class Template {
     public Template disableErrorInfo() {
         this.param.setIsErrorInfo(Boolean.FALSE);
         return this;
+    }
+
+    /**
+     * 获取总页数
+     *
+     * @return 返回总页数
+     */
+    public Integer getTotalPage() {
+        // 初始化参数
+        this.param.initParams();
+        // 转换pdf
+        return this.param.getDataSource().getTotalPage(this.param.getFopFactory(), this.param.getUserAgent());
     }
 
     /**

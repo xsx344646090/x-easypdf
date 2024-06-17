@@ -52,9 +52,9 @@
     <!--表格尾元素-->
     <element name="table-footer" type="fo:table-footer-wrapper"/>
     <!--表格行元素-->
-    <element name="table-row" type="fo:table-row-wrapper"/>
+    <element name="table-tableRow" type="fo:table-tableRow-wrapper"/>
     <!--表格单元格元素-->
-    <element name="table-cell" type="fo:table-cell-wrapper"/>
+    <element name="table-tableCell" type="fo:table-tableCell-wrapper"/>
     <!--书签树元素-->
     <element name="bookmark-tree" type="fo:bookmark-tree-wrapper"/>
     <!--书签元素-->
@@ -403,7 +403,7 @@
     <complexType name="table-header-wrapper">
         <sequence>
             <!--表格行元素-->
-            <element ref="fo:table-row"/>
+            <element ref="fo:table-tableRow"/>
         </sequence>
         <!--id-->
         <attribute name="id"/>
@@ -417,7 +417,7 @@
     <complexType name="table-body-wrapper">
         <sequence>
             <!--表格行元素-->
-            <element ref="fo:table-row" maxOccurs="unbounded"/>
+            <element ref="fo:table-tableRow" maxOccurs="unbounded"/>
         </sequence>
         <!--id-->
         <attribute name="id"/>
@@ -431,7 +431,7 @@
     <complexType name="table-footer-wrapper">
         <sequence>
             <!--表格行元素-->
-            <element ref="fo:table-row"/>
+            <element ref="fo:table-tableRow"/>
         </sequence>
         <!--id-->
         <attribute name="id"/>
@@ -442,10 +442,10 @@
     </complexType>
 
     <!--表格行元素类型-->
-    <complexType name="table-row-wrapper">
+    <complexType name="table-tableRow-wrapper">
         <sequence maxOccurs="unbounded">
             <!--表格单元格元素-->
-            <element ref="fo:table-cell"/>
+            <element ref="fo:table-tableCell"/>
         </sequence>
         <!--id-->
         <attribute name="id"/>
@@ -458,7 +458,7 @@
     </complexType>
 
     <!--表格单元格元素类型-->
-    <complexType name="table-cell-wrapper">
+    <complexType name="table-tableCell-wrapper">
         <choice maxOccurs="unbounded">
             <!--当前页码元素-->
             <element ref="fo:page-number"/>
@@ -472,7 +472,7 @@
             <element ref="fo:table"/>
         </choice>
         <!--table-cell属性-->
-        <attributeGroup ref="fo:table-cell-attributes"/>
+        <attributeGroup ref="fo:table-tableCell-attributes"/>
     </complexType>
 
     <!--书签树元素类型-->
@@ -781,7 +781,7 @@
     </attributeGroup>
 
     <!--table-cell属性-->
-    <attributeGroup name="table-cell-attributes">
+    <attributeGroup name="table-tableCell-attributes">
         <!--id-->
         <attribute name="id"/>
         <!--宽度-->
@@ -793,7 +793,7 @@
         <!--显示（上下）对齐-->
         <attribute name="display-align" type="fo:display-align-value"/>
         <!--合并行-->
-        <attribute name="number-rows-spanned" type="integer"/>
+        <attribute name="number-tableRows-spanned" type="integer"/>
         <!--合并列-->
         <attribute name="number-columns-spanned" type="integer"/>
         <!--margin属性-->
