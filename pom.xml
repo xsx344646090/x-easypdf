@@ -12,16 +12,16 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <lombok.version>1.18.30</lombok.version>
-        <pdfbox.version>3.0.1</pdfbox.version>
-        <zxing.core.version>3.5.2</zxing.core.version>
-        <bouncycastle.version>1.77</bouncycastle.version>
+        <lombok.version>1.18.32</lombok.version>
+        <pdfbox.version>3.0.2</pdfbox.version>
+        <zxing.core.version>3.5.3</zxing.core.version>
+        <bouncycastle.version>1.78.1</bouncycastle.version>
         <batik.version>1.17</batik.version>
         <xmlgraphics-commons.version>2.9</xmlgraphics-commons.version>
         <fop.version>2.9</fop.version>
-        <thymeleaf.version>3.1.1.RELEASE</thymeleaf.version>
-        <jte.version>2.2.4</jte.version>
-        <freemarker.version>2.3.31</freemarker.version>
+        <thymeleaf.version>3.1.2.RELEASE</thymeleaf.version>
+        <jte.version>2.3.2</jte.version>
+        <freemarker.version>2.3.32</freemarker.version>
 
         <junit.version>4.13.2</junit.version>
 
