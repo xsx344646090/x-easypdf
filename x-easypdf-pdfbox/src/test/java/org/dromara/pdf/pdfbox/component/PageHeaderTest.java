@@ -3,9 +3,8 @@ package org.dromara.pdf.pdfbox.component;
 import org.dromara.pdf.pdfbox.base.BaseTest;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.base.Page;
-import org.dromara.pdf.pdfbox.core.base.PageSize;
+import org.dromara.pdf.pdfbox.core.base.PageHeader;
 import org.dromara.pdf.pdfbox.core.component.Image;
-import org.dromara.pdf.pdfbox.core.component.PageHeader;
 import org.dromara.pdf.pdfbox.core.component.Textarea;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.junit.Test;
@@ -41,13 +40,12 @@ public class PageHeaderTest extends BaseTest {
             Document document = PdfHandler.getDocumentHandler().create();
             document.setMargin(50F);
 
-            Page page = document.createPage(PageSize.A4);
+            Page page = new Page(document);
             PageHeader pageHeader = new PageHeader(document.getCurrentPage());
 
             Textarea headerText = new Textarea(pageHeader.getPage());
             headerText.setText("页眉");
 
-            pageHeader.setWidth(490F);
             pageHeader.setHeight(100F);
             pageHeader.setComponents(Collections.singletonList(headerText));
             pageHeader.setIsBorder(true);
@@ -84,7 +82,7 @@ public class PageHeaderTest extends BaseTest {
             Document document = PdfHandler.getDocumentHandler().create();
             document.setMargin(50F);
 
-            Page page = document.createPage(PageSize.A4);
+            Page page = new Page(document);
             PageHeader pageHeader = new PageHeader(document.getCurrentPage());
 
             Image image1 = new Image(pageHeader.getPage());
@@ -105,7 +103,6 @@ public class PageHeaderTest extends BaseTest {
             image3.setHeight(50);
             image3.setIsBorder(true);
 
-            pageHeader.setWidth(100F);
             pageHeader.setHeight(100F);
             pageHeader.setComponents(Arrays.asList(image1, image2, image3));
             pageHeader.setIsBorder(true);
@@ -142,7 +139,7 @@ public class PageHeaderTest extends BaseTest {
             Document document = PdfHandler.getDocumentHandler().create();
             document.setMargin(50F);
 
-            Page page = document.createPage(PageSize.A4);
+            Page page = new Page(document);
             PageHeader pageHeader = new PageHeader(document.getCurrentPage());
 
             Textarea headerText1 = new Textarea(pageHeader.getPage());
@@ -159,7 +156,6 @@ public class PageHeaderTest extends BaseTest {
             headerText2.setText("页眉2");
             headerText2.setFontSize(30F);
 
-            pageHeader.setWidth(490F);
             pageHeader.setHeight(100F);
             pageHeader.setComponents(Arrays.asList(headerText1, image, headerText2));
             pageHeader.setIsBorder(true);

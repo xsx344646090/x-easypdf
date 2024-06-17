@@ -1,9 +1,13 @@
 package org.dromara.pdf.pdfbox.component;
 
 import org.dromara.pdf.pdfbox.base.BaseTest;
-import org.dromara.pdf.pdfbox.core.base.*;
+import org.dromara.pdf.pdfbox.core.base.Document;
+import org.dromara.pdf.pdfbox.core.base.InnerDest;
+import org.dromara.pdf.pdfbox.core.base.OuterDest;
+import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.component.Textarea;
 import org.dromara.pdf.pdfbox.core.enums.FontStyle;
+import org.dromara.pdf.pdfbox.core.enums.HighlightMode;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.junit.Test;
 
@@ -35,25 +39,29 @@ public class TextareaTest extends BaseTest {
     @Test
     public void globalTest() {
         this.test(() -> {
-            PdfHandler.getFontHandler().addFont(Paths.get("F:\\pdf\\OTF\\SimplifiedChinese\\SourceHanSerifSC-Regular.otf").toFile());
+            PdfHandler.getFontHandler().addFont(Paths.get("C:\\Users\\xsx\\Downloads\\Noto_Emoji\\NotoEmoji-VariableFont_wght.ttf").toFile());
 
             Document document = PdfHandler.getDocumentHandler().create();
             document.setMargin(50F);
             document.setFontName("微软雅黑");
             document.setFontColor(Color.RED);
             document.setFontSize(12F);
+            document.setSpecialFontNames("Noto Emoji Regular");
 
-            Page page = document.createPage(PageSize.A4);
+            Page page = new Page(document);
             page.setMargin(20F);
             page.setFontName("仿宋");
             page.setFontColor(Color.BLUE);
             page.setFontSize(20F);
 
             Textarea textarea = new Textarea(document.getCurrentPage());
-            textarea.setText("这是第一页，使用的页面设置");
+            textarea.setText("第一个页面，包含emoji字符：↔，测试");
+            textarea.setFontName("微软雅黑");
+            textarea.setFontColor(Color.BLACK);
             textarea.render();
             log.info("页面最新页码： " + page.getLastNo());
 
+            textarea.setFontName("微软雅黑");
             textarea.setIsBreak(true);
             textarea.setText("这是第二页，使用的上个页面设置");
             textarea.render();
@@ -67,7 +75,7 @@ public class TextareaTest extends BaseTest {
             textarea.render();
             log.info("页面最新页码： " + page.getLastNo());
 
-            Page page1 = document.createPage(PageSize.A4);
+            Page page1 = new Page(document);
 
             textarea = new Textarea(document.getCurrentPage());
             textarea.setText("这是第三页，使用的全局设置");
@@ -91,7 +99,7 @@ public class TextareaTest extends BaseTest {
             document.setMargin(50F);
             document.setFontSize(30F);
 
-            Page page = document.createPage(PageSize.A4);
+            Page page = new Page(document);
 
             Textarea textarea = new Textarea(page);
             textarea.setMarginTop(100F);
@@ -114,7 +122,7 @@ public class TextareaTest extends BaseTest {
             document.setMargin(50F);
             document.setFontSize(20F);
 
-            Page page = document.createPage();
+            Page page = new Page(document);
 
             Textarea textarea = new Textarea(page);
             textarea.setText("HelloWorld1\nHelloWorld2\nHelloWorld3");
@@ -145,7 +153,7 @@ public class TextareaTest extends BaseTest {
             document.setMargin(50F);
             document.setFontSize(30F);
 
-            Page page = document.createPage(PageSize.A4);
+            Page page = new Page(document);
 
             Textarea textarea = new Textarea(page);
             textarea.setIsWrap(true);
@@ -212,7 +220,7 @@ public class TextareaTest extends BaseTest {
             document.setMargin(50F);
             document.setFontSize(30F);
 
-            Page page = document.createPage(PageSize.A4);
+            Page page = new Page(document);
 
             Textarea textarea = new Textarea(page);
             textarea.setHighlightColor(Color.CYAN);
@@ -244,7 +252,7 @@ public class TextareaTest extends BaseTest {
             document.setMargin(50F);
             document.setFontSize(30F);
 
-            Page page = document.createPage(PageSize.A4);
+            Page page = new Page(document);
 
             Textarea textarea = new Textarea(page);
             textarea.setUnderlineWidth(2F);
@@ -277,7 +285,7 @@ public class TextareaTest extends BaseTest {
             document.setMargin(50F);
             document.setFontSize(30F);
 
-            Page page = document.createPage(PageSize.A4);
+            Page page = new Page(document);
 
             Textarea textarea = new Textarea(page);
             textarea.setDeleteLineColor(Color.CYAN);
@@ -309,7 +317,7 @@ public class TextareaTest extends BaseTest {
             document.setMargin(50F);
             document.setFontSize(30F);
 
-            Page page = document.createPage(PageSize.A4);
+            Page page = new Page(document);
 
             Textarea textarea = new Textarea(page);
             textarea.setUnderlineColor(Color.BLUE);
@@ -339,7 +347,7 @@ public class TextareaTest extends BaseTest {
             document.setMargin(50F);
             document.setFontSize(30F);
 
-            Page page = document.createPage(PageSize.A4);
+            Page page = new Page(document);
 
             Textarea textarea = new Textarea(page);
             textarea.setUnderlineColor(Color.BLUE);
@@ -381,7 +389,7 @@ public class TextareaTest extends BaseTest {
             document.setMargin(50F);
             document.setFontSize(30F);
 
-            Page page = document.createPage(PageSize.A4);
+            Page page = new Page(document);
 
             Textarea textarea = new Textarea(page);
             textarea.setHighlightColor(Color.CYAN);
@@ -411,7 +419,7 @@ public class TextareaTest extends BaseTest {
             document.setFontSize(12F);
 
             // 创建一个A4大小的页面
-            Page page = document.createPage(PageSize.A4);
+            Page page = new Page(document);
 
             // 创建文本域
             Textarea textarea = new Textarea(page);
@@ -464,7 +472,7 @@ public class TextareaTest extends BaseTest {
             textarea.render();
 
             // 创建另一个A4大小的页面
-            Page page1 = document.createPage(PageSize.A4);
+            Page page1 = new Page(document);
 
             // 创建文本域
             textarea = new Textarea(page1);
@@ -499,7 +507,7 @@ public class TextareaTest extends BaseTest {
             document.setFontSize(12F);
 
             // 创建一个A4大小的页面
-            Page page = document.createPage(PageSize.A4);
+            Page page = new Page(document);
 
             // 创建一个Textarea对象
             Textarea textarea = new Textarea(page);

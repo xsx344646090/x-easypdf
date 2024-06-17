@@ -1,4 +1,4 @@
-package org.dromara.pdf.pdfbox.core.base;
+package org.dromara.pdf.pdfbox.core.enums;
 
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationLink;
 

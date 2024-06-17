@@ -3,11 +3,11 @@ package org.dromara.pdf.pdfbox.core.base;
 import lombok.Data;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
-import org.dromara.pdf.pdfbox.core.component.ContainerInfo;
-import org.dromara.pdf.pdfbox.core.component.PageFooter;
-import org.dromara.pdf.pdfbox.core.component.PageHeader;
-import org.dromara.pdf.pdfbox.core.enums.ContentMode;
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.dromara.pdf.pdfbox.core.component.BorderInfo;
+import org.dromara.pdf.pdfbox.core.enums.ComponentType;
 import org.dromara.pdf.pdfbox.core.info.CatalogInfo;
+import org.dromara.pdf.pdfbox.handler.PdfHandler;
 
 import java.util.*;
 
@@ -32,14 +32,6 @@ import java.util.*;
 @Data
 public class Context {
 
-    /**
-     * 内容模式
-     */
-    private ContentMode contentMode;
-    /**
-     * 是否重置内容流
-     */
-    private Boolean isResetContentStream;
     /**
      * 文档
      */
@@ -81,22 +73,25 @@ public class Context {
      */
     private Float wrapWidth;
     /**
-     * 换行高度
+     * 是否第一个组件
      */
-    private Float wrapHeight;
+    private Boolean isFirstComponent;
     /**
      * 目录列表
      */
     private List<CatalogInfo> catalogs;
     /**
-     * 容器信息
+     * 边框信息
      */
-    private ContainerInfo containerInfo;
-
+    private BorderInfo borderInfo;
     /**
      * 自定义信息
      */
     private Map<String, Object> customInfo;
+    /**
+     * 字体字典
+     */
+    private Map<String, PDFont> fontMap;
 
     /**
      * 有参构造
@@ -105,9 +100,12 @@ public class Context {
      */
     public Context(Document document) {
         this.document = document;
+        this.wrapBeginX = 0F;
         this.cursor = new Cursor();
+        this.isFirstComponent = Boolean.TRUE;
         this.catalogs = new ArrayList<>(16);
-        this.customInfo = new HashMap<>();
+        this.customInfo = new HashMap<>(16);
+        this.fontMap = new HashMap<>(16);
     }
 
     /**
@@ -129,15 +127,13 @@ public class Context {
     }
 
     /**
-     * 是否首行
+     * 获取字体
      *
-     * @return 返回布尔值，是为true，否为false
+     * @param fontName 字体名称
+     * @return 返回字体
      */
-    public boolean isFirstLine() {
-        if (this.hasPageHeader()) {
-            return this.cursor.getY() == this.page.getHeight() - this.page.getMarginTop() - this.pageHeader.getHeight();
-        }
-        return this.cursor.getY() == this.page.getHeight() - this.page.getMarginTop();
+    public PDFont getFont(String fontName) {
+        return this.fontMap.get(fontName);
     }
 
     /**
@@ -146,7 +142,7 @@ public class Context {
      * @return 返回布尔值，是为true，否为false
      */
     public boolean isContainerWrap() {
-        return this.containerInfo != null && this.containerInfo.getIsFirstComponent();
+        return this.borderInfo != null && this.borderInfo.getIsFirstComponent();
     }
 
     /**
@@ -168,6 +164,38 @@ public class Context {
     }
 
     /**
+     * 获取页眉高度
+     *
+     * @return 返回页眉高度
+     */
+    public float getPageHeaderHeight() {
+        return Optional.ofNullable(this.pageHeader).map(PageHeader::getHeight).orElse(0F);
+    }
+
+    /**
+     * 获取页脚高度
+     *
+     * @return 返回页脚高度
+     */
+    public float getPageFooterHeight() {
+        return Optional.ofNullable(this.pageFooter).map(PageFooter::getHeight).orElse(0F);
+    }
+
+    /**
+     * 添加字体缓存
+     *
+     * @param fontNames 字体名称
+     */
+    public void addFontCache(String... fontNames) {
+        Objects.requireNonNull(fontNames, "the font names can not be null");
+        for (String fontName : fontNames) {
+            if (!this.fontMap.containsKey(fontName)) {
+                this.fontMap.put(fontName, PdfHandler.getFontHandler().getPDFont(this.getTargetDocument(), fontName, true));
+            }
+        }
+    }
+
+    /**
      * 重置
      *
      * @param page 页面
@@ -177,18 +205,33 @@ public class Context {
         this.isAlreadyPaging = !page.getId().equals(Optional.ofNullable(this.page).map(Page::getId).orElse(null));
         // 已经分页
         if (this.isAlreadyPaging) {
-            // 重置页面
-            this.page = page;
             // 累计页面数量
             this.pageCount = Optional.ofNullable(this.pageCount).orElse(0) + 1;
-            // 重置光标
-            this.cursor.reset(
-                    this.page.getMarginLeft(),
-                    this.page.getHeight() - this.page.getMarginTop()
-            );
+            // 重置页面
+            this.page = page;
             // 重置换行宽度
             this.resetWrapWidth(this.wrapWidth);
+            // 重置换行起始坐标
+            this.resetWrapBeginX(this.page.getMarginLeft());
+            // 重置光标
+            this.resetCursor();
         }
+    }
+
+    /**
+     * 重置光标
+     */
+    public void resetCursor() {
+        // 重置光标
+        this.cursor.reset(this.page.getMarginLeft(), this.page.getHeight() - this.page.getMarginTop());
+    }
+
+    /**
+     * 重置光标
+     */
+    public void resetCursor(Float beginX, Float beginY) {
+        // 重置光标
+        this.cursor.reset(beginX, beginY);
     }
 
     /**
@@ -196,9 +239,7 @@ public class Context {
      *
      * @param wrapWidth 换行宽度
      */
-    public Float resetWrapWidth(Float wrapWidth) {
-        // 获取原换行宽度
-        Float old = this.wrapWidth;
+    public void resetWrapWidth(Float wrapWidth) {
         // 换行宽度为空
         if (Objects.isNull(wrapWidth)) {
             // 重置为页面宽度
@@ -207,29 +248,22 @@ public class Context {
             // 重置为指定宽度
             this.wrapWidth = wrapWidth;
         }
-        // 返回原换行宽度
-        return old;
     }
 
     /**
-     * 重置换行高度
+     * 重置换行起始坐标
      *
-     * @param wrapHeight 换行高度
-     * @return 返回原换行高度
+     * @param wrapBeginX 换行宽度
      */
-    public Float resetWrapHeight(Float wrapHeight) {
-        // 获取原换行高度
-        Float old = this.wrapHeight;
-        // 换行高度为空
-        if (Objects.isNull(wrapHeight)) {
-            // 重置为0
-            this.wrapHeight = 0F;
+    public void resetWrapBeginX(Float wrapBeginX) {
+        // 换行宽度为空
+        if (Objects.isNull(wrapBeginX)) {
+            // 重置为页面左边距
+            this.wrapBeginX = this.page.getMarginLeft();
         } else {
-            // 重置为指定高度
-            this.wrapHeight = wrapHeight;
+            // 重置为指定坐标
+            this.wrapBeginX = wrapBeginX;
         }
-        // 返回原换行高度
-        return old;
     }
 
     /**
@@ -256,5 +290,9 @@ public class Context {
         this.pageHeader = null;
         // 重置页脚
         this.pageFooter = null;
+        // 重置边框信息
+        this.borderInfo = null;
+        // 清理字体
+        this.fontMap.clear();
     }
 }

@@ -1,10 +1,8 @@
-package org.dromara.pdf.pdfbox.core.component;
+package org.dromara.pdf.pdfbox.core.base;
 
 import lombok.EqualsAndHashCode;
-import org.dromara.pdf.pdfbox.core.base.AbstractPagingEvent;
-import org.dromara.pdf.pdfbox.core.base.ComponentType;
-import org.dromara.pdf.pdfbox.core.base.Page;
-import org.dromara.pdf.pdfbox.core.base.PagingEvent;
+import org.dromara.pdf.pdfbox.core.component.Component;
+import org.dromara.pdf.pdfbox.core.enums.ComponentType;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -71,15 +69,6 @@ public class PageFooter extends AbstractPageHeaderOrFooter {
     }
 
     /**
-     * 初始化基础
-     */
-    @Override
-    public void initBase() {
-        // 初始化参数
-        super.init(this.getContext().getPage(), false);
-    }
-
-    /**
      * 虚拟渲染
      */
     @Override
@@ -102,10 +91,9 @@ public class PageFooter extends AbstractPageHeaderOrFooter {
      */
     @Override
     public void reset() {
+        super.reset();
         // 重置光标
         this.getContext().getCursor().reset(this.getBeginX(), this.originalY);
-        // 重置当前执行组件类型
-        this.getContext().resetExecutingComponentType(this.getType());
     }
 
     /**
@@ -113,16 +101,20 @@ public class PageFooter extends AbstractPageHeaderOrFooter {
      */
     @Override
     protected void init() {
-        // 初始化基础
-        this.initBase();
+        // 检查高度
+        Objects.requireNonNull(this.getHeight(), "the height can not be null");
         // 初始化X轴起始坐标
         if (Objects.isNull(this.getBeginX())) {
-            this.setBeginX(this.getContext().getPage().getMarginLeft());
+            this.setBeginX(this.getContext().getPage().getMarginLeft() + this.getMarginLeft());
         }
         // 初始化Y轴起始坐标
         if (Objects.isNull(this.getBeginY())) {
             this.setBeginY(this.getHeight() + this.getContext().getPage().getMarginBottom());
         }
+        // 初始化宽度
+        this.initWidth();
+        // 初始化背景颜色
+        this.initBackgroundColor(this.getBeginX(), this.getBeginY());
         // 初始化原始Y轴坐标
         this.originalY = this.getContext().getCursor().getY();
         // 重置光标
@@ -133,6 +125,16 @@ public class PageFooter extends AbstractPageHeaderOrFooter {
      * 默认虚拟分页事件
      */
     public static class DefaultPageFooterVirtualPagingEvent extends AbstractPagingEvent {
+
+        /**
+         * 分页之前
+         *
+         * @param component 当前组件
+         */
+        @Override
+        public void before(Component component) {
+
+        }
 
         /**
          * 分页之后
@@ -158,6 +160,16 @@ public class PageFooter extends AbstractPageHeaderOrFooter {
      * 默认分页事件
      */
     public static class DefaultPageFooterPagingEvent extends AbstractPagingEvent {
+
+        /**
+         * 分页之前
+         *
+         * @param component 当前组件
+         */
+        @Override
+        public void before(Component component) {
+
+        }
 
         /**
          * 分页之后

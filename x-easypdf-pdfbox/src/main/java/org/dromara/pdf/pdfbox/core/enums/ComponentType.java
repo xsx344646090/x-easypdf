@@ -1,4 +1,4 @@
-package org.dromara.pdf.pdfbox.core.base;
+package org.dromara.pdf.pdfbox.core.enums;
 
 /**
  * 组件类型
@@ -56,6 +56,10 @@ public enum ComponentType {
      * 水印
      */
     WATERMARK,
+    /**
+     * 表格
+     */
+    TABLE,
     /**
      * 自定义
      */

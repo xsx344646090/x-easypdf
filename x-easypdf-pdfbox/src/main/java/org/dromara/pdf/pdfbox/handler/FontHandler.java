@@ -1,11 +1,14 @@
 package org.dromara.pdf.pdfbox.handler;
 
 import lombok.SneakyThrows;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.fontbox.ttf.TrueTypeFont;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.font.FontFormat;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
+import org.dromara.pdf.pdfbox.core.base.Banner;
 import org.dromara.pdf.pdfbox.core.enums.FontType;
 import org.dromara.pdf.pdfbox.support.Constants;
 import org.dromara.pdf.pdfbox.support.fonts.FontInfo;
@@ -13,7 +16,6 @@ import org.dromara.pdf.pdfbox.support.fonts.FontMapperImpl;
 
 import java.io.File;
 import java.io.InputStream;
-import java.lang.reflect.Method;
 import java.util.*;
 
 /**
@@ -35,6 +37,15 @@ import java.util.*;
  * </p>
  */
 public class FontHandler {
+
+    static {
+        Banner.print();
+    }
+
+    /**
+     * 日志
+     */
+    private static final Log log = LogFactory.getLog(FontHandler.class);
 
     /**
      * 助手实例
@@ -99,8 +110,8 @@ public class FontHandler {
     /**
      * 获取pdfbox字体
      *
-     * @param document    pdf文档
-     * @param fontName    字体名称
+     * @param document pdf文档
+     * @param fontName 字体名称
      * @return 返回pdfBox字体
      */
     @SneakyThrows
@@ -126,7 +137,12 @@ public class FontHandler {
      */
     public void addFont(File... files) {
         if (Objects.nonNull(files)) {
-            Arrays.stream(files).forEach(FontMapperImpl.getInstance().getProvider()::addFont);
+            Arrays.stream(files).forEach(file -> {
+                String fontName = FontMapperImpl.getInstance().getProvider().addFont(file);
+                if (log.isDebugEnabled()) {
+                    log.debug("Added font ['" + fontName + "']");
+                }
+            });
             FontMapperImpl.getInstance().resetFontInfoByName();
         }
     }
@@ -139,7 +155,12 @@ public class FontHandler {
      */
     public void addFont(Collection<File> files) {
         if (Objects.nonNull(files)) {
-            files.forEach(FontMapperImpl.getInstance().getProvider()::addFont);
+            files.forEach(file -> {
+                String fontName = FontMapperImpl.getInstance().getProvider().addFont(file);
+                if (log.isDebugEnabled()) {
+                    log.debug("Added font ['" + fontName + "']");
+                }
+            });
             FontMapperImpl.getInstance().resetFontInfoByName();
         }
     }
@@ -153,7 +174,10 @@ public class FontHandler {
      * @param type        字体类型
      */
     public void addFont(InputStream inputStream, String tempName, FontType type) {
-        FontMapperImpl.getInstance().getProvider().addFont(inputStream, tempName, type);
+        String fontName = FontMapperImpl.getInstance().getProvider().addFont(inputStream, tempName, type);
+        if (log.isDebugEnabled()) {
+            log.debug("Added font ['" + fontName + "']");
+        }
         FontMapperImpl.getInstance().resetFontInfoByName();
     }
 
@@ -181,9 +205,7 @@ public class FontHandler {
                 // 重置偏移量
                 offset += Character.charCount(codePoint);
             }
-            Method method = document.getClass().getDeclaredMethod("getFontsToSubset");
-            method.setAccessible(true);
-            ((Set<PDFont>) method.invoke(document)).add(font);
+            document.addFontToSubset(font);
         }
     }
 }

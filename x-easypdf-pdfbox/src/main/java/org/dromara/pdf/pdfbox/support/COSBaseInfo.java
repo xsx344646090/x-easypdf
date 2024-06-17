@@ -2,9 +2,9 @@ package org.dromara.pdf.pdfbox.support;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.apache.pdfbox.cos.COSBase;
-import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.font.PDFont;
+
+import java.util.List;
 
 /**
  * @author xsx
@@ -26,19 +26,41 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 @AllArgsConstructor
 public class COSBaseInfo {
     /**
-     * cosBase
-     */
-    private COSBase cosBase;
-    /**
      * 字体索引
      */
     private Integer fontIndex;
     /**
-     * 字体名称
-     */
-    private COSName fontName;
-    /**
-     * 字体
+     * 原字体
      */
     private PDFont font;
+    /**
+     * 替换字体
+     */
+    private PDFont replaceFont;
+    /**
+     * 是否替换
+     */
+    private Boolean isReplace;
+    /**
+     * token列表
+     */
+    private List<TokenValue> tokens;
+
+    /**
+     * 标记值
+     */
+    @Data
+    @AllArgsConstructor
+    public static class TokenValue {
+        /**
+         * 标记
+         */
+        private Object token;
+        /**
+         * 值
+         */
+        private String value;
+    //     COSName.getPDFName(font.getName());
+    }
+
 }

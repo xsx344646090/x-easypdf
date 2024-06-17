@@ -1,6 +1,7 @@
 package org.dromara.pdf.pdfbox.core.ext.analyzer;
 
 import lombok.Getter;
+import org.apache.commons.logging.Log;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.pdfbox.text.TextPosition;
@@ -59,6 +60,10 @@ public abstract class AbstractTextAnalyzer extends AbstractAnalyzer {
      */
     protected static class DefaultTextStripper extends PDFTextStripper {
         /**
+         * 日志
+         */
+        protected Log log;
+        /**
          * 页面索引
          */
         protected Integer pageIndex;
@@ -72,8 +77,10 @@ public abstract class AbstractTextAnalyzer extends AbstractAnalyzer {
          * 有参构造
          *
          * @param pageIndex 页面索引
+         * @param log       日志
          */
-        public DefaultTextStripper(Integer pageIndex) {
+        public DefaultTextStripper(Integer pageIndex, Log log) {
+            this.log = log;
             this.pageIndex = pageIndex;
             this.setSortByPosition(true);
             this.setStartPage(this.pageIndex + 1);

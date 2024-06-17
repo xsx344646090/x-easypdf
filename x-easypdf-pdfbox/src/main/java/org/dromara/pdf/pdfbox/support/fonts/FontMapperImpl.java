@@ -408,13 +408,13 @@ public class FontMapperImpl implements FontMapper {
             postScriptName = postScriptName.substring(postScriptName.indexOf('+') + 1);
         }
 
-        FontInfo info = fontInfoByName.get(postScriptName);
-        if (info != null && info.getFormat() == format) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(String.format("getFont('%s','%s') returns %s", format, postScriptName, info));
-            }
-        }
-        return info;
+        // FontInfo info = fontInfoByName.get(postScriptName);
+        // if (info != null && info.getFormat() == format) {
+        //     if (LOG.isDebugEnabled()) {
+        //         LOG.debug(String.format("getFont('%s','%s') returns %s", format, postScriptName, info));
+        //     }
+        // }
+        return fontInfoByName.get(postScriptName);
     }
 
     /**
@@ -460,9 +460,9 @@ public class FontMapperImpl implements FontMapper {
                 PriorityQueue<FontMatch> queue = getFontMatches(fontDescriptor, cidSystemInfo);
                 FontMatch bestMatch = queue.poll();
                 if (bestMatch != null) {
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("Best match for '" + baseFont + "': " + bestMatch.info);
-                    }
+                    // if (LOG.isDebugEnabled()) {
+                    //     LOG.debug("Best match for '" + baseFont + "': " + bestMatch.info);
+                    // }
                     FontBoxFont font = bestMatch.info.getFont();
                     if (font instanceof OpenTypeFont) {
                         return new CIDFontMapping((OpenTypeFont) font, null, true);

@@ -1,15 +1,15 @@
-package org.dromara.pdf.pdfbox.core.base;
+package org.dromara.pdf.pdfbox.core.base.config;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.dromara.pdf.pdfbox.core.enums.FontStyle;
+import org.dromara.pdf.pdfbox.support.Constants;
 
 import java.awt.*;
+import java.util.List;
 import java.util.Objects;
 
 /**
- * 抽象基础字体类
+ * 字体配置
  *
  * @author xsx
  * @date 2023/9/22
@@ -27,16 +27,16 @@ import java.util.Objects;
  * </p>
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
-public abstract class AbstractBaseFont extends AbstractBaseBorder {
+public class FontConfiguration {
+
     /**
      * 字体名称
      */
     private String fontName;
     /**
-     * pdfbox字体
+     * 特殊字体名称
      */
-    private PDFont font;
+    private List<String> specialFontNames;
     /**
      * 字体大小
      */
@@ -65,6 +65,22 @@ public abstract class AbstractBaseFont extends AbstractBaseBorder {
      * 行间距
      */
     private Float leading;
+
+    /**
+     * 有参构造
+     */
+    public FontConfiguration() {
+        this.init();
+    }
+
+    /**
+     * 有参构造
+     *
+     * @param configuration 配置
+     */
+    public FontConfiguration(FontConfiguration configuration) {
+        this.init(configuration);
+    }
 
     /**
      * 设置字体大小
@@ -104,62 +120,87 @@ public abstract class AbstractBaseFont extends AbstractBaseBorder {
 
     /**
      * 初始化
-     *
-     * @param base                基础参数
-     * @param isInitMarginByParam 是否使用参数初始化边距
      */
-    public void init(AbstractBaseFont base, boolean isInitMarginByParam) {
-        // 初始化
-        super.init(base, isInitMarginByParam);
-        // 初始化字体
-        this.initFont(base);
-    }
-
-    /**
-     * 初始化字体
-     *
-     * @param base 基础参数
-     */
-    protected void initFont(AbstractBaseFont base) {
-        // 初始化pdfbox字体
-        if (Objects.isNull(this.font)) {
-            this.font = base.font;
-        }
+    public void init() {
         // 初始化字体名称
         if (Objects.isNull(this.fontName)) {
-            this.fontName = base.fontName;
+            this.fontName = Constants.DEFAULT_FONT_NAME;
         }
         // 初始化字体大小
         if (Objects.isNull(this.fontSize)) {
-            this.fontSize = base.fontSize;
+            this.fontSize = 12F;
         }
         // 初始化字体颜色
         if (Objects.isNull(this.fontColor)) {
-            this.fontColor = base.fontColor;
+            this.fontColor = Color.BLACK;
         }
         // 初始化字体透明度
         if (Objects.isNull(this.fontAlpha)) {
-            this.fontAlpha = base.fontAlpha;
+            this.fontAlpha = 1.0F;
         }
         // 初始化字体样式
         if (Objects.isNull(this.fontStyle)) {
-            this.fontStyle = base.fontStyle;
+            this.fontStyle = FontStyle.NORMAL;
         }
         // 初始化字体斜率
         if (Objects.isNull(this.fontSlope)) {
             if (this.fontStyle.isItalic()) {
                 this.fontSlope = 0.3F;
-            } else {
-                this.fontSlope = base.fontSlope;
+            }else {
+                this.fontSlope = 0F;
             }
         }
         // 初始化字符间距
         if (Objects.isNull(this.characterSpacing)) {
-            this.characterSpacing = base.characterSpacing;
+            this.characterSpacing = 0F;
         }
         // 初始化行间距
         if (Objects.isNull(this.leading)) {
-            this.leading = base.leading;
+            this.leading = 0F;
+        }
+    }
+
+    /**
+     * 初始化
+     *
+     * @param configuration 配置
+     */
+    public void init(FontConfiguration configuration) {
+        // 初始化字体名称
+        if (Objects.isNull(this.fontName)) {
+            this.fontName = configuration.fontName;
+        }
+        // 初始化特殊字体名称
+        if (Objects.isNull(this.specialFontNames)) {
+            this.specialFontNames = configuration.specialFontNames;
+        }
+        // 初始化字体大小
+        if (Objects.isNull(this.fontSize)) {
+            this.fontSize = configuration.fontSize;
+        }
+        // 初始化字体颜色
+        if (Objects.isNull(this.fontColor)) {
+            this.fontColor = configuration.fontColor;
+        }
+        // 初始化字体透明度
+        if (Objects.isNull(this.fontAlpha)) {
+            this.fontAlpha = configuration.fontAlpha;
+        }
+        // 初始化字体样式
+        if (Objects.isNull(this.fontStyle)) {
+            this.fontStyle = configuration.fontStyle;
+        }
+        // 初始化字体斜率
+        if (Objects.isNull(this.fontSlope)) {
+            this.fontSlope = configuration.fontSlope;
+        }
+        // 初始化字符间距
+        if (Objects.isNull(this.characterSpacing)) {
+            this.characterSpacing = configuration.characterSpacing;
+        }
+        // 初始化行间距
+        if (Objects.isNull(this.leading)) {
+            this.leading = configuration.leading;
         }
     }
 }

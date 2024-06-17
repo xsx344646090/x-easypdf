@@ -1,6 +1,7 @@
 package org.dromara.pdf.pdfbox.core.base;
 
 import lombok.Getter;
+import lombok.ToString;
 import org.apache.fontbox.util.BoundingBox;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.dromara.pdf.pdfbox.support.Constants;
@@ -25,6 +26,7 @@ import java.awt.*;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
+@ToString
 @Getter
 public class PageSize {
 
@@ -230,7 +232,7 @@ public class PageSize {
      * @return 返回页面尺寸
      */
     @SuppressWarnings("all")
-    public PageSize changeLandscape() {
+    public PageSize toLandscape() {
         return new PageSize(this.height, this.width);
     }
 

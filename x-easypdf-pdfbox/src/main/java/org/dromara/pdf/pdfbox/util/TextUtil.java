@@ -1,7 +1,9 @@
 package org.dromara.pdf.pdfbox.util;
 
 import lombok.SneakyThrows;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.dromara.pdf.pdfbox.core.base.Context;
 
 import java.util.*;
 
@@ -28,15 +30,25 @@ public class TextUtil {
     /**
      * 拆分文本（单行）
      *
+     * @param context          上下文
      * @param text             待输入文本
      * @param lineWidth        行宽度
      * @param font             字体
      * @param fontSize         字体大小
      * @param characterSpacing 文本间隔
+     * @param specialFontNames 特殊字体名称
      * @return 返回文本列表
      */
     @SneakyThrows
-    public static String splitText(String text, float lineWidth, PDFont font, float fontSize, float characterSpacing) {
+    public static String splitText(
+            Context context,
+            String text,
+            float lineWidth,
+            PDFont font,
+            float fontSize,
+            float characterSpacing,
+            List<String> specialFontNames
+    ) {
         // 如果待输入文本为空，或文本长度为0，或行宽减字体大小小于0，则直接返回空字符串
         if (isBlank(text) || lineWidth - fontSize < 0) {
             // 返回空字符串
@@ -55,7 +67,7 @@ public class TextUtil {
             // 截取临时文本
             tempText = text.substring(beginIndex, i);
             // 计算当前文本真实宽度
-            lineRealWidth = getTextRealWidth(tempText, font, fontSize, characterSpacing);
+            lineRealWidth = getTextRealWidth(context, tempText, font, fontSize, characterSpacing, specialFontNames);
             // 如果真实宽度大于行宽度，则减少一个字符
             if (lineRealWidth > lineWidth) {
                 // 返回截取字符串
@@ -68,15 +80,25 @@ public class TextUtil {
     /**
      * 拆分文本段落（换行）
      *
+     * @param context          上下文
      * @param text             待输入文本
      * @param lineWidth        行宽度
      * @param font             字体
      * @param fontSize         字体大小
      * @param characterSpacing 文本间隔
+     * @param specialFontNames 特殊字体名称
      * @return 返回文本列表
      */
     @SneakyThrows
-    public static List<String> splitLines(String text, float lineWidth, PDFont font, float fontSize, float characterSpacing) {
+    public static List<String> splitLines(
+            Context context,
+            String text,
+            float lineWidth,
+            PDFont font,
+            float fontSize,
+            float characterSpacing,
+            List<String> specialFontNames
+    ) {
         // 如果待输入文本为空，或文本长度为0，或行宽减字体大小小于0，则直接返回空列表
         if (isBlank(text) || lineWidth - fontSize < 0) {
             // 返回空列表
@@ -97,7 +119,7 @@ public class TextUtil {
             // 截取临时文本
             tempText = text.substring(beginIndex, i);
             // 计算当前文本真实宽度
-            lineRealWidth = getTextRealWidth(tempText, font, fontSize, characterSpacing);
+            lineRealWidth = getTextRealWidth(context, tempText, font, fontSize, characterSpacing, specialFontNames);
             // 如果真实宽度大于行宽度，则减少一个字符
             if (lineRealWidth > lineWidth) {
                 // 加入文本列表
@@ -128,14 +150,44 @@ public class TextUtil {
      * @param font             pdfbox字体
      * @param fontSize         字体大小
      * @param characterSpacing 字符间隔
+     * @param specialFontNames 特殊字体名称
      * @return 返回文本真实宽度
      */
-    @SneakyThrows
-    public static float getTextRealWidth(String text, PDFont font, float fontSize, float characterSpacing) {
+    public static float getTextRealWidth(
+            Context context,
+            String text,
+            PDFont font,
+            float fontSize,
+            float characterSpacing,
+            List<String> specialFontNames
+    ) {
         if (Objects.isNull(text)) {
             return 0F;
         }
-        return fontSize * font.getStringWidth(text) / 1000 + (text.length() - 1) * characterSpacing;
+        float width = 0F;
+        char[] charArray = text.toCharArray();
+        for (char c : charArray) {
+            try {
+                width = width + font.getStringWidth(String.valueOf(c));
+            } catch (Exception e) {
+                boolean flag = false;
+                if (Objects.nonNull(specialFontNames)) {
+                    for (String specialFontName : specialFontNames) {
+                        try {
+                            width = width + context.getFont(specialFontName).getStringWidth(String.valueOf(c));
+                            flag = false;
+                            break;
+                        } catch (Exception ignore) {
+                            flag = true;
+                        }
+                    }
+                }
+                if (flag) {
+                    throw new IllegalArgumentException(e);
+                }
+            }
+        }
+        return fontSize * width / 1000 + (text.length() - 1) * characterSpacing;
     }
 
     /**
@@ -286,5 +338,67 @@ public class TextUtil {
         }
         // 返回文本
         return builder.append(temp).toString();
+    }
+
+    /**
+     * 写入文本
+     *
+     * @param context          上下文
+     * @param contentStream    内容流
+     * @param text             特殊字符
+     * @param specialFontNames 特殊字体名称
+     * @param font             字体
+     * @param fontSize         字体大小
+     * @throws Exception 异常
+     */
+    public static void writeText(
+            Context context,
+            PDPageContentStream contentStream,
+            String text,
+            List<String> specialFontNames,
+            PDFont font,
+            Float fontSize
+    ) throws Exception {
+        // 定义标记
+        boolean flag = false;
+        // 定义异常
+        Exception exception = null;
+        // 获取字符数组
+        char[] charArray = text.toCharArray();
+        // 遍历文本
+        for (char character : charArray) {
+            try {
+                // 写入文本
+                contentStream.showCharacter(character);
+            } catch (Exception e) {
+                // 重置标记
+                flag = true;
+                // 重置异常
+                exception = e;
+                // 特殊字体不为空
+                if (Objects.nonNull(specialFontNames)) {
+                    // 遍历特殊字体
+                    for (String specialFontName : specialFontNames) {
+                        try {
+                            // 设置字体
+                            contentStream.setFont(context.getFont(specialFontName), fontSize);
+                            // 写入文本
+                            contentStream.showCharacter(character);
+                            // 重置字体
+                            contentStream.setFont(font, fontSize);
+                            // 重置标记
+                            flag = false;
+                            // 跳出循环
+                            break;
+                        } catch (Exception ignore) {
+                        }
+                    }
+                }
+            }
+        }
+        // 抛出异常
+        if (flag) {
+            throw exception;
+        }
     }
 }

@@ -46,7 +46,7 @@ public class TextAnalyzer extends AbstractTextAnalyzer {
     @Override
     public void processText(int pageIndex) {
         // 创建文本剥离器
-        DefaultTextStripper textStripper = new DefaultTextStripper(pageIndex);
+        DefaultTextStripper textStripper = new DefaultTextStripper(pageIndex, this.log);
         // 创建写入器
         try (Writer writer = new OutputStreamWriter(new BufferedOutputStream(new ByteArrayOutputStream()))) {
             // 写入文本

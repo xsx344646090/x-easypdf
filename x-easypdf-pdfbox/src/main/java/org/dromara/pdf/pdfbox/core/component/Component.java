@@ -1,6 +1,10 @@
 package org.dromara.pdf.pdfbox.core.component;
 
-import org.dromara.pdf.pdfbox.core.base.*;
+import org.dromara.pdf.pdfbox.core.base.AbstractBase;
+import org.dromara.pdf.pdfbox.core.base.Context;
+import org.dromara.pdf.pdfbox.core.base.PagingCondition;
+import org.dromara.pdf.pdfbox.core.base.PagingEvent;
+import org.dromara.pdf.pdfbox.core.enums.ComponentType;
 
 import java.util.Set;
 
