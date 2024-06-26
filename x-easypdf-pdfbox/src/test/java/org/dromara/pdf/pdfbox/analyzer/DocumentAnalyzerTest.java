@@ -3,6 +3,7 @@ package org.dromara.pdf.pdfbox.analyzer;
 import org.dromara.pdf.pdfbox.base.BaseTest;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.ext.analyzer.DocumentAnalyzer;
+import org.dromara.pdf.pdfbox.core.ext.analyzer.TextAnalyzer;
 import org.dromara.pdf.pdfbox.core.info.*;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.junit.Test;
@@ -39,6 +40,22 @@ public class DocumentAnalyzerTest extends BaseTest {
             ) {
                 Set<TextInfo> infoSet = analyzer.analyzeText();
                 infoSet.forEach(log::info);
+            }
+        });
+    }
+
+    /**
+     * 测试字符数
+     */
+    @Test
+    public void characterTest() {
+        this.test(() -> {
+            try (
+                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\analyzer\\simpleTableTest.pdf");
+            ) {
+                TextAnalyzer analyzer = new TextAnalyzer(document);
+                int characterCount = analyzer.getCharacterCount(0);
+                log.info("Character count: " + characterCount);
             }
         });
     }

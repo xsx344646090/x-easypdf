@@ -8,6 +8,7 @@ import org.dromara.pdf.pdfbox.core.ext.extractor.DocumentExtractor;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.junit.Test;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Collections;
 import java.util.List;
@@ -38,7 +39,7 @@ public class DocumentExtractorTest extends BaseTest {
     public void extractTextTest() {
         this.test(() -> {
             try (
-                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\extractor\\hello-world.pdf");
+                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\extractor\\simpleTableTest.pdf");
                     DocumentExtractor extractor = new DocumentExtractor(document);
             ) {
                 Map<Integer, List<String>> map = extractor.extractText();
@@ -54,10 +55,10 @@ public class DocumentExtractorTest extends BaseTest {
     public void extractTextByRegexTest() {
         this.test(() -> {
             try (
-                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\extractor\\hello-world.pdf");
+                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\extractor\\simpleTableTest.pdf");
                     DocumentExtractor extractor = new DocumentExtractor(document);
             ) {
-                Map<Integer, List<String>> map = extractor.extractTextByRegex(null);
+                Map<Integer, List<String>> map = extractor.extractTextByRegex(".容.");
                 map.forEach((key, value) -> log.info("key: " + key + ", value: " + value));
             }
         });
@@ -70,11 +71,12 @@ public class DocumentExtractorTest extends BaseTest {
     public void extractTextByRegionAreaTest1() {
         this.test(() -> {
             try (
-                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\extractor\\hello-world.pdf");
+                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\extractor\\simpleTableTest.pdf");
                     DocumentExtractor extractor = new DocumentExtractor(document);
             ) {
                 Map<Integer, Map<String, String>> map = extractor.extractTextByRegionArea(
-                        Collections.singletonMap("test", document.getCurrentPage().getPageSize().toRectangle())
+                        Collections.singletonMap("test", new Rectangle(0, 0, 400, 200)),
+                        1
                 );
                 map.forEach((key, value) -> log.info("key: " + key + ", value: " + value));
             }
@@ -88,7 +90,7 @@ public class DocumentExtractorTest extends BaseTest {
     public void extractTextByRegionAreaTest2() {
         this.test(() -> {
             try (
-                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\extractor\\hello-world.pdf");
+                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\extractor\\simpleTableTest.pdf");
                     DocumentExtractor extractor = new DocumentExtractor(document);
             ) {
                 Map<Integer, Map<String, String>> map = extractor.extractTextByRegionArea(
@@ -107,7 +109,7 @@ public class DocumentExtractorTest extends BaseTest {
     public void extractTextForTableTest1() {
         this.test(() -> {
             try (
-                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\extractor\\hello-world.pdf");
+                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\extractor\\simpleTableTest.pdf");
                     DocumentExtractor extractor = new DocumentExtractor(document);
             ) {
                 Map<Integer, Map<String, List<List<String>>>> map = extractor.extractTextForTable(
@@ -125,12 +127,12 @@ public class DocumentExtractorTest extends BaseTest {
     public void extractTextForTableTest2() {
         this.test(() -> {
             try (
-                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\extractor\\hello-world.pdf");
+                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\extractor\\simpleTableTest.pdf");
                     DocumentExtractor extractor = new DocumentExtractor(document);
             ) {
                 Map<Integer, Map<String, List<List<String>>>> map = extractor.extractTextForTable(
                         Collections.singletonMap("test", document.getCurrentPage().getPageSize().toRectangle()),
-                        " "
+                        ""
                 );
                 map.forEach((key, value) -> log.info("key: " + key + ", value: " + value));
             }

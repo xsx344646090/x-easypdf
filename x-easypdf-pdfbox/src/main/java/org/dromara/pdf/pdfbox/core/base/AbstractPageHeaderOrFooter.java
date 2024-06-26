@@ -83,6 +83,11 @@ public abstract class AbstractPageHeaderOrFooter extends AbstractBase {
      * 垂直对齐方式
      */
     protected VerticalAlignment verticalAlignment;
+    /**
+     * 是否已经绘制
+     */
+    protected Boolean isAlreadyRendered;
+
 
     /**
      * 有参构造
@@ -95,6 +100,7 @@ public abstract class AbstractPageHeaderOrFooter extends AbstractBase {
         this.borderConfiguration = new BorderConfiguration();
         this.fontConfiguration = new FontConfiguration(page.getFontConfiguration());
         this.backgroundColor = page.getBackgroundColor();
+        this.isAlreadyRendered = Boolean.FALSE;
     }
 
     /**
@@ -481,20 +487,23 @@ public abstract class AbstractPageHeaderOrFooter extends AbstractBase {
      * 渲染
      */
     public void render() {
-        // 校验高度
-        Objects.requireNonNull(this.getHeight(), "the height can not be null");
-        // 初始化
-        this.init();
-        // 渲染前
-        this.renderBefore();
-        // 渲染组件
-        Optional.ofNullable(this.getComponents())
-                .orElse(Collections.emptyList())
-                .forEach(this::renderComponent);
-        // 渲染后
-        this.renderAfter();
-        // 重置
-        this.reset();
+        // 未渲染
+        if (!this.getIsAlreadyRendered()) {
+            // 校验高度
+            Objects.requireNonNull(this.getHeight(), "the height can not be null");
+            // 初始化
+            this.init();
+            // 渲染前
+            this.renderBefore();
+            // 渲染组件
+            Optional.ofNullable(this.getComponents())
+                    .orElse(Collections.emptyList())
+                    .forEach(this::renderComponent);
+            // 渲染后
+            this.renderAfter();
+            // 重置
+            this.reset();
+        }
     }
 
     /**
@@ -514,6 +523,7 @@ public abstract class AbstractPageHeaderOrFooter extends AbstractBase {
             // 绘制边框
             BorderUtil.drawBorderWithData(borderData, rectangle);
         }
+        this.setIsAlreadyRendered(true);
     }
 
     /**

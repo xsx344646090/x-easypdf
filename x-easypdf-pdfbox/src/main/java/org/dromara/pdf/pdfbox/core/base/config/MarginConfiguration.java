@@ -27,19 +27,19 @@ public class MarginConfiguration {
     /**
      * 上边距
      */
-    private Float marginTop;
+    protected Float marginTop;
     /**
      * 下边距
      */
-    private Float marginBottom;
+    protected Float marginBottom;
     /**
      * 左边距
      */
-    private Float marginLeft;
+    protected Float marginLeft;
     /**
      * 右边距
      */
-    private Float marginRight;
+    protected Float marginRight;
 
     /**
      * 无参构造

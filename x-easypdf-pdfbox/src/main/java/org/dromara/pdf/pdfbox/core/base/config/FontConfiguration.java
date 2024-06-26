@@ -32,39 +32,39 @@ public class FontConfiguration {
     /**
      * 字体名称
      */
-    private String fontName;
+    protected String fontName;
     /**
      * 特殊字体名称
      */
-    private List<String> specialFontNames;
+    protected List<String> specialFontNames;
     /**
      * 字体大小
      */
-    private Float fontSize;
+    protected Float fontSize;
     /**
      * 字体颜色
      */
-    private Color fontColor;
+    protected Color fontColor;
     /**
      * 字体透明度
      */
-    private Float fontAlpha;
+    protected Float fontAlpha;
     /**
      * 字体样式
      */
-    private FontStyle fontStyle;
+    protected FontStyle fontStyle;
     /**
      * 字体斜率（斜体字）
      */
-    private Float fontSlope;
+    protected Float fontSlope;
     /**
      * 字符间距
      */
-    private Float characterSpacing;
+    protected Float characterSpacing;
     /**
      * 行间距
      */
-    private Float leading;
+    protected Float leading;
 
     /**
      * 有参构造

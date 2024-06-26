@@ -1,10 +1,8 @@
 package org.dromara.pdf.pdfbox.core.component;
 
 import lombok.Data;
-import org.dromara.pdf.pdfbox.core.base.Page;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author xsx
@@ -23,7 +21,7 @@ import java.util.Objects;
  * </p>
  */
 @Data
-public class TableHeader {
+class TableHeader {
     /**
      * 表格
      */
@@ -40,21 +38,4 @@ public class TableHeader {
      * 是否已经渲染
      */
     protected Boolean isAlreadyRendered;
-
-    public Float getHeight() {
-        if (Objects.isNull(this.tableRows)) {
-            return 0F;
-        }
-        return (float) this.tableRows.stream().mapToDouble(TableRow::getHeight).sum();
-    }
-
-    public void render(Page page, float beginX, float beginY) {
-        if (Objects.nonNull(this.getTableRows())) {
-            for (TableRow tableRow : this.getTableRows()) {
-                tableRow.setTable(this.getTable());
-                tableRow.render(page, beginX, beginY);
-                beginY = beginY - tableRow.getHeight();
-            }
-        }
-    }
 }

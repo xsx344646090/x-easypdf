@@ -1,12 +1,12 @@
 package org.dromara.pdf.pdfbox.base;
 
 import org.dromara.pdf.pdfbox.core.base.*;
-import org.dromara.pdf.pdfbox.core.component.Barcode;
 import org.dromara.pdf.pdfbox.core.component.Image;
-import org.dromara.pdf.pdfbox.core.component.Textarea;
+import org.dromara.pdf.pdfbox.core.component.*;
 import org.dromara.pdf.pdfbox.core.enums.BarcodeType;
 import org.dromara.pdf.pdfbox.core.enums.ContentMode;
 import org.dromara.pdf.pdfbox.core.enums.HorizontalAlignment;
+import org.dromara.pdf.pdfbox.core.enums.VerticalAlignment;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.junit.Test;
 
@@ -88,7 +88,7 @@ public class HelloWorldTest extends BaseTest {
 
             pageHeader.setHeight(90F);
             pageHeader.setComponents(Arrays.asList(headerText, headerBarcode));
-            pageHeader.setIsBorder(true);
+            // pageHeader.setIsBorder(true);
             pageHeader.render();
 
             PageFooter pageFooter = new PageFooter(document.getCurrentPage());
@@ -124,8 +124,8 @@ public class HelloWorldTest extends BaseTest {
             Image image = new Image(document.getCurrentPage());
             image.setImage(new File("E:\\PDF\\pdfbox\\image\\jiaxiulou.jpg"));
             image.setScale(0.3F);
-            image.setMarginLeft(100F);
             image.setIsWrap(true);
+            image.setHorizontalAlignment(HorizontalAlignment.CENTER);
             image.render();
 
             text = new Textarea(document.getCurrentPage());
@@ -142,6 +142,31 @@ public class HelloWorldTest extends BaseTest {
             text.setOuterDest(OuterDest.create().setUrl("https://baike.baidu.com/item/%E8%B4%B5%E9%98%B3%E5%B8%82/6085276?fr=ge_ala"));
             text.setFontColor(Color.BLUE);
             text.render();
+
+            int rowHeight = 20;
+            float[] columnsWidth = {150F, 150F, 150F};
+            Table table = new Table(document.getCurrentPage());
+            table.setCellWidths(columnsWidth);
+            table.setIsBorder(true);
+            table.setIsPagingBorder(true);
+            table.setBorderColor(Color.GRAY);
+            table.setHorizontalAlignment(HorizontalAlignment.CENTER);
+            table.setVerticalAlignment(VerticalAlignment.TOP);
+
+            for (int i = 1; i <= 100; i++) {
+                TableRow row = new TableRow(rowHeight);
+                for (int j = 1; j <= 3; j++) {
+                    Textarea textarea = new Textarea(table.getPage());
+                    textarea.setText(String.format("第%s行第%s列", i, j));
+                    textarea.setHorizontalAlignment(HorizontalAlignment.CENTER);
+                    textarea.setVerticalAlignment(VerticalAlignment.CENTER);
+                    TableCell cell = new TableCell();
+                    cell.setComponents(textarea);
+                    row.addCells(cell);
+                }
+                table.addRows(row);
+            }
+            table.render();
 
             document.appendPage(page);
 

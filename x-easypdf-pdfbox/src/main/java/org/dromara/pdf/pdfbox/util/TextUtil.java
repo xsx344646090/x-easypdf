@@ -164,21 +164,23 @@ public class TextUtil {
         if (Objects.isNull(text)) {
             return 0F;
         }
+        String str;
         float width = 0F;
         char[] charArray = text.toCharArray();
         for (char c : charArray) {
+            str = String.valueOf(c);
             try {
-                width = width + font.getStringWidth(String.valueOf(c));
+                width = width + font.getStringWidth(str);
             } catch (Exception e) {
-                boolean flag = false;
+                boolean flag = true;
                 if (Objects.nonNull(specialFontNames)) {
                     for (String specialFontName : specialFontNames) {
                         try {
-                            width = width + context.getFont(specialFontName).getStringWidth(String.valueOf(c));
+                            width = width + context.getFont(specialFontName).getStringWidth(str);
                             flag = false;
                             break;
                         } catch (Exception ignore) {
-                            flag = true;
+                            // ignore
                         }
                     }
                 }
@@ -187,7 +189,26 @@ public class TextUtil {
                 }
             }
         }
+        if (width == 0F) {
+            return 0F;
+        }
         return fontSize * width / 1000 + (text.length() - 1) * characterSpacing;
+    }
+
+    /**
+     * 获取文本真实高度
+     *
+     * @param rowCount 行数
+     * @param fontSize 字体大小
+     * @param leading  行间距
+     * @return 返回文本真实高度
+     */
+    public static float getTextRealHeight(int rowCount, float fontSize, float leading) {
+        if (rowCount == 0) {
+            return 0F;
+        }
+        int leadingCount = rowCount - 1;
+        return (rowCount * fontSize) + (leadingCount * leading);
     }
 
     /**
@@ -391,6 +412,7 @@ public class TextUtil {
                             // 跳出循环
                             break;
                         } catch (Exception ignore) {
+                            // ignore
                         }
                     }
                 }

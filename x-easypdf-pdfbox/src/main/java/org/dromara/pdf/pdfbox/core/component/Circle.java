@@ -93,25 +93,19 @@ public class Circle extends AbstractComponent {
             this.borderColor = Color.BLACK;
         }
         // 检查换行
-        if (this.isWrap()) {
-            this.wrap();
-            this.setBeginY(this.getBeginY() - (this.getRadius() * 0.5F));
-        }
-        this.setBeginY(this.getBeginY() - this.getRadius());
-        // 重置X轴坐标
-        this.setBeginX(this.getBeginX() + this.getRadius());
+        this.checkWrap(this.radius);
         // 初始化起始X轴坐标
         this.initBeginX(this.getRadius());
     }
 
     /**
-     * 是否需要换行
+     * 获取最小宽度
      *
-     * @return 返回布尔值，true为是，false为否
+     * @return 返回最小宽度
      */
     @Override
-    protected boolean isNeedWrap() {
-        return this.getContext().getWrapWidth() - this.getBeginX() < this.getRadius();
+    protected float getMinWidth() {
+        return this.getRadius() * 2;
     }
 
     /**
@@ -122,11 +116,6 @@ public class Circle extends AbstractComponent {
     public void virtualRender() {
         // 初始化
         this.init();
-        // 非自定义Y轴
-        if (!this.getIsCustomY()) {
-            // 检查分页
-            this.isPaging(this, this.getBeginY());
-        }
         // 重置光标
         this.getContext().getCursor().reset(
                 this.getBeginX() + this.getRadius() + this.getMarginRight(),
@@ -144,11 +133,6 @@ public class Circle extends AbstractComponent {
     public void render() {
         // 初始化
         this.init();
-        // 非自定义Y轴
-        if (!this.getIsCustomY()) {
-            // 检查分页
-            this.isPaging(this, this.getBeginY());
-        }
         // 新建内容流
         PDPageContentStream contentStream = new PDPageContentStream(
                 this.getContext().getTargetDocument(),
@@ -179,15 +163,16 @@ public class Circle extends AbstractComponent {
      * 初始化半径
      */
     protected void initRadius() {
-        // 获取最大宽度
-        float maxWidth = this.getContext().getWrapWidth() + this.getPage().getMarginLeft() - this.getBeginX() - this.getMarginRight();
-        // 获取最大高度
-        float maxHeight = this.getBeginY() - this.getMarginBottom() - this.getContext().getPage().getMarginBottom();
-        // 初始化宽度
-        if (Objects.isNull(this.radius)) {
-            // 初始化宽度
-            this.radius = Math.min(maxWidth, maxHeight) / 2;
-        }
+        Objects.requireNonNull(this.radius, "the radius can not be null");
+        // // 获取最大宽度
+        // float maxWidth = this.getContext().getWrapWidth() + this.getPage().getMarginLeft() - this.getBeginX() - this.getMarginRight();
+        // // 获取最大高度
+        // float maxHeight = this.getBeginY() - this.getMarginBottom() - this.getContext().getPage().getMarginBottom();
+        // // 初始化宽度
+        // if (Objects.isNull(this.radius)) {
+        //     // 初始化宽度
+        //     this.radius = Math.min(maxWidth, maxHeight) / 2;
+        // }
     }
 
     /**

@@ -1,5 +1,6 @@
 package org.dromara.pdf.pdfbox.core.ext.processor;
 
+import lombok.EqualsAndHashCode;
 import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.base.Page;
@@ -28,6 +29,7 @@ import java.util.Objects;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
+@EqualsAndHashCode(callSuper = true)
 public class PageProcessor extends AbstractProcessor {
 
     /**

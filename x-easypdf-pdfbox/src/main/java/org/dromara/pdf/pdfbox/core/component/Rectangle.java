@@ -104,11 +104,6 @@ public class Rectangle extends AbstractComponent {
     public void virtualRender() {
         // 初始化
         this.init();
-        // 非自定义Y轴
-        if (!this.getIsCustomY()) {
-            // 检查分页
-            this.isPaging(this, this.getBeginY());
-        }
         // 重置光标
         this.getContext().getCursor().reset(
                 this.getBeginX() + this.getWidth() + this.getMarginRight(),
@@ -200,13 +195,6 @@ public class Rectangle extends AbstractComponent {
         }
         // 检查换行
         this.checkWrap();
-        // 非自定义Y轴
-        if (!this.getIsCustomY()) {
-            // 检查分页
-            if (this.isPaging(this, this.getBeginY())) {
-                this.setBeginY(this.getBeginY(), false);
-            }
-        }
     }
 
     /**
@@ -215,7 +203,7 @@ public class Rectangle extends AbstractComponent {
     protected void checkWrap() {
         // 初始化X轴坐标
         if (Objects.isNull(this.getBeginX())) {
-            this.setBeginX(this.getContext().getCursor().getX() + this.getMarginLeft(), Boolean.FALSE);
+            this.setBeginX(this.getContext().getCursor().getX() + this.getMarginLeft());
         }
         // 初始化换行
         if (this.isWrap()) {
@@ -223,11 +211,11 @@ public class Rectangle extends AbstractComponent {
                     this.getContext().getWrapBeginX(),
                     this.getContext().getCursor().getY() - this.getHeight()
             );
-            this.setBeginX(this.getContext().getCursor().getX() + this.getMarginLeft(), Boolean.FALSE);
+            this.setBeginX(this.getContext().getCursor().getX() + this.getMarginLeft());
         }
         // 初始化Y轴坐标
         if (Objects.isNull(this.getBeginY())) {
-            this.setBeginY(this.getContext().getCursor().getY() - this.getMarginTop(), Boolean.FALSE);
+            this.setBeginY(this.getContext().getCursor().getY() - this.getMarginTop());
         }
     }
 
@@ -262,12 +250,12 @@ public class Rectangle extends AbstractComponent {
     }
 
     /**
-     * 是否需要换行
+     * 获取最小宽度
      *
-     * @return 返回布尔值，true为是，false为否
+     * @return 返回最小宽度
      */
     @Override
-    protected boolean isNeedWrap() {
-        return this.getContext().getWrapWidth() - this.getBeginX() < this.getWidth();
+    protected float getMinWidth() {
+        return this.getWidth();
     }
 }

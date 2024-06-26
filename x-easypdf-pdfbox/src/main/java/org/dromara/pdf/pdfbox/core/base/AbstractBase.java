@@ -74,46 +74,4 @@ public abstract class AbstractBase {
             this.isResetContentStream = base.isResetContentStream;
         }
     }
-
-    // /**
-    //  * 初始化
-    //  */
-    // protected void init(AbstractBase param) {
-    //     // 初始化内容模式
-    //     if (Objects.isNull(this.contentMode)) {
-    //         this.contentMode = param.contentMode;
-    //     }
-    //     // 初始化水平对齐方式
-    //     if (Objects.isNull(this.horizontalAlignment)) {
-    //         this.horizontalAlignment = param.horizontalAlignment;
-    //     }
-    //     // 初始化垂直对齐方式
-    //     if (Objects.isNull(this.verticalAlignment)) {
-    //         this.verticalAlignment = param.verticalAlignment;
-    //     }
-    //     // 初始化是否重置内容流
-    //     if (Objects.isNull(this.isResetContentStream)) {
-    //         this.isResetContentStream = param.isResetContentStream;
-    //     }
-    //     // 初始化是否换行
-    //     if (Objects.isNull(this.isWrap)) {
-    //         this.isWrap = param.isWrap;
-    //         if (Objects.isNull(this.isWrap)) {
-    //             this.isWrap = Boolean.FALSE;
-    //         }
-    //     }
-    //     // 初始化是否分页
-    //     if (Objects.isNull(this.isBreak)) {
-    //         this.isBreak = param.isBreak;
-    //         if (Objects.isNull(this.isBreak)) {
-    //             this.isBreak = Boolean.FALSE;
-    //         }
-    //     }
-    //     // 初始化上下文
-    //     if (Objects.nonNull(this.context)) {
-    //         if (Objects.isNull(this.context.getWrapBeginX()) && Objects.nonNull(this.context.getPage())) {
-    //             this.context.setWrapBeginX(this.context.getPage().getMarginLeft());
-    //         }
-    //     }
-    // }
 }

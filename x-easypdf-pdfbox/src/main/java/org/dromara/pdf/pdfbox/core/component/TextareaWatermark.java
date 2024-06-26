@@ -5,7 +5,6 @@ import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 import org.apache.pdfbox.util.Matrix;
 import org.dromara.pdf.pdfbox.core.base.AbstractBase;
 import org.dromara.pdf.pdfbox.core.base.Context;
@@ -14,6 +13,7 @@ import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.base.config.FontConfiguration;
 import org.dromara.pdf.pdfbox.core.enums.ComponentType;
 import org.dromara.pdf.pdfbox.core.enums.FontStyle;
+import org.dromara.pdf.pdfbox.util.CommonUtil;
 import org.dromara.pdf.pdfbox.util.TextUtil;
 
 import java.awt.*;
@@ -195,6 +195,15 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
     }
 
     /**
+     * 获取页面
+     *
+     * @return 返回页面
+     */
+    public Page getPage() {
+        return this.getContext().getPage();
+    }
+
+    /**
      * 获取字体
      *
      * @return 返回字体
@@ -349,7 +358,8 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
                     // 开始写入
                     stream.beginText();
                     // 初始化字体颜色及透明度
-                    this.initFontColorAndAlpha(stream);
+                    // 初始化字体颜色及透明度
+                    CommonUtil.initFontColorAndAlpha(stream, this.getPage().getBackgroundColor(), this.getFontStyle(), this.getFontColor(), this.getFontAlpha());
                     // 初始化位置
                     this.initPosition(stream, beginX, beginY);
                     // 写入文本
@@ -409,42 +419,6 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
         contentStream.setCharacterSpacing(this.getCharacterSpacing());
         // 返回内容流
         return contentStream;
-    }
-
-    /**
-     * 初始化字体颜色及透明度
-     *
-     * @param stream pdfbox内容流
-     */
-    @SneakyThrows
-    protected void initFontColorAndAlpha(PDPageContentStream stream) {
-        // 创建扩展图形状态
-        PDExtendedGraphicsState state = new PDExtendedGraphicsState();
-        // 设置图形状态参数
-        stream.setGraphicsStateParameters(state);
-        // 填充
-        if (this.getFontStyle().isFill()) {
-            // 设置字体颜色
-            stream.setNonStrokingColor(this.getFontColor());
-            // 设置透明度
-            state.setNonStrokingAlphaConstant(this.getFontAlpha());
-        }
-        // 空心
-        if (this.getFontStyle().isStroke()) {
-            // 设置字体颜色
-            stream.setStrokingColor(this.getFontColor());
-            // 设置透明度
-            state.setStrokingAlphaConstant(this.getFontAlpha());
-        }
-        // 细体
-        if (this.getFontStyle().isLight()) {
-            // 设置背景颜色
-            stream.setStrokingColor(this.getContext().getPage().getBackgroundColor());
-            // 设置字体颜色
-            stream.setNonStrokingColor(this.getFontColor());
-            // 设置透明度
-            state.setNonStrokingAlphaConstant(this.getFontAlpha());
-        }
     }
 
     /**

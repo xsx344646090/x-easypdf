@@ -164,6 +164,8 @@ public class PageHeader extends AbstractPageHeaderOrFooter {
         public void after(Component component) {
             // 获取换行起始坐标
             Float wrapBeginX = component.getContext().getWrapBeginX();
+            // 获取换行宽度
+            Float wrapWidth = component.getContext().getWrapWidth();
             // 获取执行组件类型
             ComponentType currentExecutingComponentType = component.getContext().getExecutingComponentType();
             // 渲染组件
@@ -171,7 +173,9 @@ public class PageHeader extends AbstractPageHeaderOrFooter {
             // 重置执行组件类型
             component.getContext().setExecutingComponentType(currentExecutingComponentType);
             // 重置换行起始坐标
-            component.getContext().setWrapBeginX(wrapBeginX);
+            component.getContext().resetWrapBeginX(wrapBeginX);
+            // 重置换行宽度
+            component.getContext().resetWrapWidth(wrapWidth);
         }
     }
 }

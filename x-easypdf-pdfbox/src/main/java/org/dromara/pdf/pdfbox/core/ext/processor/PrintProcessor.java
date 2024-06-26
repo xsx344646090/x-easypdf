@@ -1,5 +1,6 @@
 package org.dromara.pdf.pdfbox.core.ext.processor;
 
+import lombok.EqualsAndHashCode;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -39,6 +40,7 @@ import java.util.Optional;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
+@EqualsAndHashCode(callSuper = true)
 public class PrintProcessor extends AbstractProcessor {
 
     /**

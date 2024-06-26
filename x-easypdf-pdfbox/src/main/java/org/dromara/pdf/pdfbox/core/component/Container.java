@@ -91,8 +91,6 @@ public class Container extends AbstractComponent {
         Objects.requireNonNull(this.Height, "the height can not be null");
         // 初始化
         super.init();
-        // 初始化其他
-        this.initOthers();
     }
 
     /**
@@ -129,25 +127,21 @@ public class Container extends AbstractComponent {
      *
      * @param beforeX X轴起始坐标
      */
-    protected void reset(Float beforeX, PagingEvent event) {
+    protected void reset(Float beforeX) {
         // 重置X轴坐标
         this.getContext().getCursor().setX(beforeX + this.getWidth());
         // 重置换行宽度
         this.getContext().resetWrapWidth(null);
         // 重置
         super.reset(this.getType());
-        // 重置分页事件
-        this.setPagingEvent(event);
     }
 
     /**
      * 初始化其他
      */
     protected void initOthers() {
-        // 是否自定义X轴坐标
-        if (!this.getIsCustomX()) {
-            this.setBeginX(this.getContext().getPage().getMarginLeft() + this.getMarginLeft());
-        }
+        // 检查换行
+        this.checkWrap(this.getHeight());
         // 初始化是否分页边框
         if (Objects.isNull(this.getIsPagingBorder())) {
             this.setIsPagingBorder(Boolean.FALSE);
@@ -157,9 +151,19 @@ public class Container extends AbstractComponent {
         // 初始化容器信息
         this.getContext().setBorderInfo(new BorderInfo(this, this.getBorderConfiguration(), this.getWidth(), this.getHeight(), this.getBeginX(), this.getBeginY(), this.getPagingEvent(), this.getIsPagingBorder()));
         // 初始化换行宽度
-        this.getContext().resetWrapWidth(this.getBeginX() + this.getWidth());
+        this.getContext().resetWrapWidth(this.getWidth());
         // 重置X轴起始坐标
         this.getContext().getCursor().setX(this.getBeginX());
+    }
+
+    /**
+     * 获取最小宽度
+     *
+     * @return 返回最小宽度
+     */
+    @Override
+    protected float getMinWidth() {
+        return this.getWidth();
     }
 
     /**
@@ -209,9 +213,7 @@ public class Container extends AbstractComponent {
             beforeY = info.getBeginY();
         }
         // 需要分页
-        if (this.checkPaging(beforeY - info.getHeight())) {
-            // 分页
-            this.paging();
+        if (this.isPaging(this, beforeY - info.getHeight())) {
             // 递归添加边框
             this.addVirtualBorder(info.getBeginY(), info);
         } else {
@@ -239,9 +241,7 @@ public class Container extends AbstractComponent {
             beforeY = info.getBeginY();
         }
         // 需要分页
-        if (this.checkPaging(beforeY - info.getHeight())) {
-            // 分页
-            this.paging();
+        if (this.isPaging(this, beforeY - info.getHeight())) {
             // 递归添加边框
             this.addBorder(info.getBeginY(), info);
         } else {
@@ -269,20 +269,12 @@ public class Container extends AbstractComponent {
     protected void processRender(PagingEvent pagingEvent, Consumer<Component> consumer, BiConsumer<Float, BorderInfo> borderConsumer) {
         // 初始化
         this.init();
-        // 获取自定义分页事件
-        PagingEvent customPagingEvent = this.getPagingEvent();
         // 重置分页事件
-        if (Objects.isNull(customPagingEvent)) {
+        if (Objects.isNull(this.getPagingEvent())) {
             this.setPagingEvent(pagingEvent);
         }
-        // 非自定义Y轴
-        if (!this.getIsCustomY()) {
-            // 检查分页
-            if (this.isPaging(this, this.getBeginY())) {
-                // 重置容器信息Y轴起始坐标
-                this.getContext().getBorderInfo().setBeginY(this.getContext().getCursor().getY());
-            }
-        }
+        // 初始化其他
+        this.initOthers();
         // 渲染之前X轴坐标
         Float beforeX = this.getBeginX();
         // 渲染之前Y轴坐标
@@ -290,9 +282,9 @@ public class Container extends AbstractComponent {
         // 渲染组件
         Optional.ofNullable(this.getComponents()).orElse(Collections.emptyList()).forEach(consumer);
         // 添加边框
-        borderConsumer.accept(beforeY, this.getContext().getBorderInfo());
+        // borderConsumer.accept(beforeY, this.getContext().getBorderInfo());
         // 重置
-        this.reset(beforeX, customPagingEvent);
+        this.reset(beforeX);
     }
 
     /**

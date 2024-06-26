@@ -29,51 +29,51 @@ public class BorderConfiguration {
     /**
      * 边框样式
      */
-    private BorderStyle borderStyle;
+    protected BorderStyle borderStyle;
     /**
      * 边框线宽
      */
-    private Float borderWidth;
+    protected Float borderWidth;
     /**
      * 边框点线长度
      */
-    private Float borderLineLength;
+    protected Float borderLineLength;
     /**
      * 边框点线间隔
      */
-    private Float borderLineSpacing;
+    protected Float borderLineSpacing;
     /**
      * 上边框颜色
      */
-    private Color borderTopColor;
+    protected Color borderTopColor;
     /**
      * 下边框颜色
      */
-    private Color borderBottomColor;
+    protected Color borderBottomColor;
     /**
      * 左边框颜色
      */
-    private Color borderLeftColor;
+    protected Color borderLeftColor;
     /**
      * 右边框颜色
      */
-    private Color borderRightColor;
+    protected Color borderRightColor;
     /**
      * 是否上边框
      */
-    private Boolean isBorderTop;
+    protected Boolean isBorderTop;
     /**
      * 是否下边框
      */
-    private Boolean isBorderBottom;
+    protected Boolean isBorderBottom;
     /**
      * 是否左边框
      */
-    private Boolean isBorderLeft;
+    protected Boolean isBorderLeft;
     /**
      * 是否右边框
      */
-    private Boolean isBorderRight;
+    protected Boolean isBorderRight;
 
     /**
      * 无参构造

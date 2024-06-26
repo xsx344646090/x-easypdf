@@ -60,6 +60,7 @@ public class Table extends AbstractComponent {
      */
     public Table(Page page) {
         super(page);
+        this.fontConfiguration = new FontConfiguration(page.getFontConfiguration());
     }
 
     /**
@@ -71,11 +72,21 @@ public class Table extends AbstractComponent {
         this.borderConfiguration.setIsBorder(flag);
     }
 
+    /**
+     * 设置行
+     *
+     * @param rows 行
+     */
     @SuppressWarnings("all")
     public void setRows(List<TableRow> rows) {
         this.rows = rows;
     }
 
+    /**
+     * 设置行
+     *
+     * @param rows 行
+     */
     public void setRows(TableRow... rows) {
         if (Objects.nonNull(rows)) {
             this.rows = new ArrayList<>(rows.length);
@@ -85,6 +96,11 @@ public class Table extends AbstractComponent {
         }
     }
 
+    /**
+     * 添加行
+     *
+     * @param rows 行
+     */
     public void addRows(List<TableRow> rows) {
         if (Objects.nonNull(rows)) {
             if (Objects.isNull(this.rows)) {
@@ -95,6 +111,11 @@ public class Table extends AbstractComponent {
         }
     }
 
+    /**
+     * 添加行
+     *
+     * @param rows 行
+     */
     public void addRows(TableRow... rows) {
         if (Objects.nonNull(rows)) {
             if (Objects.isNull(this.rows)) {
@@ -104,10 +125,15 @@ public class Table extends AbstractComponent {
         }
     }
 
-    public void setCellWidths(Float... cellWidths) {
-        if (Objects.nonNull(cellWidths)) {
-            this.cellWidths = new ArrayList<>(cellWidths.length);
-            for (Float cellWidth : cellWidths) {
+    /**
+     * 设置列宽
+     *
+     * @param widths 列宽
+     */
+    public void setCellWidths(float... widths) {
+        if (Objects.nonNull(widths)) {
+            this.cellWidths = new ArrayList<>(widths.length);
+            for (Float cellWidth : widths) {
                 if (Objects.isNull(cellWidth)) {
                     throw new IllegalArgumentException("the cell width can not be null");
                 }
@@ -121,15 +147,15 @@ public class Table extends AbstractComponent {
         }
     }
 
-    public void setCellWidths(List<Float> cellWidths) {
-        if (Objects.nonNull(cellWidths)) {
-            this.setCellWidths(cellWidths.toArray(new Float[0]));
-            this.cellWidths = new ArrayList<>(cellWidths.size());
-            for (float cellWidth : cellWidths) {
-                if (cellWidth <= 0F) {
-                    throw new IllegalArgumentException("the cell width must be greater than zero");
-                }
-                this.cellWidths.add(cellWidth);
+    /**
+     * 设置列宽
+     *
+     * @param widths 列宽
+     */
+    public void setCellWidths(List<Float> widths) {
+        if (Objects.nonNull(widths)) {
+            for (Float width : widths) {
+                this.setCellWidths(width);
             }
         } else {
             this.cellWidths = null;
@@ -218,8 +244,8 @@ public class Table extends AbstractComponent {
     public void render() {
         this.init();
         this.setPagingEvent(new DefaultTablePagingEvent());
-        float beginX = this.getBeginX();
-        float beginY = this.getBeginY();
+        float beginX = this.getBeginX() + this.getRelativeBeginX();
+        float beginY = this.getBeginY() + this.getRelativeBeginY();
         float pageHeaderHeight = Optional.ofNullable(this.getContext().getPageHeader()).map(PageHeader::getHeight).orElse(0F);
         if (Objects.nonNull(this.getRows())) {
             Page page = this.getPage();
@@ -229,7 +255,7 @@ public class Table extends AbstractComponent {
                 tableRow.render(page, beginX, beginY);
                 float height = tableRow.getHeight();
                 float lastHeight = this.getLastHeight(beginY, height, top, bottom);
-                if (!Objects.equals(height, lastHeight)) {
+                if (!Objects.equals(height, lastHeight) || beginY == 0F) {
                     Integer pagingCount = this.getContext().getBorderInfo().getPagingCount();
                     if (pagingCount == 1) {
                         page = page.getSubPage();
@@ -277,9 +303,47 @@ public class Table extends AbstractComponent {
             this.isPagingBorder = Boolean.FALSE;
         }
         // 检查换行
-        this.checkWrap();
+        this.checkWrap(this.getFirstRowHeight());
+        // 检查分页
+        if (this.checkPaging()) {
+            this.setIsWrap(true);
+            this.wrap(this.getFirstRowHeight());
+        }
         // 初始化表格行
         this.initRows();
+        // 初始化起始X轴坐标
+        this.initBeginX(this.getWidth());
+        // 初始化起始Y轴坐标
+        this.initBeginY(this.getHeight());
+    }
+
+    /**
+     * 获取最小宽度
+     *
+     * @return 返回最小宽度
+     */
+    @Override
+    protected float getMinWidth() {
+        return this.getWidth();
+    }
+
+    /**
+     * 是否需要换行
+     *
+     * @return 返回布尔值，true为是，false为否
+     */
+    @Override
+    protected boolean isNeedWrap() {
+        return this.getContext().getWrapWidth() - this.getBeginX() < this.getMinWidth();
+    }
+
+    /**
+     * 获取第一行行高
+     *
+     * @return 返回高度
+     */
+    protected float getFirstRowHeight() {
+        return Optional.ofNullable(this.rows).map(rows -> rows.get(0).getHeight()).orElse(0F);
     }
 
     /**
@@ -303,31 +367,8 @@ public class Table extends AbstractComponent {
     }
 
     /**
-     * 检查换行
-     */
-    protected void checkWrap() {
-        // 初始化X轴坐标
-        if (Objects.isNull(this.getBeginX())) {
-            this.setBeginX(this.getContext().getCursor().getX() + this.getMarginLeft(), Boolean.FALSE);
-        }
-        // 初始化换行
-        if (this.isWrap()) {
-            this.getContext().getCursor().reset(
-                    Optional.ofNullable(this.getContext().getWrapBeginX()).orElse(this.getContext().getPage().getMarginLeft()),
-                    this.getContext().getCursor().getY()
-            );
-            this.setBeginX(this.getContext().getCursor().getX() + this.getMarginLeft(), Boolean.FALSE);
-        }
-        // 初始化Y轴坐标
-        if (Objects.isNull(this.getBeginY())) {
-            this.setBeginY(this.getContext().getCursor().getY() - this.getMarginTop(), Boolean.FALSE);
-        }
-    }
-
-    /**
      * 执行分页
      */
-    @SuppressWarnings("all")
     @Override
     protected Page executeBreak() {
         Float beginX = this.getBeginX();
@@ -344,10 +385,11 @@ public class Table extends AbstractComponent {
      */
     protected void reset(float beginX, float beginY) {
         // 重置光标
-        this.getContext().getCursor().reset(
+        this.getContext().resetCursor(
                 beginX + this.getWidth() + this.getMarginRight(),
                 beginY
         );
+        this.getContext().resetHeight(null);
         // 重置
         super.reset(this.getType());
     }
