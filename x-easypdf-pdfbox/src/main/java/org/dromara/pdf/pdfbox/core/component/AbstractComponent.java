@@ -2,10 +2,7 @@ package org.dromara.pdf.pdfbox.core.component;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.dromara.pdf.pdfbox.core.base.AbstractBase;
-import org.dromara.pdf.pdfbox.core.base.Page;
-import org.dromara.pdf.pdfbox.core.base.PagingCondition;
-import org.dromara.pdf.pdfbox.core.base.PagingEvent;
+import org.dromara.pdf.pdfbox.core.base.*;
 import org.dromara.pdf.pdfbox.core.base.config.BorderConfiguration;
 import org.dromara.pdf.pdfbox.core.base.config.MarginConfiguration;
 import org.dromara.pdf.pdfbox.core.enums.BorderStyle;
@@ -75,21 +72,17 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
      */
     protected Float relativeBeginY;
     /**
-     * 是否自定义X轴坐标
-     */
-    protected Boolean isCustomX;
-    /**
-     * 是否自定义Y轴坐标
-     */
-    protected Boolean isCustomY;
-    /**
      * 是否换行
      */
-    private Boolean isWrap;
+    protected Boolean isWrap;
     /**
      * 是否分页
      */
-    private Boolean isBreak;
+    protected Boolean isBreak;
+    /**
+     * 是否自定义坐标
+     */
+    protected Boolean isCustomPosition;
     /**
      * 水平对齐方式
      */
@@ -98,6 +91,13 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
      * 垂直对齐方式
      */
     protected VerticalAlignment verticalAlignment;
+
+    /**
+     * 获取最小宽度
+     *
+     * @return 返回最小宽度
+     */
+    protected abstract float getMinWidth();
 
     /**
      * 有参构造
@@ -145,31 +145,23 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
         this.pagingEvents = new HashSet<>();
     }
 
-    /**
-     * 检查换行
-     */
-    protected void checkWrap() {
 
+    /**
+     * 设置自定义起始X轴坐标
+     *
+     * @param x 起始X轴坐标
+     */
+    public void setBeginX(Float x) {
+        this.setBeginX(x, true);
     }
 
     /**
-     * 设置自定义X轴坐标
+     * 设置自定义起始Y轴坐标
      *
-     * @param beginX X轴坐标
+     * @param y 起始X轴坐标
      */
-    public void setBeginX(Float beginX) {
-        this.beginX = beginX;
-        this.isCustomX = Objects.nonNull(beginX);
-    }
-
-    /**
-     * 设置自定义Y轴坐标
-     *
-     * @param beginY Y轴坐标
-     */
-    public void setBeginY(Float beginY) {
-        this.beginY = beginY;
-        this.isCustomY = Objects.nonNull(beginY);
+    public void setBeginY(Float y) {
+        this.setBeginY(y, true);
     }
 
     /**
@@ -558,63 +550,33 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
             }
         }
         // 初始化水平对齐方式
-        if (Objects.isNull(this.getHorizontalAlignment())) {
-            this.setHorizontalAlignment(this.getPage().getHorizontalAlignment());
+        if (Objects.isNull(this.horizontalAlignment)) {
+            this.horizontalAlignment = this.getPage().getHorizontalAlignment();
         }
         // 初始化垂直对齐方式
-        if (Objects.isNull(this.getVerticalAlignment())) {
-            this.setVerticalAlignment(this.getPage().getVerticalAlignment());
-        }
-        // 初始化是否自定义X轴坐标
-        if (Objects.isNull(this.getIsCustomX())) {
-            this.setIsCustomX(Boolean.FALSE);
-        }
-        // 初始化是否自定义Y轴坐标
-        if (Objects.isNull(this.getIsCustomY())) {
-            this.setIsCustomY(Boolean.FALSE);
-        }
-        // 初始化是否分页
-        if (Objects.isNull(this.getIsBreak())) {
-            this.setIsBreak(Boolean.FALSE);
+        if (Objects.isNull(this.verticalAlignment)) {
+            this.verticalAlignment = this.getPage().getVerticalAlignment();
         }
         // 初始化是否换行
-        if (Objects.isNull(this.getIsWrap())) {
-            this.setIsWrap(Boolean.FALSE);
+        if (Objects.isNull(this.isWrap)) {
+            this.isWrap = Boolean.FALSE;
         }
-        // 初始化分页
-        if (this.getIsBreak()) {
-            this.processBreak();
+        // 初始化是否分页
+        if (Objects.isNull(this.isBreak)) {
+            this.isBreak = Boolean.FALSE;
+        }
+        // 初始化是否自定义坐标
+        if (Objects.isNull(this.isCustomPosition)) {
+            this.isCustomPosition = Boolean.FALSE;
         }
         // 初始化相对起始X轴坐标
-        if (Objects.isNull(this.getRelativeBeginX())) {
-            this.setRelativeBeginX(0F);
+        if (Objects.isNull(this.relativeBeginX)) {
+            this.relativeBeginX = 0F;
         }
         // 初始化相对起始Y轴坐标
-        if (Objects.isNull(this.getRelativeBeginY())) {
-            this.setRelativeBeginY(0F);
+        if (Objects.isNull(this.relativeBeginY)) {
+            this.relativeBeginY = 0F;
         }
-    }
-
-    /**
-     * 设置X轴坐标
-     *
-     * @param beginX    X轴坐标
-     * @param isCustomX 是否自定义
-     */
-    protected void setBeginX(Float beginX, boolean isCustomX) {
-        this.beginX = beginX;
-        this.isCustomX = isCustomX;
-    }
-
-    /**
-     * 设置Y轴坐标
-     *
-     * @param beginY    Y轴坐标
-     * @param isCustomY 是否自定义
-     */
-    protected void setBeginY(Float beginY, boolean isCustomY) {
-        this.beginY = beginY;
-        this.isCustomY = isCustomY;
     }
 
     /**
@@ -628,7 +590,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
             // 居中
             case CENTER: {
                 // 获取偏移量
-                float offset = (this.getContext().getWrapWidth() + this.getContext().getWrapBeginX() - this.getBeginX() - width) / 2;
+                float offset = (this.getContext().getWrapWidth() - width) / 2;
                 // 设置起始X轴坐标
                 this.setBeginX(this.getBeginX() + offset);
                 // 结束
@@ -639,7 +601,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
                 // 获取偏移量
                 float offset = this.getContext().getWrapWidth() - width - this.getMarginRight();
                 // 设置起始X轴坐标
-                this.setBeginX(offset);
+                this.setBeginX(this.getBeginX() + offset);
                 // 结束
                 break;
             }
@@ -651,19 +613,74 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     }
 
     /**
-     * 换行
+     * 初始化起始Y轴坐标
+     *
+     * @param height 高度
      */
-    protected void wrap() {
-        // 设置X轴起始坐标
-        this.setBeginX(null);
-        // 设置Y轴起始坐标
-        this.setBeginY(null);
-        // 设置是否换行
-        this.setIsWrap(Boolean.TRUE);
-        // 检查换行
-        this.checkWrap();
-        // 设置是否换行
-        this.setIsWrap(Boolean.FALSE);
+    protected void initBeginY(float height) {
+        // 定义偏移量
+        float offset = 0F;
+        // 匹配垂直对齐方式
+        switch (this.getVerticalAlignment()) {
+            // 居中
+            case CENTER: {
+                // 获取偏移量
+                offset = (this.getContext().getHeight() - height) / 2;
+                // 结束
+                break;
+            }
+            // 居下
+            case BOTTOM: {
+                // 获取偏移量
+                offset = this.getContext().getHeight() - height - this.getMarginBottom();
+                // 结束
+                break;
+            }
+            // 居上
+            default: {
+                // nothing to do
+            }
+        }
+        // 获取重置Y轴坐标
+        float restY = this.getBeginY() - offset;
+        // 设置起始Y轴坐标
+        if (restY >= this.getBottom()) {
+            this.setBeginY(restY, false);
+        }
+    }
+
+    /**
+     * 检查换行
+     */
+    protected void checkWrap(float wrapHeight) {
+        if (!Optional.ofNullable(this.getIsCustomPosition()).orElse(Boolean.FALSE)) {
+            this.wrap(wrapHeight);
+        } else {
+            if (Objects.isNull(this.getBeginX())) {
+                this.setBeginX(this.getContext().getCursor().getX() + this.getMarginLeft(), false);
+            }
+            if (Objects.isNull(this.getBeginY())) {
+                this.setBeginY(this.getContext().getCursor().getY(), false);
+            }
+        }
+    }
+
+    /**
+     * 换行
+     *
+     * @param wrapHeight 换行高度
+     */
+    protected void wrap(float wrapHeight) {
+        this.setBeginX(this.getContext().getCursor().getX() + this.getMarginLeft(), false);
+        if (this.isWrap()) {
+            this.getContext().getCursor().reset(
+                    Optional.ofNullable(this.getContext().getWrapBeginX()).orElse(this.getPage().getMarginLeft()) + this.getMarginLeft(),
+                    this.getContext().getCursor().getY() - wrapHeight - this.getMarginTop()
+            );
+            this.setBeginX(this.getContext().getCursor().getX() + this.getMarginLeft(), false);
+            this.setIsWrap(false);
+        }
+        this.setBeginY(this.getContext().getCursor().getY(), false);
     }
 
     /**
@@ -672,15 +689,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
      * @return 返回布尔值，true为是，false为否
      */
     protected boolean isWrap() {
-        // 是否手动设置
-        if (this.getIsWrap()) {
-            return Boolean.TRUE;
-        }
-        // 换行宽度或X轴起始坐标未初始化
-        if (Objects.isNull(this.getContext().getWrapWidth()) || Objects.isNull(this.getBeginX())) {
-            return Boolean.FALSE;
-        }
-        return this.isNeedWrap();
+        return this.getIsWrap() || this.isNeedWrap();
     }
 
     /**
@@ -689,7 +698,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
      * @return 返回布尔值，true为是，false为否
      */
     protected boolean isNeedWrap() {
-        return this.getContext().getWrapWidth() + this.getContext().getWrapBeginX() - this.getBeginX() < 0;
+        return this.getContext().getIsFirstComponent() || this.getContext().getWrapWidth() - this.getBeginX() < this.getMinWidth();
     }
 
     /**
@@ -701,13 +710,25 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
      */
     protected boolean isPaging(Component component, float beginY) {
         // 获取分页标识
-        boolean flag = this.checkPaging(component, beginY);
+        boolean flag = this.getIsBreak() || this.checkPaging(component, beginY);
         // 分页
         if (flag) {
-            this.paging();
+            this.processBreak();
         }
         // 返回分页标识
         return flag;
+    }
+
+    /**
+     * 检查分页
+     */
+    protected boolean checkPaging() {
+        // 非自定义坐标
+        if (!this.getIsCustomPosition()) {
+            // 检查分页
+            return this.isPaging(this, this.getBeginY());
+        }
+        return false;
     }
 
     /**
@@ -727,6 +748,20 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     }
 
     /**
+     * 检查分页
+     *
+     * @param beginY Y轴起始坐标
+     * @return 返回布尔值，true为是，false为否
+     */
+    protected boolean checkPaging(float beginY) {
+        if (beginY < this.getBottom()) {
+            this.getContext().resetOffsetY(this.getBottom() - beginY);
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * 是否分页组件
      *
      * @return 返回布尔值，true为是，false为否
@@ -738,76 +773,47 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     }
 
     /**
-     * 执行分页
-     */
-    protected void paging() {
-        // 处理分页
-        this.processBreak();
-        // 换行
-        this.wrap();
-    }
-
-    /**
-     * 重置
-     */
-    protected void reset(ComponentType type) {
-        // 重置X轴起始坐标
-        this.beginX = null;
-        // 重置Y轴起始坐标
-        this.beginY = null;
-        // 重置是否自定义X轴坐标
-        this.isCustomX = null;
-        // 重置是否自定义Y轴坐标
-        this.isCustomY = null;
-        // 重置换行起始坐标
-        this.getContext().resetWrapBeginX(null);
-        // 重置当前执行组件类型
-        this.getContext().resetExecutingComponentType(type);
-        // 重置是否第一个组件
-        this.getContext().setIsFirstComponent(Boolean.FALSE);
-    }
-
-    /**
-     * 检查分页
-     *
-     * @param beginY Y轴起始坐标
-     * @return 返回布尔值，true为是，false为否
-     */
-    protected boolean checkPaging(float beginY) {
-        // Y轴坐标小于下边距+页面下边距
-        if (beginY < this.getMarginBottom() + this.getBottom()) {
-            // 返回true
-            return true;
-        }
-        // 返回false
-        return false;
-    }
-
-    /**
      * 处理分页
      */
     protected void processBreak() {
-        Optional.ofNullable(this.pagingEvents).ifPresent(events -> events.forEach(event -> event.before(this)));
+        Optional.ofNullable(this.pagingEvents).ifPresent(events -> events.forEach(event -> Optional.ofNullable(event).ifPresent(v -> v.before(this))));
         this.executeBreak();
-        Optional.ofNullable(this.pagingEvents).ifPresent(events -> events.forEach(event -> event.after(this)));
+        Optional.ofNullable(this.pagingEvents).ifPresent(events -> events.forEach(event -> Optional.ofNullable(event).ifPresent(v -> v.after(this))));
     }
 
     /**
      * 执行分页
      */
     protected Page executeBreak() {
-        Page subPage = this.getContext().getPage().getSubPage();
+        Page subPage = this.getPage().getSubPage();
         if (Objects.isNull(subPage)) {
             if (!this.getContext().getIsAlreadyPaging()) {
-                subPage = this.getContext().getPage().createSubPage();
+                subPage = this.getPage().createSubPage();
             }
         } else {
             this.getContext().setPage(subPage);
             this.getContext().resetCursor();
         }
         this.resetXY();
-        super.init(this.getContext().getPage());
         return subPage;
+    }
+
+    /**
+     * 重置
+     */
+    protected void reset(ComponentType type) {
+        // 获取上下文
+        Context context = this.getContext();
+        // 重置换行起始坐标
+        context.resetWrapBeginX(null);
+        // 重置Y轴偏移量
+        // context.resetOffsetY(null);
+        // 重置当前执行组件类型
+        context.resetExecutingComponentType(type);
+        // 重置是否第一个组件
+        context.setIsFirstComponent(Boolean.FALSE);
+        // 重置起始XY轴坐标
+        this.resetXY();
     }
 
     /**
@@ -816,5 +822,27 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     protected void resetXY() {
         this.beginX = null;
         this.beginY = null;
+    }
+
+    /**
+     * 设置自定义起始X轴坐标
+     *
+     * @param x                起始X轴坐标
+     * @param isCustomPosition 是否自定义坐标
+     */
+    protected void setBeginX(Float x, boolean isCustomPosition) {
+        this.beginX = x;
+        this.isCustomPosition = isCustomPosition;
+    }
+
+    /**
+     * 设置自定义起始Y轴坐标
+     *
+     * @param y                起始X轴坐标
+     * @param isCustomPosition 是否自定义坐标
+     */
+    protected void setBeginY(Float y, boolean isCustomPosition) {
+        this.beginY = y;
+        this.isCustomPosition = isCustomPosition;
     }
 }

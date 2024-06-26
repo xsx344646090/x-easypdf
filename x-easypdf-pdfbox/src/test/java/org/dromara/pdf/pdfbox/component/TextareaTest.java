@@ -344,7 +344,7 @@ public class TextareaTest extends BaseTest {
     public void innerDestTest() {
         this.test(() -> {
             Document document = PdfHandler.getDocumentHandler().create();
-            document.setMargin(50F);
+            // document.setMargin(50F);
             document.setFontSize(30F);
 
             Page page = new Page(document);
@@ -392,7 +392,6 @@ public class TextareaTest extends BaseTest {
             Page page = new Page(document);
 
             Textarea textarea = new Textarea(page);
-            textarea.setHighlightColor(Color.CYAN);
             textarea.setIsHighlight(true);
             textarea.setIsDeleteLine(true);
             textarea.setIsUnderline(true);

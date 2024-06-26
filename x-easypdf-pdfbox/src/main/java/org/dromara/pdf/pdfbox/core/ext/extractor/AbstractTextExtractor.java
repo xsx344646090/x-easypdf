@@ -1,17 +1,13 @@
 package org.dromara.pdf.pdfbox.core.ext.extractor;
 
-import lombok.Getter;
 import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.apache.pdfbox.text.PDFTextStripper;
-import org.apache.pdfbox.text.TextPosition;
+import org.apache.pdfbox.text.PDFTextStripperByArea;
 import org.dromara.pdf.pdfbox.core.base.Document;
 
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
-import java.io.IOException;
-import java.io.StringWriter;
 import java.util.List;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -89,7 +85,7 @@ public abstract class AbstractTextExtractor extends AbstractExtractor {
      * @return 返回文本列表
      */
     @SneakyThrows
-    protected List<String> processTextByRegex(String regex, DefaultTextStripper stripper) {
+    protected List<String> processTextByRegex(String regex, PDFTextStripper stripper) {
         // 定义文本列表
         List<String> list = new ArrayList<>(32);
         // 获取文本
@@ -114,15 +110,19 @@ public abstract class AbstractTextExtractor extends AbstractExtractor {
     /**
      * 区域处理文本
      *
-     * @param wordSeparator 单词分隔符
      * @param regionArea    区域
-     * @param page          pdfbox页面
+     * @param wordSeparator 单词分隔符
+     * @param page          页面
      * @return 返回文本字典 <p>key = 区域名称，value = 提取文本</p>
      */
     @SneakyThrows
-    protected Map<String, String> processTextByRegionArea(String wordSeparator, Map<String, Rectangle> regionArea, PDPage page) {
+    protected Map<String, String> processTextByRegionArea(Map<String, Rectangle> regionArea, String wordSeparator, PDPage page) {
         // 创建文本剥离器
-        DefaultTextStripper stripper = new DefaultTextStripper(regionArea);
+        PDFTextStripperByArea stripper = new PDFTextStripperByArea();
+        // 设置单词分隔符
+        stripper.setWordSeparator(wordSeparator);
+        // 设置区域
+        regionArea.forEach(stripper::addRegion);
         // 定义文本字典
         Map<String, String> data;
         // 如果区域为空，则初始化文本字典为空字典
@@ -135,32 +135,12 @@ public abstract class AbstractTextExtractor extends AbstractExtractor {
             Set<String> keySet = regionArea.keySet();
             // 初始化文本字典
             data = new HashMap<>(keySet.size());
-            // 遍历区域名称列表
-            for (String region : keySet) {
-                // 设置起始页面
-                stripper.setStartPage(stripper.getCurrentPageNo());
-                // 设置结束页面
-                stripper.setEndPage(stripper.getCurrentPageNo());
-                // 设置单词分隔符
-                stripper.setWordSeparator(wordSeparator);
-                // 定义区域字符列表
-                ArrayList<List<TextPosition>> regionCharactersByArticle = new ArrayList<>(256);
-                // 添加空列表
-                regionCharactersByArticle.add(new ArrayList<>(256));
-                // 设置区域字符列表
-                stripper.getRegionCharacterList().put(region, regionCharactersByArticle);
-                // 设置区域文本
-                stripper.getRegionText().put(region, new StringWriter());
-            }
-            // 如果页面有内容，则处理页面
-            if (page.hasContents()) {
-                // 处理页面
-                stripper.processPage(page);
-            }
+            // 处理区域
+            stripper.extractRegions(page);
             // 遍历区域名称列表
             for (String region : keySet) {
                 // 设置文本字典
-                data.put(region, stripper.getRegionText().get(region).toString());
+                data.put(region, stripper.getTextForRegion(region));
             }
         }
         return data;
@@ -169,14 +149,14 @@ public abstract class AbstractTextExtractor extends AbstractExtractor {
     /**
      * 表格处理文本
      *
-     * @param wordSeparator 单词分隔符
      * @param regionArea    区域
-     * @param page          pdfbox页面
+     * @param wordSeparator 单词分隔符
+     * @param page          页面
      * @return 返回文本字典 <p>key = 区域名称，value = 提取文本</p>
      */
-    protected Map<String, List<List<String>>> processTextByTable(String wordSeparator, Map<String, Rectangle> regionArea, PDPage page) {
+    protected Map<String, List<List<String>>> processTextByTable(Map<String, Rectangle> regionArea, String wordSeparator, PDPage page) {
         // 获取文本字典
-        Map<String, String> sourceMap = this.processTextByRegionArea(wordSeparator, regionArea, page);
+        Map<String, String> sourceMap = this.processTextByRegionArea(regionArea, wordSeparator, page);
         // 没有内容
         if (sourceMap.isEmpty()) {
             return new HashMap<>(0);
@@ -229,7 +209,7 @@ public abstract class AbstractTextExtractor extends AbstractExtractor {
             for (int index : pageIndexes) {
                 try {
                     // 添加数据
-                    data.put(index, function.apply(wordSeparator, regionArea, pageTree.get(index)));
+                    data.put(index, function.apply(regionArea, wordSeparator, pageTree.get(index)));
                 } catch (Exception e) {
                     // 提示信息
                     log.warn("the index['" + index + "'] is invalid, will be ignored");
@@ -241,7 +221,7 @@ public abstract class AbstractTextExtractor extends AbstractExtractor {
             // 遍历页面树
             for (PDPage page : pageTree) {
                 // 添加数据
-                data.put(index, function.apply(wordSeparator, regionArea, page));
+                data.put(index, function.apply(regionArea, wordSeparator, page));
                 // 索引自增
                 index++;
             }
@@ -258,101 +238,11 @@ public abstract class AbstractTextExtractor extends AbstractExtractor {
         /**
          * 应用
          *
-         * @param wordSeparator 单词分隔符
          * @param regionArea    区域
+         * @param wordSeparator 单词分隔符
          * @param page          页面
          * @return 返回文本字典 <p>key = 区域关键字，value = 提取文本</p>
          */
-        R apply(String wordSeparator, Map<String, Rectangle> regionArea, PDPage page);
-    }
-
-    /**
-     * 文本剥离器
-     */
-    @Getter
-    protected static class DefaultTextStripper extends PDFTextStripper {
-        /**
-         * 区域字符列表
-         */
-        protected final Map<String, ArrayList<List<TextPosition>>> regionCharacterList = new HashMap<>(32);
-        /**
-         * 区域文本字典
-         */
-        protected final Map<String, StringWriter> regionText = new HashMap<>(32);
-        /**
-         * 区域
-         */
-        protected Map<String, Rectangle> regionArea;
-
-        /**
-         * 有参构造
-         *
-         * @param regionArea 区域
-         */
-        public DefaultTextStripper(Map<String, Rectangle> regionArea) {
-            // 初始化区域
-            this.regionArea = regionArea;
-            // 设置排序
-            super.setSortByPosition(true);
-        }
-
-        /**
-         * 获取当前页码
-         *
-         * @return 返回页码
-         */
-        protected int getCurrentPageNo() {
-            return super.getCurrentPageNo();
-        }
-
-        /**
-         * 处理文本定位
-         *
-         * @param text 文本
-         */
-        @Override
-        protected void processTextPosition(TextPosition text) {
-            if (Objects.nonNull(this.regionArea)) {
-                // 获取区域列表
-                Set<Map.Entry<String, Rectangle>> entrySet = this.regionArea.entrySet();
-                // 遍历区域列表
-                for (Map.Entry<String, Rectangle> regionAreaEntry : entrySet) {
-                    // 获取区域
-                    Rectangle2D rect = regionAreaEntry.getValue();
-                    // 如果当前区域坐标包含文本坐标，则进行提取文本
-                    if (rect.contains(text.getX(), text.getY())) {
-                        // 初始化字符列表
-                        this.charactersByArticle = this.regionCharacterList.get(regionAreaEntry.getKey());
-                    }
-                }
-            }
-            // 调用pdfbox提取器处理文本定位
-            super.processTextPosition(text);
-        }
-
-        /**
-         * 写入页面
-         *
-         * @throws IOException IO异常
-         */
-        @Override
-        protected void writePage() throws IOException {
-            if (Objects.nonNull(this.regionArea)) {
-                // 获取区域名称列表
-                Set<String> keySet = this.regionArea.keySet();
-                // 遍历区域名称列表
-                for (String region : keySet) {
-                    // 初始化字符列表
-                    this.charactersByArticle = this.regionCharacterList.get(region);
-                    // 初始化输出
-                    this.output = this.regionText.get(region);
-                    // 调用pdfbox提取器写入页面
-                    super.writePage();
-                }
-            } else {
-                // 调用pdfbox提取器写入页面
-                super.writePage();
-            }
-        }
+        R apply(Map<String, Rectangle> regionArea, String wordSeparator, PDPage page);
     }
 }

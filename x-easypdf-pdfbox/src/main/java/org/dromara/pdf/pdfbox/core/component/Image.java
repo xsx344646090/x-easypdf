@@ -203,42 +203,20 @@ public class Image extends AbstractComponent {
         super.init();
         // 初始化宽度与高度
         this.initWidthAndHeight();
+        // 检查换行
+        this.checkWrap(this.height);
+        // 检查分页
+        if (this.checkPaging()) {
+            this.setIsWrap(true);
+            this.wrap(this.height);
+        }
         // 初始化起始X轴坐标
         this.initBeginX(this.width);
+        // 初始化起始Y轴坐标
+        this.initBeginY(this.height);
         // 初始化旋转角度
         if (Objects.isNull(this.angle)) {
             this.angle = 0F;
-        }
-        // 检查换行
-        this.checkWrap();
-        // 非自定义Y轴
-        if (!this.getIsCustomY()) {
-            // 检查分页
-            if (this.isPaging(this, this.getBeginY())) {
-                super.setBeginY(this.getBeginY() - this.getHeight(), false);
-            }
-        }
-    }
-
-    /**
-     * 检查换行
-     */
-    protected void checkWrap() {
-        // 初始化X轴坐标
-        if (Objects.isNull(this.getBeginX())) {
-            this.setBeginX(this.getContext().getCursor().getX() + this.getMarginLeft(), Boolean.FALSE);
-        }
-        // 初始化换行
-        if (this.isWrap()) {
-            this.getContext().getCursor().reset(
-                    this.getContext().getWrapBeginX(),
-                    this.getContext().getCursor().getY() - this.getHeight()
-            );
-            this.setBeginX(this.getContext().getCursor().getX() + this.getMarginLeft(), Boolean.FALSE);
-        }
-        // 初始化Y轴坐标
-        if (Objects.isNull(this.getBeginY())) {
-            this.setBeginY(this.getContext().getCursor().getY() - this.getMarginTop(), Boolean.FALSE);
         }
     }
 
@@ -264,13 +242,13 @@ public class Image extends AbstractComponent {
     }
 
     /**
-     * 是否需要换行
+     * 获取最小宽度
      *
-     * @return 返回布尔值，true为是，false为否
+     * @return 返回最小宽度
      */
     @Override
-    protected boolean isNeedWrap() {
-        return this.getContext().getWrapWidth() - this.getBeginX() < this.getWidth();
+    protected float getMinWidth() {
+        return this.getWidth();
     }
 
     /**

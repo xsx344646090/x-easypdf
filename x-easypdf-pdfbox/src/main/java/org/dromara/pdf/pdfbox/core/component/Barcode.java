@@ -51,87 +51,87 @@ public class Barcode extends AbstractComponent {
     /**
      * 缓存
      */
-    private static final Map<Integer, BufferedImage> CACHE = new HashMap<>(10);
+    protected static final Map<Integer, BufferedImage> CACHE = new HashMap<>(10);
     /**
      * 缓存锁
      */
-    private static final ReentrantLock LOCK = new ReentrantLock();
+    protected static final ReentrantLock LOCK = new ReentrantLock();
     /**
      * 编码设置
      */
-    private Map<EncodeHintType, Object> encodeHints = new HashMap<>(8);
+    protected Map<EncodeHintType, Object> encodeHints = new HashMap<>(8);
     /**
      * 宽度（显示）
      */
-    private Integer width;
+    protected Integer width;
     /**
      * 高度（显示）
      */
-    private Integer height;
+    protected Integer height;
     /**
      * 图像宽度
      */
-    private Integer imageWidth;
+    protected Integer imageWidth;
     /**
      * 图像高度
      */
-    private Integer imageHeight;
+    protected Integer imageHeight;
     /**
      * 编码类型
      */
-    private BarcodeType codeType;
+    protected BarcodeType codeType;
     /**
      * 前景颜色
      */
-    private Color onColor;
+    protected Color onColor;
     /**
      * 背景颜色
      */
-    private Color offColor;
+    protected Color offColor;
     /**
      * 内容
      */
-    private String content;
+    protected String content;
     /**
      * 文字
      */
-    private String words;
+    protected String words;
     /**
      * 文字字体名称
      */
-    private String wordsFontName;
+    protected String wordsFontName;
     /**
      * 文字颜色
      */
-    private Color wordsColor;
+    protected Color wordsColor;
     /**
      * 文字样式
      */
-    private BarcodeWordsStyle wordsStyle;
+    protected BarcodeWordsStyle wordsStyle;
     /**
      * 文字大小
      */
-    private Integer wordsSize;
+    protected Integer wordsSize;
     /**
      * 文字X轴偏移量
      */
-    private Integer wordsOffsetX;
+    protected Integer wordsOffsetX;
     /**
      * 文字Y轴偏移量
      */
-    private Integer wordsOffsetY;
+    protected Integer wordsOffsetY;
     /**
      * 旋转角度
      */
-    private Float angle;
+    protected Float angle;
     /**
      * 是否显示文字
      */
-    private Boolean isShowWords;
+    protected Boolean isShowWords;
     /**
      * 是否缓存
      */
-    private Boolean isCache;
+    protected Boolean isCache;
 
     /**
      * 有参构造
@@ -277,10 +277,10 @@ public class Barcode extends AbstractComponent {
     protected void init() {
         // 初始化
         super.init();
-        // 初始化编码为utf-8
-        this.encodeHints.put(EncodeHintType.CHARACTER_SET, StandardCharsets.UTF_8);
-        // 初始化纠错级别
-        this.initErrorLevel();
+        // 初始化类型
+        Objects.requireNonNull(this.codeType, "the code type can not be null");
+        // 初始化内容
+        Objects.requireNonNull(this.content, "the content can not be null");
         // 初始化宽度（显示）
         if (Objects.isNull(this.width)) {
             this.width = this.imageWidth;
@@ -299,10 +299,10 @@ public class Barcode extends AbstractComponent {
         if (Objects.isNull(this.imageHeight)) {
             this.imageHeight = this.height;
         }
-        // 初始化类型
-        Objects.requireNonNull(this.codeType, "the code type can not be null");
-        // 初始化内容
-        Objects.requireNonNull(this.content, "the content can not be null");
+        // 初始化编码为utf-8
+        this.encodeHints.put(EncodeHintType.CHARACTER_SET, StandardCharsets.UTF_8);
+        // 初始化纠错级别
+        this.initErrorLevel();
         // 初始化前景颜色
         if (Objects.isNull(this.onColor)) {
             this.onColor = Color.BLACK;
@@ -323,10 +323,17 @@ public class Barcode extends AbstractComponent {
         if (Objects.isNull(this.isCache)) {
             this.isCache = Boolean.FALSE;
         }
-        // 初始化起始X轴坐标
-        this.initBeginX(this.width);
         // 检查换行
         this.checkWrap();
+        // 初始化起始X轴坐标
+        this.initBeginX(this.width);
+        // 是否首个组件
+        if (this.getContext().getIsFirstComponent()) {
+            super.setBeginY(this.getBeginY() - this.getHeight());
+        }
+        // 检查分页
+        this.checkPaging();
+
     }
 
     /**
@@ -335,7 +342,7 @@ public class Barcode extends AbstractComponent {
     protected void checkWrap() {
         // 初始化X轴坐标
         if (Objects.isNull(this.getBeginX())) {
-            this.setBeginX(this.getContext().getCursor().getX() + this.getMarginLeft(), Boolean.FALSE);
+            this.setBeginX(this.getContext().getCursor().getX() + this.getMarginLeft());
         }
         // 初始化换行
         if (this.isWrap()) {
@@ -343,22 +350,22 @@ public class Barcode extends AbstractComponent {
                     this.getContext().getWrapBeginX(),
                     this.getContext().getCursor().getY() - this.getHeight()
             );
-            this.setBeginX(this.getContext().getCursor().getX() + this.getMarginLeft(), Boolean.FALSE);
+            this.setBeginX(this.getContext().getCursor().getX() + this.getMarginLeft());
         }
         // 初始化Y轴坐标
         if (Objects.isNull(this.getBeginY())) {
-            this.setBeginY(this.getContext().getCursor().getY() - this.getMarginTop(), Boolean.FALSE);
+            this.setBeginY(this.getContext().getCursor().getY() - this.getMarginTop());
         }
     }
 
     /**
-     * 是否需要换行
+     * 获取最小宽度
      *
-     * @return 返回布尔值，true为是，false为否
+     * @return 返回最小宽度
      */
     @Override
-    protected boolean isNeedWrap() {
-        return this.getContext().getWrapWidth() - this.getBeginX() < this.getWidth();
+    protected float getMinWidth() {
+        return this.getWidth();
     }
 
     /**

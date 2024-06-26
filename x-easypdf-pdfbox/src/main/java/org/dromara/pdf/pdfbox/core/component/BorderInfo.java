@@ -32,39 +32,39 @@ public class BorderInfo extends BorderData {
     /**
      * 分页次数
      */
-    private Integer pagingCount;
+    protected Integer pagingCount;
     /**
      * 宽度
      */
-    private Float width;
+    protected Float width;
     /**
      * 高度
      */
-    private Float height;
+    protected Float height;
     /**
      * X轴起始坐标
      */
-    private Float beginX;
+    protected Float beginX;
     /**
      * Y轴起始坐标
      */
-    private Float beginY;
+    protected Float beginY;
     /**
      * 分页事件
      */
-    private PagingEvent pagingEvent;
+    protected PagingEvent pagingEvent;
     /**
      * 是否分页边框
      */
-    private Boolean isPagingBorder;
+    protected Boolean isPagingBorder;
     /**
      * 是否第一个组件
      */
-    private Boolean isFirstComponent;
+    protected Boolean isFirstComponent;
     /**
      * 是否已经绘制
      */
-    private Boolean isAlreadyRendered;
+    protected Boolean isAlreadyRendered;
 
     /**
      * 有参构造

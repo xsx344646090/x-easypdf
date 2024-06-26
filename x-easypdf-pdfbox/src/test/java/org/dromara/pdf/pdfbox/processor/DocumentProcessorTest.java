@@ -214,7 +214,7 @@ public class DocumentProcessorTest extends BaseTest {
                 Map<String, String> data = new HashMap<>();
                 data.put("test1", "hello world");
                 data.put("test2", "你好，贵阳");
-                processor.fillText(data, document.getFont(), 12);
+                processor.fillText(data);
 
                 document.save("E:\\PDF\\pdfbox\\processor\\formTest.pdf");
             }

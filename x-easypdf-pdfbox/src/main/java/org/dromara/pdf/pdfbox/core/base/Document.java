@@ -249,6 +249,9 @@ public class Document extends AbstractBase implements Closeable {
      */
     public void setSpecialFontNames(String... fontNames) {
         this.getContext().addFontCache(fontNames);
+        if (Objects.isNull(this.fontConfiguration.getSpecialFontNames())) {
+            this.fontConfiguration.setSpecialFontNames(new ArrayList<>(10));
+        }
         Collections.addAll(this.fontConfiguration.getSpecialFontNames(), fontNames);
     }
 
@@ -402,7 +405,7 @@ public class Document extends AbstractBase implements Closeable {
      * @return 返回总页数
      */
     public int getTotalPageNumber() {
-        return Optional.ofNullable(this.totalPageNumber).orElse(this.pages.size());
+        return Optional.ofNullable(this.totalPageNumber).orElse(this.context.getPageCount());
     }
 
     /**

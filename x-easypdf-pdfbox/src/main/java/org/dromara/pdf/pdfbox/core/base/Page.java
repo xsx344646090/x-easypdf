@@ -143,6 +143,7 @@ public class Page extends AbstractBase implements Closeable {
         this.setMarginLeft(margin);
         this.setMarginRight(margin);
         this.getContext().resetWrapWidth(null);
+        this.getContext().resetHeight(null);
     }
 
     /**
@@ -163,6 +164,7 @@ public class Page extends AbstractBase implements Closeable {
         if (Objects.equals(cursor.getY(), height - marginTop)) {
             cursor.setY(height - margin);
         }
+        this.getContext().resetHeight(null);
     }
 
     /**
@@ -172,6 +174,7 @@ public class Page extends AbstractBase implements Closeable {
      */
     public void setMarginBottom(float margin) {
         this.marginConfiguration.setMarginBottom(margin);
+        this.getContext().resetHeight(null);
     }
 
     /**
@@ -629,19 +632,29 @@ public class Page extends AbstractBase implements Closeable {
         this.verticalAlignment = VerticalAlignment.TOP;
         // 父类初始化
         super.init(base);
+        // 获取上下文
+        Context context = this.getContext();
         // 重置上下文
-        super.getContext().reset(this);
+        context.reset(this);
         // 初始化页面索引
         this.index = this.getContext().getPageCount() - 1;
         // 初始化特殊字体
         if (Objects.nonNull(this.fontConfiguration.getSpecialFontNames())) {
             for (String specialFontName : this.fontConfiguration.getSpecialFontNames()) {
-                this.getContext().addFontCache(specialFontName);
+                context.addFontCache(specialFontName);
             }
         }
         // 初始化背景颜色
         if (Objects.equals(this.backgroundColor, Color.WHITE)) {
             this.initBackgroundColor();
+        }
+        // 初始化页眉
+        if (context.hasPageHeader()) {
+            context.getPageHeader().setIsAlreadyRendered(Boolean.FALSE);
+        }
+        // 初始化页脚
+        if (context.hasPageFooter()) {
+            context.getPageFooter().setIsAlreadyRendered(Boolean.FALSE);
         }
     }
 

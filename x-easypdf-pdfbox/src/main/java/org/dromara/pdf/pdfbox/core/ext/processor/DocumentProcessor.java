@@ -1,5 +1,6 @@
 package org.dromara.pdf.pdfbox.core.ext.processor;
 
+import lombok.EqualsAndHashCode;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.ext.processor.sign.SignProcessor;
 
@@ -21,6 +22,7 @@ import org.dromara.pdf.pdfbox.core.ext.processor.sign.SignProcessor;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
+@EqualsAndHashCode(callSuper = true)
 public class DocumentProcessor extends AbstractProcessor {
 
     /**

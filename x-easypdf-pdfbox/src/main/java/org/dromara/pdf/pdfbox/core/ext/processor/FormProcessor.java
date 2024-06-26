@@ -1,12 +1,12 @@
 package org.dromara.pdf.pdfbox.core.ext.processor;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.fixup.AcroFormDefaultFixup;
-import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceCharacteristicsDictionary;
@@ -16,7 +16,6 @@ import org.apache.pdfbox.pdmodel.interactive.form.PDPushButton;
 import org.apache.pdfbox.pdmodel.interactive.form.PDTextField;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.enums.ImageType;
-import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.dromara.pdf.pdfbox.util.ImageUtil;
 
 import java.awt.image.BufferedImage;
@@ -41,6 +40,7 @@ import java.util.*;
  * </p>
  */
 @Getter
+@EqualsAndHashCode(callSuper = true)
 public class FormProcessor extends AbstractProcessor {
 
     /**
@@ -62,7 +62,7 @@ public class FormProcessor extends AbstractProcessor {
      * @param document 文档
      */
     public FormProcessor(Document document) {
-        this(document, true, true);
+        this(document, false, true);
     }
 
     /**
@@ -107,25 +107,12 @@ public class FormProcessor extends AbstractProcessor {
     /**
      * 填写文本
      *
-     * @param formMap 表单字典
-     * @param font    字体
-     */
-    public void fillText(Map<String, String> formMap, PDFont font) {
-        this.fillText(formMap, font, null);
-    }
-
-    /**
-     * 填写文本
-     *
      * @param formMap  表单字典
-     * @param font     字体
-     * @param fontSize 字体大小
      */
     @SneakyThrows
-    public void fillText(Map<String, String> formMap, PDFont font, Integer fontSize) {
+    public void fillText(Map<String, String> formMap) {
         // 检查参数
         Objects.requireNonNull(formMap, "the form map can not be null");
-        Objects.requireNonNull(font, "the font can not be null");
         // 获取表单字典键值集合
         Set<Map.Entry<String, String>> entrySet = formMap.entrySet();
         // 遍历表单字典
@@ -136,8 +123,8 @@ public class FormProcessor extends AbstractProcessor {
             if (Objects.nonNull(field)) {
                 // 文本字段
                 if (field instanceof PDTextField) {
-                    // 重置新值
-                    this.resetText(font, fontSize, (PDTextField) field, entry.getValue());
+                    // 设置新值
+                    field.setValue(entry.getValue());
                 } else {
                     // 提示信息
                     log.warn("the field['" + entry.getKey() + "'] is not text field, will be ignored");
@@ -147,8 +134,6 @@ public class FormProcessor extends AbstractProcessor {
                 log.warn("the field['" + entry.getKey() + "'] is not exist, will be ignored");
             }
         }
-        // 刷新外观
-        this.form.refreshAppearances();
         // 重置表单
         this.getDocument().getDocumentCatalog().setAcroForm(this.form);
     }
@@ -240,7 +225,7 @@ public class FormProcessor extends AbstractProcessor {
     @SneakyThrows
     public void clear() {
         // 清空字段
-        this.form.flatten();
+        // this.form.flatten(this.getFields(), true);
         // 重置表单
         this.getDocument().getDocumentCatalog().setAcroForm(this.form);
     }
@@ -277,49 +262,5 @@ public class FormProcessor extends AbstractProcessor {
         acroForm.setCacheFields(true);
         // 返回表单
         return acroForm;
-    }
-
-    /**
-     * 重置文本
-     *
-     * @param font     pdfbox字体
-     * @param field    pdfbox表单字段
-     * @param newValue 字段新值
-     */
-    @SneakyThrows
-    protected void resetText(PDFont font, Integer fontSize, PDTextField field, String newValue) {
-        // 存在字段新值
-        if (Objects.nonNull(newValue)) {
-            // 获取默认外观
-            String defaultAppearance = field.getDefaultAppearance();
-            // 使用原字体大小
-            if (Objects.isNull(fontSize)) {
-                // 重置默认外观（使用原字体大小）
-                field.setDefaultAppearance(
-                        defaultAppearance.replaceFirst(
-                                NONE_FONT_SIZE_REGEX,
-                                String.join("", "/", font.getName())
-                        )
-                );
-            } else {
-                // 重置默认外观（使用自定义字体大小）
-                field.setDefaultAppearance(
-                        defaultAppearance.replaceFirst(
-                                FONT_SIZE_REGEX,
-                                String.join(" ", "/" + font.getName(), String.valueOf(fontSize), "Tf")
-                        )
-                );
-            }
-            // 添加字体
-            this.form.getDefaultResources().put(COSName.getPDFName(font.getName()), font);
-            // 嵌入字体
-            PdfHandler.getFontHandler().addToSubset(this.getDocument(), font, newValue);
-        }
-        try {
-            // 设置新值
-            field.setValue(newValue);
-        } catch (UnsupportedOperationException e) {
-            throw new UnsupportedOperationException("the font is not supported, please use an other font");
-        }
     }
 }

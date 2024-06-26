@@ -1,6 +1,7 @@
 package org.dromara.pdf.pdfbox.core.ext.analyzer;
 
 import lombok.SneakyThrows;
+import org.apache.pdfbox.text.PDFTextStripper;
 import org.dromara.pdf.pdfbox.core.base.Document;
 
 import java.io.BufferedOutputStream;
@@ -54,5 +55,30 @@ public class TextAnalyzer extends AbstractTextAnalyzer {
         }
         // 重置文本信息列表
         this.infoSet.addAll(textStripper.getInfoSet());
+    }
+
+    /**
+     * 获取字符数
+     *
+     * @param pageIndex 页面索引
+     * @return 返回字符数
+     */
+    @SneakyThrows
+    @Override
+    public int getCharacterCount(int pageIndex) {
+        // 定义正则
+        final String regex = "\r|\n|\t|\b|\\s";
+        // 定义替换文本
+        final String replacement = "";
+        // 定义页面索引
+        int index = pageIndex + 1;
+        // 创建文本剥离器
+        PDFTextStripper stripper = new PDFTextStripper();
+        // 设置起始页码
+        stripper.setStartPage(index);
+        // 设置结束页码
+        stripper.setEndPage(index);
+        // 返回字符数
+        return stripper.getText(this.getDocument()).replaceAll(regex, replacement).length();
     }
 }

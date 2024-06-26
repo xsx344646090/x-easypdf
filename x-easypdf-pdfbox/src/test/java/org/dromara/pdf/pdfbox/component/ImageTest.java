@@ -6,12 +6,14 @@ import org.dromara.pdf.pdfbox.core.base.MemoryPolicy;
 import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.component.Image;
 import org.dromara.pdf.pdfbox.core.component.Textarea;
+import org.dromara.pdf.pdfbox.core.enums.HorizontalAlignment;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.junit.Test;
 
 import java.awt.*;
 import java.io.File;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 
 /**
  * @author xsx
@@ -46,10 +48,10 @@ public class ImageTest extends BaseTest {
             image.setImage(Paths.get("E:\\PDF\\pdfbox\\image\\test.png").toFile());
             image.setWidth(100);
             image.setHeight(100);
-            // image.setAngle(45F);
-            image.setBeginX(0F);
-            image.setBeginY(0F);
-            // image.setHorizontalAlignment(HorizontalAlignment.CENTER);
+            image.setAngle(45F);
+            // image.setBeginX(0F);
+            // image.setBeginY(0F);
+            image.setHorizontalAlignment(HorizontalAlignment.CENTER);
             image.setIsBorder(true);
             image.render();
 
@@ -71,6 +73,8 @@ public class ImageTest extends BaseTest {
             Page page = new Page(document);
 
             Image image = new Image(page);
+            image.setWidth(100);
+            image.setHeight(100);
             image.setImage(Paths.get("E:\\PDF\\pdfbox\\image\\test.jpg").toFile());
             image.render();
 
@@ -92,6 +96,8 @@ public class ImageTest extends BaseTest {
             Page page = new Page(document);
 
             Image image = new Image(page);
+            image.setWidth(100);
+            image.setHeight(100);
             image.setImage(new File("E:\\PDF\\pdfbox\\image\\test.svg"));
             image.render();
 
@@ -129,7 +135,7 @@ public class ImageTest extends BaseTest {
      */
     @Test
     public void mixTest() {
-        this.test(() ->{
+        this.test(() -> {
             Document document = PdfHandler.getDocumentHandler().create();
             document.setMargin(50F);
 
@@ -143,7 +149,7 @@ public class ImageTest extends BaseTest {
             Image image = new Image(page);
             image.setWidth(300);
             image.setHeight(300);
-            image.setRelativeBeginY(-12F);
+            image.setRelativeBeginY(300F);
             image.setImage(Paths.get("E:\\PDF\\pdfbox\\image\\test.jpg").toFile());
             image.render();
 
@@ -167,21 +173,30 @@ public class ImageTest extends BaseTest {
             Document document = PdfHandler.getDocumentHandler().create(MemoryPolicy.setupTempFileOnly());
             document.setMargin(50F);
 
-            Page page = new Page(document);
-            int width = page.getWidth().intValue();
-            int height = page.getHeight().intValue();
+            java.util.List<Page> pages = new ArrayList<>(1000);
 
             this.test(() -> {
-                for (int i = 1; i < 3; i++) {
-                    Image image = new Image(document.getCurrentPage());
+                int index = 1;
+                for (int i = 1; i <= 1000; i++) {
+                    Page page = new Page(document);
+                    int width = page.getWithoutMarginWidth().intValue();
+                    int height = page.getWithoutMarginHeight().intValue();
+                    Image image = new Image(page);
                     image.setWidth(width);
                     image.setHeight(height);
                     image.setImage(Paths.get("E:\\PDF\\pdfbox\\document\\imager\\x-easypdf" + i + ".png").toFile());
                     image.render();
+                    pages.add(page);
+
+                    int percentage = Double.valueOf((i / 1000D) * 100).intValue();
+                    if (percentage == index) {
+                        log.info("完成: " + index + "%");
+                        index++;
+                    }
                 }
             }, "渲染完成");
 
-            document.appendPage(page);
+            document.appendPage(pages);
             document.save("E:\\PDF\\pdfbox\\image\\bigDataTest.pdf");
             document.close();
         }, "生成文件");

@@ -2,6 +2,7 @@ package org.dromara.pdf.pdfbox.core.ext.processor;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
 import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdfparser.PDFStreamParser;
@@ -51,6 +52,7 @@ import java.util.regex.Pattern;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
+@EqualsAndHashCode(callSuper = true)
 public class ReplaceProcessor extends AbstractProcessor {
 
     /**
@@ -369,6 +371,7 @@ public class ReplaceProcessor extends AbstractProcessor {
      * @param replaceList     替换列表
      * @param replaceIndexMap 替换索引字典
      */
+    @SuppressWarnings("all")
     @SneakyThrows
     protected boolean replaceTextToken(
             PDResources resources,

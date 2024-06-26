@@ -41,27 +41,27 @@ public class SplitLine extends AbstractComponent {
     /**
      * 颜色
      */
-    private Color lineColor;
+    protected Color lineColor;
     /**
      * 线帽样式
      */
-    private LineCapStyle lineCapStyle;
+    protected LineCapStyle lineCapStyle;
     /**
      * 线长
      */
-    private Float lineLength;
+    protected Float lineLength;
     /**
      * 线宽
      */
-    private Float lineWidth;
+    protected Float lineWidth;
     /**
      * 点线长度
      */
-    private Float dottedLength;
+    protected Float dottedLength;
     /**
      * 点线间隔
      */
-    private Float dottedSpacing;
+    protected Float dottedSpacing;
 
     /**
      * 有参构造
@@ -101,11 +101,6 @@ public class SplitLine extends AbstractComponent {
     public void virtualRender() {
         // 初始化
         this.init();
-        // 非自定义Y轴
-        if (!this.getIsCustomY()) {
-            // 检查分页
-            this.isPaging(this, this.getBeginY());
-        }
         // 重置光标
         this.getContext().getCursor().setX(this.getBeginX() + this.getLineLength() + this.getMarginRight());
         // 重置
@@ -120,11 +115,6 @@ public class SplitLine extends AbstractComponent {
     public void render() {
         // 初始化
         this.init();
-        // 非自定义Y轴
-        if (!this.getIsCustomY()) {
-            // 检查分页
-            this.isPaging(this, this.getBeginY());
-        }
         // 新建内容流
         PDPageContentStream stream = this.initContentStream();
         // 定义X轴起始坐标
@@ -186,6 +176,16 @@ public class SplitLine extends AbstractComponent {
         }
         // 初始化起始X轴坐标
         this.initBeginX(this.getLineLength());
+    }
+
+    /**
+     * 获取最小宽度
+     *
+     * @return 返回最小宽度
+     */
+    @Override
+    protected float getMinWidth() {
+        return this.getLineLength();
     }
 
     /**

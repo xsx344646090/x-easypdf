@@ -45,43 +45,43 @@ public class ImageWatermark extends AbstractBase implements Watermark {
     /**
      * 自定义起始X轴坐标
      */
-    private Float beginX;
+    protected Float beginX;
     /**
      * 自定义起始Y轴坐标
      */
-    private Float beginY;
+    protected Float beginY;
     /**
      * pdfbox图像对象
      */
-    private PDImageXObject image;
+    protected PDImageXObject image;
     /**
      * 宽度（显示）
      */
-    private Integer width;
+    protected Integer width;
     /**
      * 高度（显示）
      */
-    private Integer height;
+    protected Integer height;
     /**
      * 图像行数
      */
-    private Integer lines;
+    protected Integer lines;
     /**
      * 每行图像数
      */
-    private Integer countOfLine;
+    protected Integer countOfLine;
     /**
      * 行间距
      */
-    private Float leading;
+    protected Float leading;
     /**
      * 每行图像间距
      */
-    private Float spacingOfLine;
+    protected Float spacingOfLine;
     /**
      * 旋转角度
      */
-    private Float angle;
+    protected Float angle;
 
     /**
      * 有参构造

@@ -35,13 +35,13 @@ public class FormProcessorTest extends BaseTest {
     public void fillTextTest() {
         this.test(() -> {
             try (
-                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\form\\fillTextTest.pdf")
+                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\form\\form.pdf")
             ) {
                 FormProcessor processor = new FormProcessor(document);
 
                 Map<String, String> map = new HashMap<>(1);
-                map.put("test", null);
-                processor.fillText(map, PdfHandler.getFontHandler().getPDFont(document.getTarget(), "微软雅黑"));
+                map.put("test", "贵阳");
+                processor.fillText(map);
                 processor.clear();
 
                 document.save("E:\\PDF\\pdfbox\\form\\fillTextTest2.pdf");

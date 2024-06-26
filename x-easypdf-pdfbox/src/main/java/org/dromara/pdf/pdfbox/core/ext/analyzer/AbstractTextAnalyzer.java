@@ -56,6 +56,14 @@ public abstract class AbstractTextAnalyzer extends AbstractAnalyzer {
     public abstract void processText(int pageIndex);
 
     /**
+     * 获取字符数
+     *
+     * @param pageIndex 页面索引
+     * @return 返回字符数
+     */
+    public abstract int getCharacterCount(int pageIndex);
+
+    /**
      * 文本剥离器
      */
     protected static class DefaultTextStripper extends PDFTextStripper {
@@ -80,11 +88,23 @@ public abstract class AbstractTextAnalyzer extends AbstractAnalyzer {
          * @param log       日志
          */
         public DefaultTextStripper(Integer pageIndex, Log log) {
+            this(pageIndex, " ", log);
+        }
+
+        /**
+         * 有参构造
+         *
+         * @param pageIndex     页面索引
+         * @param wordSeparator 单词分隔符
+         * @param log           日志
+         */
+        public DefaultTextStripper(Integer pageIndex, String wordSeparator, Log log) {
             this.log = log;
             this.pageIndex = pageIndex;
             this.setSortByPosition(true);
             this.setStartPage(this.pageIndex + 1);
             this.setEndPage(this.pageIndex + 1);
+            this.setWordSeparator(wordSeparator);
         }
 
         /**

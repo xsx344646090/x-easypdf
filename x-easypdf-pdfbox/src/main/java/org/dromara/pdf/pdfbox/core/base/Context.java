@@ -35,63 +35,71 @@ public class Context {
     /**
      * 文档
      */
-    private Document document;
+    protected Document document;
     /**
      * 当前页面
      */
-    private Page page;
+    protected Page page;
     /**
      * 页面数量
      */
-    private Integer pageCount;
+    protected Integer pageCount;
     /**
      * 执行中的组件类型
      */
-    private ComponentType executingComponentType;
+    protected ComponentType executingComponentType;
     /**
      * 页眉
      */
-    private PageHeader pageHeader;
+    protected PageHeader pageHeader;
     /**
      * 页脚
      */
-    private PageFooter pageFooter;
+    protected PageFooter pageFooter;
     /**
      * 光标
      */
-    private Cursor cursor;
+    protected Cursor cursor;
+    /**
+     * 分页Y轴偏移量
+     */
+    protected Float offsetY;
     /**
      * 是否已经分页
      */
-    private Boolean isAlreadyPaging;
+    protected Boolean isAlreadyPaging;
     /**
      * 换行起始坐标
      */
-    private Float wrapBeginX;
+    protected Float wrapBeginX;
     /**
      * 换行宽度
      */
-    private Float wrapWidth;
+    protected Float wrapWidth;
+    /**
+     * 高度
+     */
+    protected Float height;
     /**
      * 是否第一个组件
      */
-    private Boolean isFirstComponent;
+    protected Boolean isFirstComponent;
     /**
      * 目录列表
      */
-    private List<CatalogInfo> catalogs;
+    protected List<CatalogInfo> catalogs;
     /**
      * 边框信息
      */
-    private BorderInfo borderInfo;
+    protected BorderInfo borderInfo;
     /**
      * 自定义信息
      */
-    private Map<String, Object> customInfo;
+    protected Map<String, Object> customInfo;
     /**
      * 字体字典
      */
-    private Map<String, PDFont> fontMap;
+    protected Map<String, PDFont> fontMap;
 
     /**
      * 有参构造
@@ -101,6 +109,7 @@ public class Context {
     public Context(Document document) {
         this.document = document;
         this.wrapBeginX = 0F;
+        this.offsetY = 0F;
         this.cursor = new Cursor();
         this.isFirstComponent = Boolean.TRUE;
         this.catalogs = new ArrayList<>(16);
@@ -137,12 +146,12 @@ public class Context {
     }
 
     /**
-     * 是否容器换行
+     * 是否相同组件
      *
      * @return 返回布尔值，是为true，否为false
      */
-    public boolean isContainerWrap() {
-        return this.borderInfo != null && this.borderInfo.getIsFirstComponent();
+    public boolean isEqualsComponent(ComponentType type) {
+        return this.executingComponentType == type;
     }
 
     /**
@@ -182,6 +191,15 @@ public class Context {
     }
 
     /**
+     * 获取最大Y轴起始坐标
+     *
+     * @return 返回最大Y轴起始坐标
+     */
+    public float getMaxBeginY() {
+        return this.page.getHeight() - this.page.getMarginTop() - this.getPageHeaderHeight();
+    }
+
+    /**
      * 添加字体缓存
      *
      * @param fontNames 字体名称
@@ -209,12 +227,14 @@ public class Context {
             this.pageCount = Optional.ofNullable(this.pageCount).orElse(0) + 1;
             // 重置页面
             this.page = page;
-            // 重置换行宽度
-            this.resetWrapWidth(this.wrapWidth);
-            // 重置换行起始坐标
-            this.resetWrapBeginX(this.page.getMarginLeft());
+            // 重置高度
+            this.resetHeight(this.height);
             // 重置光标
             this.resetCursor();
+            // 重置换行起始坐标
+            this.resetWrapBeginX(this.page.getMarginLeft());
+            // 重置换行宽度
+            this.resetWrapWidth(this.wrapWidth);
         }
     }
 
@@ -251,6 +271,22 @@ public class Context {
     }
 
     /**
+     * 重置高度
+     *
+     * @param height 高度
+     */
+    public void resetHeight(Float height) {
+        // 换行高度为空
+        if (Objects.isNull(height)) {
+            // 重置为页面高度
+            this.height = this.page.getWithoutMarginHeight() - this.getPageHeaderHeight() - this.getPageFooterHeight();
+        } else {
+            // 重置为指定高度
+            this.height = height;
+        }
+    }
+
+    /**
      * 重置换行起始坐标
      *
      * @param wrapBeginX 换行宽度
@@ -263,6 +299,22 @@ public class Context {
         } else {
             // 重置为指定坐标
             this.wrapBeginX = wrapBeginX;
+        }
+    }
+
+    /**
+     * 重置Y轴偏移量
+     *
+     * @param offsetY 偏移量
+     */
+    public void resetOffsetY(Float offsetY) {
+        // 偏移量为空
+        if (Objects.isNull(offsetY)) {
+            // 重置为0
+            this.offsetY = 0F;
+        } else {
+            // 重置为指定偏移量
+            this.offsetY = offsetY;
         }
     }
 
