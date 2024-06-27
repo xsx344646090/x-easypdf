@@ -18,6 +18,7 @@ import org.dromara.pdf.pdfbox.core.base.config.FontConfiguration;
 import org.dromara.pdf.pdfbox.core.enums.ComponentType;
 import org.dromara.pdf.pdfbox.core.enums.FontStyle;
 import org.dromara.pdf.pdfbox.core.enums.HighlightMode;
+import org.dromara.pdf.pdfbox.core.enums.VerticalAlignment;
 import org.dromara.pdf.pdfbox.core.info.CatalogInfo;
 import org.dromara.pdf.pdfbox.support.Constants;
 import org.dromara.pdf.pdfbox.util.BorderUtil;
@@ -493,11 +494,11 @@ public class Textarea extends AbstractComponent {
         }
         // 检查换行
         this.checkWrap(this.getFontSize());
-        // // 检查分页
-        // if (this.checkPaging()) {
-        //     this.setIsWrap(true);
-        //     this.wrap(this.getFontSize());
-        // }
+        // 检查分页
+        if (this.getContext().isEqualsComponent(this.getType()) && this.checkPaging()) {
+            this.setIsWrap(true);
+            this.wrap(this.getFontSize());
+        }
         // 初始化文本
         this.initText();
         // 初始化起始Y轴坐标
@@ -733,8 +734,7 @@ public class Textarea extends AbstractComponent {
             position.setY(this.getBeginY() - this.getContext().getOffsetY());
             // 结束分页
             if (position.getY() > 0) {
-                // 重置Y轴起始坐标
-                position.setY(Math.min(position.getY(), this.getContext().getMaxBeginY() - this.getFontSize()));
+                this.initAfterPagingPosition(position);
                 // 关闭内容流
                 contentStream.close();
                 // 重置内容流
@@ -771,6 +771,19 @@ public class Textarea extends AbstractComponent {
                 // 继续检查分页
                 this.virtualCheckPaging(position);
             }
+        }
+    }
+
+    /**
+     * 初始化分页后坐标
+     *
+     * @param position 坐标
+     */
+    protected void initAfterPagingPosition(Position position) {
+        if (this.getVerticalAlignment() == VerticalAlignment.BOTTOM) {
+            position.setY(position.getY() + this.getFontSize());
+        } else {
+            position.setY(Math.min(position.getY(), this.getContext().getMaxBeginY() - this.getFontSize()));
         }
     }
 

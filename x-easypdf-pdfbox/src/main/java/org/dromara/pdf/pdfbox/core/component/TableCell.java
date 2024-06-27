@@ -101,6 +101,35 @@ public class TableCell extends BorderData {
     }
 
     /**
+     * 添加组件
+     *
+     * @param components 组件
+     */
+    public void addComponents(List<Component> components) {
+        if (Objects.nonNull(components)) {
+            if (Objects.isNull(this.components)) {
+                this.components = new ArrayList<>(components);
+            } else {
+                this.components.addAll(components);
+            }
+        }
+    }
+
+    /**
+     * 添加组件
+     *
+     * @param components 组件
+     */
+    public void addComponents(Component... components) {
+        if (Objects.nonNull(components)) {
+            if (Objects.isNull(this.components)) {
+                this.components = new ArrayList<>(components.length);
+            }
+            Collections.addAll(this.components, components);
+        }
+    }
+
+    /**
      * 获取页面
      *
      * @return 返回页面
@@ -185,7 +214,7 @@ public class TableCell extends BorderData {
         try {
             this.width = this.row.getTable().getCellWidths().get(this.index);
         } catch (Exception e) {
-            throw new IllegalArgumentException("unknown cell width: " + this.index);
+            throw new IllegalArgumentException("the index['" + this.index + "'] of cell width is undefined");
         }
         this.beginX = beginX;
         this.beginY = beginY;

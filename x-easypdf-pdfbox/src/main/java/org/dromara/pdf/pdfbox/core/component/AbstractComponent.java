@@ -641,26 +641,37 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
                 // nothing to do
             }
         }
-        // 获取重置Y轴坐标
-        float restY = this.getBeginY() - offset;
         // 设置起始Y轴坐标
-        if (restY >= this.getBottom()) {
-            this.setBeginY(restY, false);
-        }
+        this.setBeginY(this.getBeginY() - offset, this.getIsCustomPosition());
+    }
+
+    /**
+     * 初始化起始Y轴坐标
+     *
+     * @param height 高度
+     */
+    protected void initBeginYForPaging(float height) {
+        this.initBeginY(height);
+        float offsetY = this.getBeginY() + (height - this.getContext().getOffsetY());
+        float maxBeginY = this.getContext().getMaxBeginY() - height;
+        this.setBeginY(Math.min(maxBeginY, offsetY), this.getIsCustomPosition());
     }
 
     /**
      * 检查换行
      */
     protected void checkWrap(float wrapHeight) {
-        if (!Optional.ofNullable(this.getIsCustomPosition()).orElse(Boolean.FALSE)) {
+        if (Objects.isNull(this.getIsCustomPosition())) {
+            this.setIsCustomPosition(Boolean.FALSE);
+        }
+        if (!this.getIsCustomPosition()) {
             this.wrap(wrapHeight);
         } else {
             if (Objects.isNull(this.getBeginX())) {
-                this.setBeginX(this.getContext().getCursor().getX() + this.getMarginLeft(), false);
+                this.setBeginX(this.getContext().getCursor().getX() + this.getMarginLeft(), this.getIsCustomPosition());
             }
             if (Objects.isNull(this.getBeginY())) {
-                this.setBeginY(this.getContext().getCursor().getY(), false);
+                this.setBeginY(this.getContext().getCursor().getY(), this.getIsCustomPosition());
             }
         }
     }
@@ -671,16 +682,16 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
      * @param wrapHeight 换行高度
      */
     protected void wrap(float wrapHeight) {
-        this.setBeginX(this.getContext().getCursor().getX() + this.getMarginLeft(), false);
+        this.setBeginX(this.getContext().getCursor().getX() + this.getMarginLeft(), this.getIsCustomPosition());
         if (this.isWrap()) {
-            this.getContext().getCursor().reset(
+            this.getContext().resetCursor(
                     Optional.ofNullable(this.getContext().getWrapBeginX()).orElse(this.getPage().getMarginLeft()) + this.getMarginLeft(),
                     this.getContext().getCursor().getY() - wrapHeight - this.getMarginTop()
             );
-            this.setBeginX(this.getContext().getCursor().getX() + this.getMarginLeft(), false);
+            this.setBeginX(this.getContext().getCursor().getX() + this.getMarginLeft(), this.getIsCustomPosition());
             this.setIsWrap(false);
         }
-        this.setBeginY(this.getContext().getCursor().getY(), false);
+        this.setBeginY(this.getContext().getCursor().getY(), this.getIsCustomPosition());
     }
 
     /**
@@ -806,8 +817,6 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
         Context context = this.getContext();
         // 重置换行起始坐标
         context.resetWrapBeginX(null);
-        // 重置Y轴偏移量
-        // context.resetOffsetY(null);
         // 重置当前执行组件类型
         context.resetExecutingComponentType(type);
         // 重置是否第一个组件
@@ -822,6 +831,8 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     protected void resetXY() {
         this.beginX = null;
         this.beginY = null;
+        this.relativeBeginX = 0F;
+        this.relativeBeginY = 0F;
     }
 
     /**
@@ -830,9 +841,9 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
      * @param x                起始X轴坐标
      * @param isCustomPosition 是否自定义坐标
      */
-    protected void setBeginX(Float x, boolean isCustomPosition) {
+    protected void setBeginX(Float x, Boolean isCustomPosition) {
         this.beginX = x;
-        this.isCustomPosition = isCustomPosition;
+        this.isCustomPosition = Optional.ofNullable(isCustomPosition).orElse(Boolean.FALSE);
     }
 
     /**
@@ -841,8 +852,8 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
      * @param y                起始X轴坐标
      * @param isCustomPosition 是否自定义坐标
      */
-    protected void setBeginY(Float y, boolean isCustomPosition) {
+    protected void setBeginY(Float y, Boolean isCustomPosition) {
         this.beginY = y;
-        this.isCustomPosition = isCustomPosition;
+        this.isCustomPosition = Optional.ofNullable(isCustomPosition).orElse(Boolean.FALSE);
     }
 }
