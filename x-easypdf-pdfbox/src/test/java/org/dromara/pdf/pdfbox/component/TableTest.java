@@ -5,6 +5,7 @@ import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.base.PageHeader;
 import org.dromara.pdf.pdfbox.core.component.Component;
+import org.dromara.pdf.pdfbox.core.component.Image;
 import org.dromara.pdf.pdfbox.core.component.*;
 import org.dromara.pdf.pdfbox.core.enums.FontStyle;
 import org.dromara.pdf.pdfbox.core.enums.HorizontalAlignment;
@@ -14,6 +15,7 @@ import org.junit.Test;
 
 import java.awt.*;
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -281,10 +283,11 @@ public class TableTest extends BaseTest {
             Textarea textarea1 = new Textarea(table.getPage());
             textarea1.setText("第16行");
             textarea1.setHorizontalAlignment(HorizontalAlignment.CENTER);
-            textarea1.setVerticalAlignment(VerticalAlignment.CENTER);
+            textarea1.setVerticalAlignment(VerticalAlignment.BOTTOM);
             Textarea textarea2 = new Textarea(table.getPage());
             textarea2.setText("合并内容1");
             textarea2.setHorizontalAlignment(HorizontalAlignment.CENTER);
+            textarea2.setVerticalAlignment(VerticalAlignment.BOTTOM);
             TableCell cell1 = new TableCell();
             cell1.setComponents(textarea1);
             cell1.setRowSpan(rowCount);
@@ -299,6 +302,7 @@ public class TableTest extends BaseTest {
                 textarea = new Textarea(table.getPage());
                 textarea.setText("合并内容" + (i + 1));
                 textarea.setHorizontalAlignment(HorizontalAlignment.CENTER);
+                textarea.setVerticalAlignment(VerticalAlignment.BOTTOM);
                 TableCell cell = new TableCell();
                 cell.setColspan(2);
                 cell.setComponents(textarea);
@@ -419,9 +423,9 @@ public class TableTest extends BaseTest {
             Page page = new Page(document);
 
             float width = page.getWithoutMarginWidth() / 3;
-            float height = 300;
+            float height = 250;
             Table table = new Table(document.getCurrentPage());
-            table.setCellWidths(150F, 150F, 150F);
+            table.setCellWidths(width, width, width);
             table.setIsBorder(true);
             table.setIsPagingBorder(true);
             table.setBorderColor(Color.GRAY);
@@ -460,13 +464,13 @@ public class TableTest extends BaseTest {
             document.setFontSize(12F);
 
             Page page = new Page(document);
-            // page.setMargin(20);
+            page.setMargin(20);
 
             float width = page.getWithoutMarginWidth() / 3;
-            float height = 50F;
+            float height = 150F;
 
             Table table = new Table(document.getCurrentPage());
-            table.setCellWidths(100F, 100F, 100F);
+            table.setCellWidths(width, width, width);
             table.setIsBorder(true);
             table.setIsPagingBorder(false);
 
@@ -474,7 +478,7 @@ public class TableTest extends BaseTest {
                 TableRow row = new TableRow(20F);
                 for (int j = 1; j < 4; j++) {
                     Textarea textarea = new Textarea(table.getPage());
-                    textarea.setText("标题"+i);
+                    textarea.setText("标题" + i);
                     textarea.setVerticalAlignment(VerticalAlignment.CENTER);
                     TableCell cell = new TableCell();
                     cell.setComponents(textarea);
@@ -486,24 +490,51 @@ public class TableTest extends BaseTest {
                 TableRow row = new TableRow(height);
                 for (int j = 1; j < 4; j++) {
                     Textarea textarea = new Textarea(table.getPage());
-                    textarea.setText("内容内容"+i);
-                    if (i==1) {
+                    textarea.setText("内容内容" + i);
+                    if (i == 1) {
                         textarea.setHorizontalAlignment(HorizontalAlignment.LEFT);
-                    }else if (i==2) {
-                        textarea.setHorizontalAlignment(HorizontalAlignment.CENTER);
-                    }else {
-                        textarea.setHorizontalAlignment(HorizontalAlignment.RIGHT);
-                    }
-                    if (j==1) {
                         textarea.setVerticalAlignment(VerticalAlignment.TOP);
-                    }else if (j==2) {
+                    } else if (i == 2) {
+                        textarea.setHorizontalAlignment(HorizontalAlignment.CENTER);
                         textarea.setVerticalAlignment(VerticalAlignment.CENTER);
-                    }else {
+                    } else {
+                        textarea.setHorizontalAlignment(HorizontalAlignment.RIGHT);
                         textarea.setVerticalAlignment(VerticalAlignment.BOTTOM);
                     }
-
                     TableCell cell = new TableCell();
                     cell.setComponents(textarea);
+                    row.addCells(cell);
+                }
+                table.addRows(row);
+            }
+            for (int i = 1; i < 4; i++) {
+                TableRow row = new TableRow(height);
+                for (int j = 1; j < 4; j++) {
+                    Image image = new Image(table.getPage());
+                    image.setWidth(100);
+                    image.setHeight(100);
+                    image.setIsBorder(true);
+                    if (i == 1) {
+                        image.setHorizontalAlignment(HorizontalAlignment.LEFT);
+                        image.setVerticalAlignment(VerticalAlignment.TOP);
+                        image.setImage(new File("E:\\PDF\\pdfbox\\image\\test.svg"));
+                    } else if (i == 2) {
+                        image.setHorizontalAlignment(HorizontalAlignment.CENTER);
+                        image.setVerticalAlignment(VerticalAlignment.CENTER);
+                        image.setImage(Paths.get("E:\\PDF\\pdfbox\\image\\test.jpg").toFile());
+                    } else {
+                        image.setHorizontalAlignment(HorizontalAlignment.RIGHT);
+                        image.setImage(Paths.get("E:\\PDF\\pdfbox\\image\\test.png").toFile());
+                        if (j == 1) {
+                            image.setVerticalAlignment(VerticalAlignment.TOP);
+                        } else if (j == 2) {
+                            image.setVerticalAlignment(VerticalAlignment.CENTER);
+                        } else {
+                            image.setVerticalAlignment(VerticalAlignment.BOTTOM);
+                        }
+                    }
+                    TableCell cell = new TableCell();
+                    cell.setComponents(image);
                     row.addCells(cell);
                 }
                 table.addRows(row);

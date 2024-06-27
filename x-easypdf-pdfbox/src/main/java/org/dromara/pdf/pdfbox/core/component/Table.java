@@ -7,6 +7,7 @@ import org.dromara.pdf.pdfbox.core.base.*;
 import org.dromara.pdf.pdfbox.core.base.config.FontConfiguration;
 import org.dromara.pdf.pdfbox.core.enums.ComponentType;
 import org.dromara.pdf.pdfbox.util.BorderUtil;
+import org.dromara.pdf.pdfbox.util.CommonUtil;
 
 import java.util.*;
 
@@ -154,9 +155,7 @@ public class Table extends AbstractComponent {
      */
     public void setCellWidths(List<Float> widths) {
         if (Objects.nonNull(widths)) {
-            for (Float width : widths) {
-                this.setCellWidths(width);
-            }
+            this.setCellWidths(CommonUtil.toFloatArray(widths));
         } else {
             this.cellWidths = null;
         }
@@ -233,7 +232,6 @@ public class Table extends AbstractComponent {
                 }
             }
         }
-        // 重置
         this.reset(beginX, beginY);
     }
 
@@ -269,6 +267,15 @@ public class Table extends AbstractComponent {
             }
         }
         this.reset(beginX, beginY);
+    }
+
+    /**
+     * 获取第一行行高
+     *
+     * @return 返回高度
+     */
+    protected float getFirstRowHeight() {
+        return Optional.ofNullable(this.rows).map(rows -> rows.get(0).getHeight()).orElse(0F);
     }
 
     /**
@@ -315,6 +322,10 @@ public class Table extends AbstractComponent {
         this.initBeginX(this.getWidth());
         // 初始化起始Y轴坐标
         this.initBeginY(this.getHeight());
+        // 重置Y轴相对坐标
+        if (!this.isCustomPosition && this.relativeBeginY == 0F) {
+            this.relativeBeginY = this.getFirstRowHeight();
+        }
     }
 
     /**
@@ -335,15 +346,6 @@ public class Table extends AbstractComponent {
     @Override
     protected boolean isNeedWrap() {
         return this.getContext().getWrapWidth() - this.getBeginX() < this.getMinWidth();
-    }
-
-    /**
-     * 获取第一行行高
-     *
-     * @return 返回高度
-     */
-    protected float getFirstRowHeight() {
-        return Optional.ofNullable(this.rows).map(rows -> rows.get(0).getHeight()).orElse(0F);
     }
 
     /**

@@ -204,16 +204,17 @@ public class Image extends AbstractComponent {
         // 初始化宽度与高度
         this.initWidthAndHeight();
         // 检查换行
-        this.checkWrap(this.height);
+        this.checkWrap(this.getHeight());
         // 检查分页
         if (this.checkPaging()) {
             this.setIsWrap(true);
-            this.wrap(this.height);
+            this.wrap(this.getHeight());
+            this.initBeginYForPaging(this.height);
+        } else {
+            this.initBeginY(height);
         }
         // 初始化起始X轴坐标
         this.initBeginX(this.width);
-        // 初始化起始Y轴坐标
-        this.initBeginY(this.height);
         // 初始化旋转角度
         if (Objects.isNull(this.angle)) {
             this.angle = 0F;

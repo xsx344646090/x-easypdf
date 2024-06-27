@@ -1,5 +1,0 @@
-
-User-agent:*
-Disallow:
-
-Sitemap: http://www.x-easypdf.cn/sitemap.xml

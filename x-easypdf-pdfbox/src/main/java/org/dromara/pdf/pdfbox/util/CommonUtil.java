@@ -6,6 +6,8 @@ import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 import org.dromara.pdf.pdfbox.core.enums.FontStyle;
 
 import java.awt.*;
+import java.util.List;
+
 
 /**
  * 公共工具
@@ -71,5 +73,39 @@ public class CommonUtil {
             // 设置透明度
             state.setNonStrokingAlphaConstant(fontAlpha);
         }
+    }
+
+    /**
+     * 转基本整型数组
+     *
+     * @param list 列表
+     * @return 返回数组
+     */
+    public static int[] toIntArray(List<Integer> list) {
+        return list.stream().mapToInt(Integer::intValue).toArray();
+    }
+
+    /**
+     * 转基本浮点型数组
+     *
+     * @param list 列表
+     * @return 返回数组
+     */
+    public static float[] toFloatArray(List<Float> list) {
+        float[] array = new float[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            array[i] = list.get(i);
+        }
+        return array;
+    }
+
+    /**
+     * 转基本双精度浮点型数组
+     *
+     * @param list 列表
+     * @return 返回数组
+     */
+    public static double[] toDoubleArray(List<Double> list) {
+        return list.stream().mapToDouble(Double::doubleValue).toArray();
     }
 }
