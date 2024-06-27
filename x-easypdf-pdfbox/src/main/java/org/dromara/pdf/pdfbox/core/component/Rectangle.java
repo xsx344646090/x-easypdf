@@ -4,9 +4,12 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.util.Matrix;
+import org.dromara.pdf.pdfbox.core.base.BorderData;
 import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.enums.ComponentType;
+import org.dromara.pdf.pdfbox.util.BorderUtil;
 
 import java.awt.*;
 import java.util.Objects;
@@ -45,10 +48,6 @@ public class Rectangle extends AbstractComponent {
      * 旋转角度
      */
     protected Float angle;
-    /**
-     * 边框颜色
-     */
-    protected Color borderColor;
     /**
      * 背景颜色
      */
@@ -104,23 +103,28 @@ public class Rectangle extends AbstractComponent {
     public void virtualRender() {
         // 初始化
         this.init();
-        // 重置光标
-        this.getContext().getCursor().reset(
-                this.getBeginX() + this.getWidth() + this.getMarginRight(),
-                this.getBeginY() - this.getHeight() - this.getMarginBottom()
-        );
         // 重置
-        super.reset(this.getType());
+        this.reset();
     }
 
     /**
      * 渲染
      */
-    @SneakyThrows
     @Override
     public void render() {
         // 初始化
         this.init();
+        // 写入矩形
+        this.writeRectangle();
+        // 重置
+        this.reset();
+    }
+
+    /**
+     * 写入矩形
+     */
+    @SneakyThrows
+    protected void writeRectangle() {
         // 定义X轴偏移量
         float offsetX = 0.5F * this.getWidth();
         // 定义Y轴偏移量
@@ -146,16 +150,12 @@ public class Rectangle extends AbstractComponent {
         contentStream.transform(Matrix.getRotateInstance(Math.toRadians(this.getAngle()), 0, 0));
         // 移动到左下角
         contentStream.transform(Matrix.getTranslateInstance(-offsetX, -offsetY));
-        // 添加矩形（边框矩形）
-        contentStream.addRect(-this.getBorderConfiguration().getBorderWidth() / 2, this.getBorderConfiguration().getBorderWidth() / 2, this.getWidth(), this.getHeight());
-        // 设置矩形颜色（边框颜色）
-        contentStream.setNonStrokingColor(this.getBorderColor());
-        // 填充矩形（边框矩形）
-        contentStream.fill();
+        // 添加边框
+        BorderUtil.drawNormalBorder(contentStream, this.getRectangle(), this.getBorderData());
         // 添加背景
         if (Objects.nonNull(this.getBackgroundColor())) {
             // 添加矩形（背景矩形）
-            contentStream.addRect(this.getBorderConfiguration().getBorderWidth() / 2, this.getBorderConfiguration().getBorderWidth() * 1.5F, this.getWidth() - this.getBorderConfiguration().getBorderWidth() * 2, this.getHeight() - this.getBorderConfiguration().getBorderWidth() * 2);
+            contentStream.addRect(this.getBorderConfiguration().getBorderWidth() / 2, this.getBorderConfiguration().getBorderWidth() / 2, this.getWidth() - this.getBorderConfiguration().getBorderWidth(), this.getHeight() - this.getBorderConfiguration().getBorderWidth());
             // 设置矩形颜色（背景颜色）
             contentStream.setNonStrokingColor(this.getBackgroundColor());
             // 填充矩形（背景矩形）
@@ -165,13 +165,6 @@ public class Rectangle extends AbstractComponent {
         contentStream.restoreGraphicsState();
         // 关闭内容流
         contentStream.close();
-        // 重置光标
-        this.getContext().getCursor().reset(
-                this.getBeginX() + this.getWidth() + this.getMarginRight(),
-                this.getBeginY() + this.getHeight() - this.getMarginBottom()
-        );
-        // 重置
-        super.reset(this.getType());
     }
 
     /**
@@ -179,73 +172,28 @@ public class Rectangle extends AbstractComponent {
      */
     @Override
     protected void init() {
+        // 校验参数
+        Objects.requireNonNull(this.width, "the width can not be null");
+        Objects.requireNonNull(this.height, "the height can not be null");
         // 初始化
         super.init();
-        // 初始化宽度与高度
-        // this.initWidthAndHeight();
+        // 设置边框
+        this.setIsBorder(true);
+        // 检查换行
+        this.checkWrap(this.getHeight());
+        // 检查分页
+        if (this.checkPaging()) {
+            this.setIsWrap(true);
+            this.wrap(this.getHeight());
+            this.initBeginYForPaging(this.height);
+        } else {
+            this.initBeginY(height);
+        }
         // 初始化起始X轴坐标
-        this.initBeginX(this.getWidth());
+        this.initBeginX(this.width);
         // 初始化旋转角度
         if (Objects.isNull(this.angle)) {
             this.angle = 0F;
-        }
-        // 初始化边框颜色
-        if (Objects.isNull(this.borderColor)) {
-            this.borderColor = Color.BLACK;
-        }
-        // 检查换行
-        this.checkWrap();
-    }
-
-    /**
-     * 检查换行
-     */
-    protected void checkWrap() {
-        // 初始化X轴坐标
-        if (Objects.isNull(this.getBeginX())) {
-            this.setBeginX(this.getContext().getCursor().getX() + this.getMarginLeft());
-        }
-        // 初始化换行
-        if (this.isWrap()) {
-            this.getContext().getCursor().reset(
-                    this.getContext().getWrapBeginX(),
-                    this.getContext().getCursor().getY() - this.getHeight()
-            );
-            this.setBeginX(this.getContext().getCursor().getX() + this.getMarginLeft());
-        }
-        // 初始化Y轴坐标
-        if (Objects.isNull(this.getBeginY())) {
-            this.setBeginY(this.getContext().getCursor().getY() - this.getMarginTop());
-        }
-    }
-
-    /**
-     * 初始化宽度与高度
-     */
-    private void initWidthAndHeight() {
-        // 获取最大宽度
-        float maxWidth = this.getContext().getWrapWidth() + this.getPage().getMarginLeft() - this.getBeginX() - this.getMarginRight();
-        // 获取最大高度
-        float maxHeight = this.getBeginY() - this.getMarginBottom() - this.getContext().getPage().getMarginBottom();
-        // 初始化宽度
-        if (Objects.isNull(this.width)) {
-            // 初始化宽度
-            this.width = maxWidth;
-        }
-        // 图片宽度大于最大宽度，则重置
-        if (this.width > maxWidth) {
-            // 重置图片宽度
-            this.width = maxWidth;
-        }
-        // 初始化高度
-        if (Objects.isNull(this.height)) {
-            // 初始化高度
-            this.height = maxHeight;
-        }
-        // 图片宽度大于最大高度，则重置
-        if (this.height > maxHeight) {
-            // 重置图片高度
-            this.height = maxHeight;
         }
     }
 
@@ -257,5 +205,44 @@ public class Rectangle extends AbstractComponent {
     @Override
     protected float getMinWidth() {
         return this.getWidth();
+    }
+
+    /**
+     * 获取行尺寸
+     *
+     * @return 返回尺寸
+     */
+    protected PDRectangle getRectangle() {
+        // 创建尺寸
+        PDRectangle rectangle = new PDRectangle();
+        // 设置起始X轴坐标
+        rectangle.setLowerLeftX(0F);
+        // 设置结束X轴坐标
+        rectangle.setUpperRightX(this.getWidth());
+        // 设置起始Y轴坐标
+        rectangle.setLowerLeftY(0F);
+        // 设置结束Y轴坐标
+        rectangle.setUpperRightY(this.getHeight());
+        // 返回尺寸
+        return rectangle;
+    }
+
+    /**
+     * 获取边框数据
+     *
+     * @return 返回边框数据
+     */
+    protected BorderData getBorderData() {
+        return new BorderData(this, this.getBorderConfiguration());
+    }
+
+    /**
+     * 重置
+     */
+    protected void reset() {
+        // 重置光标X轴
+        this.getContext().getCursor().setX(this.getBeginX() + this.getWidth() + this.getMarginRight());
+        // 重置
+        super.reset(this.getType());
     }
 }
