@@ -4,6 +4,8 @@ import org.dromara.pdf.pdfbox.base.BaseTest;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.component.Rectangle;
+import org.dromara.pdf.pdfbox.core.enums.HorizontalAlignment;
+import org.dromara.pdf.pdfbox.core.enums.VerticalAlignment;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.junit.Test;
 
@@ -45,8 +47,8 @@ public class RectangleTest extends BaseTest {
                     rectangle.setBackgroundColor(Color.LIGHT_GRAY);
                     rectangle.setWidth(200F);
                     rectangle.setHeight(200F);
-                    rectangle.setBeginX(100F);
-                    rectangle.setBeginY(300F);
+                    rectangle.setHorizontalAlignment(HorizontalAlignment.CENTER);
+                    rectangle.setVerticalAlignment(VerticalAlignment.CENTER);
                     rectangle.render();
 
                     document.appendPage(page);

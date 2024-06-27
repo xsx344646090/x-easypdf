@@ -65,7 +65,7 @@ public class BorderUtil {
         // 设置线宽
         stream.setLineWidth(data.getBorderWidth());
         // 设置线帽样式
-        stream.setLineCapStyle(0);
+        stream.setLineCapStyle(2);
         // 连线
         line(stream, rectangle, data);
     }
