@@ -5,6 +5,7 @@ import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.ext.analyzer.DocumentAnalyzer;
 import org.dromara.pdf.pdfbox.core.ext.extractor.DocumentExtractor;
 import org.dromara.pdf.pdfbox.core.ext.processor.DocumentProcessor;
+import org.dromara.pdf.pdfbox.support.Constants;
 
 /**
  * pdf助手
@@ -72,5 +73,12 @@ public class PdfHandler {
      */
     public static DocumentExtractor getDocumentExtractor(Document document) {
         return new DocumentExtractor(document);
+    }
+    
+    /**
+     * 关闭系统字体扫描
+     */
+    public static void disableScanSystemFonts() {
+        System.setProperty(Constants.FONT_SCAN_SWITCH, "false");
     }
 }

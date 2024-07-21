@@ -50,7 +50,7 @@ import java.util.*;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class Textarea extends AbstractComponent {
-
+    
     /**
      * 字体配置
      */
@@ -111,7 +111,7 @@ public class Textarea extends AbstractComponent {
      * 外部目标
      */
     protected OuterDest outerDest;
-
+    
     /**
      * 有参构造
      *
@@ -121,17 +121,17 @@ public class Textarea extends AbstractComponent {
         super(page);
         this.fontConfiguration = new FontConfiguration(page.getFontConfiguration());
     }
-
+    
     /**
      * 设置字体名称
      *
      * @param fontName 字体名称
      */
     public void setFontName(String fontName) {
-        this.fontConfiguration.setFontName(fontName);
         this.getContext().addFontCache(fontName);
+        this.fontConfiguration.setFontName(fontName);
     }
-
+    
     /**
      * 设置特殊字体名称
      *
@@ -141,7 +141,7 @@ public class Textarea extends AbstractComponent {
         this.getContext().addFontCache(fontNames);
         Collections.addAll(this.fontConfiguration.getSpecialFontNames(), fontNames);
     }
-
+    
     /**
      * 设置字体大小
      *
@@ -150,7 +150,7 @@ public class Textarea extends AbstractComponent {
     public void setFontSize(float size) {
         this.fontConfiguration.setFontSize(size);
     }
-
+    
     /**
      * 设置字体颜色
      *
@@ -159,7 +159,7 @@ public class Textarea extends AbstractComponent {
     public void setFontColor(Color color) {
         this.fontConfiguration.setFontColor(color);
     }
-
+    
     /**
      * 设置字体透明度
      *
@@ -168,7 +168,7 @@ public class Textarea extends AbstractComponent {
     public void setFontAlpha(float alpha) {
         this.fontConfiguration.setFontAlpha(alpha);
     }
-
+    
     /**
      * 设置字体样式
      *
@@ -176,8 +176,11 @@ public class Textarea extends AbstractComponent {
      */
     public void setFontStyle(FontStyle style) {
         this.fontConfiguration.setFontStyle(style);
+        if (style.isItalic() && this.getFontSlope() == 0F) {
+            this.setFontSlope(Constants.DEFAULT_FONT_ITALIC_SLOPE);
+        }
     }
-
+    
     /**
      * 设置字体斜率（斜体字）
      *
@@ -186,7 +189,7 @@ public class Textarea extends AbstractComponent {
     public void setFontSlope(float slope) {
         this.fontConfiguration.setFontSlope(slope);
     }
-
+    
     /**
      * 设置字符间距
      *
@@ -195,7 +198,7 @@ public class Textarea extends AbstractComponent {
     public void setCharacterSpacing(float spacing) {
         this.fontConfiguration.setCharacterSpacing(spacing);
     }
-
+    
     /**
      * 设置行间距
      *
@@ -204,7 +207,7 @@ public class Textarea extends AbstractComponent {
     public void setLeading(float leading) {
         this.fontConfiguration.setLeading(leading);
     }
-
+    
     /**
      * 设置制表符大小（空格数）
      *
@@ -216,7 +219,7 @@ public class Textarea extends AbstractComponent {
         }
         this.tabSize = size;
     }
-
+    
     /**
      * 设置下划线宽度
      *
@@ -228,7 +231,7 @@ public class Textarea extends AbstractComponent {
         }
         this.underlineWidth = width;
     }
-
+    
     /**
      * 设置删除线宽度
      *
@@ -240,7 +243,7 @@ public class Textarea extends AbstractComponent {
         }
         this.deleteLineWidth = width;
     }
-
+    
     /**
      * 获取类型
      *
@@ -250,7 +253,7 @@ public class Textarea extends AbstractComponent {
     public ComponentType getType() {
         return ComponentType.TEXTAREA;
     }
-
+    
     /**
      * 获取页码占位符
      *
@@ -259,7 +262,7 @@ public class Textarea extends AbstractComponent {
     public String getPlaceholder() {
         return Constants.CURRENT_PAGE_PLACEHOLDER;
     }
-
+    
     /**
      * 获取字体
      *
@@ -268,7 +271,7 @@ public class Textarea extends AbstractComponent {
     public PDFont getFont() {
         return this.getContext().getFont(this.fontConfiguration.getFontName());
     }
-
+    
     /**
      * 获取字体名称
      *
@@ -277,7 +280,7 @@ public class Textarea extends AbstractComponent {
     public String getFontName() {
         return this.fontConfiguration.getFontName();
     }
-
+    
     /**
      * 获取特殊字体名称
      *
@@ -286,7 +289,7 @@ public class Textarea extends AbstractComponent {
     public List<String> getSpecialFontNames() {
         return this.fontConfiguration.getSpecialFontNames();
     }
-
+    
     /**
      * 获取字体大小
      *
@@ -295,7 +298,7 @@ public class Textarea extends AbstractComponent {
     public Float getFontSize() {
         return this.fontConfiguration.getFontSize();
     }
-
+    
     /**
      * 获取字体颜色
      *
@@ -304,7 +307,7 @@ public class Textarea extends AbstractComponent {
     public Color getFontColor() {
         return this.fontConfiguration.getFontColor();
     }
-
+    
     /**
      * 获取字体透明度
      *
@@ -313,7 +316,7 @@ public class Textarea extends AbstractComponent {
     public Float getFontAlpha() {
         return this.fontConfiguration.getFontAlpha();
     }
-
+    
     /**
      * 获取字体样式
      *
@@ -322,7 +325,7 @@ public class Textarea extends AbstractComponent {
     public FontStyle getFontStyle() {
         return this.fontConfiguration.getFontStyle();
     }
-
+    
     /**
      * 获取字体斜率（斜体字）
      *
@@ -331,7 +334,7 @@ public class Textarea extends AbstractComponent {
     public Float getFontSlope() {
         return this.fontConfiguration.getFontSlope();
     }
-
+    
     /**
      * 获取字符间距
      *
@@ -340,7 +343,7 @@ public class Textarea extends AbstractComponent {
     public Float getCharacterSpacing() {
         return this.fontConfiguration.getCharacterSpacing();
     }
-
+    
     /**
      * 获取行间距
      *
@@ -349,100 +352,7 @@ public class Textarea extends AbstractComponent {
     public Float getLeading() {
         return this.fontConfiguration.getLeading();
     }
-
-    /**
-     * 虚拟渲染
-     */
-    @SneakyThrows
-    public void virtualRender() {
-        // 初始化
-        this.init();
-        // 创建坐标
-        Position position = new Position(
-                this.getBeginX() + this.getRelativeBeginX(),
-                this.getBeginY() - this.getRelativeBeginY()
-        );
-        // 文本列表不为空
-        if (!this.getTextList().isEmpty()) {
-            // 定义文本
-            String text;
-            // 获取文本迭代器
-            Iterator<String> iterator = this.getTextList().iterator();
-            // 遍历文本
-            while (iterator.hasNext()) {
-                // 获取文本
-                text = iterator.next();
-                // 虚拟写入
-                this.virtualWrite(text, position);
-                // 判断是否还有下一个文本
-                if (iterator.hasNext()) {
-                    // 重置坐标
-                    position.reset(
-                            this.getContext().getWrapBeginX(),
-                            position.getY() - this.getFontSize() - this.getLeading()
-                    );
-                }
-            }
-            // 文本宽度
-            float textWidth = TextUtil.getTextRealWidth(this.getContext(), this.getTextList().get(this.getTextList().size() - 1), this.getFont(), this.getFontSize(), this.getCharacterSpacing(), this.getSpecialFontNames());
-            // 重置页面位置坐标
-            this.resetPagePosition(position, textWidth);
-        }
-        // 重置
-        super.reset(this.getType());
-    }
-
-    /**
-     * 渲染
-     */
-    @SneakyThrows
-    @Override
-    public void render() {
-        // 初始化
-        this.init();
-        // 创建坐标
-        Position position = new Position(
-                this.getBeginX() + this.getRelativeBeginX(),
-                this.getBeginY() - this.getRelativeBeginY()
-        );
-        // 初始化目录
-        this.initCatalog(position);
-        // 文本列表不为空
-        if (!this.getTextList().isEmpty()) {
-            // 定义文本
-            String text;
-            // 文本宽度
-            float textWidth = 0F;
-            // 初始化内容流
-            PDPageContentStream contentStream = this.initContentStream();
-            // 获取文本迭代器
-            Iterator<String> iterator = this.getTextList().iterator();
-            // 遍历文本
-            while (iterator.hasNext()) {
-                // 获取文本
-                text = iterator.next();
-                // 重置文本宽度
-                textWidth = TextUtil.getTextRealWidth(this.getContext(), text, this.getFont(), this.getFontSize(), this.getCharacterSpacing(), this.getSpecialFontNames());
-                // 写入
-                contentStream = this.write(text, textWidth, contentStream, position);
-                // 判断是否还有下一个文本
-                if (iterator.hasNext()) {
-                    // 重置坐标
-                    position.reset(
-                            this.getContext().getWrapBeginX(),
-                            position.getY() - this.getFontSize() - this.getLeading()
-                    );
-                }
-            }
-            // 关闭内容流
-            contentStream.close();
-            // 重置页面位置坐标
-            this.resetPagePosition(position, textWidth);
-        }
-        // 重置
-        super.reset(this.getType());
-    }
-
+    
     /**
      * 初始化
      */
@@ -450,15 +360,9 @@ public class Textarea extends AbstractComponent {
     protected void init() {
         // 初始化
         super.init();
-        // 初始化特殊字体
-        if (Objects.nonNull(this.fontConfiguration.getSpecialFontNames())) {
-            for (String specialFontName : this.fontConfiguration.getSpecialFontNames()) {
-                this.getContext().addFontCache(specialFontName);
-            }
-        }
         // 初始化制表符大小
         if (Objects.isNull(this.tabSize)) {
-            this.tabSize = 4;
+            this.tabSize = 2;
         }
         // 初始化高亮颜色
         if (Objects.isNull(this.highlightColor)) {
@@ -504,7 +408,27 @@ public class Textarea extends AbstractComponent {
         // 初始化起始Y轴坐标
         this.initBeginY(TextUtil.getTextRealHeight(this.getTextList().size(), this.getFontSize(), this.getLeading()));
     }
-
+    
+    /**
+     * 写入内容
+     */
+    @Override
+    protected void writeContents() {
+        if (this.getContext().getIsVirtualRender()) {
+            this.virtualWrite();
+        } else {
+            this.write();
+        }
+    }
+    
+    /**
+     * 重置
+     */
+    @Override
+    protected void reset() {
+    
+    }
+    
     /**
      * 初始化文本
      */
@@ -523,7 +447,7 @@ public class Textarea extends AbstractComponent {
         // 初始化文本列表
         this.initTextList(tempTextList);
     }
-
+    
     /**
      * 处理文本
      *
@@ -540,7 +464,7 @@ public class Textarea extends AbstractComponent {
         // 根据换行符拆分
         return Arrays.asList(temp.split("\n"));
     }
-
+    
     /**
      * 初始化文本列表
      *
@@ -629,7 +553,7 @@ public class Textarea extends AbstractComponent {
             }
         }
     }
-
+    
     /**
      * 初始化目录
      *
@@ -650,7 +574,7 @@ public class Textarea extends AbstractComponent {
             context.getCatalogs().add(this.catalog);
         }
     }
-
+    
     /**
      * 获取最小宽度
      *
@@ -660,21 +584,108 @@ public class Textarea extends AbstractComponent {
     protected float getMinWidth() {
         return this.getFontSize();
     }
-
+    
+    /**
+     * 虚拟渲染
+     */
+    @SneakyThrows
+    protected void virtualWrite() {
+        // 创建坐标
+        Position position = new Position(
+                this.getBeginX() + this.getRelativeBeginX(),
+                this.getBeginY() - this.getRelativeBeginY()
+        );
+        // 文本列表不为空
+        if (!this.getTextList().isEmpty()) {
+            // 定义文本
+            String text = null;
+            // 获取文本迭代器
+            Iterator<String> iterator = this.getTextList().iterator();
+            // 遍历文本
+            while (iterator.hasNext()) {
+                // 获取文本
+                text = iterator.next();
+                // 虚拟写入
+                this.virtualWrite(text, position);
+                // 判断是否还有下一个文本
+                if (iterator.hasNext()) {
+                    // 重置坐标
+                    position.reset(
+                            this.getContext().getWrapBeginX(),
+                            position.getY() - this.getFontSize() - this.getLeading()
+                    );
+                }
+            }
+            // 文本宽度
+            float textWidth = TextUtil.getTextRealWidth(this.getContext(), text, this.getFont(), this.getFontSize(), this.getCharacterSpacing(), this.getSpecialFontNames());
+            // 重置页面位置坐标
+            this.resetPagePosition(position, textWidth);
+        }
+        // 重置
+        super.reset(this.getType(), position.getX(), position.getY());
+    }
+    
+    /**
+     * 渲染
+     */
+    @SneakyThrows
+    protected void write() {
+        // 创建坐标
+        Position position = new Position(
+                this.getBeginX() + this.getRelativeBeginX(),
+                this.getBeginY() - this.getRelativeBeginY()
+        );
+        // 初始化目录
+        this.initCatalog(position);
+        // 文本列表不为空
+        if (!this.getTextList().isEmpty()) {
+            // 定义文本
+            String text;
+            // 文本宽度
+            float textWidth = 0F;
+            // 初始化内容流
+            PDPageContentStream contentStream = this.initContentStream();
+            // 获取文本迭代器
+            Iterator<String> iterator = this.getTextList().iterator();
+            // 遍历文本
+            while (iterator.hasNext()) {
+                // 获取文本
+                text = iterator.next();
+                // 重置文本宽度
+                textWidth = TextUtil.getTextRealWidth(this.getContext(), text, this.getFont(), this.getFontSize(), this.getCharacterSpacing(), this.getSpecialFontNames());
+                // 写入
+                contentStream = this.write(text, textWidth, contentStream, position);
+                // 判断是否还有下一个文本
+                if (iterator.hasNext()) {
+                    // 重置坐标
+                    position.reset(
+                            this.getContext().getWrapBeginX(),
+                            position.getY() - this.getFontSize() - this.getLeading()
+                    );
+                }
+            }
+            // 关闭内容流
+            contentStream.close();
+            // 重置页面位置坐标
+            this.resetPagePosition(position, textWidth);
+        }
+        // 重置
+        super.reset(this.getType(), position.getX(), position.getY());
+    }
+    
     /**
      * 虚拟写入
      *
      * @param text     文本
      * @param position 坐标
      */
-    @SneakyThrows
     protected void virtualWrite(String text, Position position) {
         // 文本不为空
         if (TextUtil.isNotBlank(text)) {
             this.virtualCheckPaging(position);
         }
     }
-
+    
     /**
      * 写入
      *
@@ -683,7 +694,6 @@ public class Textarea extends AbstractComponent {
      * @param contentStream 内容流
      * @param position      坐标
      */
-    @SneakyThrows
     protected PDPageContentStream write(String text, float textWidth, PDPageContentStream contentStream, Position position) {
         // 文本不为空
         if (TextUtil.isNotBlank(text)) {
@@ -710,7 +720,7 @@ public class Textarea extends AbstractComponent {
         }
         return contentStream;
     }
-
+    
     /**
      * 检查分页
      *
@@ -747,7 +757,7 @@ public class Textarea extends AbstractComponent {
         // 返回内容流
         return contentStream;
     }
-
+    
     /**
      * 检查分页
      *
@@ -757,23 +767,26 @@ public class Textarea extends AbstractComponent {
     protected void virtualCheckPaging(Position position) {
         // 检查分页
         if (this.checkPaging(this, position.getY())) {
+            // 重置是否已经分页
+            if (this.getContext().isEqualsComponent(this.getType())) {
+                this.getContext().setIsAlreadyPaging(false);
+            }
             // 分页
             this.processBreak();
             // 换行
             this.wrap(this.getFontSize());
             // 重置Y轴起始坐标
-            position.setY(this.getBeginY() - this.getContext().getOffsetY() + this.getFontSize());
+            position.setY(this.getBeginY() - this.getContext().getOffsetY());
             // 结束分页
             if (position.getY() > 0) {
-                // 重置Y轴起始坐标
-                position.setY(Math.min(position.getY(), this.getPage().getHeight() - this.getFontSize()));
+                this.initAfterPagingPosition(position);
             } else {
                 // 继续检查分页
                 this.virtualCheckPaging(position);
             }
         }
     }
-
+    
     /**
      * 初始化分页后坐标
      *
@@ -786,7 +799,7 @@ public class Textarea extends AbstractComponent {
             position.setY(Math.min(position.getY(), this.getContext().getMaxBeginY() - this.getFontSize()));
         }
     }
-
+    
     /**
      * 添加高亮（不支持旋转）
      *
@@ -807,16 +820,16 @@ public class Textarea extends AbstractComponent {
             contentStream.setNonStrokingColor(this.getContext().getPage().getBackgroundColor());
         }
     }
-
+    
     /**
      * 添加文本
      *
      * @param text          文本
      * @param rectangle     尺寸
      * @param contentStream 内容流
-     * @throws Exception 异常
      */
-    protected void addText(String text, PDRectangle rectangle, PDPageContentStream contentStream) throws Exception {
+    @SneakyThrows
+    protected void addText(String text, PDRectangle rectangle, PDPageContentStream contentStream) {
         // 开始写入
         contentStream.beginText();
         // 初始化字体颜色及透明度
@@ -828,7 +841,7 @@ public class Textarea extends AbstractComponent {
         // 结束写入
         contentStream.endText();
     }
-
+    
     /**
      * 添加删除线
      *
@@ -853,7 +866,7 @@ public class Textarea extends AbstractComponent {
             stream.stroke();
         }
     }
-
+    
     /**
      * 添加下划线
      *
@@ -876,7 +889,7 @@ public class Textarea extends AbstractComponent {
             stream.stroke();
         }
     }
-
+    
     /**
      * 添加内部目标
      *
@@ -902,7 +915,7 @@ public class Textarea extends AbstractComponent {
             this.addLink(action, this.getInnerDest().getName(), rectangle, this.getInnerDest().getHighlightMode());
         }
     }
-
+    
     /**
      * 添加外部目标
      *
@@ -922,7 +935,7 @@ public class Textarea extends AbstractComponent {
             this.addLink(action, this.getOuterDest().getName(), rectangle, this.getOuterDest().getHighlightMode());
         }
     }
-
+    
     /**
      * 添加链接
      *
@@ -947,7 +960,7 @@ public class Textarea extends AbstractComponent {
         // 添加链接
         target.getAnnotations().add(link);
     }
-
+    
     /**
      * 添加边框
      *
@@ -960,7 +973,7 @@ public class Textarea extends AbstractComponent {
         // 绘制边框
         BorderUtil.drawNormalBorder(stream, rectangle, new BorderData(this, this.getBorderConfiguration()));
     }
-
+    
     /**
      * 初始化内容流
      *
@@ -989,7 +1002,7 @@ public class Textarea extends AbstractComponent {
         // 返回内容流
         return contentStream;
     }
-
+    
     /**
      * 初始化矩阵
      *
@@ -1004,7 +1017,7 @@ public class Textarea extends AbstractComponent {
         // 设置文本矩阵
         stream.setTextMatrix(matrix);
     }
-
+    
     /**
      * 获取行尺寸
      *
@@ -1056,34 +1069,22 @@ public class Textarea extends AbstractComponent {
         // 返回尺寸
         return rectangle;
     }
-
+    
     /**
-     * 重置页面位置坐标
+     * 重置位置坐标
      *
      * @param position  坐标
      * @param textWidth 文本宽度
      */
     protected void resetPagePosition(Position position, float textWidth) {
-        // 获取上下文
-        Context context = this.getContext();
-        // 获取X轴坐标
-        float beginX = position.getX() + textWidth + this.getMarginRight();
-        // 重置光标
-        context.getCursor().reset(beginX, position.getY());
+        // 重置X轴坐标
+        position.setX(position.getX() + textWidth + this.getMarginRight());
         // 设置结束坐标
         if (Objects.nonNull(this.getCatalog())) {
             // 设置X轴坐标
-            this.getCatalog().setEndX(beginX);
+            this.getCatalog().setEndX(position.getX());
             // 设置Y轴坐标
             this.getCatalog().setEndY(position.getY());
         }
-    }
-
-    /**
-     * 重置起始XY轴坐标
-     */
-    protected void resetXY() {
-        super.resetXY();
-        this.isCustomPosition = null;
     }
 }

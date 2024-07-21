@@ -1,12 +1,8 @@
-package org.dromara.pdf.pdfbox.core.enums;
-
-import lombok.Getter;
-
 /**
- * 线帽样式
+ * 配置
  *
  * @author xsx
- * @date 2023/11/6
+ * @date 2023/6/2
  * @since 1.8
  * <p>
  * Copyright (c) 2020 xsx All Rights Reserved.
@@ -20,32 +16,4 @@ import lombok.Getter;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-@Getter
-public enum LineCapStyle {
-    /**
-     * 正常
-     */
-    NORMAL(0),
-    /**
-     * 圆角
-     */
-    ROUND(1),
-    /**
-     * 方角
-     */
-    SQUARE(2);
-
-    /**
-     * 类型
-     */
-    private final int type;
-
-    /**
-     * 有参构造
-     *
-     * @param type 类型
-     */
-    LineCapStyle(int type) {
-        this.type = type;
-    }
-}
+package org.dromara.pdf.pdfbox.core.base.config;

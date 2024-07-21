@@ -5,6 +5,7 @@ import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.component.Circle;
 import org.dromara.pdf.pdfbox.core.enums.HorizontalAlignment;
+import org.dromara.pdf.pdfbox.core.enums.VerticalAlignment;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.junit.Test;
 
@@ -42,10 +43,10 @@ public class CircleTest extends BaseTest {
 
                     Circle circle = new Circle(page);
                     circle.setBorderColor(new Color(0, 191, 255));
-                    circle.setBorderWidth(5F);
-                    circle.setBackgroundColor(Color.LIGHT_GRAY);
-                    circle.setRadius(100F);
-                    circle.setHorizontalAlignment(HorizontalAlignment.CENTER);
+                    circle.setBorderLineWidth(1F);
+                    circle.setRadius(50F);
+                    circle.setHorizontalAlignment(HorizontalAlignment.LEFT);
+                    circle.setVerticalAlignment(VerticalAlignment.TOP);
                     circle.render();
 
                     document.appendPage(page);

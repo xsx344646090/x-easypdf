@@ -149,9 +149,11 @@ public class TextareaTest extends BaseTest {
     @Test
     public void fontStyleTest() {
         this.test(() -> {
+            PdfHandler.getFontHandler().getFontNames().forEach(System.out::println);
             Document document = PdfHandler.getDocumentHandler().create();
             document.setMargin(50F);
-            document.setFontSize(30F);
+            document.setFontSize(12F);
+            document.setFontName("微软雅黑");
 
             Page page = new Page(document);
 
@@ -163,6 +165,12 @@ public class TextareaTest extends BaseTest {
 
             textarea.setIsWrap(true);
             textarea.setFontStyle(FontStyle.BOLD);
+            textarea.setText("x-easypdf（BOLD）");
+            textarea.render();
+            
+            textarea.setIsWrap(true);
+            textarea.setFontStyle(FontStyle.NORMAL);
+            textarea.setFontName("微软雅黑 Bold");
             textarea.setText("x-easypdf（BOLD）");
             textarea.render();
 
@@ -183,6 +191,7 @@ public class TextareaTest extends BaseTest {
 
             textarea.setIsWrap(true);
             textarea.setFontStyle(FontStyle.ITALIC);
+            textarea.setFontSlope(0.3F);
             textarea.setText("x-easypdf（ITALIC）");
             textarea.render();
 
@@ -194,13 +203,13 @@ public class TextareaTest extends BaseTest {
 
             textarea.setIsWrap(true);
             textarea.setFontStyle(FontStyle.ITALIC_LIGHT);
-            textarea.setFontSlope(0.7F);
+            textarea.setFontSlope(0.5F);
             textarea.setText("x-easypdf（ITALIC_LIGHT）");
             textarea.render();
 
             textarea.setIsWrap(true);
             textarea.setFontStyle(FontStyle.ITALIC_STROKE);
-            textarea.setFontSlope(1F);
+            textarea.setFontSlope(0.5F);
             textarea.setText("x-easypdf（ITALIC_STROKE）");
             textarea.render();
 

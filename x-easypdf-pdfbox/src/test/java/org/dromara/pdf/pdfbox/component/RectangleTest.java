@@ -43,7 +43,7 @@ public class RectangleTest extends BaseTest {
 
                     Rectangle rectangle = new Rectangle(page);
                     rectangle.setBorderColor(new Color(0, 191, 255));
-                    rectangle.setBorderWidth(5F);
+                    rectangle.setBorderLineWidth(1F);
                     rectangle.setBackgroundColor(Color.LIGHT_GRAY);
                     rectangle.setWidth(200F);
                     rectangle.setHeight(200F);
@@ -71,10 +71,11 @@ public class RectangleTest extends BaseTest {
                     Page page = new Page(document);
 
                     Rectangle rectangle = new Rectangle(page);
+                    rectangle.setBackgroundColor(Color.BLUE);
                     rectangle.setBeginX(100F);
                     rectangle.setBeginY(100F);
                     rectangle.setWidth(150F);
-                    rectangle.setHeight(50F);
+                    rectangle.setHeight(1F);
                     rectangle.setAngle(45F);
                     rectangle.render();
 

@@ -13,10 +13,12 @@ import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.base.config.FontConfiguration;
 import org.dromara.pdf.pdfbox.core.enums.ComponentType;
 import org.dromara.pdf.pdfbox.core.enums.FontStyle;
+import org.dromara.pdf.pdfbox.support.Constants;
 import org.dromara.pdf.pdfbox.util.CommonUtil;
 import org.dromara.pdf.pdfbox.util.TextUtil;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -87,6 +89,11 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
      */
     public TextareaWatermark(Document document) {
         super.setContext(document.getContext());
+        this.fontConfiguration = new FontConfiguration();
+        this.setLeading(100F);
+        this.setFontSize(20F);
+        this.setFontAlpha(0.5F);
+        this.setFontColor(Color.GRAY);
     }
 
     /**
@@ -143,6 +150,9 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
      */
     public void setFontStyle(FontStyle style) {
         this.fontConfiguration.setFontStyle(style);
+        if (style.isItalic() && this.getFontSlope() == 0F) {
+            this.setFontSlope(Constants.DEFAULT_FONT_ITALIC_SLOPE);
+        }
     }
 
     /**
@@ -182,6 +192,18 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
             throw new IllegalArgumentException("the size can not be less than 0");
         }
         this.tabSize = size;
+    }
+
+    /**
+     * 设置文本
+     *
+     * @param texts 文本
+     */
+    public void setTexts(String... texts) {
+        if (Objects.nonNull(texts)) {
+            this.textList = new ArrayList<>(texts.length);
+            Collections.addAll(this.textList, texts);
+        }
     }
 
     /**
@@ -298,25 +320,31 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
         if (Objects.isNull(this.getContext().getExecutingComponentType())) {
             this.getContext().setExecutingComponentType(this.getType());
         }
-        // 初始化行数
-        if (Objects.isNull(this.lines)) {
-            this.lines = 1;
+        // 初始化每行文本间距
+        if (Objects.isNull(this.spacingOfLine)) {
+            this.spacingOfLine = 100F;
         }
         // 初始化每行文本数
         if (Objects.isNull(this.countOfLine)) {
-            this.countOfLine = 1;
+            int length = this.textList.get(0).length();
+            int characterSpacingLength = length - 1;
+            float textWidth = length * this.getFontSize() + characterSpacingLength * this.getCharacterSpacing() + this.spacingOfLine;
+            this.countOfLine = (int) Math.ceil(this.getPage().getWidth() / textWidth);
         }
-        // 初始化每行文本间距
-        if (Objects.isNull(this.spacingOfLine)) {
-            this.spacingOfLine = 50F;
+        // 初始化行数
+        if (Objects.isNull(this.lines)) {
+            int count = this.textList.size();
+            int leadingCount = count - 1;
+            float textHeight = count * this.getFontSize() + leadingCount * this.getLeading();
+            this.lines = (int) Math.ceil(this.getPage().getHeight() / textHeight);
         }
         // 初始化制表符大小
         if (Objects.isNull(this.tabSize)) {
-            this.tabSize = 4;
+            this.tabSize = 2;
         }
         // 初始化旋转角度
         if (Objects.isNull(this.angle)) {
-            this.angle = 0F;
+            this.angle = 45F;
         }
         // 初始化自定义起始X轴坐标
         if (Objects.isNull(this.beginX)) {

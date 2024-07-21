@@ -2,11 +2,16 @@ package org.dromara.pdf.pdfbox.util;
 
 import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
+import org.apache.pdfbox.util.Matrix;
+import org.dromara.pdf.pdfbox.core.base.Context;
+import org.dromara.pdf.pdfbox.core.enums.ContentMode;
 import org.dromara.pdf.pdfbox.core.enums.FontStyle;
 
 import java.awt.*;
 import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -28,7 +33,7 @@ import java.util.List;
  * </p>
  */
 public class CommonUtil {
-
+    
     /**
      * 初始化字体颜色及透明度
      *
@@ -74,7 +79,103 @@ public class CommonUtil {
             state.setNonStrokingAlphaConstant(fontAlpha);
         }
     }
-
+    
+    /**
+     * 初始化矩阵
+     *
+     * @param stream         内容流
+     * @param beginX         X轴起始坐标
+     * @param beginY         Y轴起始坐标
+     * @param relativeBeginX X轴相对起始坐标
+     * @param relativeBeginY Y轴相对起始坐标
+     * @param width          宽度
+     * @param height         高度
+     * @param angle          旋转角度
+     */
+    @SneakyThrows
+    public static void initMatrix(
+            PDPageContentStream stream,
+            float beginX,
+            float beginY,
+            float relativeBeginX,
+            float relativeBeginY,
+            float width,
+            float height,
+            float angle
+    ) {
+        // 定义X轴偏移量
+        float offsetX = 0.5F * width;
+        // 定义Y轴偏移量
+        float offsetY = 0.5F * height;
+        // 保存图形状态
+        stream.saveGraphicsState();
+        // 移动到中心点
+        stream.transform(
+                Matrix.getTranslateInstance(
+                        beginX + relativeBeginX + offsetX,
+                        beginY - relativeBeginY + offsetY
+                )
+        );
+        // 旋转
+        stream.transform(Matrix.getRotateInstance(Math.toRadians(angle), 0, 0));
+        // 移动到左下角
+        stream.transform(Matrix.getTranslateInstance(-offsetX, -offsetY));
+    }
+    
+    /**
+     * 添加背景颜色
+     *
+     * @param context              上下文
+     * @param mode                 内容模式
+     * @param isResetContentStream 是否重置内容流
+     * @param rectangle            矩形
+     * @param backgroundColor      背景颜色
+     */
+    @SneakyThrows
+    public static void addBackgroundColor(Context context, ContentMode mode, boolean isResetContentStream, PDRectangle rectangle, Color backgroundColor) {
+        // 添加背景颜色
+        if (Objects.nonNull(backgroundColor)) {
+            // 初始化内容流
+            PDPageContentStream stream = new PDPageContentStream(
+                    context.getTargetDocument(),
+                    context.getTargetPage(),
+                    mode.getMode(),
+                    true,
+                    isResetContentStream
+            );
+            // 添加矩形
+            stream.addRect(rectangle);
+            // 设置矩形颜色
+            stream.setNonStrokingColor(backgroundColor);
+            // 填充矩形
+            stream.fill();
+            // 关闭内容流
+            stream.close();
+        }
+    }
+    
+    /**
+     * 获取行尺寸
+     *
+     * @param width  宽度
+     * @param height 高度
+     * @return 返回尺寸
+     */
+    public static PDRectangle getRectangle(float width, float height) {
+        // 创建尺寸
+        PDRectangle rectangle = new PDRectangle();
+        // 设置起始X轴坐标
+        rectangle.setLowerLeftX(0F);
+        // 设置结束X轴坐标
+        rectangle.setUpperRightX(width);
+        // 设置起始Y轴坐标
+        rectangle.setLowerLeftY(0F);
+        // 设置结束Y轴坐标
+        rectangle.setUpperRightY(height);
+        // 返回尺寸
+        return rectangle;
+    }
+    
     /**
      * 转基本整型数组
      *
@@ -84,7 +185,7 @@ public class CommonUtil {
     public static int[] toIntArray(List<Integer> list) {
         return list.stream().mapToInt(Integer::intValue).toArray();
     }
-
+    
     /**
      * 转基本浮点型数组
      *
@@ -98,7 +199,7 @@ public class CommonUtil {
         }
         return array;
     }
-
+    
     /**
      * 转基本双精度浮点型数组
      *

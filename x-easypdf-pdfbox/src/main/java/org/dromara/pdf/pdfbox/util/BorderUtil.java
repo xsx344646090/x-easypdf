@@ -5,7 +5,6 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.dromara.pdf.pdfbox.core.base.BorderData;
 import org.dromara.pdf.pdfbox.core.base.Context;
-import org.dromara.pdf.pdfbox.core.enums.BorderStyle;
 
 import java.awt.*;
 
@@ -63,9 +62,9 @@ public class BorderUtil {
     @SneakyThrows
     public static void drawNormalBorder(PDPageContentStream stream, PDRectangle rectangle, BorderData data) {
         // 设置线宽
-        stream.setLineWidth(data.getBorderWidth());
+        stream.setLineWidth(data.getBorderLineWidth());
         // 设置线帽样式
-        stream.setLineCapStyle(2);
+        stream.setLineCapStyle(data.getBorderLineCapStyle().getType());
         // 连线
         line(stream, rectangle, data);
     }
@@ -78,16 +77,17 @@ public class BorderUtil {
      * @param data      边框数据
      */
     private static void line(PDPageContentStream stream, PDRectangle rectangle, BorderData data) {
-        // 实线
-        if (data.getBorderStyle() == BorderStyle.SOLID) {
-            // 绘制实线
-            drawSolidLine(stream, rectangle, data);
-            return;
-        }
-        // 虚线
-        if (data.getBorderStyle() == BorderStyle.DOTTED) {
-            // 绘制虚线
-            drawDottedLine(stream, rectangle, data);
+        switch (data.getBorderLineStyle()) {
+            case SOLID: {
+                // 绘制实线
+                drawSolidLine(stream, rectangle, data);
+                break;
+            }
+            case DOTTED: {
+                // 绘制虚线
+                drawDottedLine(stream, rectangle, data);
+                break;
+            }
         }
     }
 
@@ -161,8 +161,8 @@ public class BorderUtil {
             drawDottedLine(
                     stream,
                     data.getBorderTopColor(),
-                    data.getBorderLineLength(),
-                    data.getBorderLineSpacing(),
+                    data.getBorderLineWidth(),
+                    data.getBorderDottedSpacing(),
                     rectangle.getLowerLeftX(),
                     rectangle.getUpperRightY(),
                     rectangle.getUpperRightX(),
@@ -175,8 +175,8 @@ public class BorderUtil {
             drawDottedLine(
                     stream,
                     data.getBorderBottomColor(),
-                    data.getBorderLineLength(),
-                    data.getBorderLineSpacing(),
+                    data.getBorderLineWidth(),
+                    data.getBorderDottedSpacing(),
                     rectangle.getLowerLeftX(),
                     rectangle.getLowerLeftY(),
                     rectangle.getUpperRightX(),
@@ -189,8 +189,8 @@ public class BorderUtil {
             drawDottedLine(
                     stream,
                     data.getBorderLeftColor(),
-                    data.getBorderLineLength(),
-                    data.getBorderLineSpacing(),
+                    data.getBorderLineWidth(),
+                    data.getBorderDottedSpacing(),
                     rectangle.getLowerLeftX(),
                     rectangle.getUpperRightY(),
                     rectangle.getLowerLeftX(),
@@ -203,8 +203,8 @@ public class BorderUtil {
             drawDottedLine(
                     stream,
                     data.getBorderRightColor(),
-                    data.getBorderLineLength(),
-                    data.getBorderLineSpacing(),
+                    data.getBorderLineWidth(),
+                    data.getBorderDottedSpacing(),
                     rectangle.getUpperRightX(),
                     rectangle.getUpperRightY(),
                     rectangle.getUpperRightX(),
@@ -218,6 +218,8 @@ public class BorderUtil {
      *
      * @param contentStream pdfbox内容流
      * @param color         边框颜色
+     * @param dottedLength  点线长度
+     * @param dottedSpacing 点线间隔
      * @param beginX        X轴起始坐标
      * @param beginY        Y轴起始坐标
      * @param endX          X轴结束坐标
@@ -227,8 +229,8 @@ public class BorderUtil {
     private static void drawDottedLine(
             PDPageContentStream contentStream,
             Color color,
-            float lineLength,
-            float lineSpace,
+            float dottedLength,
+            float dottedSpacing,
             float beginX,
             float beginY,
             float endX,
@@ -246,15 +248,15 @@ public class BorderUtil {
             totalLength = beginY - endY;
         }
         // 计算线长
-        float lineWidth = lineLength + lineSpace;
+        float lineWidth = dottedLength + dottedSpacing;
         // 计算线条数量（向下取整，至少为1）
         int count = Math.max((int) (totalLength / (lineWidth)), 1);
         // 计算偏移量（居中计算）
-        float offset = Math.abs((totalLength - (count * lineWidth) + lineSpace) / 2);
+        float offset = Math.abs((totalLength - (count * lineWidth) + dottedSpacing) / 2);
         // 如果点线长度大于总长度，则重置点线长度 = 总长度
-        if (lineLength > totalLength) {
+        if (dottedLength > totalLength) {
             // 重置点线长度 = 总长度
-            lineLength = totalLength;
+            dottedLength = totalLength;
             // 重置偏移量为0
             offset = 0F;
         }
@@ -274,21 +276,17 @@ public class BorderUtil {
             contentStream.moveTo(beginX, beginY);
             // 如果为水平，则水平连线
             if (isHorizontal) {
-                // 重置X轴坐标 = X轴坐标 + 点线长度
-                beginX = beginX + lineLength;
                 // 连线
                 contentStream.lineTo(beginX, beginY);
-                // 重置X轴坐标 = X轴坐标 + 点线间隔
-                beginX = beginX + lineSpace;
+                // 重置X轴坐标 = X轴坐标 + 点线长度 + 点线间隔
+                beginX = beginX + dottedLength + dottedSpacing;
             }
             // 否则垂直连线
             else {
-                // 重置Y轴坐标 = Y轴坐标 - 点线长度
-                beginY = beginY - lineLength;
                 // 连线
                 contentStream.lineTo(beginX, beginY);
-                // 重置Y轴坐标 = Y轴坐标 - 点线间隔
-                beginY = beginY - lineSpace;
+                // 重置Y轴坐标 = Y轴坐标 - 点线长度 - 点线间隔
+                beginY = beginY - dottedLength - dottedSpacing;
             }
         }
         // 结束

@@ -1,11 +1,9 @@
 package org.dromara.pdf.pdfbox.core.base;
 
 import lombok.EqualsAndHashCode;
-import org.dromara.pdf.pdfbox.core.component.Component;
 import org.dromara.pdf.pdfbox.core.enums.ComponentType;
 
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * 页脚
@@ -29,14 +27,9 @@ import java.util.Optional;
 public class PageFooter extends AbstractPageHeaderOrFooter {
 
     /**
-     * 分页事件
-     */
-    private PagingEvent pagingEvent;
-
-    /**
      * 原始Y轴坐标
      */
-    private Float originalY;
+    protected Float originalY;
 
     /**
      * 有参构造
@@ -66,24 +59,6 @@ public class PageFooter extends AbstractPageHeaderOrFooter {
     @Override
     public PagingEvent getPagingEvent() {
         return this.pagingEvent;
-    }
-
-    /**
-     * 虚拟渲染
-     */
-    @Override
-    public void virtualRender() {
-        this.pagingEvent = new DefaultPageFooterVirtualPagingEvent();
-        super.virtualRender();
-    }
-
-    /**
-     * 渲染
-     */
-    @Override
-    public void render() {
-        this.pagingEvent = new DefaultPageFooterPagingEvent();
-        super.render();
     }
 
     /**
@@ -118,77 +93,9 @@ public class PageFooter extends AbstractPageHeaderOrFooter {
         // 初始化原始Y轴坐标
         this.originalY = this.getContext().getCursor().getY();
         // 重置光标
-        this.getContext().getCursor().reset(this.getBeginX(), this.getBeginY() - this.getBeginYOffset());
-    }
-
-    /**
-     * 默认虚拟分页事件
-     */
-    public static class DefaultPageFooterVirtualPagingEvent extends AbstractPagingEvent {
-
-        /**
-         * 分页之前
-         *
-         * @param component 当前组件
-         */
-        @Override
-        public void before(Component component) {
-
-        }
-
-        /**
-         * 分页之后
-         *
-         * @param component 当前组件
-         */
-        @Override
-        public void after(Component component) {
-            // 获取换行起始坐标
-            Float wrapBeginX = component.getContext().getWrapBeginX();
-            // 获取执行组件类型
-            ComponentType currentExecutingComponentType = component.getContext().getExecutingComponentType();
-            // 渲染组件
-            Optional.ofNullable(component.getContext().getPageFooter()).ifPresent(AbstractPageHeaderOrFooter::virtualRender);
-            // 重置执行组件类型
-            component.getContext().setExecutingComponentType(currentExecutingComponentType);
-            // 重置换行起始坐标
-            component.getContext().setWrapBeginX(wrapBeginX);
-        }
-    }
-
-    /**
-     * 默认分页事件
-     */
-    public static class DefaultPageFooterPagingEvent extends AbstractPagingEvent {
-
-        /**
-         * 分页之前
-         *
-         * @param component 当前组件
-         */
-        @Override
-        public void before(Component component) {
-
-        }
-
-        /**
-         * 分页之后
-         *
-         * @param component 当前组件
-         */
-        @Override
-        public void after(Component component) {
-            // 获取换行起始坐标
-            Float wrapBeginX = component.getContext().getWrapBeginX();
-            // 获取执行组件类型
-            ComponentType currentExecutingComponentType = component.getContext().getExecutingComponentType();
-            // 渲染组件
-            Optional.ofNullable(component.getContext().getPageFooter()).ifPresent(AbstractPageHeaderOrFooter::render);
-            // 重置执行组件类型
-            component.getContext().setExecutingComponentType(currentExecutingComponentType);
-            // 重置换行起始坐标
-            component.getContext().setWrapBeginX(wrapBeginX);
-        }
+        this.getContext().getCursor().reset(this.getBeginX(), this.getBeginY());
+        // 重置高度
+        this.getContext().resetHeight(this.getHeight());
     }
 }
 

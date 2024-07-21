@@ -7,6 +7,8 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 import java.util.List;
 
 /**
+ * 标记信息
+ *
  * @author xsx
  * @date 2023/10/10
  * @since 1.8
@@ -60,7 +62,6 @@ public class COSBaseInfo {
          * 值
          */
         private String value;
-    //     COSName.getPDFName(font.getName());
     }
 
 }

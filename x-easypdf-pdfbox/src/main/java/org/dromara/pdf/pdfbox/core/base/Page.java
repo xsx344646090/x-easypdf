@@ -273,6 +273,9 @@ public class Page extends AbstractBase implements Closeable {
      */
     public void setFontStyle(FontStyle style) {
         this.fontConfiguration.setFontStyle(style);
+        if (style.isItalic() && this.getFontSlope() == 0F) {
+            this.setFontSlope(Constants.DEFAULT_FONT_ITALIC_SLOPE);
+        }
     }
 
     /**
@@ -645,7 +648,7 @@ public class Page extends AbstractBase implements Closeable {
             }
         }
         // 初始化背景颜色
-        if (Objects.equals(this.backgroundColor, Color.WHITE)) {
+        if (!Objects.equals(this.backgroundColor, Color.WHITE)) {
             this.initBackgroundColor();
         }
         // 初始化页眉

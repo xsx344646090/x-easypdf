@@ -180,7 +180,6 @@ public class Document extends AbstractBase implements Closeable {
      * @param cache 缓存
      */
     public void setResourceCache(ResourceCache cache) {
-        // 检查参数
         Objects.requireNonNull(cache, "the cache can not be null");
         this.target.setResourceCache(cache);
     }
@@ -200,7 +199,6 @@ public class Document extends AbstractBase implements Closeable {
      * @param margin 边距
      */
     public void setMarginTop(float margin) {
-        // 设置上边距
         this.marginConfiguration.setMarginTop(margin);
     }
 
@@ -219,7 +217,6 @@ public class Document extends AbstractBase implements Closeable {
      * @param margin 边距
      */
     public void setMarginLeft(float margin) {
-        // 重置左边距
         this.marginConfiguration.setMarginLeft(margin);
     }
 
@@ -289,6 +286,7 @@ public class Document extends AbstractBase implements Closeable {
      */
     public void setFontStyle(FontStyle style) {
         this.fontConfiguration.setFontStyle(style);
+        this.fontConfiguration.setFontSlope(Constants.DEFAULT_FONT_ITALIC_SLOPE);
     }
 
     /**
@@ -363,38 +361,83 @@ public class Document extends AbstractBase implements Closeable {
         return this.marginConfiguration.getMarginRight();
     }
 
+    /**
+     * 获取字体名称
+     *
+     * @return 返回字体名称
+     */
     public String getFontName() {
         return this.fontConfiguration.getFontName();
     }
 
+    /**
+     * 获取特殊字体名称
+     *
+     * @return 返回特殊字体名称
+     */
     public List<String> getSpecialFontNames() {
         return this.fontConfiguration.getSpecialFontNames();
     }
 
+    /**
+     * 获取字体大小
+     *
+     * @return 返回字体大小
+     */
     public Float getFontSize() {
         return this.fontConfiguration.getFontSize();
     }
 
+    /**
+     * 获取字体颜色
+     *
+     * @return 返回字体颜色
+     */
     public Color getFontColor() {
         return this.fontConfiguration.getFontColor();
     }
 
+    /**
+     * 获取字体透明度
+     *
+     * @return 返回字体透明度
+     */
     public Float getFontAlpha() {
         return this.fontConfiguration.getFontAlpha();
     }
 
+    /**
+     * 获取字体样式
+     *
+     * @return 返回字体样式
+     */
     public FontStyle getFontStyle() {
         return this.fontConfiguration.getFontStyle();
     }
 
+    /**
+     * 获取字体斜率
+     *
+     * @return 返回字体斜率
+     */
     public Float getFontSlope() {
         return this.fontConfiguration.getFontSlope();
     }
 
+    /**
+     * 获取字符间距
+     *
+     * @return 返回字符间距
+     */
     public Float getCharacterSpacing() {
         return this.fontConfiguration.getCharacterSpacing();
     }
 
+    /**
+     * 获取行间距
+     *
+     * @return 返回行间距
+     */
     public Float getLeading() {
         return this.fontConfiguration.getLeading();
     }
@@ -552,6 +595,17 @@ public class Document extends AbstractBase implements Closeable {
         Objects.requireNonNull(file, "the file can not be null");
         this.save(file.getAbsolutePath());
     }
+    
+    /**
+     * 保存关闭文档
+     *
+     * @param file 文件
+     */
+    public void saveAndClose(File file) {
+        // 参数校验
+        Objects.requireNonNull(file, "the file can not be null");
+        this.saveAndClose(file.getAbsolutePath());
+    }
 
     /**
      * 保存文档
@@ -564,6 +618,20 @@ public class Document extends AbstractBase implements Closeable {
         Objects.requireNonNull(path, "the path can not be null");
         try (OutputStream outputStream = new BufferedOutputStream(Files.newOutputStream(FileUtil.createDirectories(Paths.get(path))))) {
             this.save(outputStream);
+        }
+    }
+    
+    /**
+     * 保存关闭文档
+     *
+     * @param path 路径
+     */
+    @SneakyThrows
+    public void saveAndClose(String path) {
+        // 参数校验
+        Objects.requireNonNull(path, "the path can not be null");
+        try (OutputStream outputStream = new BufferedOutputStream(Files.newOutputStream(FileUtil.createDirectories(Paths.get(path))))) {
+            this.saveAndClose(outputStream);
         }
     }
 
@@ -589,6 +657,17 @@ public class Document extends AbstractBase implements Closeable {
         this.getTarget().setVersion(this.getVersion());
         // 保存文档
         this.getTarget().save(outputStream, new CompressParameters(Integer.MAX_VALUE));
+    }
+    
+    /**
+     * 保存关闭文档
+     *
+     * @param outputStream 输出流
+     */
+    @SneakyThrows
+    public void saveAndClose(OutputStream outputStream) {
+        this.save(outputStream);
+        this.close();
     }
 
     /**
@@ -729,7 +808,7 @@ public class Document extends AbstractBase implements Closeable {
         this.pages = new ArrayList<>(this.getTarget().getNumberOfPages());
         // 获取页面树
         PDPageTree pageTree = this.getTarget().getPages();
-        // 遍历页面树
+        // // 遍历页面树
         for (int i = 0; i < count; i++) {
             // 添加页面
             this.pages.add(new Page(this, pageTree.get(i)));

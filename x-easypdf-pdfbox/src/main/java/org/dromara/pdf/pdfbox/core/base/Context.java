@@ -65,10 +65,6 @@ public class Context {
      */
     protected Float offsetY;
     /**
-     * 是否已经分页
-     */
-    protected Boolean isAlreadyPaging;
-    /**
      * 换行起始坐标
      */
     protected Float wrapBeginX;
@@ -84,6 +80,18 @@ public class Context {
      * 是否第一个组件
      */
     protected Boolean isFirstComponent;
+    /**
+     * 是否已经分页
+     */
+    protected Boolean isAlreadyPaging;
+    /**
+     * 是否虚拟渲染
+     */
+    protected Boolean isVirtualRender;
+    /**
+     * 是否手动分页
+     */
+    protected Boolean isManualBreak;
     /**
      * 目录列表
      */
@@ -112,6 +120,8 @@ public class Context {
         this.offsetY = 0F;
         this.cursor = new Cursor();
         this.isFirstComponent = Boolean.TRUE;
+        this.isVirtualRender = Boolean.FALSE;
+        this.isManualBreak = Boolean.FALSE;
         this.catalogs = new ArrayList<>(16);
         this.customInfo = new HashMap<>(16);
         this.fontMap = new HashMap<>(16);
@@ -142,7 +152,12 @@ public class Context {
      * @return 返回字体
      */
     public PDFont getFont(String fontName) {
-        return this.fontMap.get(fontName);
+        PDFont font = this.fontMap.get(fontName);
+        if (Objects.isNull(font)) {
+            this.addFontCache(fontName);
+            font = this.fontMap.get(fontName);
+        }
+        return font;
     }
 
     /**
@@ -188,6 +203,15 @@ public class Context {
      */
     public float getPageFooterHeight() {
         return Optional.ofNullable(this.pageFooter).map(PageFooter::getHeight).orElse(0F);
+    }
+    
+    /**
+     * 获取最大X轴起始坐标
+     *
+     * @return 返回最大X轴起始坐标
+     */
+    public float getMaxBeginX() {
+        return this.page.getWidth() - this.page.getMarginRight();
     }
 
     /**
@@ -255,6 +279,26 @@ public class Context {
     }
 
     /**
+     * 重置光标X
+     *
+     * @param beginX x轴坐标
+     */
+    public void resetCursorX(Float beginX) {
+        // 重置光标
+        this.cursor.setX(beginX);
+    }
+
+    /**
+     * 重置光标Y
+     *
+     * @param beginY y轴坐标
+     */
+    public void resetCursorY(Float beginY) {
+        // 重置光标
+        this.cursor.setY(beginY);
+    }
+
+    /**
      * 重置换行宽度
      *
      * @param wrapWidth 换行宽度
@@ -276,7 +320,7 @@ public class Context {
      * @param height 高度
      */
     public void resetHeight(Float height) {
-        // 换行高度为空
+        // 高度为空
         if (Objects.isNull(height)) {
             // 重置为页面高度
             this.height = this.page.getWithoutMarginHeight() - this.getPageHeaderHeight() - this.getPageFooterHeight();
@@ -327,6 +371,22 @@ public class Context {
         // 重置执行中的组件类型
         if (type == this.executingComponentType) {
             this.executingComponentType = null;
+        }
+    }
+
+    /**
+     * 重置是否虚拟渲染
+     *
+     * @param isVirtualRender 是否虚拟渲染
+     */
+    public void resetIsVirtualRender(Boolean isVirtualRender) {
+        // 是否虚拟渲染为空
+        if (Objects.isNull(isVirtualRender)) {
+            // 重置为false
+            this.isVirtualRender = Boolean.FALSE;
+        } else {
+            // 重置为指定虚拟渲染
+            this.isVirtualRender = isVirtualRender;
         }
     }
 

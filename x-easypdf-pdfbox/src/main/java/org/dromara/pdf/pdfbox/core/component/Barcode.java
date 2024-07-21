@@ -10,11 +10,15 @@ import com.google.zxing.qrcode.encoder.QRCode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.apache.pdfbox.util.Matrix;
+import org.dromara.pdf.pdfbox.core.base.BorderData;
 import org.dromara.pdf.pdfbox.core.base.Page;
-import org.dromara.pdf.pdfbox.core.enums.BarcodeErrorLevel;
-import org.dromara.pdf.pdfbox.core.enums.BarcodeType;
-import org.dromara.pdf.pdfbox.core.enums.BarcodeWordsStyle;
-import org.dromara.pdf.pdfbox.core.enums.ComponentType;
+import org.dromara.pdf.pdfbox.core.enums.*;
+import org.dromara.pdf.pdfbox.util.BorderUtil;
+import org.dromara.pdf.pdfbox.util.CommonUtil;
 import org.dromara.pdf.pdfbox.util.ImageUtil;
 
 import java.awt.*;
@@ -51,7 +55,7 @@ public class Barcode extends AbstractComponent {
     /**
      * 缓存
      */
-    protected static final Map<Integer, BufferedImage> CACHE = new HashMap<>(10);
+    protected static final Map<Integer, BufferedImage> CACHE = new HashMap<>(16);
     /**
      * 缓存锁
      */
@@ -271,36 +275,28 @@ public class Barcode extends AbstractComponent {
     }
 
     /**
+     * 获取最小宽度
+     *
+     * @return 返回最小宽度
+     */
+    @Override
+    protected float getMinWidth() {
+        return this.getWidth();
+    }
+
+    /**
      * 初始化
      */
     @Override
     protected void init() {
-        // 初始化
-        super.init();
         // 初始化类型
         Objects.requireNonNull(this.codeType, "the code type can not be null");
         // 初始化内容
         Objects.requireNonNull(this.content, "the content can not be null");
-        // 初始化宽度（显示）
-        if (Objects.isNull(this.width)) {
-            this.width = this.imageWidth;
-            Objects.requireNonNull(this.width, "the width or image width can not be null");
-        }
-        // 初始化高度（显示）
-        if (Objects.isNull(this.height)) {
-            this.height = this.imageHeight;
-            Objects.requireNonNull(this.height, "the height or image height can not be null");
-        }
-        // 初始化图像宽度（生成）
-        if (Objects.isNull(this.imageWidth)) {
-            this.imageWidth = this.width;
-        }
-        // 初始化图像高度（生成）
-        if (Objects.isNull(this.imageHeight)) {
-            this.imageHeight = this.height;
-        }
-        // 初始化编码为utf-8
-        this.encodeHints.put(EncodeHintType.CHARACTER_SET, StandardCharsets.UTF_8);
+        // 初始化
+        super.init();
+        // 初始化宽度与高度
+        this.initWidthAndHeight();
         // 初始化纠错级别
         this.initErrorLevel();
         // 初始化前景颜色
@@ -323,108 +319,40 @@ public class Barcode extends AbstractComponent {
         if (Objects.isNull(this.isCache)) {
             this.isCache = Boolean.FALSE;
         }
-        // 检查换行
-        this.checkWrap();
-        // 初始化起始X轴坐标
-        this.initBeginX(this.width);
-        // 是否首个组件
-        if (this.getContext().getIsFirstComponent()) {
-            super.setBeginY(this.getBeginY() - this.getHeight());
+        // 初始化起始XY轴坐标
+        this.initBeginXY(this.width, this.height);
+    }
+
+    /**
+     * 初始化宽度与高度
+     */
+    protected void initWidthAndHeight() {
+        // 初始化宽度（显示）
+        if (Objects.isNull(this.width)) {
+            this.width = this.imageWidth;
+            Objects.requireNonNull(this.width, "the width or image width can not be null");
         }
-        // 检查分页
-        this.checkPaging();
-
-    }
-
-    /**
-     * 检查换行
-     */
-    protected void checkWrap() {
-        // 初始化X轴坐标
-        if (Objects.isNull(this.getBeginX())) {
-            this.setBeginX(this.getContext().getCursor().getX() + this.getMarginLeft());
+        // 初始化高度（显示）
+        if (Objects.isNull(this.height)) {
+            this.height = this.imageHeight;
+            Objects.requireNonNull(this.height, "the height or image height can not be null");
         }
-        // 初始化换行
-        if (this.isWrap()) {
-            this.getContext().getCursor().reset(
-                    this.getContext().getWrapBeginX(),
-                    this.getContext().getCursor().getY() - this.getHeight()
-            );
-            this.setBeginX(this.getContext().getCursor().getX() + this.getMarginLeft());
+        // 初始化图像宽度（生成）
+        if (Objects.isNull(this.imageWidth)) {
+            this.imageWidth = this.width;
         }
-        // 初始化Y轴坐标
-        if (Objects.isNull(this.getBeginY())) {
-            this.setBeginY(this.getContext().getCursor().getY() - this.getMarginTop());
+        // 初始化图像高度（生成）
+        if (Objects.isNull(this.imageHeight)) {
+            this.imageHeight = this.height;
         }
-    }
-
-    /**
-     * 获取最小宽度
-     *
-     * @return 返回最小宽度
-     */
-    @Override
-    protected float getMinWidth() {
-        return this.getWidth();
-    }
-
-    /**
-     * 虚拟渲染
-     */
-    @Override
-    public void virtualRender() {
-        // 虚拟渲染图像
-        this.createImage().virtualRender();
-        // 重置
-        super.reset(this.getType());
-    }
-
-    /**
-     * 渲染
-     */
-    @Override
-    public void render() {
-        // 渲染图像
-        this.createImage().render();
-        // 重置
-        super.reset(this.getType());
-    }
-
-    /**
-     * 创建图像组件
-     *
-     * @return 返回图像组件
-     */
-    protected Image createImage() {
-        // 初始化
-        this.init();
-        // 创建图像
-        Image image = new Image(this);
-        // 设置宽度
-        image.setWidth(this.getWidth());
-        // 设置高度
-        image.setHeight(this.getHeight());
-        // 设置旋转角度
-        image.setAngle(this.getAngle());
-        // 设置图像
-        image.setImage(ImageUtil.toBytes(this.getBarcodeImage(), "png"));
-        // 设置X轴坐标
-        image.setBeginX(this.getBeginX());
-        // 设置Y轴坐标
-        image.setBeginY(this.getBeginY() - this.getHeight());
-        // 设置X轴相对坐标
-        image.setRelativeBeginX(this.getRelativeBeginX());
-        // 设置Y轴相对坐标
-        image.setRelativeBeginY(this.getRelativeBeginY());
-        // 设置水平对齐方式
-        image.setHorizontalAlignment(this.getHorizontalAlignment());
-        return image;
     }
 
     /**
      * 初始化纠错级别
      */
     protected void initErrorLevel() {
+        // 初始化编码为utf-8
+        this.encodeHints.put(EncodeHintType.CHARACTER_SET, StandardCharsets.UTF_8);
         // 获取纠错级别
         Object errorLevel = this.encodeHints.get(EncodeHintType.ERROR_CORRECTION);
         // 初始化纠错级别
@@ -450,12 +378,65 @@ public class Barcode extends AbstractComponent {
     }
 
     /**
+     * 写入内容
+     */
+    @SneakyThrows
+    @Override
+    protected void writeContents() {
+        if (!this.getContext().getIsVirtualRender()) {
+            // 新建内容流
+            PDPageContentStream contentStream = new PDPageContentStream(
+                    this.getContext().getTargetDocument(),
+                    this.getContext().getTargetPage(),
+                    this.getContentMode().getMode(),
+                    true,
+                    this.getIsResetContentStream()
+            );
+            // 初始化矩阵
+            CommonUtil.initMatrix(contentStream, this.getBeginX(), this.getBeginY(), this.getRelativeBeginX(), this.getRelativeBeginY(), this.getWidth(), this.getHeight(), this.getAngle());
+            // 添加图像
+            contentStream.drawImage(this.getImageXObject(), 0, 0, this.getWidth(), this.getHeight());
+            // 添加边框
+            BorderUtil.drawNormalBorder(contentStream, CommonUtil.getRectangle(this.getWidth(), this.getHeight()), BorderData.create(this, this.getBorderConfiguration()));
+            // 关闭内容流
+            contentStream.close();
+        }
+    }
+
+    /**
+     * 重置
+     */
+    @Override
+    protected void reset() {
+        // 获取X轴坐标
+        float x = this.getBeginX() + this.getWidth() + this.getMarginRight();
+        // 获取Y轴坐标
+        float y = this.getBeginY();
+        // 重置
+        super.reset(this.getType(), x, y);
+    }
+
+    /**
      * 是否显示文字
      *
      * @return 返回布尔值，是为true，否为false
      */
     protected boolean isShowWords() {
         return this.getIsShowWords();
+    }
+
+    /**
+     * 获取图像对象
+     *
+     * @return 返回图像对象
+     */
+    @SneakyThrows
+    protected PDImageXObject getImageXObject() {
+        return PDImageXObject.createFromByteArray(
+                this.getContext().getTargetDocument(),
+                ImageUtil.toBytes(this.getBarcodeImage(), ImageType.PNG.getType()),
+                ImageType.PNG.getType()
+        );
     }
 
     /**

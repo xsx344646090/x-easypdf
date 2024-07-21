@@ -7,6 +7,8 @@ import org.dromara.pdf.pdfbox.core.base.BorderData;
 import org.dromara.pdf.pdfbox.core.base.PagingEvent;
 import org.dromara.pdf.pdfbox.core.base.config.BorderConfiguration;
 
+import java.awt.*;
+
 /**
  * 边框信息
  *
@@ -28,7 +30,11 @@ import org.dromara.pdf.pdfbox.core.base.config.BorderConfiguration;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class BorderInfo extends BorderData {
-
+    
+    /**
+     * 背景颜色
+     */
+    protected Color backgroundColor;
     /**
      * 分页次数
      */
@@ -65,22 +71,24 @@ public class BorderInfo extends BorderData {
      * 是否已经绘制
      */
     protected Boolean isAlreadyRendered;
-
+    
     /**
      * 有参构造
      *
-     * @param base           基础类
-     * @param configuration  边框配置
-     * @param width          宽度
-     * @param height         高度
-     * @param beginX         X轴起始坐标
-     * @param beginY         Y轴起始坐标
-     * @param pagingEvent    分页事件
-     * @param isPagingBorder 是否分页边框
+     * @param base            基础类
+     * @param configuration   边框配置
+     * @param backgroundColor 背景颜色
+     * @param width           宽度
+     * @param height          高度
+     * @param beginX          X轴起始坐标
+     * @param beginY          Y轴起始坐标
+     * @param pagingEvent     分页事件
+     * @param isPagingBorder  是否分页边框
      */
     public BorderInfo(
             AbstractBase base,
             BorderConfiguration configuration,
+            Color backgroundColor,
             float width,
             float height,
             float beginX,
@@ -88,16 +96,16 @@ public class BorderInfo extends BorderData {
             PagingEvent pagingEvent,
             Boolean isPagingBorder
     ) {
-        this.init(base, configuration, width, height, beginX, beginY, pagingEvent, isPagingBorder);
+        this.init(base, configuration, backgroundColor, width, height, beginX, beginY, pagingEvent, isPagingBorder);
     }
-
+    
     /**
      * 分页次数累计
      */
     public void pagingCount() {
         this.pagingCount++;
     }
-
+    
     /**
      * 是否分页
      *
@@ -106,22 +114,24 @@ public class BorderInfo extends BorderData {
     public boolean isPaging() {
         return this.pagingCount > 0;
     }
-
+    
     /**
      * 初始化
      *
-     * @param base           基础类
-     * @param configuration  边框配置
-     * @param width          宽度
-     * @param height         高度
-     * @param beginX         X轴起始坐标
-     * @param beginY         Y轴起始坐标
-     * @param pagingEvent    分页事件
-     * @param isPagingBorder 是否分页边框
+     * @param base            基础类
+     * @param configuration   边框配置
+     * @param backgroundColor 背景颜色
+     * @param width           宽度
+     * @param height          高度
+     * @param beginX          X轴起始坐标
+     * @param beginY          Y轴起始坐标
+     * @param pagingEvent     分页事件
+     * @param isPagingBorder  是否分页边框
      */
     protected void init(
             AbstractBase base,
             BorderConfiguration configuration,
+            Color backgroundColor,
             float width,
             float height,
             float beginX,
@@ -131,6 +141,8 @@ public class BorderInfo extends BorderData {
     ) {
         // 初始化
         super.init(base, configuration);
+        // 初始化背景颜色
+        this.backgroundColor = backgroundColor;
         // 初始化分页次数
         this.pagingCount = 0;
         // 初始化宽度

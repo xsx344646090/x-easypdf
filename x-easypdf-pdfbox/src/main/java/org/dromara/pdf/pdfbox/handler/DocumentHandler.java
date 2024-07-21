@@ -430,13 +430,21 @@ public class DocumentHandler {
      */
     @SneakyThrows
     public Document loadByRemote(String path, String password, InputStream keyStore, String alias, MemoryPolicy policy) {
+        // 创建URL对象
         URLConnection connection = new URL(path).openConnection();
+        // 设置连接超时时间为300000毫秒
         connection.setConnectTimeout(300000);
+        // 设置读取超时时间为300000毫秒
         connection.setReadTimeout(300000);
+        // 设置是否允许输入流
         connection.setDoInput(true);
+        // 设置是否允许输出流
         connection.setDoOutput(true);
+        // 设置是否使用缓存
         connection.setUseCaches(false);
+        // 获取输入流
         try (InputStream inputStream = connection.getInputStream()) {
+            // 加载输入流
             return this.load(inputStream, password, keyStore, alias, policy);
         }
     }

@@ -260,10 +260,7 @@ public class FileSystemFontProvider extends FontProvider {
      */
     FileSystemFontProvider(FontCache cache) {
         this.cache = cache;
-        boolean scanDiskFont = true;
-        if (Objects.equals("false", System.getProperty("org.dromara.pdfbox.scanfont"))) {
-            scanDiskFont = false;
-        }
+        boolean scanDiskFont = !Objects.equals("false", System.getProperty(Constants.FONT_SCAN_SWITCH));
         if (scanDiskFont) {
             try {
                 if (LOG.isTraceEnabled()) {
@@ -286,13 +283,12 @@ public class FileSystemFontProvider extends FontProvider {
                     // load cached FontInfo objects
                     List<FSFontInfo> cachedInfos = loadDiskCache(files);
                     if (cachedInfos != null && !cachedInfos.isEmpty()) {
-                        fontInfoList.addAll(cachedInfos);
+                        this.fontInfoList.addAll(cachedInfos);
                     } else {
                         LOG.warn("Building on-disk font cache, this may take a while");
                         scanFonts(files);
                         saveDiskCache();
-                        LOG.warn("Finished building on-disk font cache, found " + fontInfoList.size()
-                                + " fonts");
+                        LOG.warn("Finished building on-disk font cache, found " + this.fontInfoList.size() + " fonts");
                     }
                 }
             } catch (SecurityException e) {

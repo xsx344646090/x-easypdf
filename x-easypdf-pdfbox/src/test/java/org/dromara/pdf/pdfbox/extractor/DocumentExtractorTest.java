@@ -39,10 +39,10 @@ public class DocumentExtractorTest extends BaseTest {
     public void extractTextTest() {
         this.test(() -> {
             try (
-                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\extractor\\simpleTableTest.pdf");
+                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\extractor\\0216.pdf");
                     DocumentExtractor extractor = new DocumentExtractor(document);
             ) {
-                Map<Integer, List<String>> map = extractor.extractText();
+                Map<Integer, List<String>> map = extractor.extractText(0);
                 map.forEach((key, value) -> log.info("key: " + key + ", value: " + value));
             }
         });

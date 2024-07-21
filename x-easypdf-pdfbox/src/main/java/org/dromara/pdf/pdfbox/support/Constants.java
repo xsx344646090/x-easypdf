@@ -1,5 +1,9 @@
 package org.dromara.pdf.pdfbox.support;
 
+import org.dromara.pdf.pdfbox.core.enums.FontStyle;
+
+import java.awt.*;
+
 /**
  * 常量
  *
@@ -41,6 +45,10 @@ public final class Constants {
      */
     public static final String CURRENT_PAGE_PLACEHOLDER = "${CPN}";
     /**
+     * 字体扫描开关
+     */
+    public static final String FONT_SCAN_SWITCH = "org.dromara.pdfbox.scan.font";
+    /**
      * 默认版本
      */
     public static final Float DEFAULT_VERSION = 1.6F;
@@ -52,6 +60,38 @@ public final class Constants {
      * 默认字体路径
      */
     public static final String DEFAULT_FONT_RESOURCE_PATH = "org/dromara/pdf/pdfbox/ttf/HarmonyOS_Sans_SC_Medium.ttf";
+    /**
+     * 默认字体大小
+     */
+    public static final Float DEFAULT_FONT_SIZE = 12F;
+    /**
+     * 默认字体颜色
+     */
+    public static final Color DEFAULT_FONT_COLOR = Color.BLACK;
+    /**
+     * 默认字体透明度
+     */
+    public static final Float DEFAULT_FONT_ALPHA = 1.0F;
+    /**
+     * 默认字体斜率
+     */
+    public static final Float DEFAULT_FONT_SLOPE = 0F;
+    /**
+     * 默认斜体字体斜率
+     */
+    public static final Float DEFAULT_FONT_ITALIC_SLOPE = 0.3F;
+    /**
+     * 默认字体样式
+     */
+    public static final FontStyle DEFAULT_FONT_STYLE = FontStyle.NORMAL;
+    /**
+     * 默认字符间距
+     */
+    public static final Float DEFAULT_CHARACTER_SPACING = 0F;
+    /**
+     * 默认行间距
+     */
+    public static final Float DEFAULT_LEADING = 0F;
     /**
      * 默认外观
      */
