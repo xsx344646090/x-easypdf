@@ -1,5 +1,6 @@
 package org.dromara.pdf.pdfbox.processor;
 
+import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationFreeText;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureOptions;
@@ -15,6 +16,7 @@ import org.dromara.pdf.pdfbox.core.ext.processor.sign.EncryptAlgorithm;
 import org.dromara.pdf.pdfbox.core.ext.processor.sign.KeyStoreType;
 import org.dromara.pdf.pdfbox.core.ext.processor.sign.SignOptions;
 import org.dromara.pdf.pdfbox.core.ext.processor.sign.SignProcessor;
+import org.dromara.pdf.pdfbox.core.info.ReplaceInfo;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.dromara.pdf.pdfbox.util.ColorUtil;
 import org.dromara.pdf.pdfbox.util.ImageUtil;
@@ -106,11 +108,17 @@ public class DocumentProcessorTest extends BaseTest {
     @Test
     public void replaceTest() {
         this.test(() -> {
-            try (Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\hello-world.pdf")) {
+            try (Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\allTest.pdf")) {
                 ReplaceProcessor processor = PdfHandler.getDocumentProcessor(document).getReplaceProcessor();
-                ReplaceProcessor.ReplaceCharacterInfo replaceInfo1 = new ReplaceProcessor.ReplaceCharacterInfo('0', '1', Stream.of(3, 5).collect(Collectors.toSet()), PdfHandler.getFontHandler().getPDFont(document.getTarget(), "仿宋"));
-                ReplaceProcessor.ReplaceCharacterInfo replaceInfo2 = new ReplaceProcessor.ReplaceCharacterInfo('3', '4', Stream.of(0, 1).collect(Collectors.toSet()), PdfHandler.getFontHandler().getPDFont(document.getTarget(), "仿宋"));
-                processor.replaceText(Arrays.asList(replaceInfo1, replaceInfo2), 0);
+                PDFont font = document.getContext().getFont("微软雅黑");
+                // 替换指定第一个与第二个
+                ReplaceInfo replaceInfo1 = new ReplaceInfo('贵', '遵', Stream.of(0, 1).collect(Collectors.toSet()), font);
+                // 替换全部
+                ReplaceInfo replaceInfo2 = ReplaceInfo.builder().original('阳').value('义').font(font).build();
+                // 替换为空（移除）
+                ReplaceInfo replaceInfo3 = new ReplaceInfo('百', '\u0000', Stream.of(1).collect(Collectors.toSet()), font);
+                ReplaceInfo replaceInfo4 = new ReplaceInfo('科', '\u0000', Stream.of(1).collect(Collectors.toSet()), font);
+                processor.replaceText(Arrays.asList(replaceInfo1, replaceInfo2, replaceInfo3, replaceInfo4), 0);
                 document.save("E:\\PDF\\pdfbox\\processor\\replaceTest.pdf");
             }
         });
@@ -153,11 +161,12 @@ public class DocumentProcessorTest extends BaseTest {
     @Test
     public void bookmarkTest() {
         this.test(() -> {
-            try (Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\processor\\mergeTest.pdf")) {
+            try (Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\hello-world.pdf")) {
+
                 BookmarkProcessor processor = PdfHandler.getDocumentProcessor(document).getBookmarkProcessor();
                 PDOutlineItem outlineItem = new PDOutlineItem();
                 outlineItem.setTitle("hello world");
-                outlineItem.setDestination(document.getPage(1).getTarget());
+                outlineItem.setDestination(document.getPage(0).getTarget());
                 processor.append(outlineItem);
                 processor.flush();
 

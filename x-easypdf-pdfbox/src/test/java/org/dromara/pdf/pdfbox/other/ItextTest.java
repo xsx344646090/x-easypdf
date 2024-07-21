@@ -7,6 +7,7 @@ import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import org.dromara.pdf.pdfbox.base.BaseTest;
+import org.junit.Test;
 
 /**
  * @author xsx
@@ -26,11 +27,15 @@ import org.dromara.pdf.pdfbox.base.BaseTest;
  */
 public class ItextTest extends BaseTest {
 
-    public static void main(String[] args) throws Exception {
-        new ItextTest().test(ItextTest::create);
+    /**
+     * 测试目录页
+     */
+    @Test
+    public void itextTest() {
+        this.test(this::create);
     }
 
-    public static void create() {
+    public void create() {
         try {
             // Creating a PdfDocument object
             String dest = "E:\\PDF\\pdfbox\\table\\simpleTableTest1.pdf";

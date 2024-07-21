@@ -99,6 +99,15 @@ public enum FontStyle {
     public boolean isFill() {
         return this == NORMAL || this == BOLD || this == ITALIC || this == ITALIC_BOLD;
     }
+    
+    /**
+     * 是否粗体
+     *
+     * @return 返回布尔值，是为true，否为false
+     */
+    public boolean isBold() {
+        return this == BOLD || this == ITALIC_BOLD;
+    }
 
     /**
      * 是否细体

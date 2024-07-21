@@ -7,17 +7,22 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.dromara.pdf.pdfbox.core.base.*;
 import org.dromara.pdf.pdfbox.core.component.Container;
-import org.dromara.pdf.pdfbox.core.component.SplitLine;
+import org.dromara.pdf.pdfbox.core.component.Line;
 import org.dromara.pdf.pdfbox.core.component.Textarea;
+import org.dromara.pdf.pdfbox.core.enums.HorizontalAlignment;
+import org.dromara.pdf.pdfbox.core.enums.LineStyle;
 import org.dromara.pdf.pdfbox.core.enums.PWLength;
 import org.dromara.pdf.pdfbox.core.info.CatalogInfo;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.awt.*;
+import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.*;
 
 /**
@@ -44,7 +49,7 @@ public class DocumentTest extends BaseTest {
     @Test
     public void pdfboxTest() {
         this.test(() -> {
-            Document document = PdfHandler.getDocumentHandler().create();
+            Document document = PdfHandler.getDocumentHandler().load(new File("E:\\PDF\\pdfbox\\processor\\allTest.pdf"));
             document.setFontName("微软雅黑");
 
             PDDocument pdDocument = document.getTarget();
@@ -56,14 +61,21 @@ public class DocumentTest extends BaseTest {
 
             PDFont pdFont = document.getFont();
 
+            float x= 0F;
+            float y = page.getMediaBox().getHeight() - 12;
             contentStream.setFont(pdFont, 12f);
             contentStream.beginText();
-            contentStream.newLineAtOffset(0, page.getMediaBox().getHeight() - 12);
+            contentStream.newLineAtOffset(x, y);
             contentStream.showText("你好，世界！hello world");
+            contentStream.endText();
+            contentStream.beginText();
+            x = 20 * 12F;
+            contentStream.newLineAtOffset(x, y);
+            contentStream.showText("第二段文本");
             contentStream.endText();
             contentStream.close();
 
-            document.save("E:\\PDF\\pdfbox\\document\\test.pdf");
+            document.save("E:\\PDF\\pdfbox\\processor\\test.pdf");
             document.close();
         });
     }
@@ -296,14 +308,15 @@ public class DocumentTest extends BaseTest {
                 content.setIsWrap(true);
                 content.render();
 
-                SplitLine splitLine = new SplitLine(catalogPage);
-                splitLine.setRelativeBeginY(-5F);
-                splitLine.setDottedLength(2F);
-                splitLine.setDottedSpacing(1F);
-                splitLine.setMarginLeft(20F);
-                splitLine.setMarginRight(20F);
-                splitLine.setLineLength(260F);
-                splitLine.render();
+                Line line = new Line(catalogPage);
+                line.setLineStyle(LineStyle.DOTTED);
+                line.setLineWidth(2F);
+                line.setLineLength(260F);
+                line.setDottedSpacing(1F);
+                line.setMarginLeft(20F);
+                line.setMarginRight(20F);
+                line.setRelativeBeginY(-5F);
+                line.render();
 
                 Textarea contentPageIndex = new Textarea(catalogPage);
                 contentPageIndex.setText(String.valueOf((catalog.getPage().getIndex() + 1)));
@@ -405,9 +418,13 @@ public class DocumentTest extends BaseTest {
      * 创建文档
      */
     private Document create(Integer totalPage) {
+        PdfHandler.getFontHandler().getFontNames().forEach(System.out::println);
         Document document = PdfHandler.getDocumentHandler().create();
         document.setMargin(50F);
         document.setTotalPageNumber(totalPage);
+        // document.setFontName("MicrosoftYaHeiBold");
+        document.setFontName("HarmonyOS Sans SC Medium-Bold");
+        // document.setFontStyle(FontStyle.BOLD);
 
         Page page = new Page(document);
 
@@ -436,8 +453,11 @@ public class DocumentTest extends BaseTest {
         }
 
         Container container = new Container(document.getCurrentPage());
-        container.setWidth(100F);
+        container.setWidth(200F);
         container.setHeight(100F);
+        container.setBackgroundColor(Color.LIGHT_GRAY);
+        container.setHorizontalAlignment(HorizontalAlignment.CENTER);
+        container.setContentHorizontalAlignment(HorizontalAlignment.CENTER);
         container.setIsBorder(true);
         Textarea textarea1 = new Textarea(container.getPage());
         textarea1.setText("hello");

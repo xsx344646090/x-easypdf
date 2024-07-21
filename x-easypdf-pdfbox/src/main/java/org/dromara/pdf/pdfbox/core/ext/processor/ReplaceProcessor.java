@@ -1,7 +1,5 @@
 package org.dromara.pdf.pdfbox.core.ext.processor;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
 import org.apache.pdfbox.cos.*;
@@ -21,6 +19,7 @@ import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDDocume
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.enums.ImageType;
+import org.dromara.pdf.pdfbox.core.info.ReplaceInfo;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.dromara.pdf.pdfbox.support.COSBaseInfo;
 import org.dromara.pdf.pdfbox.util.ImageUtil;
@@ -70,7 +69,7 @@ public class ReplaceProcessor extends AbstractProcessor {
      * @param replaceList 替换列表
      * @param pageIndexes 页面索引
      */
-    public void replaceText(List<ReplaceCharacterInfo> replaceList, int... pageIndexes) {
+    public void replaceText(List<ReplaceInfo> replaceList, int... pageIndexes) {
         Objects.requireNonNull(replaceList, "the replace list can not be null");
         // 获取页面树
         PDPageTree pageTree = this.getDocument().getPages();
@@ -207,7 +206,7 @@ public class ReplaceProcessor extends AbstractProcessor {
      * @param replaceList 替换列表
      */
     @SneakyThrows
-    protected void replaceText(PDPage page, List<ReplaceCharacterInfo> replaceList) {
+    protected void replaceText(PDPage page, List<ReplaceInfo> replaceList) {
         // 定义替换索引字典
         Map<Character, Integer> replaceIndexMap = new HashMap<>(replaceList.size());
         // 初始化字典
@@ -376,13 +375,13 @@ public class ReplaceProcessor extends AbstractProcessor {
     protected boolean replaceTextToken(
             PDResources resources,
             List<Object> tokens,
-            List<ReplaceCharacterInfo> replaceList,
+            List<ReplaceInfo> replaceList,
             Map<Character, Integer> replaceIndexMap
     ) {
-        // 获取资源字体字典
-        Map<COSName, PDFont> resourceFontMap = this.initResourceFontMap(resources);
         // 定义替换标记
         boolean flag = false;
+        // 获取资源字体字典
+        Map<COSName, PDFont> resourceFontMap = this.initResourceFontMap(resources);
         // 定义基本信息
         COSBaseInfo cosBaseInfo = null;
         // 定义信息列表
@@ -398,7 +397,7 @@ public class ReplaceProcessor extends AbstractProcessor {
                 // 如果资源字体不为空，则重置资源字体索引与名称
                 if (Objects.nonNull(resourceFont)) {
                     // 重置基本信息
-                    cosBaseInfo = new COSBaseInfo(i, resourceFont, null, false, new ArrayList<>(16));
+                    cosBaseInfo = new COSBaseInfo(i, resourceFont, resourceFont, false, new ArrayList<>(16));
                     // 添加列表
                     infoList.add(cosBaseInfo);
                 }
@@ -407,61 +406,108 @@ public class ReplaceProcessor extends AbstractProcessor {
             }
             // 如果为cosArray或cosString，则添加cosBase信息
             if (token instanceof COSArray || token instanceof COSString) {
+                // 标记信息不为空
                 if (Objects.nonNull(cosBaseInfo)) {
+                    // 获取原字符串
                     String source = this.readFromToken(token, cosBaseInfo.getFont());
+                    // 创建构建器
+                    StringBuilder newValue = new StringBuilder();
+                    // 原字符串不为空
                     if (Objects.nonNull(source)) {
+                        // 定义标记值
                         COSBaseInfo.TokenValue tokenValue;
-                        boolean isReplace = false;
-                        char character = source.charAt(0);
-                        char newValue = character;
-                        Integer index = replaceIndexMap.get(character);
-                        if (Objects.nonNull(index)) {
-                            for (ReplaceCharacterInfo info : replaceList) {
-                                if (Objects.equals(character, info.getOriginal())) {
-                                    Set<Integer> indexes = info.getIndexes();
-                                    index = replaceIndexMap.get(character);
-                                    if (Objects.nonNull(indexes)) {
-                                        for (Integer replaceIndex : indexes) {
-                                            if (Objects.equals(index, replaceIndex)) {
-                                                isReplace = true;
-                                                newValue = info.getValue();
-                                                cosBaseInfo.setReplaceFont(info.getFont());
-                                                break;
+                        // 定义空字符
+                        final char blank = '\u0000';
+                        // 转为字符数组
+                        char[] characters = source.toCharArray();
+                        // 遍历字符数组
+                        for (char character : characters) {
+                            // 获取替换标记
+                            Integer index = replaceIndexMap.get(character);
+                            // 存在替换
+                            if (Objects.nonNull(index)) {
+                                // 遍历替换列表
+                                for (ReplaceInfo info : replaceList) {
+                                    // 该字符与原始字符一致
+                                    if (Objects.equals(character, info.getOriginal())) {
+                                        // 获取替换索引
+                                        Set<Integer> indexes = info.getIndexes();
+                                        // 索引不为空
+                                        if (Objects.nonNull(indexes)) {
+                                            // 定义替换标记
+                                            boolean replaced = false;
+                                            // 遍历替换索引
+                                            for (Integer replaceIndex : indexes) {
+                                                // 索引一致
+                                                if (Objects.equals(index, replaceIndex)) {
+                                                    // 重置替换标记
+                                                    replaced = true;
+                                                    // 设置替换标记
+                                                    cosBaseInfo.setIsReplace(replaced);
+                                                    // 设置替换字体
+                                                    cosBaseInfo.setReplaceFont(info.getFont());
+                                                    // 非空字符
+                                                    if (!Objects.equals(blank, info.getValue())) {
+                                                        // 添加替换值
+                                                        newValue.append(info.getValue());
+                                                    }
+                                                    // 打印日志
+                                                    if (log.isDebugEnabled()) {
+                                                        log.debug("Replaced character: original ['" + character + "'], now ['" + info.getValue() + "'], index ['" + index + "']");
+                                                    }
+                                                    // 结束遍历
+                                                    break;
+                                                }
+                                            }
+                                            // 未替换
+                                            if (!replaced) {
+                                                // 添加原有值
+                                                newValue.append(character);
+                                            }
+                                        } else {
+                                            // 设置替换标记
+                                            cosBaseInfo.setIsReplace(true);
+                                            // 设置替换字体
+                                            cosBaseInfo.setReplaceFont(info.getFont());
+                                            // 非空字符
+                                            if (!Objects.equals(blank, info.getValue())) {
+                                                // 添加替换值
+                                                newValue.append(info.getValue());
+                                            }
+                                            // 打印日志
+                                            if (log.isDebugEnabled()) {
+                                                log.debug("Replaced character: original ['" + character + "'], now ['" + info.getValue() + "'], index ['" + index + "']");
                                             }
                                         }
-                                    } else {
-                                        isReplace = true;
-                                        cosBaseInfo.setReplaceFont(info.getFont());
-                                        newValue = info.getValue();
                                     }
                                 }
-                            }
-                            replaceIndexMap.put(character, index + 1);
-                            if (isReplace) {
-                                cosBaseInfo.setIsReplace(true);
-                                if (log.isDebugEnabled()) {
-                                    log.debug("Replaced character: original ['" + source + "'], now ['" + newValue + "'], index ['" + index + "']");
-                                }
+                                // 索引+1
+                                replaceIndexMap.put(character, index + 1);
                             } else {
-                                cosBaseInfo.setReplaceFont(cosBaseInfo.getFont());
+                                // 添加原有值
+                                newValue.append(character);
                             }
+                            // 重置标记值
+                            tokenValue = new COSBaseInfo.TokenValue(token, newValue.toString());
+                            // 添加标记值
+                            cosBaseInfo.getTokens().add(tokenValue);
                         }
-                        tokenValue = new COSBaseInfo.TokenValue(token, String.valueOf(newValue));
-                        cosBaseInfo.getTokens().add(tokenValue);
                     }
                 }
             }
         }
+        // 遍历标记信息
         for (COSBaseInfo info : infoList) {
+            // 已替换
             if (info.getIsReplace()) {
                 // 获取字体
-                PDFont font = info.getFont();
+                PDFont font = info.getReplaceFont();
                 // 获取字体名称
                 COSName replaceFontName = COSName.getPDFName(font.getName());
                 // 遍历标记
                 for (COSBaseInfo.TokenValue token : info.getTokens()) {
                     // 嵌入字体
-                    PdfHandler.getFontHandler().addToSubset(this.getDocument(), info.getFont(), token.getValue());
+                    PdfHandler.getFontHandler().addToSubset(this.getDocument(), font, token.getValue());
                     // cos数组
                     if (token.getToken() instanceof COSArray) {
                         // 转换为cos数组
@@ -539,22 +585,8 @@ public class ReplaceProcessor extends AbstractProcessor {
             COSArray array = (COSArray) token;
             // 遍历cos数组
             for (COSBase cosBase : array) {
-                // 如果为cos字符串，则进行处理
-                if (cosBase instanceof COSString) {
-                    // 转换为cos字符串
-                    COSString cosString = (COSString) cosBase;
-                    // 获取字符串输入流
-                    try (InputStream in = new ByteArrayInputStream(cosString.getBytes())) {
-                        // 读取字符
-                        while (in.available() > 0) {
-                            String unicode = resourceFont.toUnicode(resourceFont.readCode(in));
-                            if (Objects.nonNull(unicode)) {
-                                // 解析字符
-                                builder.append(unicode);
-                            }
-                        }
-                    }
-                } else if (cosBase instanceof COSInteger) {
+                // 数字类型
+                if (cosBase instanceof COSInteger) {
                     // 转换
                     COSInteger cosInteger = (COSInteger) cosBase;
                     // 空格,暂时不知道空格的实际表示值，据观测
@@ -562,16 +594,35 @@ public class ReplaceProcessor extends AbstractProcessor {
                         // 添加空格
                         builder.append(" ");
                     }
+                } else {
+                    // 追加unicode
+                    this.appendUnicode(builder, token, resourceFont);
                 }
             }
-        } else if (token instanceof COSString) {
+        } else {
+            // 追加unicode
+            this.appendUnicode(builder, token, resourceFont);
+        }
+        return builder.length() > 0 ? builder.toString() : null;
+    }
+
+    /**
+     * 追加unicode
+     *
+     * @param builder 构建器
+     * @param token   标记
+     * @param font    字体
+     */
+    @SneakyThrows
+    protected void appendUnicode(StringBuilder builder, Object token, PDFont font) {
+        if (token instanceof COSString) {
             // 转换为cos字符串
             COSString cosString = (COSString) token;
             // 获取字符串输入流
             try (InputStream in = new ByteArrayInputStream(cosString.getBytes())) {
                 // 读取字符
                 while (in.available() > 0) {
-                    String unicode = resourceFont.toUnicode(resourceFont.readCode(in));
+                    String unicode = font.toUnicode(font.readCode(in));
                     if (Objects.nonNull(unicode)) {
                         // 解析字符
                         builder.append(unicode);
@@ -579,7 +630,6 @@ public class ReplaceProcessor extends AbstractProcessor {
                 }
             }
         }
-        return builder.length() > 0 ? builder.toString() : null;
     }
 
     /**
@@ -601,29 +651,5 @@ public class ReplaceProcessor extends AbstractProcessor {
             }
         }
         return resourceFontMap;
-    }
-
-    /**
-     * 替换字符信息
-     */
-    @Data
-    @AllArgsConstructor
-    public static class ReplaceCharacterInfo {
-        /**
-         * 原有值
-         */
-        private Character original;
-        /**
-         * 新值
-         */
-        private Character value;
-        /**
-         * 索引
-         */
-        private Set<Integer> indexes;
-        /**
-         * 替换字体
-         */
-        private PDFont font;
     }
 }

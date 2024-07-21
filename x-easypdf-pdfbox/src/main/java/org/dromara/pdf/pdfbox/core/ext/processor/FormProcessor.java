@@ -225,7 +225,7 @@ public class FormProcessor extends AbstractProcessor {
     @SneakyThrows
     public void clear() {
         // 清空字段
-        // this.form.flatten(this.getFields(), true);
+        this.form.flatten(this.getFields(), true);
         // 重置表单
         this.getDocument().getDocumentCatalog().setAcroForm(this.form);
     }

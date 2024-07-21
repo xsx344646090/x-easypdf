@@ -1,7 +1,9 @@
 package org.dromara.pdf.pdfbox.core.base.config;
 
 import lombok.Data;
-import org.dromara.pdf.pdfbox.core.enums.BorderStyle;
+import org.dromara.pdf.pdfbox.core.base.PageSize;
+import org.dromara.pdf.pdfbox.core.enums.LineStyle;
+import org.dromara.pdf.pdfbox.core.enums.LineCapStyle;
 
 import java.awt.*;
 import java.util.Objects;
@@ -29,19 +31,23 @@ public class BorderConfiguration {
     /**
      * 边框样式
      */
-    protected BorderStyle borderStyle;
+    protected LineStyle borderLineStyle;
     /**
-     * 边框线宽
+     * 线帽样式
      */
-    protected Float borderWidth;
+    protected LineCapStyle borderLineCapStyle;
     /**
-     * 边框点线长度
+     * 边框线长
      */
     protected Float borderLineLength;
     /**
+     * 边框线宽
+     */
+    protected Float borderLineWidth;
+    /**
      * 边框点线间隔
      */
-    protected Float borderLineSpacing;
+    protected Float borderDottedSpacing;
     /**
      * 上边框颜色
      */
@@ -120,17 +126,17 @@ public class BorderConfiguration {
      *
      * @param width 线宽
      */
-    public void setBorderWidth(float width) {
+    public void setBorderLineWidth(float width) {
         if (width <= 0) {
-            throw new IllegalArgumentException("the border width must be greater than 0");
+            throw new IllegalArgumentException("the border line width must be greater than 0");
         }
-        this.borderWidth = width;
+        this.borderLineWidth = width;
     }
 
     /**
-     * 设置边框点线长度
+     * 设置边框线长
      *
-     * @param length 点线长度
+     * @param length 线长
      */
     public void setBorderLineLength(float length) {
         if (length <= 0) {
@@ -144,11 +150,11 @@ public class BorderConfiguration {
      *
      * @param spacing 点线间隔
      */
-    public void setBorderLineSpacing(float spacing) {
+    public void setBorderDottedSpacing(float spacing) {
         if (spacing < 0) {
-            throw new IllegalArgumentException("the border line spacing must be greater than 0");
+            throw new IllegalArgumentException("the border dotted spacing must be greater than 0");
         }
-        this.borderLineSpacing = spacing;
+        this.borderDottedSpacing = spacing;
     }
 
     /**
@@ -165,20 +171,20 @@ public class BorderConfiguration {
      */
     public void init() {
         // 初始化边框样式
-        if (Objects.isNull(this.borderStyle)) {
-            this.borderStyle = BorderStyle.SOLID;
+        if (Objects.isNull(this.borderLineStyle)) {
+            this.borderLineStyle = LineStyle.SOLID;
+        }
+        // 初始化边框线帽样式
+        if (Objects.isNull(this.borderLineCapStyle)) {
+            this.borderLineCapStyle = LineCapStyle.SQUARE;
         }
         // 初始化边框线宽
-        if (Objects.isNull(this.borderWidth)) {
-            this.borderWidth = 1F;
-        }
-        // 初始化边框点线长度
-        if (Objects.isNull(this.borderLineLength)) {
-            this.borderLineLength = 1F;
+        if (Objects.isNull(this.borderLineWidth)) {
+            this.borderLineWidth = 1F;
         }
         // 初始化边框点线间隔
-        if (Objects.isNull(this.borderLineSpacing)) {
-            this.borderLineSpacing = 1F;
+        if (Objects.isNull(this.borderDottedSpacing)) {
+            this.borderDottedSpacing = 1F;
         }
         // 初始化上边框颜色
         if (Objects.isNull(this.borderTopColor)) {
@@ -221,20 +227,24 @@ public class BorderConfiguration {
      */
     public void init(BorderConfiguration base) {
         // 初始化边框样式
-        if (Objects.isNull(this.borderStyle)) {
-            this.borderStyle = base.borderStyle;
+        if (Objects.isNull(this.borderLineStyle)) {
+            this.borderLineStyle = base.borderLineStyle;
         }
-        // 初始化边框线宽
-        if (Objects.isNull(this.borderWidth)) {
-            this.borderWidth = base.borderWidth;
+        // 初始化边框线帽样式
+        if (Objects.isNull(this.borderLineCapStyle)) {
+            this.borderLineCapStyle = base.borderLineCapStyle;
         }
-        // 初始化边框点线长度
+        // 初始化边框线长
         if (Objects.isNull(this.borderLineLength)) {
             this.borderLineLength = base.borderLineLength;
         }
+        // 初始化边框线宽
+        if (Objects.isNull(this.borderLineWidth)) {
+            this.borderLineWidth = base.borderLineWidth;
+        }
         // 初始化边框点线间隔
-        if (Objects.isNull(this.borderLineSpacing)) {
-            this.borderLineSpacing = base.borderLineSpacing;
+        if (Objects.isNull(this.borderDottedSpacing)) {
+            this.borderDottedSpacing = base.borderDottedSpacing;
         }
         // 初始化上边框颜色
         if (Objects.isNull(this.borderTopColor)) {

@@ -1,7 +1,7 @@
 package org.dromara.pdf.pdfbox.core.enums;
 
 /**
- * 边框样式
+ * 线样式
  *
  * @author xsx
  * @date 2023/6/26
@@ -18,7 +18,7 @@ package org.dromara.pdf.pdfbox.core.enums;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public enum BorderStyle {
+public enum LineStyle {
 
     /**
      * 实线

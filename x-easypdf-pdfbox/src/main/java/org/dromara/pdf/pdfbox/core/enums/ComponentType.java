@@ -45,6 +45,10 @@ public enum ComponentType {
      */
     RECTANGLE,
     /**
+     * 圆形
+     */
+    CIRCLE,
+    /**
      * 分割线
      */
     SPLIT_LINE,

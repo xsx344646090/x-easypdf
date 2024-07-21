@@ -4,7 +4,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.dromara.pdf.pdfbox.core.base.BorderData;
 import org.dromara.pdf.pdfbox.core.base.Page;
+import org.dromara.pdf.pdfbox.core.base.PagingEvent;
+import org.dromara.pdf.pdfbox.core.enums.HorizontalAlignment;
+import org.dromara.pdf.pdfbox.core.enums.VerticalAlignment;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -31,7 +35,11 @@ import java.util.Objects;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class TableRow extends BorderData {
-
+    
+    /**
+     * 背景颜色
+     */
+    protected Color backgroundColor;
     /**
      * 表格
      */
@@ -69,17 +77,35 @@ public class TableRow extends BorderData {
      */
     protected Float beginY;
     /**
+     * 是否分页
+     */
+    protected Boolean isBreak;
+    /**
+     * 是否整体换行
+     */
+    protected Boolean isTogether;
+    /**
      * 是否分页边框
      */
     protected Boolean isPagingBorder;
-
     /**
-     * 无参构造
+     * 内容水平对齐方式
      */
-    public TableRow(float height) {
-        this.setHeight(height);
+    protected HorizontalAlignment contentHorizontalAlignment;
+    /**
+     * 内容垂直对齐方式
+     */
+    protected VerticalAlignment contentVerticalAlignment;
+    
+    /**
+     * 有参构造
+     *
+     * @param table 表格
+     */
+    public TableRow(Table table) {
+        this.table = table;
     }
-
+    
     /**
      * 设置高度
      *
@@ -91,7 +117,7 @@ public class TableRow extends BorderData {
         }
         this.height = height;
     }
-
+    
     /**
      * 设置单元格
      *
@@ -101,7 +127,7 @@ public class TableRow extends BorderData {
     public void setCells(List<TableCell> cells) {
         this.cells = cells;
     }
-
+    
     /**
      * 设置单元格
      *
@@ -115,7 +141,7 @@ public class TableRow extends BorderData {
             this.cells = null;
         }
     }
-
+    
     /**
      * 添加单元格
      *
@@ -130,7 +156,7 @@ public class TableRow extends BorderData {
             }
         }
     }
-
+    
     /**
      * 添加单元格
      *
@@ -144,7 +170,7 @@ public class TableRow extends BorderData {
             Collections.addAll(this.cells, cells);
         }
     }
-
+    
     /**
      * 获取宽度
      *
@@ -156,61 +182,113 @@ public class TableRow extends BorderData {
         }
         return (float) this.cells.stream().mapToDouble(TableCell::getWidth).sum();
     }
-
+    
     /**
      * 虚拟渲染
      */
     public void virtualRender(Page page, Float beginX, Float beginY) {
+        // 初始化页面
         this.init(page, beginX, beginY);
+        // 如果表格不为空
         if (Objects.nonNull(this.getCells())) {
-
-        }
-    }
-
-    /**
-     * 渲染
-     */
-    public void render(Page page, Float beginX, Float beginY) {
-        this.init(page, beginX, beginY);
-        if (Objects.nonNull(this.getCells())) {
+            // 获取表格的列宽
             List<Float> cellWidths = this.getTable().getCellWidths();
+            // 初始化索引
             int index = 0;
+            // 遍历表格的每个单元格
             for (TableCell tableCell : this.getCells()) {
+                // 如果单元格不为空
                 if (Objects.nonNull(tableCell)) {
-                    tableCell.render(beginX, beginY);
+                    // 渲染单元格
+                    tableCell.virtualRender(beginX, beginY);
                 }
+                // 更新下一个单元格的起始X坐标
                 beginX = beginX + cellWidths.get(index);
+                // 索引自增
                 index++;
             }
         }
     }
-
+    
+    /**
+     * 渲染
+     */
+    public void render(Page page, Float beginX, Float beginY) {
+        // 初始化页面
+        this.init(page, beginX, beginY);
+        // 如果表格不为空
+        if (Objects.nonNull(this.getCells())) {
+            // 获取表格的列宽
+            List<Float> cellWidths = this.getTable().getCellWidths();
+            // 初始化索引
+            int index = 0;
+            // 遍历表格的每个单元格
+            for (TableCell tableCell : this.getCells()) {
+                // 如果单元格不为空
+                if (Objects.nonNull(tableCell)) {
+                    // 渲染单元格
+                    tableCell.render(beginX, this.getBeginY());
+                }
+                // 更新下一个单元格的起始X坐标
+                beginX = beginX + cellWidths.get(index);
+                // 索引自增
+                index++;
+            }
+        }
+    }
+    
+    /**
+     * 获取分页事件
+     *
+     * @return 返回分页事件
+     */
+    protected PagingEvent getPagingEvent() {
+        return this.table.getPagingEvent();
+    }
+    
     /**
      * 初始化
      *
-     * @param page
-     * @param beginX
-     * @param beginY
+     * @param page   页面
+     * @param beginX X轴起始坐标
+     * @param beginY Y轴起始坐标
      */
     protected void init(Page page, Float beginX, Float beginY) {
+        Objects.requireNonNull(this.height, "the row height can not be null");
         this.page = page;
         this.beginX = beginX;
         this.beginY = beginY;
+        if (Objects.isNull(this.backgroundColor)) {
+            this.backgroundColor = this.table.getBackgroundColor();
+        }
+        if (Objects.isNull(this.isBreak)) {
+            this.isBreak = Boolean.FALSE;
+        }
+        if (Objects.isNull(this.isTogether)) {
+            this.isTogether = this.table.getIsTogether();
+        }
+        if (Objects.isNull(this.contentHorizontalAlignment)) {
+            this.contentHorizontalAlignment = this.table.getContentHorizontalAlignment();
+        }
+        if (Objects.isNull(this.contentVerticalAlignment)) {
+            this.contentVerticalAlignment = this.table.getContentVerticalAlignment();
+        }
         this.initBorder();
         this.initCells();
+        this.checkTogether();
+        this.checkBreak();
     }
-
+    
     /**
      * 初始化边框
      */
     protected void initBorder() {
         super.init(this.page, this.table.getBorderConfiguration());
-        // 初始化是否分页边框
         if (Objects.isNull(this.isPagingBorder)) {
             this.isPagingBorder = this.table.getIsPagingBorder();
         }
     }
-
+    
     /**
      * 初始化单元格
      */
@@ -219,11 +297,42 @@ public class TableRow extends BorderData {
             int index = 0;
             for (TableCell tableCell : this.cells) {
                 if (Objects.nonNull(tableCell)) {
-                    tableCell.setRow(this);
                     tableCell.setIndex(index);
+                } else {
+                    this.isTogether = false;
                 }
                 index++;
             }
+        }
+    }
+    
+    /**
+     * 检查整体
+     */
+    protected void checkTogether() {
+        if (this.isTogether && !this.isBreak) {
+            this.isBreak = this.beginY - this.height < this.table.getBottom();
+        }
+    }
+    
+    /**
+     * 检查分页
+     */
+    protected void checkBreak() {
+        // 如果分页
+        if (this.isBreak) {
+            // 设置上下文是否已经分页
+            this.getContext().setIsAlreadyPaging(false);
+            // 设置上下文为手动分页
+            this.getContext().setIsManualBreak(true);
+            // 处理分页
+            this.table.processBreak();
+            // 设置上下文为非手动分页
+            this.getContext().setIsManualBreak(false);
+            // 获取当前页面
+            this.page = this.getContext().getPage();
+            // 获取当前光标Y坐标
+            this.beginY = this.getContext().getCursor().getY();
         }
     }
 }

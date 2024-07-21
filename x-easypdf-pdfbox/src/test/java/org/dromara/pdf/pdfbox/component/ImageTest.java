@@ -7,6 +7,7 @@ import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.component.Image;
 import org.dromara.pdf.pdfbox.core.component.Textarea;
 import org.dromara.pdf.pdfbox.core.enums.HorizontalAlignment;
+import org.dromara.pdf.pdfbox.core.enums.VerticalAlignment;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.junit.Test;
 
@@ -48,10 +49,11 @@ public class ImageTest extends BaseTest {
             image.setImage(Paths.get("E:\\PDF\\pdfbox\\image\\test.png").toFile());
             image.setWidth(100);
             image.setHeight(100);
-            image.setAngle(45F);
+            // image.setAngle(45F);
             // image.setBeginX(0F);
             // image.setBeginY(0F);
             image.setHorizontalAlignment(HorizontalAlignment.CENTER);
+            image.setVerticalAlignment(VerticalAlignment.CENTER);
             image.setIsBorder(true);
             image.render();
 

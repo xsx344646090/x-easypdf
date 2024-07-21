@@ -11,6 +11,7 @@ import org.dromara.pdf.pdfbox.core.enums.FontStyle;
 import org.dromara.pdf.pdfbox.core.enums.HorizontalAlignment;
 import org.dromara.pdf.pdfbox.core.enums.VerticalAlignment;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
+import org.dromara.pdf.pdfbox.util.ColorUtil;
 import org.junit.Test;
 
 import java.awt.*;
@@ -36,7 +37,7 @@ import java.util.List;
  * </p>
  */
 public class TableTest extends BaseTest {
-
+    
     /**
      * 表格测试
      */
@@ -100,7 +101,7 @@ public class TableTest extends BaseTest {
             // document.close();
         });
     }
-
+    
     /**
      * 表格测试
      */
@@ -111,53 +112,56 @@ public class TableTest extends BaseTest {
             document.setMargin(70F);
             document.setFontName("微软雅黑");
             document.setFontSize(12F);
-
+            
             Page page = new Page(document);
             page.setMarginTop(20F);
             page.setMarginBottom(20F);
             page.setFontName("仿宋");
             page.setFontSize(15F);
             page.setFontStyle(FontStyle.BOLD);
-
+            
             Textarea textarea = new Textarea(document.getCurrentPage());
             textarea.setText("物料标签");
             textarea.setFontSize(21F);
             textarea.setHorizontalAlignment(HorizontalAlignment.CENTER);
             textarea.render();
-
+            
             float width = page.getWithoutMarginWidth() / 6;
             float height = 70F;
-
+            
             Table table = new Table(document.getCurrentPage());
             table.setCellWidths(width, width * 2, width, width * 2);
             table.setBeginX(70F);
             table.setIsBorder(true);
+            table.setIsTogether(true);
             table.setBorderColor(Color.GRAY);
-
-            TableRow tableRow1 = new TableRow(height);
+            
+            TableRow tableRow1 = new TableRow(table);
+            tableRow1.setHeight(height);
             Textarea row1cell1Textarea = new Textarea(table.getPage());
             row1cell1Textarea.setText("名称");
             row1cell1Textarea.setHorizontalAlignment(HorizontalAlignment.CENTER);
             Textarea row1cell2Textarea = new Textarea(table.getPage());
             row1cell2Textarea.setText("materialsName");
             row1cell2Textarea.setHorizontalAlignment(HorizontalAlignment.CENTER);
-            TableCell row1TableCell1 = new TableCell();
+            TableCell row1TableCell1 = new TableCell(tableRow1);
             row1TableCell1.setComponents(row1cell1Textarea);
-            TableCell row1TableCell2 = new TableCell();
+            TableCell row1TableCell2 = new TableCell(tableRow1);
             row1TableCell2.setComponents(row1cell2Textarea);
             row1TableCell2.setColspan(2);
             tableRow1.setCells(row1TableCell1, row1TableCell2);
 
-            TableRow tableRow2 = new TableRow(height);
+            TableRow tableRow2 = new TableRow(table);
+            tableRow2.setHeight(height);
             Textarea row2cell1Textarea = new Textarea(table.getPage());
             row2cell1Textarea.setText("数量");
             row2cell1Textarea.setHorizontalAlignment(HorizontalAlignment.CENTER);
             Textarea row2cell2Textarea = new Textarea(table.getPage());
             row2cell2Textarea.setText("materialsNum");
             row2cell2Textarea.setHorizontalAlignment(HorizontalAlignment.CENTER);
-            TableCell row2TableCell1 = new TableCell();
+            TableCell row2TableCell1 = new TableCell(tableRow2);
             row2TableCell1.setComponents(row2cell1Textarea);
-            TableCell row2TableCell2 = new TableCell();
+            TableCell row2TableCell2 = new TableCell(tableRow2);
             row2TableCell2.setComponents(row2cell2Textarea);
             Textarea row2cell3Textarea = new Textarea(table.getPage());
             row2cell3Textarea.setText("日期");
@@ -165,13 +169,14 @@ public class TableTest extends BaseTest {
             Textarea row2cell4Textarea = new Textarea(table.getPage());
             row2cell4Textarea.setText("materialsDate");
             row2cell4Textarea.setHorizontalAlignment(HorizontalAlignment.CENTER);
-            TableCell row2TableCell3 = new TableCell();
+            TableCell row2TableCell3 = new TableCell(tableRow2);
             row2TableCell3.setComponents(row2cell3Textarea);
-            TableCell row2TableCell4 = new TableCell();
+            TableCell row2TableCell4 = new TableCell(tableRow2);
             row2TableCell4.setComponents(row2cell4Textarea);
             tableRow2.setCells(row2TableCell1, row2TableCell2, row2TableCell3, row2TableCell4);
 
-            TableRow tableRow3 = new TableRow(height);
+            TableRow tableRow3 = new TableRow(table);
+            tableRow3.setHeight(height);
             Textarea row3cell1Textarea = new Textarea(table.getPage());
             row3cell1Textarea.setText("料号");
             row3cell1Textarea.setHorizontalAlignment(HorizontalAlignment.CENTER);
@@ -185,54 +190,57 @@ public class TableTest extends BaseTest {
             }
             row3cell3Textarea.setText(builder.toString());
             row3cell3Textarea.setHorizontalAlignment(HorizontalAlignment.CENTER);
-            TableCell row3TableCell1 = new TableCell();
+            TableCell row3TableCell1 = new TableCell(tableRow3);
             row3TableCell1.setComponents(row3cell1Textarea);
-            TableCell row3TableCell2 = new TableCell();
+            TableCell row3TableCell2 = new TableCell(tableRow3);
             row3TableCell2.setColspan(1);
             row3TableCell2.setComponents(row3cell2Textarea);
-            TableCell row3TableCell3 = new TableCell();
-            row3TableCell3.setRowSpan(2);
+            TableCell row3TableCell3 = new TableCell(tableRow3);
+            row3TableCell3.setRowspan(2);
             row3TableCell3.setComponents(row3cell3Textarea);
             tableRow3.setCells(row3TableCell1, row3TableCell2, null, row3TableCell3);
 
-            TableRow tableRow4 = new TableRow(height);
+            TableRow tableRow4 = new TableRow(table);
+            tableRow4.setHeight(height);
             Textarea row4cell1Textarea = new Textarea(table.getPage());
             row4cell1Textarea.setText("标签号");
             row4cell1Textarea.setHorizontalAlignment(HorizontalAlignment.CENTER);
             Textarea row4cell2Textarea = new Textarea(table.getPage());
             row4cell2Textarea.setText("materialsLabel");
             row4cell2Textarea.setHorizontalAlignment(HorizontalAlignment.CENTER);
-            TableCell row4TableCell1 = new TableCell();
+            TableCell row4TableCell1 = new TableCell(tableRow4);
             row4TableCell1.setComponents(row4cell1Textarea);
-            TableCell row4TableCell2 = new TableCell();
+            TableCell row4TableCell2 = new TableCell(tableRow4);
             row4TableCell2.setColspan(1);
             row4TableCell2.setComponents(row4cell2Textarea);
             tableRow4.setCells(row4TableCell1, row4TableCell2, null, null);
 
-            TableRow tableRow5 = new TableRow(height);
+            TableRow tableRow5 = new TableRow(table);
+            tableRow5.setHeight(height);
             Textarea row5cell1Textarea = new Textarea(table.getPage());
             row5cell1Textarea.setText("SAP批次");
             row5cell1Textarea.setHorizontalAlignment(HorizontalAlignment.CENTER);
             Textarea row5cell2Textarea = new Textarea(table.getPage());
             row5cell2Textarea.setText("materialsSapBatch");
             row5cell2Textarea.setHorizontalAlignment(HorizontalAlignment.CENTER);
-            TableCell row5TableCell1 = new TableCell();
+            TableCell row5TableCell1 = new TableCell(tableRow5);
             row5TableCell1.setComponents(row5cell1Textarea);
-            TableCell row5TableCell2 = new TableCell();
+            TableCell row5TableCell2 = new TableCell(tableRow5);
             row5TableCell2.setColspan(1);
             row5TableCell2.setComponents(row5cell2Textarea);
             tableRow5.setCells(row5TableCell1, row5TableCell2, null, null);
 
-            TableRow tableRow6 = new TableRow(height);
+            TableRow tableRow6 = new TableRow(table);
+            tableRow6.setHeight(height);
             Textarea row6cell1Textarea = new Textarea(table.getPage());
             row6cell1Textarea.setText("品保判定");
             row6cell1Textarea.setHorizontalAlignment(HorizontalAlignment.CENTER);
             Textarea row6cell2Textarea = new Textarea(table.getPage());
             row6cell2Textarea.setText("qualityAssurance");
             row6cell2Textarea.setHorizontalAlignment(HorizontalAlignment.CENTER);
-            TableCell row6TableCell1 = new TableCell();
+            TableCell row6TableCell1 = new TableCell(tableRow6);
             row6TableCell1.setComponents(row6cell1Textarea);
-            TableCell row6TableCell2 = new TableCell();
+            TableCell row6TableCell2 = new TableCell(tableRow6);
             row6TableCell2.setComponents(row6cell2Textarea);
             Textarea row6cell3Textarea = new Textarea(table.getPage());
             row6cell3Textarea.setText("校验");
@@ -240,46 +248,49 @@ public class TableTest extends BaseTest {
             Textarea row6cell4Textarea = new Textarea(table.getPage());
             row6cell4Textarea.setText("check");
             row6cell4Textarea.setHorizontalAlignment(HorizontalAlignment.CENTER);
-            TableCell row6TableCell3 = new TableCell();
+            TableCell row6TableCell3 = new TableCell(tableRow6);
             row6TableCell3.setComponents(row6cell3Textarea);
-            TableCell row6TableCell4 = new TableCell();
+            TableCell row6TableCell4 = new TableCell(tableRow6);
             row6TableCell4.setComponents(row6cell4Textarea);
             tableRow6.setCells(row6TableCell1, row6TableCell2, row6TableCell3, row6TableCell4);
 
-            TableRow tableRow7 = new TableRow(height);
+            TableRow tableRow7 = new TableRow(table);
+            tableRow7.setHeight(height);
             Textarea row7cell1Textarea = new Textarea(table.getPage());
             row7cell1Textarea.setText("备注");
             row7cell1Textarea.setHorizontalAlignment(HorizontalAlignment.CENTER);
             Textarea row7cell2Textarea = new Textarea(table.getPage());
             row7cell2Textarea.setText("remark");
             row7cell2Textarea.setHorizontalAlignment(HorizontalAlignment.CENTER);
-            TableCell row7TableCell1 = new TableCell();
+            TableCell row7TableCell1 = new TableCell(tableRow7);
             row7TableCell1.setComponents(row7cell1Textarea);
-            TableCell row7TableCell2 = new TableCell();
+            TableCell row7TableCell2 = new TableCell(tableRow7);
             row7TableCell2.setComponents(row7cell2Textarea);
             row7TableCell2.setColspan(2);
             tableRow7.setCells(row7TableCell1, row7TableCell2);
-
+            
             List<TableRow> rowList = new ArrayList<>(10);
             for (int i = 1; i <= 15; i++) {
-                TableRow tableRow = new TableRow(height);
+                TableRow tableRow = new TableRow(table);
+                tableRow.setHeight(height);
                 Textarea textarea1 = new Textarea(table.getPage());
                 textarea1.setText("第" + i + "行");
                 textarea1.setHorizontalAlignment(HorizontalAlignment.CENTER);
                 Textarea textarea2 = new Textarea(table.getPage());
                 textarea2.setText("内容" + i);
                 textarea2.setHorizontalAlignment(HorizontalAlignment.CENTER);
-                TableCell cell1 = new TableCell();
+                TableCell cell1 = new TableCell(tableRow);
                 cell1.setComponents(textarea1);
-                TableCell cell2 = new TableCell();
+                TableCell cell2 = new TableCell(tableRow);
                 cell2.setComponents(textarea2);
                 cell2.setColspan(2);
                 tableRow.setCells(cell1, cell2);
                 rowList.add(tableRow);
             }
-
-            int rowCount = 10;
-            TableRow tableRow = new TableRow(height);
+            
+            int rowCount = 13;
+            TableRow tableRow = new TableRow(table);
+            tableRow.setHeight(height);
             Textarea textarea1 = new Textarea(table.getPage());
             textarea1.setText("第16行");
             textarea1.setHorizontalAlignment(HorizontalAlignment.CENTER);
@@ -288,68 +299,71 @@ public class TableTest extends BaseTest {
             textarea2.setText("合并内容1");
             textarea2.setHorizontalAlignment(HorizontalAlignment.CENTER);
             textarea2.setVerticalAlignment(VerticalAlignment.BOTTOM);
-            TableCell cell1 = new TableCell();
+            TableCell cell1 = new TableCell(tableRow);
             cell1.setComponents(textarea1);
-            cell1.setRowSpan(rowCount);
-            TableCell cell2 = new TableCell();
+            cell1.setRowspan(rowCount);
+            TableCell cell2 = new TableCell(tableRow);
             cell2.setComponents(textarea2);
             cell2.setColspan(2);
             tableRow.setCells(cell1, cell2);
             rowList.add(tableRow);
-
+            
             for (int i = 1; i <= rowCount; i++) {
-                tableRow = new TableRow(height);
+                tableRow = new TableRow(table);
+                tableRow.setHeight(height);
                 textarea = new Textarea(table.getPage());
                 textarea.setText("合并内容" + (i + 1));
                 textarea.setHorizontalAlignment(HorizontalAlignment.CENTER);
                 textarea.setVerticalAlignment(VerticalAlignment.BOTTOM);
-                TableCell cell = new TableCell();
+                TableCell cell = new TableCell(tableRow);
                 cell.setColspan(2);
                 cell.setComponents(textarea);
                 tableRow.setCells(null, cell);
                 rowList.add(tableRow);
             }
-
-            for (int i = 17; i <= 100; i++) {
-                tableRow = new TableRow(height);
+            
+            for (int i = 17; i <= 40; i++) {
+                tableRow = new TableRow(table);
+                tableRow.setHeight(height);
                 textarea1 = new Textarea(table.getPage());
                 textarea1.setText("第" + i + "行");
                 textarea1.setHorizontalAlignment(HorizontalAlignment.CENTER);
                 textarea2 = new Textarea(table.getPage());
                 textarea2.setText("内容" + i);
                 textarea2.setHorizontalAlignment(HorizontalAlignment.CENTER);
-                cell1 = new TableCell();
+                cell1 = new TableCell(tableRow);
                 cell1.setComponents(textarea1);
-                cell2 = new TableCell();
+                cell2 = new TableCell(tableRow);
                 cell2.setComponents(textarea2);
                 cell2.setColspan(2);
                 tableRow.setCells(cell1, cell2);
                 rowList.add(tableRow);
             }
-
+            
             table.setRows(tableRow1, tableRow2, tableRow3, tableRow4, tableRow5, tableRow6, tableRow7);
             table.addRows(rowList);
             table.render();
-
+            
             document.appendPage(page);
             document.save("E:\\PDF\\pdfbox\\table\\simpleTableTest.pdf");
             document.close();
         });
     }
-
+    
     /**
      * 表格测试
      */
     @Test
     public void simpleTableTest2() {
-        System.setProperty("org.dromara.pdfbox.scanfont", "false");
+        // 关闭字体扫描
+        PdfHandler.disableScanSystemFonts();
         PdfHandler.getFontHandler().addFont(new File("C:\\Windows\\Fonts\\msyh.ttc"));
         this.test(() -> {
             Document document = PdfHandler.getDocumentHandler().create();
             document.setMargin(10F);
             document.setFontName("微软雅黑");
             document.setFontSize(12F);
-
+            
             Page page = new Page(document);
             PageHeader header = new PageHeader(document.getCurrentPage());
             List<Component> components = new ArrayList<>(10);
@@ -361,7 +375,7 @@ public class TableTest extends BaseTest {
             header.setHeight(12F);
             header.setIsBorder(false);
             header.render();
-
+            
             float width = page.getWithoutMarginWidth() / 6;
             float height = 200F;
             Table table = new Table(document.getCurrentPage());
@@ -369,18 +383,19 @@ public class TableTest extends BaseTest {
             table.setIsBorder(true);
             table.setIsPagingBorder(false);
             table.setBorderColor(Color.GRAY);
-
+            
             List<TableRow> rowList = new ArrayList<>(16);
+            TableRow tableRow = new TableRow(table);
+            tableRow.setHeight(height);
+            TableCell cell = new TableCell(tableRow);
             Textarea textarea = new Textarea(table.getPage());
             textarea.setText("测试");
             textarea.setHorizontalAlignment(HorizontalAlignment.CENTER);
-            TableCell cell = new TableCell();
             cell.setComponents(textarea);
             cell.setColspan(3);
-            TableRow tableRow = new TableRow(height);
             tableRow.setCells(cell);
             rowList.add(tableRow);
-
+            
             for (int i = 1; i <= 20; i++) {
                 Textarea textarea1 = new Textarea(table.getPage());
                 textarea1.setText("第" + i + "行");
@@ -390,38 +405,41 @@ public class TableTest extends BaseTest {
                 textarea2.setText("内容" + i);
                 textarea2.setHorizontalAlignment(HorizontalAlignment.CENTER);
                 textarea2.setVerticalAlignment(VerticalAlignment.CENTER);
-                TableCell cell1 = new TableCell();
+                tableRow = new TableRow(table);
+                tableRow.setHeight(height);
+                TableCell cell1 = new TableCell(tableRow);
                 cell1.setComponents(textarea1);
-                TableCell cell2 = new TableCell();
+                TableCell cell2 = new TableCell(tableRow);
                 cell2.setComponents(textarea2);
                 cell2.setColspan(2);
-                tableRow = new TableRow(height);
+                
                 tableRow.setCells(cell1, cell2, null);
                 rowList.add(tableRow);
             }
             table.setRows(rowList);
             table.render();
-
+            
             document.appendPage(page);
             document.save("E:\\PDF\\pdfbox\\table\\simpleTableTest.pdf");
             document.close();
         });
     }
-
+    
     /**
      * 表格测试
      */
     @Test
     public void simpleTableTest3() {
-        System.setProperty("org.dromara.pdfbox.scanfont", "false");
+        // 关闭字体扫描
+        PdfHandler.disableScanSystemFonts();
         PdfHandler.getFontHandler().addFont(new File("C:\\Windows\\Fonts\\msyh.ttc"));
         this.test(() -> {
             Document document = PdfHandler.getDocumentHandler().create();
             document.setFontName("微软雅黑");
             document.setFontSize(12F);
-
+            
             Page page = new Page(document);
-
+            
             float width = page.getWithoutMarginWidth() / 3;
             float height = 250;
             Table table = new Table(document.getCurrentPage());
@@ -429,65 +447,74 @@ public class TableTest extends BaseTest {
             table.setIsBorder(true);
             table.setIsPagingBorder(true);
             table.setBorderColor(Color.GRAY);
-
+            
             for (int i = 0; i < 5; i++) {
-                TableRow row = new TableRow(height);
+                TableRow row = new TableRow(table);
+                row.setHeight(height);
+                row.setBackgroundColor(ColorUtil.toColor("#33ccff"));
+                // row.setIsTogether(true);
+                // if (i == 3) {
+                //     row.setIsBreak(true);
+                // }
                 for (int j = 0; j < 3; j++) {
                     Textarea textarea = new Textarea(table.getPage());
                     textarea.setText("贵阳");
-                    textarea.setHorizontalAlignment(HorizontalAlignment.CENTER);
-                    textarea.setVerticalAlignment(VerticalAlignment.CENTER);
-                    TableCell cell = new TableCell();
+                    TableCell cell = new TableCell(row);
                     cell.setComponents(textarea);
+                    cell.setContentHorizontalAlignment(HorizontalAlignment.CENTER);
+                    cell.setContentVerticalAlignment(VerticalAlignment.CENTER);
                     row.addCells(cell);
                 }
                 table.addRows(row);
             }
             table.render();
-
+            
             document.appendPage(page);
             document.save("E:\\PDF\\pdfbox\\table\\simpleTableTest.pdf");
             document.close();
         });
     }
-
+    
     /**
      * 表格测试
      */
     @Test
     public void simpleTableTest4() {
-        System.setProperty("org.dromara.pdfbox.scanfont", "false");
+        // 关闭字体扫描
+        PdfHandler.disableScanSystemFonts();
         PdfHandler.getFontHandler().addFont(new File("C:\\Windows\\Fonts\\msyh.ttc"));
         this.test(() -> {
             Document document = PdfHandler.getDocumentHandler().create();
             document.setFontName("微软雅黑");
             document.setFontSize(12F);
-
+            
             Page page = new Page(document);
             page.setMargin(20);
-
+            
             float width = page.getWithoutMarginWidth() / 3;
             float height = 150F;
-
+            
             Table table = new Table(document.getCurrentPage());
             table.setCellWidths(width, width, width);
             table.setIsBorder(true);
             table.setIsPagingBorder(false);
-
+            
             for (int i = 0; i < 1; i++) {
-                TableRow row = new TableRow(20F);
+                TableRow row = new TableRow(table);
+                row.setHeight(20F);
                 for (int j = 1; j < 4; j++) {
                     Textarea textarea = new Textarea(table.getPage());
                     textarea.setText("标题" + i);
                     textarea.setVerticalAlignment(VerticalAlignment.CENTER);
-                    TableCell cell = new TableCell();
+                    TableCell cell = new TableCell(row);
                     cell.setComponents(textarea);
                     row.addCells(cell);
                 }
                 table.addRows(row);
             }
             for (int i = 1; i < 4; i++) {
-                TableRow row = new TableRow(height);
+                TableRow row = new TableRow(table);
+                row.setHeight(height);
                 for (int j = 1; j < 4; j++) {
                     Textarea textarea = new Textarea(table.getPage());
                     textarea.setText("内容内容" + i);
@@ -501,46 +528,46 @@ public class TableTest extends BaseTest {
                         textarea.setHorizontalAlignment(HorizontalAlignment.RIGHT);
                         textarea.setVerticalAlignment(VerticalAlignment.BOTTOM);
                     }
-                    TableCell cell = new TableCell();
+                    TableCell cell = new TableCell(row);
                     cell.setComponents(textarea);
                     row.addCells(cell);
                 }
                 table.addRows(row);
             }
             for (int i = 1; i < 4; i++) {
-                TableRow row = new TableRow(height);
+                TableRow row = new TableRow(table);
+                row.setHeight(height);
+                row.setIsTogether(true);
                 for (int j = 1; j < 4; j++) {
+                    TableCell cell = new TableCell(row);
                     Image image = new Image(table.getPage());
                     image.setWidth(100);
                     image.setHeight(100);
                     image.setIsBorder(true);
                     if (i == 1) {
-                        image.setHorizontalAlignment(HorizontalAlignment.LEFT);
-                        image.setVerticalAlignment(VerticalAlignment.TOP);
+                        cell.setContentHorizontalAlignment(HorizontalAlignment.LEFT);
                         image.setImage(new File("E:\\PDF\\pdfbox\\image\\test.svg"));
                     } else if (i == 2) {
-                        image.setHorizontalAlignment(HorizontalAlignment.CENTER);
-                        image.setVerticalAlignment(VerticalAlignment.CENTER);
+                        cell.setContentHorizontalAlignment(HorizontalAlignment.CENTER);
                         image.setImage(Paths.get("E:\\PDF\\pdfbox\\image\\test.jpg").toFile());
                     } else {
-                        image.setHorizontalAlignment(HorizontalAlignment.RIGHT);
+                        cell.setContentHorizontalAlignment(HorizontalAlignment.RIGHT);
                         image.setImage(Paths.get("E:\\PDF\\pdfbox\\image\\test.png").toFile());
-                        if (j == 1) {
-                            image.setVerticalAlignment(VerticalAlignment.TOP);
-                        } else if (j == 2) {
-                            image.setVerticalAlignment(VerticalAlignment.CENTER);
-                        } else {
-                            image.setVerticalAlignment(VerticalAlignment.BOTTOM);
-                        }
                     }
-                    TableCell cell = new TableCell();
+                    if (j == 1) {
+                        cell.setContentVerticalAlignment(VerticalAlignment.TOP);
+                    } else if (j == 2) {
+                        cell.setContentVerticalAlignment(VerticalAlignment.CENTER);
+                    } else {
+                        cell.setContentVerticalAlignment(VerticalAlignment.BOTTOM);
+                    }
                     cell.setComponents(image);
                     row.addCells(cell);
                 }
                 table.addRows(row);
             }
             table.render();
-
+            
             document.appendPage(page);
             document.save("E:\\PDF\\pdfbox\\table\\simpleTableTest.pdf");
             document.close();

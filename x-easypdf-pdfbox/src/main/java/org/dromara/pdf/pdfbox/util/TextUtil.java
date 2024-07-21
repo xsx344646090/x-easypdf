@@ -1,6 +1,7 @@
 package org.dromara.pdf.pdfbox.util;
 
 import lombok.SneakyThrows;
+import org.apache.pdfbox.contentstream.operator.OperatorName;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.dromara.pdf.pdfbox.core.base.Context;
@@ -161,38 +162,57 @@ public class TextUtil {
             float characterSpacing,
             List<String> specialFontNames
     ) {
+        // 返回空宽度
         if (Objects.isNull(text)) {
             return 0F;
         }
-        String str;
+        // 定义空格宽度
+        final float blankSpaceWidth = 500F;
+        // 定义文本宽度
         float width = 0F;
+        // 定义临时字符串
+        String str;
+        // 获取文本字符数组
         char[] charArray = text.toCharArray();
+        // 遍历字符数组
         for (char c : charArray) {
-            str = String.valueOf(c);
-            try {
-                width = width + font.getStringWidth(str);
-            } catch (Exception e) {
-                boolean flag = true;
-                if (Objects.nonNull(specialFontNames)) {
-                    for (String specialFontName : specialFontNames) {
-                        try {
-                            width = width + context.getFont(specialFontName).getStringWidth(str);
-                            flag = false;
-                            break;
-                        } catch (Exception ignore) {
-                            // ignore
+            // 空格字符
+            if (c == ' ') {
+                width = width + blankSpaceWidth;
+            } else {
+                // 获取字符串
+                str = String.valueOf(c);
+                try {
+                    // 计算文本宽度
+                    width = width + font.getStringWidth(str);
+                } catch (Exception e) {
+                    // 定义异常标识
+                    boolean flag = true;
+                    // 特殊字体名称不为空
+                    if (Objects.nonNull(specialFontNames)) {
+                        // 遍历特殊字体
+                        for (String specialFontName : specialFontNames) {
+                            try {
+                                // 再次计算文本宽度
+                                width = width + context.getFont(specialFontName).getStringWidth(str);
+                                // 重置异常标识
+                                flag = false;
+                                // 结束
+                                break;
+                            } catch (Exception ignore) {
+                                // ignore
+                            }
                         }
                     }
-                }
-                if (flag) {
-                    throw new IllegalArgumentException(e);
+                    // 提示异常
+                    if (flag) {
+                        throw new IllegalArgumentException(e);
+                    }
                 }
             }
         }
-        if (width == 0F) {
-            return 0F;
-        }
-        return fontSize * width / 1000 + (text.length() - 1) * characterSpacing;
+        // 返回真实文本宽度
+        return width == 0F ? 0F : fontSize * width / 1000 + (text.length() - 1) * characterSpacing;
     }
 
     /**
@@ -206,6 +226,9 @@ public class TextUtil {
     public static float getTextRealHeight(int rowCount, float fontSize, float leading) {
         if (rowCount == 0) {
             return 0F;
+        }
+        if (rowCount == 1) {
+            return fontSize;
         }
         int leadingCount = rowCount - 1;
         return (rowCount * fontSize) + (leadingCount * leading);
@@ -341,17 +364,10 @@ public class TextUtil {
         StringBuilder temp = new StringBuilder();
         // 遍历文本字符
         for (char c : charArray) {
-            // 到达指定长度
-            if (temp.length() == size) {
-                // 添加文本
-                builder.append(temp);
-                // 重置临时文本构建器
-                temp = new StringBuilder();
-            }
             // 替换制表符
             if (c == tab) {
                 // 添加空格
-                temp.append(spacing(size - temp.length()));
+                temp.append(spacing(size));
             } else {
                 // 添加字符
                 temp.append(c);

@@ -197,6 +197,10 @@ public abstract class PDFont implements COSObjectable, PDFontLike {
         return new Vector(getWidth(code) / 1000, 0);
     }
 
+    public float getRealWidth(int code, float size) throws IOException {
+        return getWidth(code) * size / 1000;
+    }
+
     @Override
     public float getWidth(int code) throws IOException {
         Float width = codeToWidthMap.get(code);
