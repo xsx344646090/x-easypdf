@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format"
->
+         xmlns:fox="http://xmlgraphics.apache.org/fop/extensions"
+         xmlns:xe="http://www.x-easypdf.cn/ns"
+         xmlns:svg="http://www.w3.org/2000/svg">
     <fo:layout-master-set></fo:layout-master-set>
 </fo:root>
