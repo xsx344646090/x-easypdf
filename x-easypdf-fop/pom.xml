@@ -17,6 +17,7 @@
 
     <properties>
         <font-box.version>2.0.31</font-box.version>
+        <slf4j.version>2.0.7</slf4j.version>
         <skipTests>true</skipTests>
     </properties>
 
@@ -193,6 +194,11 @@
             <groupId>gg.jte</groupId>
             <artifactId>jte</artifactId>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
         </dependency>
 
         <dependency>
