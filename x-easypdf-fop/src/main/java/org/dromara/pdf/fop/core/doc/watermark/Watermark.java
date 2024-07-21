@@ -368,7 +368,7 @@ public class Watermark implements WatermarkComponent {
     @SneakyThrows
     private File getImageFile() {
         // 创建文件
-        File file = new File(FileUtil.createDirectories(Paths.get(this.param.getTempDir())).toString(), this.param.getId() + ".png");
+        File file = FileUtil.createDirectories(Paths.get(this.param.getTempDir(), this.param.getId() + ".png")).toFile();
         // 如果文件不存在或开启文件覆盖，则创建新图像
         if (!file.exists() || this.param.getIsOverwrite()) {
             // 如果水印id为空，则提示信息

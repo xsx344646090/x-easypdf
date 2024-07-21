@@ -39,12 +39,12 @@ public class FileUtil {
                 // 定义目录路径
                 Path directoryPath;
                 // 如果给定路径不为目录，则初始化为父目录
-                if (!Files.isDirectory(path)) {
-                    // 初始化为父目录
-                    directoryPath = path.getParent();
-                } else {
+                if (Files.isDirectory(path)) {
                     // 初始化为给定目录
                     directoryPath = path;
+                } else {
+                    // 初始化为父目录
+                    directoryPath = path.getParent();
                 }
                 // 创建目录
                 Files.createDirectories(directoryPath);
