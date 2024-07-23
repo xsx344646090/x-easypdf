@@ -7,6 +7,7 @@ import org.dromara.pdf.pdfbox.core.enums.LineStyle;
 import org.dromara.pdf.pdfbox.core.enums.LineCapStyle;
 
 import java.awt.*;
+import java.util.Objects;
 
 /**
  * 边框数据
@@ -313,6 +314,9 @@ public class BorderData extends AbstractBase {
      */
     protected void init(AbstractBase base, BorderConfiguration borderConfiguration) {
         super.init(base);
-        this.borderConfiguration = new BorderConfiguration(borderConfiguration);
+        if (Objects.isNull(this.borderConfiguration)) {
+            this.borderConfiguration = new BorderConfiguration(false);
+        }
+        this.borderConfiguration.init(borderConfiguration);
     }
 }
