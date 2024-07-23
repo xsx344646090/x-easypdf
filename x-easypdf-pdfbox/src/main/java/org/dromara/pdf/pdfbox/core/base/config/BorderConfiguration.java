@@ -1,9 +1,8 @@
 package org.dromara.pdf.pdfbox.core.base.config;
 
 import lombok.Data;
-import org.dromara.pdf.pdfbox.core.base.PageSize;
-import org.dromara.pdf.pdfbox.core.enums.LineStyle;
 import org.dromara.pdf.pdfbox.core.enums.LineCapStyle;
+import org.dromara.pdf.pdfbox.core.enums.LineStyle;
 
 import java.awt.*;
 import java.util.Objects;
@@ -85,7 +84,18 @@ public class BorderConfiguration {
      * 无参构造
      */
     public BorderConfiguration() {
-        this.init();
+        this(true);
+    }
+
+    /**
+     * 有参构造
+     *
+     * @param isInit 是否初始化
+     */
+    public BorderConfiguration(boolean isInit) {
+        if (isInit) {
+            this.init();
+        }
     }
 
     /**

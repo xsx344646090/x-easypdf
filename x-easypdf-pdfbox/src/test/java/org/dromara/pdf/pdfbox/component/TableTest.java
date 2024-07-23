@@ -463,6 +463,7 @@ public class TableTest extends BaseTest {
                     cell.setComponents(textarea);
                     cell.setContentHorizontalAlignment(HorizontalAlignment.CENTER);
                     cell.setContentVerticalAlignment(VerticalAlignment.CENTER);
+                    // cell.setBorderColor(Color.BLUE);
                     row.addCells(cell);
                 }
                 table.addRows(row);
