@@ -48,6 +48,10 @@ public class Rectangle extends AbstractComponent {
      */
     protected Float angle;
     /**
+     * 透明度
+     */
+    protected Float alpha;
+    /**
      * 背景颜色
      */
     protected Color backgroundColor;
@@ -111,6 +115,10 @@ public class Rectangle extends AbstractComponent {
         if (Objects.isNull(this.angle)) {
             this.angle = 0F;
         }
+        // 初始化透明度
+        if (Objects.isNull(this.alpha)) {
+            this.alpha = 1.0F;
+        }
         // 初始化起始XY轴坐标
         this.initBeginXY(this.width, this.height);
     }
@@ -141,7 +149,7 @@ public class Rectangle extends AbstractComponent {
                     this.getIsResetContentStream()
             );
             // 初始化矩阵
-            CommonUtil.initMatrix(contentStream, this.getBeginX(), this.getBeginY(), this.getRelativeBeginX(), this.getRelativeBeginY(), this.getWidth(), this.getHeight(), this.getAngle());
+            CommonUtil.initMatrix(contentStream, this.getBeginX(), this.getBeginY(), this.getRelativeBeginX(), this.getRelativeBeginY(), this.getWidth(), this.getHeight(), this.getAngle(), this.getAlpha());
             // 添加边框
             BorderUtil.drawNormalBorder(contentStream, CommonUtil.getRectangle(this.getWidth(), this.getHeight()), BorderData.create(this, this.getBorderConfiguration()));
             // 添加背景

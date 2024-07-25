@@ -1,8 +1,13 @@
 package org.dromara.pdf.pdfbox.util;
 
 import lombok.SneakyThrows;
+import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.graphics.PDXObject;
+import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImage;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 import org.apache.pdfbox.util.Matrix;
 import org.dromara.pdf.pdfbox.core.base.Context;
@@ -10,6 +15,7 @@ import org.dromara.pdf.pdfbox.core.enums.ContentMode;
 import org.dromara.pdf.pdfbox.core.enums.FontStyle;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.Objects;
 
@@ -33,7 +39,7 @@ import java.util.Objects;
  * </p>
  */
 public class CommonUtil {
-    
+
     /**
      * 初始化字体颜色及透明度
      *
@@ -79,7 +85,7 @@ public class CommonUtil {
             state.setNonStrokingAlphaConstant(fontAlpha);
         }
     }
-    
+
     /**
      * 初始化矩阵
      *
@@ -91,6 +97,7 @@ public class CommonUtil {
      * @param width          宽度
      * @param height         高度
      * @param angle          旋转角度
+     * @param alpha          透明度
      */
     @SneakyThrows
     public static void initMatrix(
@@ -101,7 +108,8 @@ public class CommonUtil {
             float relativeBeginY,
             float width,
             float height,
-            float angle
+            float angle,
+            float alpha
     ) {
         // 定义X轴偏移量
         float offsetX = 0.5F * width;
@@ -109,6 +117,12 @@ public class CommonUtil {
         float offsetY = 0.5F * height;
         // 保存图形状态
         stream.saveGraphicsState();
+        // 创建扩展图形状态
+        PDExtendedGraphicsState state = new PDExtendedGraphicsState();
+        // 设置透明度
+        state.setNonStrokingAlphaConstant(alpha);
+        // 设置图形状态参数
+        stream.setGraphicsStateParameters(state);
         // 移动到中心点
         stream.transform(
                 Matrix.getTranslateInstance(
@@ -121,7 +135,32 @@ public class CommonUtil {
         // 移动到左下角
         stream.transform(Matrix.getTranslateInstance(-offsetX, -offsetY));
     }
-    
+
+    /**
+     * 提取图像
+     *
+     * @param imageList 待接收图像列表
+     * @param resources 页面资源
+     */
+    @SneakyThrows
+    public static void extractImage(List<BufferedImage> imageList, PDResources resources) {
+        // 获取页面资源内容名称
+        Iterable<COSName> objectNames = resources.getXObjectNames();
+        // 遍历资源内容名称
+        for (COSName objectName : objectNames) {
+            // 获取资源内容
+            PDXObject xObject = resources.getXObject(objectName);
+            // 如果资源内容为图片，则添加到待接收图片列表
+            if (xObject instanceof PDImage) {
+                // 添加到待接收图片列表
+                imageList.add(((PDImage) xObject).getImage());
+            } else if (xObject instanceof PDFormXObject) {
+                // 提取图像
+                extractImage(imageList, ((PDFormXObject) xObject).getResources());
+            }
+        }
+    }
+
     /**
      * 添加背景颜色
      *
@@ -153,7 +192,7 @@ public class CommonUtil {
             stream.close();
         }
     }
-    
+
     /**
      * 获取行尺寸
      *
@@ -175,7 +214,7 @@ public class CommonUtil {
         // 返回尺寸
         return rectangle;
     }
-    
+
     /**
      * 转基本整型数组
      *
@@ -185,7 +224,7 @@ public class CommonUtil {
     public static int[] toIntArray(List<Integer> list) {
         return list.stream().mapToInt(Integer::intValue).toArray();
     }
-    
+
     /**
      * 转基本浮点型数组
      *
@@ -199,7 +238,7 @@ public class CommonUtil {
         }
         return array;
     }
-    
+
     /**
      * 转基本双精度浮点型数组
      *

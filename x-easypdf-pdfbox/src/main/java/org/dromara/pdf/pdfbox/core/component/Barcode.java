@@ -11,9 +11,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
-import org.apache.pdfbox.util.Matrix;
 import org.dromara.pdf.pdfbox.core.base.BorderData;
 import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.enums.*;
@@ -128,6 +126,10 @@ public class Barcode extends AbstractComponent {
      * 旋转角度
      */
     protected Float angle;
+    /**
+     * 透明度
+     */
+    protected Float alpha;
     /**
      * 是否显示文字
      */
@@ -311,6 +313,10 @@ public class Barcode extends AbstractComponent {
         if (Objects.isNull(this.angle)) {
             this.angle = 0F;
         }
+        // 初始化透明度
+        if (Objects.isNull(this.alpha)) {
+            this.alpha = 1.0F;
+        }
         // 初始化是否显示文字
         if (Objects.isNull(this.isShowWords)) {
             this.isShowWords = Boolean.FALSE;
@@ -393,7 +399,7 @@ public class Barcode extends AbstractComponent {
                     this.getIsResetContentStream()
             );
             // 初始化矩阵
-            CommonUtil.initMatrix(contentStream, this.getBeginX(), this.getBeginY(), this.getRelativeBeginX(), this.getRelativeBeginY(), this.getWidth(), this.getHeight(), this.getAngle());
+            CommonUtil.initMatrix(contentStream, this.getBeginX(), this.getBeginY(), this.getRelativeBeginX(), this.getRelativeBeginY(), this.getWidth(), this.getHeight(), this.getAngle(), this.getAlpha());
             // 添加图像
             contentStream.drawImage(this.getImageXObject(), 0, 0, this.getWidth(), this.getHeight());
             // 添加边框
