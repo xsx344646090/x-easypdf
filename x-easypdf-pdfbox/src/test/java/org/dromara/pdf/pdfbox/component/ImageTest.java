@@ -186,8 +186,16 @@ public class ImageTest extends BaseTest {
                     Image image = new Image(page);
                     image.setWidth(width);
                     image.setHeight(height);
-                    image.setImage(Paths.get("E:\\PDF\\pdfbox\\document\\imager\\x-easypdf" + i + ".png").toFile());
+                    image.setImage(Paths.get("E:\\PDF\\pdfbox\\image\\jiaxiulou.jpg").toFile());
                     image.render();
+
+                    StringBuilder textBuilder = new StringBuilder();
+                    for (int j = 0; j < 1000; j++) {
+                        textBuilder.append("test");
+                    }
+                    Textarea textarea = new Textarea(page);
+                    textarea.setText(textBuilder.toString());
+                    textarea.render();
                     pages.add(page);
 
                     int percentage = Double.valueOf((i / 1000D) * 100).intValue();
