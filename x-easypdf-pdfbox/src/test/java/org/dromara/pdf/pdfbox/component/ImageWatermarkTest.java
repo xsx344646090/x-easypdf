@@ -72,7 +72,6 @@ public class ImageWatermarkTest extends BaseTest {
             watermark.setLines(2);
             watermark.setCountOfLine(4);
             watermark.setSpacingOfLine(50F);
-            watermark.setAngle(45F);
             watermark.render(document.getCurrentPage());
 
             document.save("E:\\PDF\\pdfbox\\watermark\\image\\pageTest.pdf");

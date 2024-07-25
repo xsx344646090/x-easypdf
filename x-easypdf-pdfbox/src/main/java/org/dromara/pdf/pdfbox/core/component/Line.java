@@ -41,6 +41,10 @@ public class Line extends AbstractComponent {
      * 旋转角度
      */
     protected Float angle;
+    /**
+     * 透明度
+     */
+    protected Float alpha;
     
     /**
      * 有参构造
@@ -197,6 +201,10 @@ public class Line extends AbstractComponent {
         if (Objects.isNull(this.angle)) {
             this.angle = 0F;
         }
+        // 初始化透明度
+        if (Objects.isNull(this.alpha)) {
+            this.alpha = 1.0F;
+        }
         // 开启上边框
         this.borderConfiguration.setIsBorder(false);
         this.borderConfiguration.setIsBorderTop(true);
@@ -223,7 +231,7 @@ public class Line extends AbstractComponent {
         // 新建内容流
         PDPageContentStream stream = this.initContentStream();
         // 初始化矩阵
-        CommonUtil.initMatrix(stream, this.getBeginX(), this.getBeginY(), this.getRelativeBeginX(), this.getRelativeBeginY(), this.getLineLength(), this.getLineWidth(), this.getAngle());
+        CommonUtil.initMatrix(stream, this.getBeginX(), this.getBeginY(), this.getRelativeBeginX(), this.getRelativeBeginY(), this.getLineLength(), this.getLineWidth(), this.getAngle(), this.getAlpha());
         // 添加边框
         BorderUtil.drawNormalBorder(stream, CommonUtil.getRectangle(this.getLineLength(), this.getLineWidth()), BorderData.create(this, this.getBorderConfiguration()));
         // 关闭内容流

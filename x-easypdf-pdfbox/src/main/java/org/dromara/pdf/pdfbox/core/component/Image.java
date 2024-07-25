@@ -5,16 +5,16 @@ import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
-import org.apache.pdfbox.util.Matrix;
 import org.dromara.pdf.pdfbox.core.base.BorderData;
 import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.enums.ComponentType;
+import org.dromara.pdf.pdfbox.core.enums.ImageType;
 import org.dromara.pdf.pdfbox.util.BorderUtil;
 import org.dromara.pdf.pdfbox.util.CommonUtil;
 import org.dromara.pdf.pdfbox.util.ImageUtil;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -60,6 +60,10 @@ public class Image extends AbstractComponent {
      * 旋转角度
      */
     protected Float angle;
+    /**
+     * 透明度
+     */
+    protected Float alpha;
     /**
      * 缩放比例
      */
@@ -130,6 +134,17 @@ public class Image extends AbstractComponent {
     /**
      * 设置图片
      *
+     * @param image 图片
+     */
+    @SneakyThrows
+    public void setImage(BufferedImage image) {
+        Objects.requireNonNull(image, "the image can not be null");
+        this.setImage(ImageUtil.toBytes(image, ImageType.PNG.getType()));
+    }
+
+    /**
+     * 设置图片
+     *
      * @param inputStream 输入流
      */
     @SneakyThrows
@@ -184,6 +199,10 @@ public class Image extends AbstractComponent {
         if (Objects.isNull(this.angle)) {
             this.angle = 0F;
         }
+        // 初始化透明度
+        if (Objects.isNull(this.alpha)) {
+            this.alpha = 1.0F;
+        }
         // 初始化起始XY轴坐标
         this.initBeginXY(this.width, this.height);
     }
@@ -235,7 +254,7 @@ public class Image extends AbstractComponent {
                     this.getIsResetContentStream()
             );
             // 初始化矩阵
-            CommonUtil.initMatrix(contentStream, this.getBeginX(), this.getBeginY(), this.getRelativeBeginX(), this.getRelativeBeginY(), this.getWidth(), this.getHeight(), this.getAngle());
+            CommonUtil.initMatrix(contentStream, this.getBeginX(), this.getBeginY(), this.getRelativeBeginX(), this.getRelativeBeginY(), this.getWidth(), this.getHeight(), this.getAngle(), this.getAlpha());
             // 添加图像
             contentStream.drawImage(this.getImage(), 0, 0, this.getWidth(), this.getHeight());
             // 添加边框
