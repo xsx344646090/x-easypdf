@@ -9,6 +9,7 @@ import org.dromara.pdf.pdfbox.core.component.Textarea;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.junit.Test;
 
+import java.io.File;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
@@ -61,7 +62,7 @@ public class PageFooterTest extends BaseTest {
 
             Textarea textarea3 = new Textarea(document.getCurrentPage());
             StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < 200; i++) {
+            for (int i = 0; i < 500; i++) {
                 builder.append("testtesttest123中文").append(i);
             }
             textarea3.setText(builder.toString());
@@ -179,6 +180,32 @@ public class PageFooterTest extends BaseTest {
 
             document.appendPage(page);
             document.save("E:\\PDF\\pdfbox\\pageFooter\\textareaAndImageTest.pdf");
+            document.close();
+        });
+    }
+
+    /**
+     * 测试已有文档
+     */
+    @Test
+    public void testExistFile() {
+        this.test(() -> {
+            Document document = PdfHandler.getDocumentHandler().load(new File(("E:\\PDF\\pdfbox\\allTest.pdf")));
+            document.setMargin(50F);
+
+            for (Page page : document.getPages()) {
+                PageFooter pageFooter = new PageFooter(page);
+
+                Textarea text = new Textarea(pageFooter.getPage());
+                text.setText("页脚1");
+
+                pageFooter.setHeight(100F);
+                pageFooter.setComponents(Collections.singletonList(text));
+                pageFooter.setIsBorder(true);
+                pageFooter.render();
+            }
+
+            document.save("E:\\PDF\\pdfbox\\pageFooter\\textareaTest.pdf");
             document.close();
         });
     }

@@ -44,14 +44,6 @@ import java.util.*;
 public class FormProcessor extends AbstractProcessor {
 
     /**
-     * 字体替换正则（未包含字体大小）
-     */
-    private static final String NONE_FONT_SIZE_REGEX = "/\\S*";
-    /**
-     * 字体替换正则（包含字体大小）
-     */
-    private static final String FONT_SIZE_REGEX = "/.*Tf";
-    /**
      * 表单
      */
     protected PDAcroForm form;
@@ -85,9 +77,9 @@ public class FormProcessor extends AbstractProcessor {
     }
 
     /**
-     * 替换key
+     * 替换关键字
      *
-     * @param keyMap key字典
+     * @param keyMap 关键字字典
      */
     public void replaceKey(Map<String, String> keyMap) {
         // 遍历key字典
@@ -101,13 +93,44 @@ public class FormProcessor extends AbstractProcessor {
             }
         });
         // 重置表单
-        this.getDocument().getDocumentCatalog().setAcroForm(this.form);
+        this.reset();
+    }
+
+    /**
+     * 移除字段
+     *
+     * @param keys 字段关键字
+     */
+    @SneakyThrows
+    public void remove(String... keys) {
+        // 非空
+        if (Objects.nonNull(keys) && keys.length > 0) {
+            // 获取字段列表
+            List<PDField> fields = this.getFields();
+            // 遍历字段key
+            for (String key : keys) {
+                // 获取表单字段
+                PDField field = this.form.getField(key);
+                // 存在字段
+                if (Objects.nonNull(field)) {
+                    // 移除表单字段
+                    fields.remove(field);
+                }
+            }
+            // 重置字段
+            this.form.setFields(fields);
+        } else {
+            // 重置字段
+            this.form.setFields(new ArrayList<>(0));
+        }
+        // 重置表单
+        this.reset();
     }
 
     /**
      * 填写文本
      *
-     * @param formMap  表单字典
+     * @param formMap 表单字典
      */
     @SneakyThrows
     public void fillText(Map<String, String> formMap) {
@@ -135,7 +158,7 @@ public class FormProcessor extends AbstractProcessor {
             }
         }
         // 重置表单
-        this.getDocument().getDocumentCatalog().setAcroForm(this.form);
+        this.reset();
     }
 
     /**
@@ -185,49 +208,73 @@ public class FormProcessor extends AbstractProcessor {
             }
         }
         // 重置表单
-        this.getDocument().getDocumentCatalog().setAcroForm(this.form);
+        this.reset();
     }
 
     /**
-     * 移除字段
+     * 扁平化表单
      *
-     * @param keys 字段key
+     * @param refreshAppearances 是否刷新外观
+     * @param keys               字段关键字
      */
     @SneakyThrows
-    public void remove(String... keys) {
+    public void flatten(boolean refreshAppearances, String... keys) {
+        // 获取表单字段
+        List<PDField> fields = this.getFields();
         // 非空
         if (Objects.nonNull(keys) && keys.length > 0) {
-            // 定义待清空字段
-            List<PDField> fields = new ArrayList<>(keys.length);
-            // 遍历字段key
+            // 重置字段
+            fields = new ArrayList<>(keys.length);
+            // 遍历关键字
             for (String key : keys) {
-                // 获取表单字段
+                // 获取字段
                 PDField field = this.form.getField(key);
-                // 存在字段
+                // 非空
                 if (Objects.nonNull(field)) {
-                    // 添加表单字段
+                    // 添加字段
                     fields.add(field);
+                } else {
+                    // 提示信息
+                    log.warn("the field['" + key + "'] is not exist, will be ignored");
                 }
             }
-            // 清空
-            this.form.flatten(fields, false);
-        } else {
-            // 清空
-            this.form.flatten();
         }
+        // 扁平化
+        this.form.flatten(fields, refreshAppearances);
         // 重置表单
-        this.getDocument().getDocumentCatalog().setAcroForm(this.form);
+        this.reset();
     }
 
     /**
-     * 清空
+     * 只读
+     *
+     * @param keys 关键字
      */
-    @SneakyThrows
-    public void clear() {
-        // 清空字段
-        this.form.flatten(this.getFields(), true);
+    public void readOnly(String... keys) {
+        // 非空
+        if (Objects.nonNull(keys) && keys.length > 0) {
+            // 遍历关键字
+            for (String key : keys) {
+                // 获取字段
+                PDField field = this.form.getField(key);
+                // 非空
+                if (Objects.nonNull(field)) {
+                    // 设置只读
+                    field.setReadOnly(true);
+                } else {
+                    // 提示信息
+                    log.warn("the field['" + key + "'] is not exist, will be ignored");
+                }
+            }
+        } else {
+            // 遍历字段
+            this.getFields().forEach(field -> {
+                // 设置只读
+                field.setReadOnly(true);
+            });
+        }
         // 重置表单
-        this.getDocument().getDocumentCatalog().setAcroForm(this.form);
+        this.reset();
     }
 
     /**
@@ -262,5 +309,12 @@ public class FormProcessor extends AbstractProcessor {
         acroForm.setCacheFields(true);
         // 返回表单
         return acroForm;
+    }
+
+    /**
+     * 重置表单
+     */
+    protected void reset() {
+        this.getDocument().getDocumentCatalog().setAcroForm(this.form);
     }
 }

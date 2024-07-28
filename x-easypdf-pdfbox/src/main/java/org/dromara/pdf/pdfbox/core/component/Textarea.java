@@ -121,7 +121,7 @@ public class Textarea extends AbstractComponent {
         super(page);
         this.fontConfiguration = new FontConfiguration(page.getFontConfiguration());
     }
-    
+
     /**
      * 设置字体名称
      *

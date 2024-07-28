@@ -87,6 +87,7 @@ public abstract class AbstractPageHeaderOrFooter extends AbstractBase {
      */
     public AbstractPageHeaderOrFooter(Page page) {
         super.init(page);
+        this.context.reset(page);
         this.marginConfiguration = new MarginConfiguration();
         this.borderConfiguration = new BorderConfiguration();
         this.pagingEvent = new DefaultPageHeaderFooterPagingEvent();

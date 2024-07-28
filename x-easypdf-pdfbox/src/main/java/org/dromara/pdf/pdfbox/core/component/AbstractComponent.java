@@ -95,46 +95,14 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
      * @return 返回最小宽度
      */
     protected abstract float getMinWidth();
-    
+
     /**
      * 有参构造
      *
      * @param page 页面
      */
     public AbstractComponent(Page page) {
-        this(page, true);
-    }
-    
-    /**
-     * 无参构造
-     */
-    protected AbstractComponent() {
-    }
-    
-    /**
-     * 有参构造
-     *
-     * @param component 组件
-     */
-    protected AbstractComponent(AbstractComponent component) {
-        super.init(component);
-        this.marginConfiguration = new MarginConfiguration(component.getMarginConfiguration());
-        this.borderConfiguration = new BorderConfiguration(component.getBorderConfiguration());
-        this.pagingEvents = component.getPagingEvents();
-    }
-    
-    /**
-     * 有参构造
-     *
-     * @param page 页面
-     */
-    protected AbstractComponent(Page page, boolean isResetPage) {
-        Page lastPage;
-        if (isResetPage) {
-            lastPage = page.getLastPage();
-        } else {
-            lastPage = page;
-        }
+        Page lastPage = page.getLastPage();
         super.init(lastPage);
         this.context.reset(lastPage);
         this.marginConfiguration = new MarginConfiguration();

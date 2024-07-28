@@ -1,14 +1,14 @@
 package org.dromara.pdf.fop;
 
 import org.dromara.pdf.fop.core.doc.Document;
-import org.dromara.pdf.fop.core.doc.component.table.Table;
-import org.dromara.pdf.fop.core.doc.component.table.TableBody;
-import org.dromara.pdf.fop.core.doc.component.table.TableCell;
-import org.dromara.pdf.fop.core.doc.component.table.TableRow;
+import org.dromara.pdf.fop.core.doc.component.table.*;
 import org.dromara.pdf.fop.core.doc.component.text.Text;
 import org.dromara.pdf.fop.core.doc.page.Page;
 import org.dromara.pdf.fop.handler.TemplateHandler;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author xsx
@@ -32,51 +32,44 @@ public class TableTest extends BaseTest {
     @Test
     public void tableTest1() {
         this.test(() -> {
-            // 定义fop配置文件路径
-            String configPath = "E:\\PDF\\fop\\fop.xconf";
             // 定义输出路径
             String outputPath = "E:\\PDF\\fop\\table\\tableTest1.pdf";
             // 转换pdf
-            TemplateHandler.Document.build().setConfigPath(configPath).addPage(
-                    TemplateHandler.Page.build().addBodyComponent(
-                            TemplateHandler.Table.build().setBody(
-                                    TemplateHandler.Table.Body.build().addRow(
-                                            TemplateHandler.Table.Row.build().addCell(
-                                                    TemplateHandler.Table.Cell.build().addComponent(
-                                                            TemplateHandler.Text.build().setText("1-hello-world-1")
-                                                    ).setBorder("1 solid black"),
-                                                    TemplateHandler.Table.Cell.build().addComponent(
-                                                            TemplateHandler.Text.build().setText("1-hello-world-2")
-                                                    ).setBorder("1 solid black")
-                                            ),
-                                            TemplateHandler.Table.Row.build().addCell(
-                                                    TemplateHandler.Table.Cell.build().addComponent(
-                                                            TemplateHandler.Text.build().setText("2-hello-world-1")
-                                                    ).setBorder("1 solid black"),
-                                                    TemplateHandler.Table.Cell.build().addComponent(
-                                                            TemplateHandler.Text.build().setText("2-hello-world-2")
-                                                    ).setBorder("1 solid black")
-                                            ),
-                                            TemplateHandler.Table.Row.build().addCell(
-                                                    TemplateHandler.Table.Cell.build().addComponent(
-                                                            TemplateHandler.Text.build().setText("2-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-1")
-                                                    ).setBorder("1 solid black"),
-                                                    TemplateHandler.Table.Cell.build().addComponent(
-                                                            TemplateHandler.Text.build().setText("2-hello-world-2")
-                                                    ).setBorder("1 solid black")
-                                            ).enableKeepTogether(),
-                                            TemplateHandler.Table.Row.build().addCell(
-                                                    TemplateHandler.Table.Cell.build().addComponent(
-                                                            TemplateHandler.Text.build().setText("2-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-12-hello-world-1")
-                                                    ).setBorder("1 solid black"),
-                                                    TemplateHandler.Table.Cell.build().addComponent(
-                                                            TemplateHandler.Text.build().setText("2-hello-world-2")
-                                                    ).setBorder("1 solid black")
-                                            ).enableKeepTogether()
-                                    )
-                            ).setWidth("200pt").setMargin("10pt")
-                    )
-            ).transform(outputPath);
+            Document document = TemplateHandler.Document.build();
+            Page page = TemplateHandler.Page.build();
+            Table table = TemplateHandler.Table.build();
+            table.setFontFamily("微软雅黑");
+            TableHeader tableHeader = TemplateHandler.Table.Header.build();
+            TableRow tableHeaderRow = TemplateHandler.Table.Row.build();
+            tableHeaderRow.setFontSize("20pt");
+            TableCell nameCell = TemplateHandler.Table.Cell.build();
+            nameCell.addComponent(TemplateHandler.Text.build().setText("姓名"));
+            TableCell dutiesCell = TemplateHandler.Table.Cell.build();
+            dutiesCell.addComponent(TemplateHandler.Text.build().setText("职务"));
+            TableCell phoneCell = TemplateHandler.Table.Cell.build();
+            phoneCell.addComponent(TemplateHandler.Text.build().setText("电话"));
+            tableHeaderRow.addCell(nameCell, dutiesCell, phoneCell);
+            tableHeader.addRow(tableHeaderRow);
+            table.setHeader(tableHeader);
+
+            List<TableRow> rows = new ArrayList<>(30);
+            for (int i = 0; i < 100; i++) {
+                TableRow row = TemplateHandler.Table.Row.build();
+                TableCell cell1 = TemplateHandler.Table.Cell.build();
+                cell1.addComponent(TemplateHandler.Text.build().setText("姓名" + i));
+                TableCell cell2 = TemplateHandler.Table.Cell.build();
+                cell2.addComponent(TemplateHandler.Text.build().setText("职务" + i));
+                TableCell cell3 = TemplateHandler.Table.Cell.build();
+                cell3.addComponent(TemplateHandler.Text.build().setText("电话" + i));
+                row.addCell(cell1, cell2, cell3);
+                rows.add(row);
+            }
+            TableBody tableBody = TemplateHandler.Table.Body.build();
+            tableBody.addRow(rows);
+            table.setBody(tableBody);
+            page.addBodyComponent(table);
+            document.addPage(page);
+            document.transform(outputPath);
         });
     }
 
