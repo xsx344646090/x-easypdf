@@ -42,7 +42,6 @@ public class FormProcessorTest extends BaseTest {
                 Map<String, String> map = new HashMap<>(1);
                 map.put("test", "贵阳");
                 processor.fillText(map);
-                processor.clear();
 
                 document.save("E:\\PDF\\pdfbox\\form\\fillTextTest2.pdf");
             }

@@ -79,24 +79,6 @@ public class Image extends AbstractComponent {
     }
 
     /**
-     * 有参构造
-     *
-     * @param component 组件
-     */
-    protected Image(AbstractComponent component) {
-        super(component);
-    }
-
-    /**
-     * 有参构造
-     *
-     * @param page 页面
-     */
-    protected Image(Page page, boolean isResetPage) {
-        super(page, isResetPage);
-    }
-
-    /**
      * 设置宽度
      *
      * @param width 宽度
