@@ -5,12 +5,21 @@ import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 import org.apache.pdfbox.util.Matrix;
-import org.dromara.pdf.pdfbox.core.base.*;
-import org.dromara.pdf.pdfbox.handler.PdfHandler;
+import org.dromara.pdf.pdfbox.core.base.AbstractBase;
+import org.dromara.pdf.pdfbox.core.base.Context;
+import org.dromara.pdf.pdfbox.core.base.Document;
+import org.dromara.pdf.pdfbox.core.base.Page;
+import org.dromara.pdf.pdfbox.core.base.config.FontConfiguration;
+import org.dromara.pdf.pdfbox.core.enums.ComponentType;
+import org.dromara.pdf.pdfbox.core.enums.FontStyle;
+import org.dromara.pdf.pdfbox.support.Constants;
+import org.dromara.pdf.pdfbox.util.CommonUtil;
 import org.dromara.pdf.pdfbox.util.TextUtil;
 
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -34,40 +43,44 @@ import java.util.Objects;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class TextareaWatermark extends AbstractBaseFont implements Watermark {
+public class TextareaWatermark extends AbstractBase implements Watermark {
 
+    /**
+     * 字体配置
+     */
+    protected FontConfiguration fontConfiguration;
     /**
      * 自定义起始X轴坐标
      */
-    private Float beginX;
+    protected Float beginX;
     /**
      * 自定义起始Y轴坐标
      */
-    private Float beginY;
+    protected Float beginY;
     /**
      * 文本行数
      */
-    private Integer lines;
+    protected Integer lines;
     /**
      * 每行文本数
      */
-    private Integer countOfLine;
+    protected Integer countOfLine;
     /**
      * 每行文本间距
      */
-    private Float spacingOfLine;
+    protected Float spacingOfLine;
     /**
      * 制表符大小
      */
-    private Integer tabSize;
+    protected Integer tabSize;
     /**
      * 文本列表
      */
-    private List<String> textList;
+    protected List<String> textList;
     /**
      * 旋转角度
      */
-    private Float angle;
+    protected Float angle;
 
     /**
      * 有参构造
@@ -76,6 +89,11 @@ public class TextareaWatermark extends AbstractBaseFont implements Watermark {
      */
     public TextareaWatermark(Document document) {
         super.setContext(document.getContext());
+        this.fontConfiguration = new FontConfiguration();
+        this.setLeading(100F);
+        this.setFontSize(20F);
+        this.setFontAlpha(0.5F);
+        this.setFontColor(Color.GRAY);
     }
 
     /**
@@ -84,8 +102,84 @@ public class TextareaWatermark extends AbstractBaseFont implements Watermark {
      * @param fontName 字体名称
      */
     public void setFontName(String fontName) {
-        super.setFontName(fontName);
-        super.setFont(null);
+        this.fontConfiguration.setFontName(fontName);
+        this.getContext().addFontCache(fontName);
+    }
+
+    /**
+     * 设置特殊字体名称
+     *
+     * @param fontNames 字体名称
+     */
+    public void setSpecialFontNames(String... fontNames) {
+        this.getContext().addFontCache(fontNames);
+        Collections.addAll(this.fontConfiguration.getSpecialFontNames(), fontNames);
+    }
+
+    /**
+     * 设置字体大小
+     *
+     * @param size 大小
+     */
+    public void setFontSize(float size) {
+        this.fontConfiguration.setFontSize(size);
+    }
+
+    /**
+     * 设置字体颜色
+     *
+     * @param color 颜色
+     */
+    public void setFontColor(Color color) {
+        this.fontConfiguration.setFontColor(color);
+    }
+
+    /**
+     * 设置字体透明度
+     *
+     * @param alpha 透明度
+     */
+    public void setFontAlpha(float alpha) {
+        this.fontConfiguration.setFontAlpha(alpha);
+    }
+
+    /**
+     * 设置字体样式
+     *
+     * @param style 样式
+     */
+    public void setFontStyle(FontStyle style) {
+        this.fontConfiguration.setFontStyle(style);
+        if (style.isItalic() && this.getFontSlope() == 0F) {
+            this.setFontSlope(Constants.DEFAULT_FONT_ITALIC_SLOPE);
+        }
+    }
+
+    /**
+     * 设置字体斜率（斜体字）
+     *
+     * @param slope 斜率
+     */
+    public void setFontSlope(float slope) {
+        this.fontConfiguration.setFontSlope(slope);
+    }
+
+    /**
+     * 设置字符间距
+     *
+     * @param spacing 间距
+     */
+    public void setCharacterSpacing(float spacing) {
+        this.fontConfiguration.setCharacterSpacing(spacing);
+    }
+
+    /**
+     * 设置行间距
+     *
+     * @param leading 行间距
+     */
+    public void setLeading(float leading) {
+        this.fontConfiguration.setLeading(leading);
     }
 
     /**
@@ -101,6 +195,18 @@ public class TextareaWatermark extends AbstractBaseFont implements Watermark {
     }
 
     /**
+     * 设置文本
+     *
+     * @param texts 文本
+     */
+    public void setTexts(String... texts) {
+        if (Objects.nonNull(texts)) {
+            this.textList = new ArrayList<>(texts.length);
+            Collections.addAll(this.textList, texts);
+        }
+    }
+
+    /**
      * 获取类型
      *
      * @return 返回类型
@@ -111,43 +217,57 @@ public class TextareaWatermark extends AbstractBaseFont implements Watermark {
     }
 
     /**
-     * 初始化基础
+     * 获取页面
+     *
+     * @return 返回页面
      */
-    @Override
-    public void initBase() {
-        // 检查文本列表
-        if (Objects.isNull(this.textList) || this.textList.isEmpty()) {
-            throw new IllegalArgumentException("the text list can not be empty");
-        }
-        // 初始化当前执行组件类型
-        if (Objects.isNull(this.getContext().getExecutingComponentType())) {
-            this.getContext().setExecutingComponentType(this.getType());
-        }
-        // 初始化字体
-        if (Objects.nonNull(this.getFontName())) {
-            PDFont pdFont = PdfHandler.getFontHandler().getPDFont(this.getContext().getTargetDocument(), this.getFontName(), true);
-            super.setFont(pdFont);
-        }
-        // 初始化行数
-        if (Objects.isNull(this.lines)) {
-            this.lines = 1;
-        }
-        // 初始化每行文本数
-        if (Objects.isNull(this.countOfLine)) {
-            this.countOfLine = 1;
-        }
-        // 初始化每行文本间距
-        if (Objects.isNull(this.spacingOfLine)) {
-            this.spacingOfLine = 50F;
-        }
-        // 初始化制表符大小
-        if (Objects.isNull(this.tabSize)) {
-            this.tabSize = 4;
-        }
-        // 初始化旋转角度
-        if (Objects.isNull(this.angle)) {
-            this.angle = 0F;
-        }
+    public Page getPage() {
+        return this.getContext().getPage();
+    }
+
+    /**
+     * 获取字体
+     *
+     * @return 返回字体
+     */
+    public PDFont getFont() {
+        return this.getContext().getFont(this.fontConfiguration.getFontName());
+    }
+
+    public String getFontName() {
+        return this.fontConfiguration.getFontName();
+    }
+
+    public List<String> getSpecialFontNames() {
+        return this.fontConfiguration.getSpecialFontNames();
+    }
+
+    public Float getFontSize() {
+        return this.fontConfiguration.getFontSize();
+    }
+
+    public Color getFontColor() {
+        return this.fontConfiguration.getFontColor();
+    }
+
+    public Float getFontAlpha() {
+        return this.fontConfiguration.getFontAlpha();
+    }
+
+    public FontStyle getFontStyle() {
+        return this.fontConfiguration.getFontStyle();
+    }
+
+    public Float getFontSlope() {
+        return this.fontConfiguration.getFontSlope();
+    }
+
+    public Float getCharacterSpacing() {
+        return this.fontConfiguration.getCharacterSpacing();
+    }
+
+    public Float getLeading() {
+        return this.fontConfiguration.getLeading();
     }
 
     /**
@@ -184,10 +304,48 @@ public class TextareaWatermark extends AbstractBaseFont implements Watermark {
      * @param page 页面
      */
     protected void init(Page page) {
-        // 初始化参数
-        super.init(page, false);
-        // 初始化基础
-        this.initBase();
+        // 检查文本列表
+        if (Objects.isNull(this.textList) || this.textList.isEmpty()) {
+            throw new IllegalArgumentException("the text list can not be empty");
+        }
+        // 初始化
+        super.init(page);
+        // 初始化特殊字体
+        if (Objects.nonNull(this.fontConfiguration.getSpecialFontNames())) {
+            for (String specialFontName : this.fontConfiguration.getSpecialFontNames()) {
+                this.getContext().addFontCache(specialFontName);
+            }
+        }
+        // 初始化当前执行组件类型
+        if (Objects.isNull(this.getContext().getExecutingComponentType())) {
+            this.getContext().setExecutingComponentType(this.getType());
+        }
+        // 初始化每行文本间距
+        if (Objects.isNull(this.spacingOfLine)) {
+            this.spacingOfLine = 100F;
+        }
+        // 初始化每行文本数
+        if (Objects.isNull(this.countOfLine)) {
+            int length = this.textList.get(0).length();
+            int characterSpacingLength = length - 1;
+            float textWidth = length * this.getFontSize() + characterSpacingLength * this.getCharacterSpacing() + this.spacingOfLine;
+            this.countOfLine = (int) Math.ceil(this.getPage().getWidth() / textWidth);
+        }
+        // 初始化行数
+        if (Objects.isNull(this.lines)) {
+            int count = this.textList.size();
+            int leadingCount = count - 1;
+            float textHeight = count * this.getFontSize() + leadingCount * this.getLeading();
+            this.lines = (int) Math.ceil(this.getPage().getHeight() / textHeight);
+        }
+        // 初始化制表符大小
+        if (Objects.isNull(this.tabSize)) {
+            this.tabSize = 2;
+        }
+        // 初始化旋转角度
+        if (Objects.isNull(this.angle)) {
+            this.angle = 45F;
+        }
         // 初始化自定义起始X轴坐标
         if (Objects.isNull(this.beginX)) {
             this.beginX = 0F;
@@ -223,16 +381,17 @@ public class TextareaWatermark extends AbstractBaseFont implements Watermark {
             for (int j = 0; j < this.getCountOfLine(); j++) {
                 // 遍历文本
                 for (String text : this.getTextList()) {
+                    // 获取写入文本
+                    String writeText = TextUtil.replaceTab(text, this.getTabSize());
                     // 开始写入
                     stream.beginText();
                     // 初始化字体颜色及透明度
-                    this.initFontColorAndAlpha(stream);
+                    // 初始化字体颜色及透明度
+                    CommonUtil.initFontColorAndAlpha(stream, this.getPage().getBackgroundColor(), this.getFontStyle(), this.getFontColor(), this.getFontAlpha());
                     // 初始化位置
                     this.initPosition(stream, beginX, beginY);
-                    // 获取写入文本
-                    String writeText = TextUtil.replaceTab(text, this.getTabSize());
                     // 写入文本
-                    stream.showText(writeText);
+                    TextUtil.writeText(this.getContext(), stream, text, this.getSpecialFontNames(), this.getFont(), this.getFontSize());
                     // 结束写入
                     stream.endText();
                     // 重置Y轴起始坐标
@@ -240,7 +399,7 @@ public class TextareaWatermark extends AbstractBaseFont implements Watermark {
                     // 重置最大宽度
                     if (initFlag) {
                         // 重置最大宽度
-                        maxWidth = Math.max(maxWidth, TextUtil.getTextRealWidth(writeText, this.getFont(), this.getFontSize(), this.getCharacterSpacing()));
+                        maxWidth = Math.max(maxWidth, TextUtil.getTextRealWidth(this.getContext(), writeText, this.getFont(), this.getFontSize(), this.getCharacterSpacing(), this.getSpecialFontNames()));
                     }
                 }
                 // 重置X轴起始坐标
@@ -288,42 +447,6 @@ public class TextareaWatermark extends AbstractBaseFont implements Watermark {
         contentStream.setCharacterSpacing(this.getCharacterSpacing());
         // 返回内容流
         return contentStream;
-    }
-
-    /**
-     * 初始化字体颜色及透明度
-     *
-     * @param stream pdfbox内容流
-     */
-    @SneakyThrows
-    protected void initFontColorAndAlpha(PDPageContentStream stream) {
-        // 创建扩展图形状态
-        PDExtendedGraphicsState state = new PDExtendedGraphicsState();
-        // 设置图形状态参数
-        stream.setGraphicsStateParameters(state);
-        // 填充
-        if (this.getFontStyle().isFill()) {
-            // 设置字体颜色
-            stream.setNonStrokingColor(this.getFontColor());
-            // 设置透明度
-            state.setNonStrokingAlphaConstant(this.getFontAlpha());
-        }
-        // 空心
-        if (this.getFontStyle().isStroke()) {
-            // 设置字体颜色
-            stream.setStrokingColor(this.getFontColor());
-            // 设置透明度
-            state.setStrokingAlphaConstant(this.getFontAlpha());
-        }
-        // 细体
-        if (this.getFontStyle().isLight()) {
-            // 设置背景颜色
-            stream.setStrokingColor(this.getBackgroundColor());
-            // 设置字体颜色
-            stream.setNonStrokingColor(this.getFontColor());
-            // 设置透明度
-            state.setNonStrokingAlphaConstant(this.getFontAlpha());
-        }
     }
 
     /**

@@ -1,5 +1,6 @@
 package org.dromara.pdf.pdfbox.core.ext.processor;
 
+import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.common.PDMetadata;
 import org.apache.xmpbox.XMPMetadata;
@@ -30,6 +31,7 @@ import java.util.*;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
+@EqualsAndHashCode(callSuper = true)
 public class MetadataProcessor extends AbstractProcessor {
 
     /**
@@ -425,16 +427,23 @@ public class MetadataProcessor extends AbstractProcessor {
      */
     @SneakyThrows
     protected void initMetadata() {
+        // 获取文档的元数据，如果为空则创建一个新的PDMetadata对象
         this.metadata = Optional.ofNullable(this.getDocument().getDocumentCatalog().getMetadata()).orElse(new PDMetadata(this.document.getTarget()));
+        // 尝试解析元数据，如果解析失败则创建一个新的XMPMetadata对象
         try {
             this.xmpMetadata = new DomXmpParser().parse(this.metadata.exportXMPMetadata());
-        }catch (Exception e) {
+        } catch (Exception e) {
             this.xmpMetadata = XMPMetadata.createXMPMetadata();
         }
+        // 获取Adobe PDF Schema
         this.adobeSchema = this.xmpMetadata.getAdobePDFSchema();
+        // 获取XMP Basic Schema
         this.basicSchema = this.xmpMetadata.getXMPBasicSchema();
+        // 获取Dublin Core Schema
         this.dcSchema = this.xmpMetadata.getDublinCoreSchema();
+        // 获取XMP Rights Management Schema
         this.rmSchema = this.xmpMetadata.getXMPRightsManagementSchema();
+        // 获取XMP Media Management Schema
         this.mmSchema = this.xmpMetadata.getXMPMediaManagementSchema();
     }
 

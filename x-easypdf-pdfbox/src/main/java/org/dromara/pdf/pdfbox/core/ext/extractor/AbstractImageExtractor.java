@@ -3,7 +3,7 @@ package org.dromara.pdf.pdfbox.core.ext.extractor;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.dromara.pdf.pdfbox.core.base.Document;
-import org.dromara.pdf.pdfbox.util.ImageUtil;
+import org.dromara.pdf.pdfbox.util.CommonUtil;
 
 import java.awt.image.BufferedImage;
 import java.util.*;
@@ -86,7 +86,7 @@ public abstract class AbstractImageExtractor extends AbstractExtractor {
      */
     protected List<BufferedImage> processImage(PDPage page) {
         List<BufferedImage> data = new ArrayList<>(16);
-        ImageUtil.extract(data, page.getResources());
+        CommonUtil.extractImage(data, page.getResources());
         return data;
     }
 }

@@ -74,7 +74,7 @@ public class LayerProcessorTest extends BaseTest {
                 Document doc = PdfHandler.getDocumentHandler().create();
 
                 // 创建页面
-                Page page = doc.createPage();
+                Page page = new Page(document);
 
                 // 添加文本
                 float fontSizeOffset = 3F;

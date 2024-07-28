@@ -3,6 +3,7 @@ package org.dromara.pdf.pdfbox.core.ext.analyzer;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
+import org.apache.commons.logging.Log;
 import org.apache.pdfbox.contentstream.PDFStreamEngine;
 import org.apache.pdfbox.contentstream.operator.DrawObject;
 import org.apache.pdfbox.contentstream.operator.Operator;
@@ -77,6 +78,10 @@ public abstract class AbstractImageAnalyzer extends AbstractAnalyzer {
     @Getter
     protected static class DefaultStreamEngine extends PDFStreamEngine {
         /**
+         * 日志
+         */
+        protected Log log;
+        /**
          * 页面索引
          */
         protected Integer pageIndex;
@@ -90,15 +95,18 @@ public abstract class AbstractImageAnalyzer extends AbstractAnalyzer {
         protected Set<ImageInfo> infoSet;
 
         /**
-         * 无参构造
+         * 有参构造
+         *
+         * @param log 日志
          */
-        public DefaultStreamEngine() {
+        public DefaultStreamEngine(Log log) {
             this.addOperator(new Concatenate(this));
             this.addOperator(new DrawObject(this));
             this.addOperator(new SetGraphicsStateParameters(this));
             this.addOperator(new Save(this));
             this.addOperator(new Restore(this));
             this.addOperator(new SetMatrix(this));
+            this.log = log;
             this.infoSet = new HashSet<>(16);
         }
 

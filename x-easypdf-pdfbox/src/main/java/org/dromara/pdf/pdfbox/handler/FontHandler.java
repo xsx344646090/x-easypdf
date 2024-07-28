@@ -1,11 +1,14 @@
 package org.dromara.pdf.pdfbox.handler;
 
 import lombok.SneakyThrows;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.fontbox.ttf.TrueTypeFont;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.font.FontFormat;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
+import org.dromara.pdf.pdfbox.core.base.Banner;
 import org.dromara.pdf.pdfbox.core.enums.FontType;
 import org.dromara.pdf.pdfbox.support.Constants;
 import org.dromara.pdf.pdfbox.support.fonts.FontInfo;
@@ -13,7 +16,6 @@ import org.dromara.pdf.pdfbox.support.fonts.FontMapperImpl;
 
 import java.io.File;
 import java.io.InputStream;
-import java.lang.reflect.Method;
 import java.util.*;
 
 /**
@@ -35,12 +37,21 @@ import java.util.*;
  * </p>
  */
 public class FontHandler {
-
+    
+    static {
+        Banner.print();
+    }
+    
+    /**
+     * 日志
+     */
+    private static final Log log = LogFactory.getLog(FontHandler.class);
+    
     /**
      * 助手实例
      */
     private static final FontHandler INSTANCE = new FontHandler();
-
+    
     /**
      * 无参构造
      */
@@ -51,7 +62,7 @@ public class FontHandler {
                 FontType.TTF
         );
     }
-
+    
     /**
      * 获取实例
      *
@@ -60,7 +71,7 @@ public class FontHandler {
     public static FontHandler getInstance() {
         return INSTANCE;
     }
-
+    
     /**
      * 获取加载的字体名称
      *
@@ -69,7 +80,7 @@ public class FontHandler {
     public List<String> getFontNames() {
         return new ArrayList<>(FontMapperImpl.getInstance().getFontInfoByName().keySet());
     }
-
+    
     /**
      * 获取所有字体
      *
@@ -78,7 +89,7 @@ public class FontHandler {
     public List<? extends FontInfo> getFontInfos() {
         return FontMapperImpl.getInstance().getProvider().getFontInfo();
     }
-
+    
     /**
      * 获取pdfbox字体
      *
@@ -95,19 +106,19 @@ public class FontHandler {
         }
         return PDType0Font.load(document, this.getTrueTypeFont(fontName), embedSubset);
     }
-
+    
     /**
      * 获取pdfbox字体
      *
-     * @param document    pdf文档
-     * @param fontName    字体名称
+     * @param document pdf文档
+     * @param fontName 字体名称
      * @return 返回pdfBox字体
      */
     @SneakyThrows
     public PDFont getPDFont(PDDocument document, String fontName) {
         return this.getPDFont(document, fontName, true);
     }
-
+    
     /**
      * 获取字体
      *
@@ -117,7 +128,7 @@ public class FontHandler {
     public TrueTypeFont getTrueTypeFont(String fontName) {
         return FontMapperImpl.getInstance().getTrueTypeFont(fontName, null).getFont();
     }
-
+    
     /**
      * 添加自定义字体
      * <p>注：添加一次即可</p>
@@ -126,11 +137,16 @@ public class FontHandler {
      */
     public void addFont(File... files) {
         if (Objects.nonNull(files)) {
-            Arrays.stream(files).forEach(FontMapperImpl.getInstance().getProvider()::addFont);
+            Arrays.stream(files).forEach(file -> {
+                String fontName = FontMapperImpl.getInstance().getProvider().addFont(file);
+                if (log.isDebugEnabled()) {
+                    log.debug("Added font ['" + fontName + "']");
+                }
+            });
             FontMapperImpl.getInstance().resetFontInfoByName();
         }
     }
-
+    
     /**
      * 添加自定义字体
      * <p>注：添加一次即可</p>
@@ -139,11 +155,16 @@ public class FontHandler {
      */
     public void addFont(Collection<File> files) {
         if (Objects.nonNull(files)) {
-            files.forEach(FontMapperImpl.getInstance().getProvider()::addFont);
+            files.forEach(file -> {
+                String fontName = FontMapperImpl.getInstance().getProvider().addFont(file);
+                if (log.isDebugEnabled()) {
+                    log.debug("Added font ['" + fontName + "']");
+                }
+            });
             FontMapperImpl.getInstance().resetFontInfoByName();
         }
     }
-
+    
     /**
      * 添加自定义字体
      * <p>注：添加一次即可</p>
@@ -153,10 +174,13 @@ public class FontHandler {
      * @param type        字体类型
      */
     public void addFont(InputStream inputStream, String tempName, FontType type) {
-        FontMapperImpl.getInstance().getProvider().addFont(inputStream, tempName, type);
+        String fontName = FontMapperImpl.getInstance().getProvider().addFont(inputStream, tempName, type);
+        if (log.isDebugEnabled()) {
+            log.debug("Added font ['" + fontName + "']");
+        }
         FontMapperImpl.getInstance().resetFontInfoByName();
     }
-
+    
     /**
      * 添加文本关联
      *
@@ -181,9 +205,7 @@ public class FontHandler {
                 // 重置偏移量
                 offset += Character.charCount(codePoint);
             }
-            Method method = document.getClass().getDeclaredMethod("getFontsToSubset");
-            method.setAccessible(true);
-            ((Set<PDFont>) method.invoke(document)).add(font);
+            document.addFontToSubset(font);
         }
     }
 }

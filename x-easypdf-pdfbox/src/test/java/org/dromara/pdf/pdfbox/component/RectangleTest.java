@@ -3,8 +3,9 @@ package org.dromara.pdf.pdfbox.component;
 import org.dromara.pdf.pdfbox.base.BaseTest;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.base.Page;
-import org.dromara.pdf.pdfbox.core.base.PageSize;
 import org.dromara.pdf.pdfbox.core.component.Rectangle;
+import org.dromara.pdf.pdfbox.core.enums.HorizontalAlignment;
+import org.dromara.pdf.pdfbox.core.enums.VerticalAlignment;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.junit.Test;
 
@@ -38,14 +39,16 @@ public class RectangleTest extends BaseTest {
                     Document document = PdfHandler.getDocumentHandler().create();
                     document.setMargin(50F);
 
-                    Page page = document.createPage(PageSize.A4);
+                    Page page = new Page(document);
 
                     Rectangle rectangle = new Rectangle(page);
                     rectangle.setBorderColor(new Color(0, 191, 255));
-                    rectangle.setBorderWidth(5F);
+                    rectangle.setBorderLineWidth(1F);
                     rectangle.setBackgroundColor(Color.LIGHT_GRAY);
                     rectangle.setWidth(200F);
                     rectangle.setHeight(200F);
+                    rectangle.setHorizontalAlignment(HorizontalAlignment.CENTER);
+                    rectangle.setVerticalAlignment(VerticalAlignment.CENTER);
                     rectangle.render();
 
                     document.appendPage(page);
@@ -65,13 +68,14 @@ public class RectangleTest extends BaseTest {
                     Document document = PdfHandler.getDocumentHandler().create();
                     document.setMargin(50F);
 
-                    Page page = document.createPage(PageSize.A4);
+                    Page page = new Page(document);
 
                     Rectangle rectangle = new Rectangle(page);
+                    rectangle.setBackgroundColor(Color.BLUE);
                     rectangle.setBeginX(100F);
                     rectangle.setBeginY(100F);
                     rectangle.setWidth(150F);
-                    rectangle.setHeight(50F);
+                    rectangle.setHeight(1F);
                     rectangle.setAngle(45F);
                     rectangle.render();
 

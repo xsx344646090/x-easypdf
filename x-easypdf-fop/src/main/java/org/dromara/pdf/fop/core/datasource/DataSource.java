@@ -1,7 +1,9 @@
 package org.dromara.pdf.fop.core.datasource;
 
 import lombok.SneakyThrows;
+import org.apache.commons.io.output.NullOutputStream;
 import org.apache.fop.apps.FOUserAgent;
+import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
 import org.apache.xmlgraphics.util.MimeConstants;
 import org.xml.sax.InputSource;
@@ -54,22 +56,38 @@ public interface DataSource {
     void transform(FopFactory fopFactory, FOUserAgent foAgent, OutputStream outputStream);
 
     /**
+     * 获取总页数
+     *
+     * @param fopFactory fop工厂
+     * @param foAgent    fo代理
+     * @return 返回总页数
+     */
+    default Integer getTotalPage(FopFactory fopFactory, FOUserAgent foAgent) {
+        return this.saxTransform(fopFactory, foAgent, NullOutputStream.INSTANCE);
+    }
+
+    /**
      * SAX转换
      *
      * @param fopFactory   fop工厂
      * @param foAgent      fo代理
      * @param outputStream 输出流
+     * @return 返回页数
      */
     @SneakyThrows
-    default void saxTransform(FopFactory fopFactory, FOUserAgent foAgent, OutputStream outputStream) {
+    default Integer saxTransform(FopFactory fopFactory, FOUserAgent foAgent, OutputStream outputStream) {
         // 创建sax解析工厂
         SAXParserFactory factory = SAXParserFactory.newInstance();
         // 设置命名空间支持
         factory.setNamespaceAware(true);
         // 获取输入流
         try (Reader reader = this.getSourceReader()) {
+            // 创建fop
+            Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foAgent, outputStream);
             // 转换文件
-            factory.newSAXParser().parse(new InputSource(reader), fopFactory.newFop(MimeConstants.MIME_PDF, foAgent, outputStream).getDefaultHandler());
+            factory.newSAXParser().parse(new InputSource(reader), fop.getDefaultHandler());
+            // 返回页数
+            return fop.getResults().getPageCount();
         }
     }
 
@@ -80,9 +98,10 @@ public interface DataSource {
      * @param foAgent      fo代理
      * @param templatePath 模板路径
      * @param outputStream 输出流
+     * @return 返回页数
      */
     @SneakyThrows
-    default void domTransform(FopFactory fopFactory, FOUserAgent foAgent, String templatePath, OutputStream outputStream) {
+    default Integer domTransform(FopFactory fopFactory, FOUserAgent foAgent, String templatePath, OutputStream outputStream) {
         // 加载模板（从资源路径读取）
         InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(templatePath);
         try {
@@ -101,8 +120,12 @@ public interface DataSource {
             Transformer transformer = TransformerFactory.newInstance().newTransformer(new StreamSource(streamReader));
             // 获取数据源读取器
             try (Reader reader = this.getSourceReader()) {
+                // 创建fop
+                Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foAgent, outputStream);
                 // 转换文件
-                transformer.transform(new StreamSource(reader), new SAXResult(fopFactory.newFop(MimeConstants.MIME_PDF, foAgent, outputStream).getDefaultHandler()));
+                transformer.transform(new StreamSource(reader), new SAXResult(fop.getDefaultHandler()));
+                // 返回页数
+                return fop.getResults().getPageCount();
             }
         } finally {
             // 关闭输入流

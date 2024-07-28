@@ -1,5 +1,7 @@
 package org.dromara.pdf.pdfbox.core.ext.extractor;
 
+import lombok.EqualsAndHashCode;
+import org.apache.pdfbox.text.PDFTextStripper;
 import org.dromara.pdf.pdfbox.core.base.Document;
 
 import java.awt.*;
@@ -26,6 +28,7 @@ import java.util.Objects;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
+@EqualsAndHashCode(callSuper = true)
 public class TextExtractor extends AbstractTextExtractor {
 
     /**
@@ -50,7 +53,7 @@ public class TextExtractor extends AbstractTextExtractor {
         // 定义文本字典
         Map<Integer, List<String>> data = new HashMap<>(32);
         // 创建文本剥离器
-        DefaultTextStripper stripper = new DefaultTextStripper(null);
+        PDFTextStripper stripper = new PDFTextStripper();
         // 根据页面索引提取文本
         if (Objects.nonNull(pageIndexes) && pageIndexes.length > 0) {
             // 遍历页面索引

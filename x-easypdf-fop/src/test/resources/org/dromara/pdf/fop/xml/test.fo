@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?><!--根标签-->
-<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format"
-         xmlns:fox="http://xmlgraphics.apache.org/fop/extensions"
+<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:fox="http://xmlgraphics.apache.org/fop/extensions"
          xmlns:xe="http://www.x-easypdf.cn/ns">
     <!--页面模板-->
     <fo:layout-master-set>
         <fo:simple-page-master margin-bottom="20pt" margin-left="20pt" margin-right="20pt" margin-top="20pt"
                                master-name="page1" page-height="29.7cm" page-width="21cm">
-            <fo:region-body background-image="url('/E:/pdf/test/fo/watermark.png')" fox:background-image-width="200pt"/>
+            <fo:region-body background-image="url('/E:/PDF/fop/watermark.png')" fox:background-image-width="200pt"/>
             <fo:region-before/>
             <fo:region-after extent="20pt"/>
             <fo:region-start/>
@@ -21,14 +20,14 @@
             </fo:bookmark>
         </fo:bookmark>
     </fo:bookmark-tree>
-    <fo:page-sequence font-family="微软雅黑" font-size="15pt" id="pageId" master-reference="page1">
+    <fo:page-sequence font-family="思源宋体" font-size="15pt" id="pageId" master-reference="page1">
         <fo:static-content flow-name="xsl-region-after">
             <fo:block-container>
                 <fo:block text-align="center">
                     <fo:inline>第</fo:inline>
                     <fo:page-number/>
                     <fo:inline>页，共</fo:inline>
-                    <fo:page-number-citation-last ref-id="pageId"/>
+                    <fo:inline>{page-count}</fo:inline>
                     <fo:inline>页</fo:inline>
                 </fo:block>
             </fo:block-container>
@@ -62,276 +61,276 @@
             <fo:block>
                 <fo:table display-align="center" table-layout="fixed">
                     <fo:table-header>
-                        <fo:table-row>
-                            <fo:table-cell background-color="#7c7d7d" border-style="solid" height="30pt" margin="0"
+                        <fo:table-tableRow>
+                            <fo:table-tableCell background-color="#7c7d7d" border-style="solid" height="30pt" margin="0"
                                            padding="0" text-align="center">
                                 <fo:block>
                                     <fo:inline>名称</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                            <fo:table-cell background-color="#7c7d7d" border-style="solid" height="30pt" margin="0"
+                            </fo:table-tableCell>
+                            <fo:table-tableCell background-color="#7c7d7d" border-style="solid" height="30pt" margin="0"
                                            padding="0" text-align="center">
                                 <fo:block>
                                     <fo:inline>区划代码</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                            <fo:table-cell background-color="#7c7d7d" border-style="solid" height="30pt" margin="0"
+                            </fo:table-tableCell>
+                            <fo:table-tableCell background-color="#7c7d7d" border-style="solid" height="30pt" margin="0"
                                            padding="0" text-align="center">
                                 <fo:block>
                                     <fo:inline>人口（万人）</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                            <fo:table-cell background-color="#7c7d7d" border-style="solid" height="30pt" margin="0"
+                            </fo:table-tableCell>
+                            <fo:table-tableCell background-color="#7c7d7d" border-style="solid" height="30pt" margin="0"
                                            padding="0" text-align="center">
                                 <fo:block>
                                     <fo:inline>面积（平方千米）</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                        </fo:table-row>
+                            </fo:table-tableCell>
+                        </fo:table-tableRow>
                     </fo:table-header>
                     <fo:table-body>
-                        <fo:table-row>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                        <fo:table-tableRow>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
                                 <fo:block>
                                     <fo:inline>贵阳市</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                            </fo:table-tableCell>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
                                 <fo:block>
                                     <fo:inline>520100</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                            </fo:table-tableCell>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
                                 <fo:block>
                                     <fo:inline>599</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                            </fo:table-tableCell>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
                                 <fo:block>
                                     <fo:inline>8035</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                        </fo:table-row>
-                        <fo:table-row>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                            </fo:table-tableCell>
+                        </fo:table-tableRow>
+                        <fo:table-tableRow>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
                                 <fo:block>
                                     <fo:inline>南明区</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                            </fo:table-tableCell>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
                                 <fo:block>
                                     <fo:inline>520102</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                            </fo:table-tableCell>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
                                 <fo:block>
                                     <fo:inline>105</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                            </fo:table-tableCell>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
                                 <fo:block>
                                     <fo:inline>271</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                        </fo:table-row>
-                        <fo:table-row>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                            </fo:table-tableCell>
+                        </fo:table-tableRow>
+                        <fo:table-tableRow>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
                                 <fo:block>
                                     <fo:inline>云岩区</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                            </fo:table-tableCell>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
                                 <fo:block>
                                     <fo:inline>520103</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                            </fo:table-tableCell>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
                                 <fo:block>
                                     <fo:inline>106</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                            </fo:table-tableCell>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
                                 <fo:block>
                                     <fo:inline>94</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                        </fo:table-row>
-                        <fo:table-row>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                            </fo:table-tableCell>
+                        </fo:table-tableRow>
+                        <fo:table-tableRow>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
                                 <fo:block>
                                     <fo:inline>花溪区</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                            </fo:table-tableCell>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
                                 <fo:block>
                                     <fo:inline>520111</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                            </fo:table-tableCell>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
                                 <fo:block>
                                     <fo:inline>97</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                            </fo:table-tableCell>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
                                 <fo:block>
                                     <fo:inline>964</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                        </fo:table-row>
-                        <fo:table-row>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                            </fo:table-tableCell>
+                        </fo:table-tableRow>
+                        <fo:table-tableRow>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
                                 <fo:block>
                                     <fo:inline>乌当区</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                            </fo:table-tableCell>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
                                 <fo:block>
                                     <fo:inline>520112</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                            </fo:table-tableCell>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
                                 <fo:block>
                                     <fo:inline>34</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                            </fo:table-tableCell>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
                                 <fo:block>
                                     <fo:inline>686</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                        </fo:table-row>
-                        <fo:table-row>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                            </fo:table-tableCell>
+                        </fo:table-tableRow>
+                        <fo:table-tableRow>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
                                 <fo:block>
                                     <fo:inline>白云区</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                            </fo:table-tableCell>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
                                 <fo:block>
                                     <fo:inline>520113</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                            </fo:table-tableCell>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
                                 <fo:block>
                                     <fo:inline>46</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                            </fo:table-tableCell>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
                                 <fo:block>
                                     <fo:inline>270</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                        </fo:table-row>
-                        <fo:table-row>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                            </fo:table-tableCell>
+                        </fo:table-tableRow>
+                        <fo:table-tableRow>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
                                 <fo:block>
                                     <fo:inline>观山湖区</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                            </fo:table-tableCell>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
                                 <fo:block>
                                     <fo:inline>520115</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                            </fo:table-tableCell>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
                                 <fo:block>
                                     <fo:inline>64</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
+                            </fo:table-tableCell>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="left">
                                 <fo:block>
                                     <fo:inline>309</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                        </fo:table-row>
-                        <fo:table-row>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
+                            </fo:table-tableCell>
+                        </fo:table-tableRow>
+                        <fo:table-tableRow>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
                                 <fo:block>
                                     <fo:inline>清镇市</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
+                            </fo:table-tableCell>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
                                 <fo:block>
                                     <fo:inline>520181</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
+                            </fo:table-tableCell>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
                                 <fo:block>
                                     <fo:inline>63</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
+                            </fo:table-tableCell>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
                                 <fo:block>
                                     <fo:inline>1302</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                        </fo:table-row>
-                        <fo:table-row>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
+                            </fo:table-tableCell>
+                        </fo:table-tableRow>
+                        <fo:table-tableRow>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
                                 <fo:block>
                                     <fo:inline>开阳县</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
+                            </fo:table-tableCell>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
                                 <fo:block>
                                     <fo:inline>520121</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
+                            </fo:table-tableCell>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
                                 <fo:block>
                                     <fo:inline>34</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
+                            </fo:table-tableCell>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
                                 <fo:block>
                                     <fo:inline>2026</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                        </fo:table-row>
-                        <fo:table-row>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
+                            </fo:table-tableCell>
+                        </fo:table-tableRow>
+                        <fo:table-tableRow>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
                                 <fo:block>
                                     <fo:inline>息烽县</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
+                            </fo:table-tableCell>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
                                 <fo:block>
                                     <fo:inline>520122</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
+                            </fo:table-tableCell>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
                                 <fo:block>
                                     <fo:inline>22</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
+                            </fo:table-tableCell>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
                                 <fo:block>
                                     <fo:inline>1037</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                        </fo:table-row>
-                        <fo:table-row>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
+                            </fo:table-tableCell>
+                        </fo:table-tableRow>
+                        <fo:table-tableRow>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
                                 <fo:block>
                                     <fo:inline>修文县</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
+                            </fo:table-tableCell>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
                                 <fo:block>
                                     <fo:inline>520123</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
+                            </fo:table-tableCell>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
                                 <fo:block>
                                     <fo:inline>29</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                            <fo:table-cell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
+                            </fo:table-tableCell>
+                            <fo:table-tableCell border-style="solid" height="30pt" margin="0" padding="0" text-align="right">
                                 <fo:block>
                                     <fo:inline>1076</fo:inline>
                                 </fo:block>
-                            </fo:table-cell>
-                        </fo:table-row>
+                            </fo:table-tableCell>
+                        </fo:table-tableRow>
                     </fo:table-body>
                 </fo:table>
             </fo:block>

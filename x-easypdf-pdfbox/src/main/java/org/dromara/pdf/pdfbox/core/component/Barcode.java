@@ -10,11 +10,13 @@ import com.google.zxing.qrcode.encoder.QRCode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
-import org.dromara.pdf.pdfbox.core.base.ComponentType;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.dromara.pdf.pdfbox.core.base.BorderData;
 import org.dromara.pdf.pdfbox.core.base.Page;
-import org.dromara.pdf.pdfbox.core.enums.BarcodeErrorLevel;
-import org.dromara.pdf.pdfbox.core.enums.BarcodeType;
-import org.dromara.pdf.pdfbox.core.enums.BarcodeWordsStyle;
+import org.dromara.pdf.pdfbox.core.enums.*;
+import org.dromara.pdf.pdfbox.util.BorderUtil;
+import org.dromara.pdf.pdfbox.util.CommonUtil;
 import org.dromara.pdf.pdfbox.util.ImageUtil;
 
 import java.awt.*;
@@ -51,87 +53,91 @@ public class Barcode extends AbstractComponent {
     /**
      * 缓存
      */
-    private static final Map<Integer, BufferedImage> CACHE = new HashMap<>(10);
+    protected static final Map<Integer, BufferedImage> CACHE = new HashMap<>(16);
     /**
      * 缓存锁
      */
-    private static final ReentrantLock LOCK = new ReentrantLock();
+    protected static final ReentrantLock LOCK = new ReentrantLock();
     /**
      * 编码设置
      */
-    private Map<EncodeHintType, Object> encodeHints = new HashMap<>(8);
+    protected Map<EncodeHintType, Object> encodeHints = new HashMap<>(8);
     /**
      * 宽度（显示）
      */
-    private Integer width;
+    protected Integer width;
     /**
      * 高度（显示）
      */
-    private Integer height;
+    protected Integer height;
     /**
      * 图像宽度
      */
-    private Integer imageWidth;
+    protected Integer imageWidth;
     /**
      * 图像高度
      */
-    private Integer imageHeight;
+    protected Integer imageHeight;
     /**
      * 编码类型
      */
-    private BarcodeType codeType;
+    protected BarcodeType codeType;
     /**
      * 前景颜色
      */
-    private Color onColor;
+    protected Color onColor;
     /**
      * 背景颜色
      */
-    private Color offColor;
+    protected Color offColor;
     /**
      * 内容
      */
-    private String content;
+    protected String content;
     /**
      * 文字
      */
-    private String words;
+    protected String words;
     /**
      * 文字字体名称
      */
-    private String wordsFontName;
+    protected String wordsFontName;
     /**
      * 文字颜色
      */
-    private Color wordsColor;
+    protected Color wordsColor;
     /**
      * 文字样式
      */
-    private BarcodeWordsStyle wordsStyle;
+    protected BarcodeWordsStyle wordsStyle;
     /**
      * 文字大小
      */
-    private Integer wordsSize;
+    protected Integer wordsSize;
     /**
      * 文字X轴偏移量
      */
-    private Integer wordsOffsetX;
+    protected Integer wordsOffsetX;
     /**
      * 文字Y轴偏移量
      */
-    private Integer wordsOffsetY;
+    protected Integer wordsOffsetY;
     /**
      * 旋转角度
      */
-    private Float angle;
+    protected Float angle;
+    /**
+     * 透明度
+     */
+    protected Float alpha;
     /**
      * 是否显示文字
      */
-    private Boolean isShowWords;
+    protected Boolean isShowWords;
     /**
      * 是否缓存
      */
-    private Boolean isCache;
+    protected Boolean isCache;
 
     /**
      * 有参构造
@@ -271,16 +277,62 @@ public class Barcode extends AbstractComponent {
     }
 
     /**
+     * 获取最小宽度
+     *
+     * @return 返回最小宽度
+     */
+    @Override
+    protected float getMinWidth() {
+        return this.getWidth();
+    }
+
+    /**
      * 初始化
      */
     @Override
     protected void init() {
+        // 初始化类型
+        Objects.requireNonNull(this.codeType, "the code type can not be null");
+        // 初始化内容
+        Objects.requireNonNull(this.content, "the content can not be null");
         // 初始化
         super.init();
-        // 初始化编码为utf-8
-        this.encodeHints.put(EncodeHintType.CHARACTER_SET, StandardCharsets.UTF_8);
+        // 初始化宽度与高度
+        this.initWidthAndHeight();
         // 初始化纠错级别
         this.initErrorLevel();
+        // 初始化前景颜色
+        if (Objects.isNull(this.onColor)) {
+            this.onColor = Color.BLACK;
+        }
+        // 初始化背景颜色
+        if (Objects.isNull(this.offColor)) {
+            this.offColor = this.getPage().getBackgroundColor();
+        }
+        // 初始化旋转角度
+        if (Objects.isNull(this.angle)) {
+            this.angle = 0F;
+        }
+        // 初始化透明度
+        if (Objects.isNull(this.alpha)) {
+            this.alpha = 1.0F;
+        }
+        // 初始化是否显示文字
+        if (Objects.isNull(this.isShowWords)) {
+            this.isShowWords = Boolean.FALSE;
+        }
+        // 初始化是否缓存
+        if (Objects.isNull(this.isCache)) {
+            this.isCache = Boolean.FALSE;
+        }
+        // 初始化起始XY轴坐标
+        this.initBeginXY(this.width, this.height);
+    }
+
+    /**
+     * 初始化宽度与高度
+     */
+    protected void initWidthAndHeight() {
         // 初始化宽度（显示）
         if (Objects.isNull(this.width)) {
             this.width = this.imageWidth;
@@ -299,95 +351,14 @@ public class Barcode extends AbstractComponent {
         if (Objects.isNull(this.imageHeight)) {
             this.imageHeight = this.height;
         }
-        // 初始化类型
-        Objects.requireNonNull(this.codeType, "the code type can not be null");
-        // 初始化内容
-        Objects.requireNonNull(this.content, "the content can not be null");
-        // 初始化前景颜色
-        if (Objects.isNull(this.onColor)) {
-            this.onColor = Color.BLACK;
-        }
-        // 初始化背景颜色
-        if (Objects.isNull(this.offColor)) {
-            this.offColor = this.getContext().getPage().getBackgroundColor();
-        }
-        // 初始化旋转角度
-        if (Objects.isNull(this.angle)) {
-            this.angle = 0F;
-        }
-        // 初始化是否显示文字
-        if (Objects.isNull(this.isShowWords)) {
-            this.isShowWords = Boolean.FALSE;
-        }
-        // 初始化是否缓存
-        if (Objects.isNull(this.isCache)) {
-            this.isCache = Boolean.FALSE;
-        }
-    }
-
-    /**
-     * 虚拟渲染
-     */
-    @Override
-    @SneakyThrows
-    public void virtualRender() {
-        // 初始化
-        this.init();
-        // 创建图像
-        Image image = new Image(this.getContext().getPage());
-        // 图像初始化
-        image.init(this, true);
-        // 设置宽度
-        image.setWidth(this.getWidth());
-        // 设置高度
-        image.setHeight(this.getHeight());
-        // 设置旋转角度
-        image.setAngle(this.getAngle());
-        // 设置图像
-        image.setImage(ImageUtil.toBytes(this.getBarcodeImage(), "png"));
-        // 设置X轴相对坐标
-        image.setRelativeBeginX(this.getRelativeBeginX());
-        // 设置Y轴相对坐标
-        image.setRelativeBeginY(this.getRelativeBeginY());
-        // 虚拟渲染图像
-        image.virtualRender();
-        // 重置
-        super.reset(this.getType());
-    }
-
-    /**
-     * 渲染
-     */
-    @Override
-    public void render() {
-        // 初始化
-        this.init();
-        // 创建图像
-        Image image = new Image(this.getContext().getPage());
-        // 图像初始化
-        image.init(this, true);
-        // 设置宽度
-        image.setWidth(this.getWidth());
-        // 设置高度
-        image.setHeight(this.getHeight());
-        // 设置旋转角度
-        image.setAngle(this.getAngle());
-        // 设置图像
-        image.setImage(ImageUtil.toBytes(this.getBarcodeImage(), "png"));
-        // 设置X轴相对坐标
-        image.setRelativeBeginX(this.getRelativeBeginX());
-        // 设置Y轴相对坐标
-        image.setRelativeBeginY(this.getRelativeBeginY());
-        // 渲染图像
-        image.render();
-        // 重置
-        super.reset(this.getType());
     }
 
     /**
      * 初始化纠错级别
      */
     protected void initErrorLevel() {
+        // 初始化编码为utf-8
+        this.encodeHints.put(EncodeHintType.CHARACTER_SET, StandardCharsets.UTF_8);
         // 获取纠错级别
         Object errorLevel = this.encodeHints.get(EncodeHintType.ERROR_CORRECTION);
         // 初始化纠错级别
@@ -413,6 +384,45 @@ public class Barcode extends AbstractComponent {
     }
 
     /**
+     * 写入内容
+     */
+    @SneakyThrows
+    @Override
+    protected void writeContents() {
+        if (!this.getContext().getIsVirtualRender()) {
+            // 新建内容流
+            PDPageContentStream contentStream = new PDPageContentStream(
+                    this.getContext().getTargetDocument(),
+                    this.getContext().getTargetPage(),
+                    this.getContentMode().getMode(),
+                    true,
+                    this.getIsResetContentStream()
+            );
+            // 初始化矩阵
+            CommonUtil.initMatrix(contentStream, this.getBeginX(), this.getBeginY(), this.getRelativeBeginX(), this.getRelativeBeginY(), this.getWidth(), this.getHeight(), this.getAngle(), this.getAlpha());
+            // 添加图像
+            contentStream.drawImage(this.getImageXObject(), 0, 0, this.getWidth(), this.getHeight());
+            // 添加边框
+            BorderUtil.drawNormalBorder(contentStream, CommonUtil.getRectangle(this.getWidth(), this.getHeight()), BorderData.create(this, this.getBorderConfiguration()));
+            // 关闭内容流
+            contentStream.close();
+        }
+    }
+
+    /**
+     * 重置
+     */
+    @Override
+    protected void reset() {
+        // 获取X轴坐标
+        float x = this.getBeginX() + this.getWidth() + this.getMarginRight();
+        // 获取Y轴坐标
+        float y = this.getBeginY();
+        // 重置
+        super.reset(this.getType(), x, y);
+    }
+
+    /**
      * 是否显示文字
      *
      * @return 返回布尔值，是为true，否为false
@@ -422,10 +432,25 @@ public class Barcode extends AbstractComponent {
     }
 
     /**
+     * 获取图像对象
+     *
+     * @return 返回图像对象
+     */
+    @SneakyThrows
+    protected PDImageXObject getImageXObject() {
+        return PDImageXObject.createFromByteArray(
+                this.getContext().getTargetDocument(),
+                ImageUtil.toBytes(this.getBarcodeImage(), ImageType.PNG.getType()),
+                ImageType.PNG.getType()
+        );
+    }
+
+    /**
      * 获取条形码图像
      *
      * @return 返回条形码图像
      */
+    @SuppressWarnings("all")
     @SneakyThrows
     protected BufferedImage getBarcodeImage() {
         // 是否缓存
@@ -445,6 +470,10 @@ public class Barcode extends AbstractComponent {
                         bufferedImage = this.createBarcodeImage();
                         // 放入缓存
                         CACHE.put(this.cacheKey(), bufferedImage);
+                        // 日志打印
+                        if (log.isDebugEnabled()) {
+                            log.debug("Added barcode image: " + this.cacheKey());
+                        }
                     }
                 } finally {
                     // 解锁

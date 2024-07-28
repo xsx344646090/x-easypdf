@@ -1,5 +1,6 @@
 package org.dromara.pdf.pdfbox.core.ext.processor;
 
+import lombok.EqualsAndHashCode;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -12,15 +13,12 @@ import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.enums.PrintOrientation;
 import org.dromara.pdf.pdfbox.core.enums.PrintScaling;
 import org.dromara.pdf.pdfbox.util.RenderingHintUtil;
-import sun.print.RasterPrinterJob;
 
 import javax.print.PrintServiceLookup;
 import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.PageRanges;
 import java.awt.*;
 import java.awt.print.*;
-import java.lang.reflect.Method;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -42,6 +40,7 @@ import java.util.Optional;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
+@EqualsAndHashCode(callSuper = true)
 public class PrintProcessor extends AbstractProcessor {
 
     /**
@@ -139,17 +138,15 @@ public class PrintProcessor extends AbstractProcessor {
         // 初始化
         this.init();
         // 获取打印任务
-        RasterPrinterJob job = (RasterPrinterJob) PrinterJob.getPrinterJob();
+        PrinterJob job = PrinterJob.getPrinterJob();
         // 设置打印服务（默认）
         job.setPrintService(PrintServiceLookup.lookupDefaultPrintService());
         // 设置页面选项
         job.setPageable(this.initPageable());
         // 设置打印数量
         job.setCopies(this.count);
-        // 初始化打印属性
-        this.initPrintRequestAttribute(job);
         // 执行打印
-        job.print();
+        job.print(new HashPrintRequestAttributeSet(new PageRanges(this.beginPageNo, this.endPageNo)));
     }
 
     /**
@@ -223,18 +220,6 @@ public class PrintProcessor extends AbstractProcessor {
                 this.orientation.getOrientation(),
                 this.initPrintable()
         );
-    }
-
-    /**
-     * 初始化打印属性
-     */
-    @SneakyThrows
-    protected void initPrintRequestAttribute(RasterPrinterJob job) {
-        final String methodName = "setAttributes";
-        PrintRequestAttributeSet attributes = new HashPrintRequestAttributeSet(new PageRanges(this.beginPageNo, this.endPageNo));
-        Method method = RasterPrinterJob.class.getDeclaredMethod(methodName, PrintRequestAttributeSet.class);
-        method.setAccessible(true);
-        method.invoke(job, attributes);
     }
 
     /**

@@ -1,5 +1,6 @@
 package org.dromara.pdf.pdfbox.core.ext.extractor;
 
+import lombok.EqualsAndHashCode;
 import lombok.Setter;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 import org.apache.pdfbox.pdmodel.interactive.form.PDField;
@@ -31,6 +32,7 @@ import java.util.Objects;
  * </p>
  */
 @Setter
+@EqualsAndHashCode(callSuper = true)
 public class DocumentExtractor extends AbstractExtractor implements Closeable {
 
     /**

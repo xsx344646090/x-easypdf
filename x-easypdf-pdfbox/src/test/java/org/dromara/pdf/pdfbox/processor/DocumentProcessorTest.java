@@ -1,6 +1,9 @@
 package org.dromara.pdf.pdfbox.processor;
 
+import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationFreeText;
+import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
+import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureOptions;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 import org.dromara.pdf.pdfbox.base.BaseTest;
 import org.dromara.pdf.pdfbox.core.base.Document;
@@ -9,14 +12,28 @@ import org.dromara.pdf.pdfbox.core.base.Size;
 import org.dromara.pdf.pdfbox.core.component.Textarea;
 import org.dromara.pdf.pdfbox.core.enums.ImageType;
 import org.dromara.pdf.pdfbox.core.ext.processor.*;
+import org.dromara.pdf.pdfbox.core.ext.processor.sign.EncryptAlgorithm;
+import org.dromara.pdf.pdfbox.core.ext.processor.sign.KeyStoreType;
+import org.dromara.pdf.pdfbox.core.ext.processor.sign.SignOptions;
+import org.dromara.pdf.pdfbox.core.ext.processor.sign.SignProcessor;
+import org.dromara.pdf.pdfbox.core.info.ReplaceInfo;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.dromara.pdf.pdfbox.util.ColorUtil;
 import org.dromara.pdf.pdfbox.util.ImageUtil;
 import org.junit.Test;
 
 import java.awt.*;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.KeyStore;
+import java.security.PrivateKey;
+import java.security.cert.Certificate;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author xsx
@@ -46,7 +63,7 @@ public class DocumentProcessorTest extends BaseTest {
                     Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\hello-world.pdf");
                     Document newDocument = PdfHandler.getDocumentHandler().create()
             ) {
-                newDocument.appendPage(newDocument.createPage());
+                newDocument.appendPage(new Page(document));
 
                 MergeProcessor processor = PdfHandler.getDocumentProcessor(newDocument).getMergeProcessor();
                 processor.merge(document);
@@ -91,13 +108,17 @@ public class DocumentProcessorTest extends BaseTest {
     @Test
     public void replaceTest() {
         this.test(() -> {
-            try (Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\processor\\mergeTest.pdf")) {
+            try (Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\allTest.pdf")) {
                 ReplaceProcessor processor = PdfHandler.getDocumentProcessor(document).getReplaceProcessor();
-                processor.replaceText(
-                        PdfHandler.getFontHandler().getPDFont(document.getTarget(), "微软雅黑"),
-                        Collections.singletonMap("World", "贵阳"),
-                        1
-                );
+                PDFont font = document.getContext().getFont("微软雅黑");
+                // 替换指定第一个与第二个
+                ReplaceInfo replaceInfo1 = new ReplaceInfo('贵', '遵', Stream.of(0, 1).collect(Collectors.toSet()), font);
+                // 替换全部
+                ReplaceInfo replaceInfo2 = ReplaceInfo.builder().original('阳').value('义').font(font).build();
+                // 替换为空（移除）
+                ReplaceInfo replaceInfo3 = new ReplaceInfo('百', '\u0000', Stream.of(1).collect(Collectors.toSet()), font);
+                ReplaceInfo replaceInfo4 = new ReplaceInfo('科', '\u0000', Stream.of(1).collect(Collectors.toSet()), font);
+                processor.replaceText(Arrays.asList(replaceInfo1, replaceInfo2, replaceInfo3, replaceInfo4), 0);
                 document.save("E:\\PDF\\pdfbox\\processor\\replaceTest.pdf");
             }
         });
@@ -140,11 +161,12 @@ public class DocumentProcessorTest extends BaseTest {
     @Test
     public void bookmarkTest() {
         this.test(() -> {
-            try (Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\processor\\mergeTest.pdf")) {
+            try (Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\hello-world.pdf")) {
+
                 BookmarkProcessor processor = PdfHandler.getDocumentProcessor(document).getBookmarkProcessor();
                 PDOutlineItem outlineItem = new PDOutlineItem();
                 outlineItem.setTitle("hello world");
-                outlineItem.setDestination(document.getPage(1).getTarget());
+                outlineItem.setDestination(document.getPage(0).getTarget());
                 processor.append(outlineItem);
                 processor.flush();
 
@@ -201,7 +223,7 @@ public class DocumentProcessorTest extends BaseTest {
                 Map<String, String> data = new HashMap<>();
                 data.put("test1", "hello world");
                 data.put("test2", "你好，贵阳");
-                processor.fillText(data, document.getFont(), 12);
+                processor.fillText(data);
 
                 document.save("E:\\PDF\\pdfbox\\processor\\formTest.pdf");
             }
@@ -216,7 +238,7 @@ public class DocumentProcessorTest extends BaseTest {
         this.test(() -> {
             try (Document document = PdfHandler.getDocumentHandler().create()) {
 
-                Page page = document.createPage();
+                Page page = new Page(document);
 
                 Textarea textarea = new Textarea(page);
                 textarea.setText("Hello World!");
@@ -244,8 +266,109 @@ public class DocumentProcessorTest extends BaseTest {
                 processor.setKeywords("测试", "metadata", "贵阳");
                 processor.flush();
 
-                document.appendPage(document.createPage());
+                document.appendPage(new Page(document));
                 document.save("E:\\PDF\\pdfbox\\processor\\metadataTest.pdf");
+            }
+        });
+    }
+
+    @Test
+    public void signTest() {
+        this.test(() -> {
+            try (
+                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\processor\\replaceTest.pdf");
+                    OutputStream outputStream = Files.newOutputStream(Paths.get("E:\\PDF\\pdfbox\\processor\\signTest.pdf"));
+            ) {
+
+                // 获取密码字符数组
+                char[] passwordCharArray = "123456".toCharArray();
+                // 获取密钥库
+                KeyStore keyStore = KeyStore.getInstance(KeyStoreType.PKCS12.name());
+                // 定义证书文件流
+                try (InputStream inputStream = Files.newInputStream(Paths.get("E:\\PDF\\pdfbox\\processor\\x-easypdf.p12"))) {
+                    // 加载证书
+                    keyStore.load(inputStream, passwordCharArray);
+                }
+                // 证书获取别名
+                String alias = keyStore.aliases().nextElement();
+                // 获取证书链
+                Certificate[] certificateChain = keyStore.getCertificateChain(alias);
+                SignOptions options = SignOptions.builder()
+                        .key((PrivateKey) keyStore.getKey(alias, passwordCharArray))
+                        .certificates(certificateChain)
+                        .algorithm(EncryptAlgorithm.SHA256withRSA.name())
+                        .pageIndex(1)
+                        .preferredSignatureSize(SignatureOptions.DEFAULT_SIGNATURE_SIZE*2)
+                        .build();
+
+                PDSignature signature = new PDSignature();
+                signature.setName("x-easypdf");
+                signature.setLocation("贵阳");
+                signature.setReason("测试");
+                signature.setContactInfo("xsx");
+                signature.setFilter(PDSignature.FILTER_ADOBE_PPKLITE);
+                signature.setSubFilter(PDSignature.SUBFILTER_ADBE_PKCS7_DETACHED);
+                signature.setSignDate(Calendar.getInstance());
+
+                SignProcessor processor = PdfHandler.getDocumentProcessor(document).getSignProcessor();
+                processor.sign(signature, options, outputStream);
+            }
+        });
+    }
+
+    @Test
+    public void multiSignTest() {
+        this.test(() -> {
+            try (
+                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\processor\\replaceTest.pdf");
+                    OutputStream outputStream = Files.newOutputStream(Paths.get("E:\\PDF\\pdfbox\\processor\\signTest.pdf"));
+            ) {
+
+                // 获取密码字符数组
+                char[] passwordCharArray = "123456".toCharArray();
+                // 获取密钥库
+                KeyStore keyStore = KeyStore.getInstance(KeyStoreType.PKCS12.name());
+                // 定义证书文件流
+                try (InputStream inputStream = Files.newInputStream(Paths.get("E:\\PDF\\pdfbox\\processor\\x-easypdf.p12"))) {
+                    // 加载证书
+                    keyStore.load(inputStream, passwordCharArray);
+                }
+                // 证书获取别名
+                String alias = keyStore.aliases().nextElement();
+                // 获取证书链
+                Certificate[] certificateChain = keyStore.getCertificateChain(alias);
+                SignOptions options = SignOptions.builder()
+                        .key((PrivateKey) keyStore.getKey(alias, passwordCharArray))
+                        .certificates(certificateChain)
+                        .algorithm(EncryptAlgorithm.SHA256withRSA.name())
+                        .pageIndex(1)
+                        .preferredSignatureSize(SignatureOptions.DEFAULT_SIGNATURE_SIZE*2)
+                        .build();
+
+                PDSignature signature = new PDSignature();
+                signature.setName("x-easypdf");
+                signature.setLocation("贵阳");
+                signature.setReason("测试");
+                signature.setContactInfo("xsx");
+                signature.setFilter(PDSignature.FILTER_ADOBE_PPKLITE);
+                signature.setSubFilter(PDSignature.SUBFILTER_ADBE_PKCS7_DETACHED);
+                signature.setSignDate(Calendar.getInstance());
+
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(8192);
+                SignProcessor processor = PdfHandler.getDocumentProcessor(document).getSignProcessor();
+                processor.multiSign(signature, options, byteArrayOutputStream);
+                byteArrayOutputStream.close();
+
+                signature = new PDSignature();
+                signature.setName("x-easypdf");
+                signature.setLocation("贵阳");
+                signature.setReason("测试2");
+                signature.setContactInfo("xsx");
+                signature.setFilter(PDSignature.FILTER_ADOBE_PPKLITE);
+                signature.setSubFilter(PDSignature.SUBFILTER_ADBE_PKCS7_DETACHED);
+                signature.setSignDate(Calendar.getInstance());
+                options.setPreferredSignatureSize(SignatureOptions.DEFAULT_SIGNATURE_SIZE*6);
+                processor.sign(signature, options, outputStream);
             }
         });
     }

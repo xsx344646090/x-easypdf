@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.dromara.x-easypdf</groupId>
         <artifactId>x-easypdf-parent</artifactId>
-        <version>3.0.0</version>
+        <version>3.1.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>x-easypdf-fop</artifactId>
@@ -16,7 +16,8 @@
     <description>A framework based on fop</description>
 
     <properties>
-        <font-box.version>2.0.30</font-box.version>
+        <font-box.version>2.0.31</font-box.version>
+        <slf4j.version>2.0.7</slf4j.version>
         <skipTests>true</skipTests>
     </properties>
 
@@ -193,6 +194,11 @@
             <groupId>gg.jte</groupId>
             <artifactId>jte</artifactId>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
         </dependency>
 
         <dependency>

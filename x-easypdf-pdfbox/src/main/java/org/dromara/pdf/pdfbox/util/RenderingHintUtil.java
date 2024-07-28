@@ -40,6 +40,8 @@ public class RenderingHintUtil {
         hints.put(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         // 设置笔划规范化控制参数
         hints.put(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
+        // 设置渲染提示
+        hints.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
         // 返回提示
         return new RenderingHints(hints);
     }

@@ -3,9 +3,8 @@ package org.dromara.pdf.pdfbox.util;
 import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.dromara.pdf.pdfbox.core.base.AbstractBaseBorder;
+import org.dromara.pdf.pdfbox.core.base.BorderData;
 import org.dromara.pdf.pdfbox.core.base.Context;
-import org.dromara.pdf.pdfbox.core.enums.BorderStyle;
 
 import java.awt.*;
 
@@ -30,24 +29,25 @@ import java.awt.*;
 public class BorderUtil {
 
     /**
-     * 绘制边框（根据基类）
+     * 绘制边框（根据边框数据）
      *
-     * @param base 基类
+     * @param data      边框数据
+     * @param rectangle 尺寸
      */
     @SneakyThrows
-    public static void drawBorderWithBase(AbstractBaseBorder base, PDRectangle rectangle) {
+    public static void drawBorderWithData(BorderData data, PDRectangle rectangle) {
         // 获取上下文
-        Context context = base.getContext();
+        Context context = data.getContext();
         // 初始化内容流
         PDPageContentStream stream = new PDPageContentStream(
                 context.getTargetDocument(),
                 context.getTargetPage(),
-                base.getContentMode().getMode(),
+                data.getContentMode().getMode(),
                 true,
-                base.getIsResetContentStream()
+                data.getIsResetContentStream()
         );
         // 绘制常规边框
-        BorderUtil.drawNormalBorder(stream, rectangle, base);
+        BorderUtil.drawNormalBorder(stream, rectangle, data);
         // 关闭内容流
         stream.close();
     }
@@ -57,16 +57,16 @@ public class BorderUtil {
      *
      * @param stream    pdfbox内容流
      * @param rectangle pdfbox尺寸
-     * @param base      基类
+     * @param data      边框数据
      */
     @SneakyThrows
-    public static void drawNormalBorder(PDPageContentStream stream, PDRectangle rectangle, AbstractBaseBorder base) {
+    public static void drawNormalBorder(PDPageContentStream stream, PDRectangle rectangle, BorderData data) {
         // 设置线宽
-        stream.setLineWidth(base.getBorderWidth());
+        stream.setLineWidth(data.getBorderLineWidth());
         // 设置线帽样式
-        stream.setLineCapStyle(0);
+        stream.setLineCapStyle(data.getBorderLineCapStyle().getType());
         // 连线
-        line(stream, rectangle, base);
+        line(stream, rectangle, data);
     }
 
     /**
@@ -74,19 +74,20 @@ public class BorderUtil {
      *
      * @param stream    pdfbox内容流
      * @param rectangle pdfbox页面尺寸
-     * @param base      基类
+     * @param data      边框数据
      */
-    private static void line(PDPageContentStream stream, PDRectangle rectangle, AbstractBaseBorder base) {
-        // 实线
-        if (base.getBorderStyle() == BorderStyle.SOLID) {
-            // 绘制实线
-            drawSolidLine(stream, rectangle, base);
-            return;
-        }
-        // 虚线
-        if (base.getBorderStyle() == BorderStyle.DOTTED) {
-            // 绘制虚线
-            drawDottedLine(stream, rectangle, base);
+    private static void line(PDPageContentStream stream, PDRectangle rectangle, BorderData data) {
+        switch (data.getBorderLineStyle()) {
+            case SOLID: {
+                // 绘制实线
+                drawSolidLine(stream, rectangle, data);
+                break;
+            }
+            case DOTTED: {
+                // 绘制虚线
+                drawDottedLine(stream, rectangle, data);
+                break;
+            }
         }
     }
 
@@ -95,14 +96,14 @@ public class BorderUtil {
      *
      * @param stream    pdfbox内容流
      * @param rectangle pdfbox页面尺寸
-     * @param base      基类
+     * @param data      边框数据
      */
     @SneakyThrows
-    private static void drawSolidLine(PDPageContentStream stream, PDRectangle rectangle, AbstractBaseBorder base) {
+    private static void drawSolidLine(PDPageContentStream stream, PDRectangle rectangle, BorderData data) {
         // 绘制上边框
-        if (base.getIsBorderTop()) {
+        if (data.getIsBorderTop()) {
             // 设置颜色
-            stream.setStrokingColor(base.getBorderTopColor());
+            stream.setStrokingColor(data.getBorderTopColor());
             // 移动到x,y坐标点
             stream.moveTo(rectangle.getLowerLeftX(), rectangle.getUpperRightY());
             // 连线
@@ -111,9 +112,9 @@ public class BorderUtil {
             stream.stroke();
         }
         // 绘制下边框
-        if (base.getIsBorderBottom()) {
+        if (data.getIsBorderBottom()) {
             // 设置颜色
-            stream.setStrokingColor(base.getBorderBottomColor());
+            stream.setStrokingColor(data.getBorderBottomColor());
             // 移动到x,y坐标点
             stream.moveTo(rectangle.getLowerLeftX(), rectangle.getLowerLeftY());
             // 连线
@@ -122,9 +123,9 @@ public class BorderUtil {
             stream.stroke();
         }
         // 绘制左边框
-        if (base.getIsBorderLeft()) {
+        if (data.getIsBorderLeft()) {
             // 设置颜色
-            stream.setStrokingColor(base.getBorderLeftColor());
+            stream.setStrokingColor(data.getBorderLeftColor());
             // 移动到x,y坐标点
             stream.moveTo(rectangle.getLowerLeftX(), rectangle.getLowerLeftY());
             // 连线
@@ -133,9 +134,9 @@ public class BorderUtil {
             stream.stroke();
         }
         // 绘制右边框
-        if (base.getIsBorderRight()) {
+        if (data.getIsBorderRight()) {
             // 设置颜色
-            stream.setStrokingColor(base.getBorderRightColor());
+            stream.setStrokingColor(data.getBorderRightColor());
             // 移动到x,y坐标点
             stream.moveTo(rectangle.getUpperRightX(), rectangle.getLowerLeftY());
             // 连线
@@ -150,18 +151,18 @@ public class BorderUtil {
      *
      * @param stream    pdfbox内容流
      * @param rectangle pdfbox页面尺寸
-     * @param base      基类
+     * @param data      边框数据
      */
     @SneakyThrows
-    private static void drawDottedLine(PDPageContentStream stream, PDRectangle rectangle, AbstractBaseBorder base) {
+    private static void drawDottedLine(PDPageContentStream stream, PDRectangle rectangle, BorderData data) {
         // 绘制上边框
-        if (base.getIsBorderTop()) {
+        if (data.getIsBorderTop()) {
             // 绘制上边框
             drawDottedLine(
                     stream,
-                    base.getBorderTopColor(),
-                    base.getBorderLineLength(),
-                    base.getBorderLineSpacing(),
+                    data.getBorderTopColor(),
+                    data.getBorderLineWidth(),
+                    data.getBorderDottedSpacing(),
                     rectangle.getLowerLeftX(),
                     rectangle.getUpperRightY(),
                     rectangle.getUpperRightX(),
@@ -169,13 +170,13 @@ public class BorderUtil {
             );
         }
         // 绘制下边框
-        if (base.getIsBorderBottom()) {
+        if (data.getIsBorderBottom()) {
             // 绘制下边框
             drawDottedLine(
                     stream,
-                    base.getBorderBottomColor(),
-                    base.getBorderLineLength(),
-                    base.getBorderLineSpacing(),
+                    data.getBorderBottomColor(),
+                    data.getBorderLineWidth(),
+                    data.getBorderDottedSpacing(),
                     rectangle.getLowerLeftX(),
                     rectangle.getLowerLeftY(),
                     rectangle.getUpperRightX(),
@@ -183,13 +184,13 @@ public class BorderUtil {
             );
         }
         // 绘制左边框
-        if (base.getIsBorderLeft()) {
+        if (data.getIsBorderLeft()) {
             // 绘制左边框
             drawDottedLine(
                     stream,
-                    base.getBorderLeftColor(),
-                    base.getBorderLineLength(),
-                    base.getBorderLineSpacing(),
+                    data.getBorderLeftColor(),
+                    data.getBorderLineWidth(),
+                    data.getBorderDottedSpacing(),
                     rectangle.getLowerLeftX(),
                     rectangle.getUpperRightY(),
                     rectangle.getLowerLeftX(),
@@ -197,13 +198,13 @@ public class BorderUtil {
             );
         }
         // 绘制右边框
-        if (base.getIsBorderRight()) {
+        if (data.getIsBorderRight()) {
             // 绘制右边框
             drawDottedLine(
                     stream,
-                    base.getBorderRightColor(),
-                    base.getBorderLineLength(),
-                    base.getBorderLineSpacing(),
+                    data.getBorderRightColor(),
+                    data.getBorderLineWidth(),
+                    data.getBorderDottedSpacing(),
                     rectangle.getUpperRightX(),
                     rectangle.getUpperRightY(),
                     rectangle.getUpperRightX(),
@@ -217,6 +218,8 @@ public class BorderUtil {
      *
      * @param contentStream pdfbox内容流
      * @param color         边框颜色
+     * @param dottedLength  点线长度
+     * @param dottedSpacing 点线间隔
      * @param beginX        X轴起始坐标
      * @param beginY        Y轴起始坐标
      * @param endX          X轴结束坐标
@@ -226,8 +229,8 @@ public class BorderUtil {
     private static void drawDottedLine(
             PDPageContentStream contentStream,
             Color color,
-            float lineLength,
-            float lineSpace,
+            float dottedLength,
+            float dottedSpacing,
             float beginX,
             float beginY,
             float endX,
@@ -245,15 +248,15 @@ public class BorderUtil {
             totalLength = beginY - endY;
         }
         // 计算线长
-        float lineWidth = lineLength + lineSpace;
+        float lineWidth = dottedLength + dottedSpacing;
         // 计算线条数量（向下取整，至少为1）
         int count = Math.max((int) (totalLength / (lineWidth)), 1);
         // 计算偏移量（居中计算）
-        float offset = Math.abs((totalLength - (count * lineWidth) + lineSpace) / 2);
+        float offset = Math.abs((totalLength - (count * lineWidth) + dottedSpacing) / 2);
         // 如果点线长度大于总长度，则重置点线长度 = 总长度
-        if (lineLength > totalLength) {
+        if (dottedLength > totalLength) {
             // 重置点线长度 = 总长度
-            lineLength = totalLength;
+            dottedLength = totalLength;
             // 重置偏移量为0
             offset = 0F;
         }
@@ -273,21 +276,17 @@ public class BorderUtil {
             contentStream.moveTo(beginX, beginY);
             // 如果为水平，则水平连线
             if (isHorizontal) {
-                // 重置X轴坐标 = X轴坐标 + 点线长度
-                beginX = beginX + lineLength;
                 // 连线
                 contentStream.lineTo(beginX, beginY);
-                // 重置X轴坐标 = X轴坐标 + 点线间隔
-                beginX = beginX + lineSpace;
+                // 重置X轴坐标 = X轴坐标 + 点线长度 + 点线间隔
+                beginX = beginX + dottedLength + dottedSpacing;
             }
             // 否则垂直连线
             else {
-                // 重置Y轴坐标 = Y轴坐标 - 点线长度
-                beginY = beginY - lineLength;
                 // 连线
                 contentStream.lineTo(beginX, beginY);
-                // 重置Y轴坐标 = Y轴坐标 - 点线间隔
-                beginY = beginY - lineSpace;
+                // 重置Y轴坐标 = Y轴坐标 - 点线长度 - 点线间隔
+                beginY = beginY - dottedLength - dottedSpacing;
             }
         }
         // 结束

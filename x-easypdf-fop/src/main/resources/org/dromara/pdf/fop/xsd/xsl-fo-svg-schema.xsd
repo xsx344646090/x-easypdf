@@ -805,13 +805,13 @@
                     <xs:enumeration value="marker"/>
                     <xs:enumeration value="table"/>
                     <xs:enumeration value="inline-table"/>
-                    <xs:enumeration value="table-row-xs:group"/>
+                    <xs:enumeration value="table-tableRow-xs:group"/>
                     <xs:enumeration value="table-header-xs:group"/>
                     <xs:enumeration value="table-footer-xs:group"/>
-                    <xs:enumeration value="table-row"/>
+                    <xs:enumeration value="table-tableRow"/>
                     <xs:enumeration value="table-column-xs:group"/>
                     <xs:enumeration value="table-column"/>
-                    <xs:enumeration value="table-cell"/>
+                    <xs:enumeration value="table-tableCell"/>
                     <xs:enumeration value="table-caption"/>
                     <xs:enumeration value="none"/>
                     <xs:enumeration value="inherit"/>

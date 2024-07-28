@@ -2,6 +2,7 @@ package org.dromara.pdf.pdfbox.core.base;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.dromara.pdf.pdfbox.core.enums.HighlightMode;
 
 /**
  * 内部目标

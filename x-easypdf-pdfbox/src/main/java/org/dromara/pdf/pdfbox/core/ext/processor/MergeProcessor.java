@@ -1,5 +1,6 @@
 package org.dromara.pdf.pdfbox.core.ext.processor;
 
+import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -28,6 +29,7 @@ import java.util.Objects;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
+@EqualsAndHashCode(callSuper = true)
 public class MergeProcessor extends AbstractProcessor {
 
     /**
@@ -80,7 +82,7 @@ public class MergeProcessor extends AbstractProcessor {
             // 添加页面资源
             importPage.setResources(sourcePage.getResources());
             // 添加列表
-            this.document.getPages().add(new Page(this.document.getContext(), sourcePage));
+            this.document.getPages().add(new Page(this.document, sourcePage));
         }
     }
 }

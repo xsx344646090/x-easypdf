@@ -7,7 +7,10 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.dromara.pdf.pdfbox.core.base.*;
 import org.dromara.pdf.pdfbox.core.component.Container;
-import org.dromara.pdf.pdfbox.core.component.*;
+import org.dromara.pdf.pdfbox.core.component.Line;
+import org.dromara.pdf.pdfbox.core.component.Textarea;
+import org.dromara.pdf.pdfbox.core.enums.HorizontalAlignment;
+import org.dromara.pdf.pdfbox.core.enums.LineStyle;
 import org.dromara.pdf.pdfbox.core.enums.PWLength;
 import org.dromara.pdf.pdfbox.core.info.CatalogInfo;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
@@ -15,6 +18,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.awt.*;
+import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -45,7 +49,7 @@ public class DocumentTest extends BaseTest {
     @Test
     public void pdfboxTest() {
         this.test(() -> {
-            Document document = PdfHandler.getDocumentHandler().create();
+            Document document = PdfHandler.getDocumentHandler().load(new File("E:\\PDF\\pdfbox\\processor\\allTest.pdf"));
             document.setFontName("微软雅黑");
 
             PDDocument pdDocument = document.getTarget();
@@ -57,14 +61,21 @@ public class DocumentTest extends BaseTest {
 
             PDFont pdFont = document.getFont();
 
+            float x= 0F;
+            float y = page.getMediaBox().getHeight() - 12;
             contentStream.setFont(pdFont, 12f);
             contentStream.beginText();
-            contentStream.newLineAtOffset(0, page.getMediaBox().getHeight() - 12);
+            contentStream.newLineAtOffset(x, y);
             contentStream.showText("你好，世界！hello world");
+            contentStream.endText();
+            contentStream.beginText();
+            x = 20 * 12F;
+            contentStream.newLineAtOffset(x, y);
+            contentStream.showText("第二段文本");
             contentStream.endText();
             contentStream.close();
 
-            document.save("E:\\PDF\\pdfbox\\document\\test.pdf");
+            document.save("E:\\PDF\\pdfbox\\processor\\test.pdf");
             document.close();
         });
     }
@@ -164,7 +175,7 @@ public class DocumentTest extends BaseTest {
         this.test(() -> {
             Document document = PdfHandler.getDocumentHandler().load(Paths.get("E:\\PDF\\pdfbox\\document\\test.pdf").toFile());
 
-            Page page = document.createPage(PageSize.A4);
+            Page page = new Page(document, PageSize.A4);
 
             document.insertPage(1, page);
             document.save("E:\\PDF\\pdfbox\\document\\insertPageTest1.pdf");
@@ -182,7 +193,7 @@ public class DocumentTest extends BaseTest {
         this.test(() -> {
             Document document = PdfHandler.getDocumentHandler().load(Paths.get("E:\\PDF\\pdfbox\\document\\test.pdf").toFile());
 
-            Page page = document.createPage(PageSize.A4);
+            Page page = new Page(document, PageSize.A4);
 
             document.appendPage(page);
             document.save("E:\\PDF\\pdfbox\\document\\appendPageTest.pdf");
@@ -198,7 +209,7 @@ public class DocumentTest extends BaseTest {
         this.test(() -> {
             Document document = PdfHandler.getDocumentHandler().load(Paths.get("E:\\PDF\\pdfbox\\document\\insertPageTest1.pdf").toFile());
 
-            Page page = document.createPage(PageSize.A4);
+            Page page = new Page(document);
 
             document.setPage(0, page);
             document.save("E:\\PDF\\pdfbox\\document\\setPageTest.pdf");
@@ -214,10 +225,10 @@ public class DocumentTest extends BaseTest {
         this.test(() -> {
             Document document = PdfHandler.getDocumentHandler().create();
 
-            Page page = document.createPage(PageSize.A4);
+            Page page = new Page(document);
             log.info(page.getWidth());
 
-            page = document.createPage();
+            page = new Page(document);
             log.info(page.getWidth());
 
             document.close();
@@ -235,7 +246,7 @@ public class DocumentTest extends BaseTest {
             Page page = document.getCurrentPage();
             System.out.println(page);
 
-            page = document.createPage();
+            page = new Page(document);
             System.out.println(page);
 
             document.appendPage(page);
@@ -260,7 +271,7 @@ public class DocumentTest extends BaseTest {
             document.setMargin(50F);
             document.setFontSize(12F);
 
-            Page page1 = document.createPage(PageSize.A4);
+            Page page1 = new Page(document);
 
             Textarea textarea1 = new Textarea(page1);
             textarea1.setLeading(12F);
@@ -268,7 +279,7 @@ public class DocumentTest extends BaseTest {
             textarea1.setCatalog(new CatalogInfo("第一页，爽爽的贵阳，避暑的天堂"));
             textarea1.render();
 
-            Page page2 = document.createPage(PageSize.A4);
+            Page page2 = new Page(document);
 
             Textarea textarea2 = new Textarea(page2);
             textarea2.setLeading(12F);
@@ -278,7 +289,7 @@ public class DocumentTest extends BaseTest {
 
             document.appendPage(page1, page2);
 
-            Page catalogPage = document.createPage(PageSize.A4);
+            Page catalogPage = new Page(document);
             Textarea textarea = new Textarea(catalogPage);
             textarea.setText("目录");
             textarea.setFontSize(20F);
@@ -297,14 +308,15 @@ public class DocumentTest extends BaseTest {
                 content.setIsWrap(true);
                 content.render();
 
-                SplitLine splitLine = new SplitLine(catalogPage);
-                splitLine.setRelativeBeginY(-5F);
-                splitLine.setDottedLength(2F);
-                splitLine.setDottedSpacing(1F);
-                splitLine.setMarginLeft(20F);
-                splitLine.setMarginRight(20F);
-                splitLine.setLineLength(260F);
-                splitLine.render();
+                Line line = new Line(catalogPage);
+                line.setLineStyle(LineStyle.DOTTED);
+                line.setLineWidth(2F);
+                line.setLineLength(260F);
+                line.setDottedSpacing(1F);
+                line.setMarginLeft(20F);
+                line.setMarginRight(20F);
+                line.setRelativeBeginY(-5F);
+                line.render();
 
                 Textarea contentPageIndex = new Textarea(catalogPage);
                 contentPageIndex.setText(String.valueOf((catalog.getPage().getIndex() + 1)));
@@ -326,10 +338,10 @@ public class DocumentTest extends BaseTest {
     public void bigDataTest1() {
         // 单次渲染耗时：2.417s 页面数：290 耗时：3.369s 大小：448KB
         this.test(() -> {
-            Document document = PdfHandler.getDocumentHandler().create(MemoryPolicy.setupTempFileOnly("E:\\PDF\\pdfbox\\document"));
+            Document document = PdfHandler.getDocumentHandler().create(MemoryPolicy.setupMix(2L * 1024 * 1024 * 1024, "E:\\PDF\\pdfbox\\document"));
             document.setMargin(50F);
 
-            Page page = document.createPage();
+            Page page = new Page(document);
 
             this.test(() -> {
                 StringBuilder builder = new StringBuilder();
@@ -364,7 +376,7 @@ public class DocumentTest extends BaseTest {
             for (int i = 0; i < total; i++) {
                 int finalI = i;
                 this.test(() -> {
-                    Page page = document.createPage();
+                    Page page = new Page(document);
                     pages.add(page);
                     StringBuilder builder = new StringBuilder();
                     for (int j = 0; j < 1000; j++) {
@@ -406,17 +418,19 @@ public class DocumentTest extends BaseTest {
      * 创建文档
      */
     private Document create(Integer totalPage) {
+        PdfHandler.getFontHandler().getFontNames().forEach(System.out::println);
         Document document = PdfHandler.getDocumentHandler().create();
         document.setMargin(50F);
         document.setTotalPageNumber(totalPage);
+        // document.setFontName("MicrosoftYaHeiBold");
+        document.setFontName("HarmonyOS Sans SC Medium-Bold");
+        // document.setFontStyle(FontStyle.BOLD);
 
-        Page page = document.createPage(PageSize.A4);
-        page.setBorderColor(Color.LIGHT_GRAY);
+        Page page = new Page(document);
 
         PageHeader pageHeader = new PageHeader(document.getCurrentPage());
         Textarea headerText = new Textarea(pageHeader.getPage());
         headerText.setText("页眉，当前第" + headerText.getContext().getPage().getPlaceholder() + "页");
-        pageHeader.setWidth(490F);
         pageHeader.setHeight(100F);
         pageHeader.setComponents(Collections.singletonList(headerText));
         pageHeader.setIsBorder(true);
@@ -429,7 +443,6 @@ public class DocumentTest extends BaseTest {
         PageFooter pageFooter = new PageFooter(document.getCurrentPage());
         Textarea footerText = new Textarea(pageHeader.getPage());
         footerText.setText("页脚，共" + totalPage + "页");
-        pageFooter.setWidth(490F);
         pageFooter.setHeight(350F);
         pageFooter.setComponents(Collections.singletonList(footerText));
         pageFooter.setIsBorder(true);
@@ -440,8 +453,11 @@ public class DocumentTest extends BaseTest {
         }
 
         Container container = new Container(document.getCurrentPage());
-        container.setWidth(100F);
+        container.setWidth(200F);
         container.setHeight(100F);
+        container.setBackgroundColor(Color.LIGHT_GRAY);
+        container.setHorizontalAlignment(HorizontalAlignment.CENTER);
+        container.setContentHorizontalAlignment(HorizontalAlignment.CENTER);
         container.setIsBorder(true);
         Textarea textarea1 = new Textarea(container.getPage());
         textarea1.setText("hello");

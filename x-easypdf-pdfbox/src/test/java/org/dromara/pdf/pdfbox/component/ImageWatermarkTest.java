@@ -2,7 +2,7 @@ package org.dromara.pdf.pdfbox.component;
 
 import org.dromara.pdf.pdfbox.base.BaseTest;
 import org.dromara.pdf.pdfbox.core.base.Document;
-import org.dromara.pdf.pdfbox.core.base.PageSize;
+import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.component.ImageWatermark;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.junit.Test;
@@ -34,8 +34,8 @@ public class ImageWatermarkTest extends BaseTest {
     public void documentTest() {
         this.test(() -> {
             Document document = PdfHandler.getDocumentHandler().create();
-            document.appendPage(document.createPage(PageSize.A4));
-            document.appendPage(document.createPage(PageSize.A4));
+            document.appendPage(new Page(document));
+            document.appendPage(new Page(document));
 
             ImageWatermark watermark = new ImageWatermark(document);
             watermark.setImage(Paths.get("E:\\PDF\\pdfbox\\image\\test.jpg").toFile());
@@ -60,8 +60,8 @@ public class ImageWatermarkTest extends BaseTest {
     public void pageTest() {
         this.test(()->{
             Document document = PdfHandler.getDocumentHandler().create();
-            document.appendPage(document.createPage(PageSize.A4));
-            document.appendPage(document.createPage(PageSize.A4));
+            document.appendPage(new Page(document));
+            document.appendPage(new Page(document));
 
             ImageWatermark watermark = new ImageWatermark(document);
             watermark.setImage(Paths.get("E:\\PDF\\pdfbox\\image\\test.png").toFile());
@@ -72,7 +72,6 @@ public class ImageWatermarkTest extends BaseTest {
             watermark.setLines(2);
             watermark.setCountOfLine(4);
             watermark.setSpacingOfLine(50F);
-            watermark.setAngle(45F);
             watermark.render(document.getCurrentPage());
 
             document.save("E:\\PDF\\pdfbox\\watermark\\image\\pageTest.pdf");

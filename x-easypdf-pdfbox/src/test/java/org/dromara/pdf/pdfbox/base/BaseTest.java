@@ -23,16 +23,8 @@ import java.util.Optional;
  */
 public class BaseTest {
 
-    static {
-        // 初始化日志实现
-        System.setProperty("org.apache.commons.logging.log", "org.apache.commons.logging.impl.SimpleLog");
-        // 初始化日志级别
-        // System.setProperty("org.apache.commons.logging.simplelog.defaultlog", "info");
-        System.setProperty("org.apache.commons.logging.simplelog.showdatetime", "true");
-        System.setProperty("org.apache.commons.logging.simplelog.log.org.dromara.pdf.pdfbox.core.ext.processor.AbstractProcessor", "debug");
-    }
 
-    protected static final Log log = LogFactory.getLog(BaseTest.class);
+    protected final Log log = LogFactory.getLog(this.getClass());
 
     public void test(Function function) {
         this.test(function, null);

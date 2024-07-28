@@ -3,8 +3,9 @@ package org.dromara.pdf.pdfbox.component;
 import org.dromara.pdf.pdfbox.base.BaseTest;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.base.Page;
-import org.dromara.pdf.pdfbox.core.base.PageSize;
 import org.dromara.pdf.pdfbox.core.component.Circle;
+import org.dromara.pdf.pdfbox.core.enums.HorizontalAlignment;
+import org.dromara.pdf.pdfbox.core.enums.VerticalAlignment;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.junit.Test;
 
@@ -38,13 +39,14 @@ public class CircleTest extends BaseTest {
                     Document document = PdfHandler.getDocumentHandler().create();
                     document.setMargin(50F);
 
-                    Page page = document.createPage(PageSize.A4);
+                    Page page = new Page(document);
 
                     Circle circle = new Circle(page);
                     circle.setBorderColor(new Color(0, 191, 255));
-                    circle.setBorderWidth(5F);
-                    circle.setBackgroundColor(Color.LIGHT_GRAY);
-                    circle.setRadius(100F);
+                    circle.setBorderLineWidth(1F);
+                    circle.setRadius(50F);
+                    circle.setHorizontalAlignment(HorizontalAlignment.LEFT);
+                    circle.setVerticalAlignment(VerticalAlignment.TOP);
                     circle.render();
 
                     document.appendPage(page);

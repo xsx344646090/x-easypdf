@@ -3,12 +3,12 @@ package org.dromara.pdf.pdfbox.component;
 import org.dromara.pdf.pdfbox.base.BaseTest;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.base.Page;
-import org.dromara.pdf.pdfbox.core.base.PageSize;
 import org.dromara.pdf.pdfbox.core.component.Barcode;
 import org.dromara.pdf.pdfbox.core.component.Circle;
 import org.dromara.pdf.pdfbox.core.component.Container;
 import org.dromara.pdf.pdfbox.core.component.Textarea;
 import org.dromara.pdf.pdfbox.core.enums.BarcodeType;
+import org.dromara.pdf.pdfbox.core.enums.HorizontalAlignment;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.junit.Test;
 
@@ -41,7 +41,7 @@ public class ContainerTest extends BaseTest {
             Document document = PdfHandler.getDocumentHandler().create();
             document.setMargin(50F);
 
-            Page page = document.createPage(PageSize.A4);
+            Page page = new Page(document);
 
             Container container = new Container(document.getCurrentPage());
             container.setWidth(200F);
@@ -58,17 +58,24 @@ public class ContainerTest extends BaseTest {
             Barcode barcode = new Barcode(container.getPage());
             barcode.setCodeType(BarcodeType.QR_CODE);
             barcode.setContent("https://x-easypdf.cn");
+            barcode.setMarginTop(20F);
             barcode.setWidth(80);
             barcode.setHeight(80);
             barcode.setImageWidth(100);
             barcode.setImageHeight(100);
-            barcode.setMarginTop(20F);
             barcode.setIsBorder(true);
 
             Textarea textarea1 = new Textarea(container.getPage());
             textarea1.setText("hello world");
 
             container.setComponents(Arrays.asList(textarea, circle, textarea1, barcode));
+            container.setHorizontalAlignment(HorizontalAlignment.LEFT);
+            container.render();
+            container.setHorizontalAlignment(HorizontalAlignment.CENTER);
+            container.render();
+            container.setHorizontalAlignment(HorizontalAlignment.RIGHT);
+            container.render();
+            container.setHorizontalAlignment(HorizontalAlignment.CENTER);
             container.render();
 
             document.appendPage(page);
@@ -86,7 +93,7 @@ public class ContainerTest extends BaseTest {
             Document document = PdfHandler.getDocumentHandler().create();
             document.setMargin(50F);
 
-            Page page = document.createPage(PageSize.A4);
+            Page page = new Page(document);
 
             Container container = new Container(document.getCurrentPage());
             container.setWidth(100F);
@@ -123,7 +130,7 @@ public class ContainerTest extends BaseTest {
             Document document = PdfHandler.getDocumentHandler().create();
             document.setMargin(50F);
 
-            Page page = document.createPage(PageSize.A4);
+            Page page = new Page(document);
 
             Container container = new Container(document.getCurrentPage());
             container.setWidth(100F);
@@ -141,7 +148,7 @@ public class ContainerTest extends BaseTest {
                     container.setIsPagingBorder(true);
                 }
                 container.render();
-                beginX = container.getContext().getContainerInfo().getBeginX();
+                beginX = container.getContext().getBorderInfo().getBeginX();
             }
             Boolean isAlreadyPaging = container.getContext().getIsAlreadyPaging();
             if (isAlreadyPaging) {

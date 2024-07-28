@@ -1,5 +1,7 @@
 package org.dromara.pdf.pdfbox.core.enums;
 
+import lombok.Getter;
+
 /**
  * 线帽样式
  *
@@ -18,6 +20,7 @@ package org.dromara.pdf.pdfbox.core.enums;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
+@Getter
 public enum LineCapStyle {
     /**
      * 正常
@@ -31,6 +34,7 @@ public enum LineCapStyle {
      * 方角
      */
     SQUARE(2);
+
     /**
      * 类型
      */
@@ -43,14 +47,5 @@ public enum LineCapStyle {
      */
     LineCapStyle(int type) {
         this.type = type;
-    }
-
-    /**
-     * 获取类型
-     *
-     * @return 返回类型
-     */
-    public int getType() {
-        return this.type;
     }
 }

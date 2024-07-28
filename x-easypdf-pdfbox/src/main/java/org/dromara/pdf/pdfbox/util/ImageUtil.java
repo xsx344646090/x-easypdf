@@ -4,17 +4,14 @@ import lombok.SneakyThrows;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.PNGTranscoder;
-import org.apache.pdfbox.cos.COSName;
-import org.apache.pdfbox.pdmodel.PDResources;
-import org.apache.pdfbox.pdmodel.graphics.PDXObject;
-import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
-import org.apache.pdfbox.pdmodel.graphics.image.PDImage;
 import org.apache.pdfbox.tools.imageio.ImageIOUtil;
+import org.dromara.pdf.pdfbox.core.enums.ImageType;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Objects;
 
@@ -64,7 +61,7 @@ public class ImageUtil {
         // 如果图片数据流为空，则提示错误信息
         Objects.requireNonNull(imageStream, "the image stream can not be null");
         // 读取图片
-        return ImageIO.read(imageStream);
+        return ImageIO.read(new BufferedInputStream(imageStream));
     }
 
     /**
@@ -82,6 +79,30 @@ public class ImageUtil {
             // 读取图片
             return ImageIO.read(inputStream);
         }
+    }
+
+    /**
+     * 写入文件
+     *
+     * @param image 图片对象
+     * @param file  文件
+     */
+    @SneakyThrows
+    public static void write(BufferedImage image, File file) {
+        try (OutputStream outputStream = new BufferedOutputStream(Files.newOutputStream(file.toPath()))) {
+            write(image, outputStream);
+        }
+    }
+
+    /**
+     * 写入文件
+     *
+     * @param image        图片对象
+     * @param outputStream 输出流
+     */
+    @SneakyThrows
+    public static void write(BufferedImage image, OutputStream outputStream) {
+        ImageIOUtil.writeImage(image, ImageType.PNG.name(), outputStream);
     }
 
     /**
@@ -180,8 +201,8 @@ public class ImageUtil {
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             // 写入图片
             ImageIOUtil.writeImage(sourceImage, imageType, outputStream);
-            // 返回字节数组输入流
-            return new ByteArrayInputStream(outputStream.toByteArray());
+            // 返回输入流
+            return new BufferedInputStream(new ByteArrayInputStream(outputStream.toByteArray()));
         }
     }
 
@@ -202,7 +223,7 @@ public class ImageUtil {
         // 获取旋转尺寸
         Rectangle rectangle = getRotateRectangle(imageWidth, imageHeight, radians);
         // 创建图片
-        BufferedImage image = new BufferedImage(rectangle.width, rectangle.height, sourceImage.getType());
+        BufferedImage image = new BufferedImage(rectangle.width, rectangle.height, BufferedImage.TYPE_INT_ARGB);
         // 创建2d图像
         Graphics2D graphics = createGraphics(image);
         // 转换
@@ -280,31 +301,6 @@ public class ImageUtil {
         graphics.dispose();
         // 返回图片
         return image;
-    }
-
-    /**
-     * 提取图像
-     *
-     * @param imageList 待接收图像列表
-     * @param resources 页面资源
-     */
-    @SneakyThrows
-    public static void extract(List<BufferedImage> imageList, PDResources resources) {
-        // 获取页面资源内容名称
-        Iterable<COSName> objectNames = resources.getXObjectNames();
-        // 遍历资源内容名称
-        for (COSName objectName : objectNames) {
-            // 获取资源内容
-            PDXObject xObject = resources.getXObject(objectName);
-            // 如果资源内容为图片，则添加到待接收图片列表
-            if (xObject instanceof PDImage) {
-                // 添加到待接收图片列表
-                imageList.add(((PDImage) xObject).getImage());
-            } else if (xObject instanceof PDFormXObject) {
-                // 提取图像
-                extract(imageList, ((PDFormXObject) xObject).getResources());
-            }
-        }
     }
 
     /**
@@ -401,6 +397,6 @@ public class ImageUtil {
         // 计算旋转后的矩形高度增加量
         int offsetHeight = Math.abs((int) (len * Math.cos(Math.PI - radiansAlpha - radiansHeight)));
         // 返回旋转后的矩形
-        return new Rectangle((src.width + offsetWidth * num), (src.height + offsetHeight * num));
+        return new Rectangle((int) (src.getWidth() + offsetWidth * num), (int) (src.getHeight() + offsetHeight * num));
     }
 }

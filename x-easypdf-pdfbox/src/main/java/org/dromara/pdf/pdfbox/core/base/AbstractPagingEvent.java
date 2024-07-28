@@ -1,8 +1,13 @@
 package org.dromara.pdf.pdfbox.core.base;
 
 import lombok.EqualsAndHashCode;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.dromara.pdf.pdfbox.core.component.BorderInfo;
 import org.dromara.pdf.pdfbox.core.component.Component;
+import org.dromara.pdf.pdfbox.util.BorderUtil;
 
+import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -29,7 +34,7 @@ public abstract class AbstractPagingEvent implements PagingEvent {
     /**
      * 唯一标识
      */
-    private final String id = UUID.randomUUID().toString();
+    protected final String id = UUID.randomUUID().toString();
 
     /**
      * 分页之前
@@ -38,7 +43,6 @@ public abstract class AbstractPagingEvent implements PagingEvent {
      */
     @Override
     public void before(Component component) {
-
     }
 
     /**
@@ -48,6 +52,5 @@ public abstract class AbstractPagingEvent implements PagingEvent {
      */
     @Override
     public void after(Component component) {
-
     }
 }

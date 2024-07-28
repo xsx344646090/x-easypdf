@@ -3,10 +3,11 @@ package org.dromara.pdf.pdfbox.component;
 import org.dromara.pdf.pdfbox.base.BaseTest;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.base.Page;
-import org.dromara.pdf.pdfbox.core.base.PageSize;
 import org.dromara.pdf.pdfbox.core.component.Barcode;
 import org.dromara.pdf.pdfbox.core.enums.BarcodeType;
-import org.dromara.pdf.pdfbox.core.enums.BorderStyle;
+import org.dromara.pdf.pdfbox.core.enums.LineStyle;
+import org.dromara.pdf.pdfbox.core.enums.HorizontalAlignment;
+import org.dromara.pdf.pdfbox.core.enums.VerticalAlignment;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.junit.Test;
 
@@ -37,10 +38,10 @@ public class BarcodeTest extends BaseTest {
             // 创建文档
             Document document = PdfHandler.getDocumentHandler().create();
             // 设置页边距
-            document.setMargin(50F);
+            document.setMargin(100F);
 
             // 创建 A4 大小的页面
-            Page page = document.createPage(PageSize.A4);
+            Page page = new Page(document);
 
             // 创建二维码对象
             Barcode barcode = new Barcode(document.getCurrentPage());
@@ -55,7 +56,7 @@ public class BarcodeTest extends BaseTest {
             // 设置图像高度
             barcode.setImageHeight(450);
             // 设置设置上边距
-            barcode.setMarginTop(100F);
+            // barcode.setMarginTop(100F);
             // 设置二维码内容
             barcode.setContent("https://x-easypdf.cn");
             // 设置二维码下方的文字
@@ -67,13 +68,16 @@ public class BarcodeTest extends BaseTest {
             // 设置二维码是否显示边框
             barcode.setIsBorder(true);
             // 设置二维码边框样式
-            barcode.setBorderStyle(BorderStyle.SOLID);
+            barcode.setBorderLineStyle(LineStyle.SOLID);
             // 设置二维码是否显示下方文字
             barcode.setIsShowWords(true);
             // 设置二维码是否缓存
             barcode.setIsCache(Boolean.FALSE);
             // 设置二维码旋转角度
-            barcode.setAngle(30F);
+            // barcode.setAngle(30F);
+            // 设置二维码居中
+            barcode.setHorizontalAlignment(HorizontalAlignment.CENTER);
+            barcode.setVerticalAlignment(VerticalAlignment.CENTER);
             // 渲染二维码
             barcode.render();
 
@@ -95,10 +99,10 @@ public class BarcodeTest extends BaseTest {
             // 创建文档
             Document document = PdfHandler.getDocumentHandler().create();
             // 设置页边距
-            document.setMargin(50F);
+            document.setMargin(0F);
 
             // 创建一个 A4 大小的页面
-            Page page = document.createPage(PageSize.A4);
+            Page page = new Page(document);
 
             // 创建一个条形码对象
             Barcode barcode = new Barcode(document.getCurrentPage());
@@ -123,7 +127,7 @@ public class BarcodeTest extends BaseTest {
             // 设置条形码周围是否有边框
             barcode.setIsBorder(true);
             // 设置条形码边框样式为点状
-            barcode.setBorderStyle(BorderStyle.DOTTED);
+            barcode.setBorderLineStyle(LineStyle.DOTTED);
             // 设置条形码下方文字是否显示
             barcode.setIsShowWords(true);
             // 设置条形码是否缓存

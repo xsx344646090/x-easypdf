@@ -1,8 +1,8 @@
 package org.dromara.pdf.pdfbox.core.component;
 
-import org.dromara.pdf.pdfbox.core.base.ComponentType;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.base.Page;
+import org.dromara.pdf.pdfbox.core.enums.ComponentType;
 
 /**
  * 水印

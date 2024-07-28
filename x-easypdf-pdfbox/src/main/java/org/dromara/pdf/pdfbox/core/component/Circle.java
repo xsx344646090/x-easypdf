@@ -4,9 +4,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.dromara.pdf.pdfbox.core.base.ComponentType;
 import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.base.Position;
+import org.dromara.pdf.pdfbox.core.enums.ComponentType;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -38,11 +38,15 @@ public class Circle extends AbstractComponent {
     /**
      * 半径
      */
-    private Float radius;
+    protected Float radius;
     /**
      * 边框颜色
      */
-    private Color borderColor;
+    protected Color borderColor;
+    /**
+     * 背景颜色
+     */
+    protected Color backgroundColor;
 
     /**
      * 有参构造
@@ -72,7 +76,7 @@ public class Circle extends AbstractComponent {
      */
     @Override
     public ComponentType getType() {
-        return ComponentType.RECTANGLE;
+        return ComponentType.CIRCLE;
     }
 
     /**
@@ -80,102 +84,28 @@ public class Circle extends AbstractComponent {
      */
     @Override
     protected void init() {
+        // 校验参数
+        Objects.requireNonNull(this.radius, "the radius can not be null");
         // 初始化
         super.init();
-        // 初始化半径
-        this.initRadius();
         // 初始化边框颜色
         if (Objects.isNull(this.borderColor)) {
             this.borderColor = Color.BLACK;
         }
-        // 初始化首行
-        if (!this.getIsCustomY() && this.getContext().isFirstLine()) {
-            this.setBeginY(this.getBeginY() - this.getRadius());
-        }
-        // 检查换行
-        if (this.isWrap()) {
-            this.wrap();
-            this.setBeginY(this.getBeginY() - (this.getRadius() * 0.5F));
-        }
-        // 重置X轴坐标
-        this.setBeginX(this.getBeginX() + this.getRadius());
+        // 获取直径
+        float diameter = this.getMinWidth();
+        // 初始化起始XY轴坐标
+        this.initBeginXY(diameter, diameter);
     }
 
     /**
-     * 虚拟渲染
+     * 获取最小宽度
+     *
+     * @return 返回最小宽度
      */
     @Override
-    @SneakyThrows
-    public void virtualRender() {
-        // 初始化
-        this.init();
-        // 非自定义Y轴
-        if (!this.getIsCustomY()) {
-            // 检查分页
-            this.isPaging(this, this.getBeginY());
-        }
-        // 重置光标
-        this.getContext().getCursor().reset(
-                this.getBeginX() + this.getRadius() + this.getMarginRight(),
-                this.getBeginY() + this.getMarginTop()
-        );
-        // 重置
-        super.reset(this.getType());
-        // 重置换行高度
-        this.getContext().setWrapHeight(this.getRadius());
-    }
-
-    /**
-     * 渲染
-     */
-    @SneakyThrows
-    @Override
-    public void render() {
-        // 初始化
-        this.init();
-        // 非自定义Y轴
-        if (!this.getIsCustomY()) {
-            // 检查分页
-            this.isPaging(this, this.getBeginY());
-        }
-        // 新建内容流
-        PDPageContentStream contentStream = new PDPageContentStream(
-                this.getContext().getTargetDocument(),
-                this.getContext().getTargetPage(),
-                this.getContentMode().getMode(),
-                true,
-                this.getIsResetContentStream()
-        );
-        // 绘制边框圆形
-        this.renderCircle(contentStream, this.getRadius(), this.getBorderColor());
-        // 绘制背景圆形
-        this.renderCircle(contentStream, this.getRadius() - this.getBorderWidth(), this.getBackgroundColor());
-        // 关闭内容流
-        contentStream.close();
-        // 重置光标
-        this.getContext().getCursor().reset(
-                this.getBeginX() + this.getRadius() + this.getMarginRight(),
-                this.getBeginY() + this.getMarginTop()
-        );
-        // 重置
-        super.reset(this.getType());
-        // 重置换行高度
-        this.getContext().setWrapHeight(this.getRadius());
-    }
-
-    /**
-     * 初始化半径
-     */
-    protected void initRadius() {
-        // 获取最大宽度
-        float maxWidth = this.getContext().getWrapWidth() + this.getPage().getMarginLeft() - this.getBeginX() - this.getMarginRight();
-        // 获取最大高度
-        float maxHeight = this.getBeginY() - this.getMarginBottom() - this.getContext().getPage().getMarginBottom();
-        // 初始化宽度
-        if (Objects.isNull(this.radius)) {
-            // 初始化宽度
-            this.radius = Math.min(maxWidth, maxHeight) / 2;
-        }
+    protected float getMinWidth() {
+        return this.getRadius() * 2;
     }
 
     /**
@@ -185,10 +115,10 @@ public class Circle extends AbstractComponent {
      * @return 返回数据坐标点列表
      */
     protected List<Position> initPosition(float radius) {
-        // 获取X轴坐标
-        float x = this.getBeginX() + this.getRelativeBeginX();
-        // 获取Y轴坐标
-        float y = this.getBeginY() - this.getRelativeBeginY();
+        // 获取X轴坐标（补偿半径）
+        float x = this.getBeginX() + this.radius + this.getRelativeBeginX();
+        // 获取Y轴坐标（补偿半径）
+        float y = this.getBeginY() + this.radius - this.getRelativeBeginY();
         // 定义4个圆形数据坐标点
         List<Position> list = new ArrayList<>(4);
         // 添加数据上坐标点
@@ -239,6 +169,33 @@ public class Circle extends AbstractComponent {
         points.add(new Position(top.getX() - offset, top.getY()));
         // 返回控制坐标点列表
         return points;
+    }
+
+    /**
+     * 写入内容
+     */
+    @SneakyThrows
+    @Override
+    protected void writeContents() {
+        if (!this.getContext().getIsVirtualRender()) {
+            // 新建内容流
+            PDPageContentStream contentStream = new PDPageContentStream(
+                    this.getContext().getTargetDocument(),
+                    this.getContext().getTargetPage(),
+                    this.getContentMode().getMode(),
+                    true,
+                    this.getIsResetContentStream()
+            );
+            // 绘制边框圆形
+            this.renderCircle(contentStream, this.getRadius(), this.getBorderColor());
+            // 绘制背景圆形
+            if (Objects.nonNull(this.getBackgroundColor())) {
+                // 绘制背景圆形
+                this.renderCircle(contentStream, this.getRadius() - this.getBorderConfiguration().getBorderLineWidth(), this.getBackgroundColor());
+            }
+            // 关闭内容流
+            contentStream.close();
+        }
     }
 
     /**
@@ -308,5 +265,17 @@ public class Circle extends AbstractComponent {
         contentStream.setNonStrokingColor(color);
         // 填充圆形
         contentStream.fill();
+    }
+
+    /**
+     * 重置
+     */
+    protected void reset() {
+        // 获取X轴坐标
+        float x = this.getBeginX() + this.getMinWidth() + this.getMarginRight();
+        // 获取Y轴坐标
+        float y = this.getBeginY();
+        // 重置
+        super.reset(this.getType(), x, y);
     }
 }

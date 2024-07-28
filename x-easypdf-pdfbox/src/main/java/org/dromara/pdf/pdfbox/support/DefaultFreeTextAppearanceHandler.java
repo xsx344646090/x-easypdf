@@ -13,7 +13,7 @@ import java.util.Objects;
  * 文本外观助手
  *
  * @author xsx
- * @date 2023/12/28/028
+ * @date 2023/12/28
  * @since 1.8
  * <p>
  * Copyright (c) 2020 xsx All Rights Reserved.
@@ -32,15 +32,15 @@ public class DefaultFreeTextAppearanceHandler extends PDFreeTextAppearanceHandle
     /**
      * 文档
      */
-    private Document document;
+    protected Document document;
     /**
      * 注释
      */
-    private PDAnnotation annotation;
+    protected PDAnnotation annotation;
     /**
      * 字体
      */
-    private PDFont font;
+    protected PDFont font;
 
     /**
      * 有参构造

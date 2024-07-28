@@ -1,5 +1,6 @@
 package org.dromara.pdf.pdfbox.core.ext.extractor;
 
+import lombok.EqualsAndHashCode;
 import org.dromara.pdf.pdfbox.core.base.Document;
 
 import java.awt.image.BufferedImage;
@@ -24,6 +25,7 @@ import java.util.Map;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
+@EqualsAndHashCode(callSuper = true)
 public class ImageExtractor extends AbstractImageExtractor {
 
     /**

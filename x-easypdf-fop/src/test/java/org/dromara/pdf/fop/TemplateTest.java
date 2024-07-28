@@ -63,7 +63,7 @@ public class TemplateTest extends BaseTest {
             Map<String, Object> data = new HashMap<>();
             // 设置值
             data.put("data", "hello world");
-            data.put("signatureList", Arrays.asList(Collections.singletonMap("nameUrl", "test")));
+            data.put("signatureList", Arrays.asList(Collections.singletonMap("nameUrl", "/E:\\PDF\\fop\\test.png")));
             // 转换pdf
             TemplateHandler.Template.build()
                     .setConfigPath(configPath)
@@ -100,6 +100,30 @@ public class TemplateTest extends BaseTest {
     }
 
     @Test
+    public void testThymeleafTotalPage() {
+        this.test(() -> {
+            // 定义xsl-fo模板路径
+            String templatePath = "org/dromara/pdf/fop/thymeleaf/template2.html";
+            // 定义pdf输出路径
+            String outputPath = "E:\\PDF\\fop\\Thymeleaf.pdf";
+            // 定义数据map
+            Map<String, Object> data = new HashMap<>();
+            // 设置值
+            data.put("createTime", "创建时间：2022-10-27 15:35:00");
+            data.put("printTime", "打印时间：2022-10-27 15:36:00");
+            data.put("printUser", "打印人：x-easypdf");
+            data.put("data", "hello world");
+            // 获取总页数
+            Integer totalPage = TemplateHandler.Template.build().setDataSource(
+                    TemplateHandler.DataSource.Thymeleaf.build()
+                            .setTemplatePath(templatePath)
+                            .setTemplateData(data)
+            ).getTotalPage();
+            log.info("Total page: " + totalPage);
+        });
+    }
+
+    @Test
     public void testXml() {
         this.test(() -> {
             for (int i = 0; i < 10; i++) {
@@ -132,6 +156,33 @@ public class TemplateTest extends BaseTest {
                     )
                     // 转换
                     .transform(outputPath);
+        });
+    }
+
+    @Test
+    public void testXmlTotalPage() {
+        this.test(() -> {
+            // 定义fop配置文件路径
+            String configPath = "E:\\PDF\\fop\\fop.xconf";
+            // 定义xsl-fo模板路径
+            String templatePath = "org/dromara/pdf/fop/xml/template.fo";
+            // 定义xml数据路径
+            String xmlPath = "org/dromara/pdf/fop/xml/data.xml";
+            // 定义pdf输出路径
+            String outputPath = "E:\\PDF\\fop\\XML.pdf";
+            // 获取总页数
+            Integer totalPage = TemplateHandler.Template.build()
+                    // 设置配置文件
+                    .setConfigPath(configPath)
+                    // 设置XML数据源
+                    .setDataSource(
+                            TemplateHandler.DataSource.XML.build()
+                                    .setTemplatePath(templatePath)
+                                    .setXmlPath(xmlPath)
+                    )
+                    // 获取总页数
+                    .getTotalPage();
+            log.info("Total page: " + totalPage);
         });
     }
 
@@ -202,6 +253,34 @@ public class TemplateTest extends BaseTest {
     }
 
     @Test
+    public void testJteTotalPage() {
+        this.test(() -> {
+            // 定义fop配置文件路径
+            String configPath = "org/dromara/pdf/fop/fop.xconf";
+            // 定义xsl-fo模板路径
+            String templatePath = "org/dromara/pdf/fop/jte/template.jte";
+            // 定义pdf输出路径
+            String outputPath = "E:\\PDF\\fop\\Jte.pdf";
+            // 定义数据map
+            Map<String, Object> data = new HashMap<>();
+            List<String> list = new ArrayList<>(2);
+            list.add("hello");
+            list.add("world");
+            // 设置值
+            data.put("list", list);
+            data.put("str", "hello world");
+            Integer totalPage = TemplateHandler.Template.build()
+                    .setConfigPath(configPath)
+                    .setDataSource(
+                            TemplateHandler.DataSource.Jte.build()
+                                    .setTemplatePath(templatePath)
+                                    .setTemplateData(data)
+                    ).getTotalPage();
+            log.info("Total page: " + totalPage);
+        });
+    }
+
+    @Test
     public void testFreemarker() {
         this.test(() -> {
             // 定义fop配置文件路径
@@ -228,6 +307,37 @@ public class TemplateTest extends BaseTest {
                                     .setTemplateName("template.fo")
                                     .setTemplateData(data)
                     ).transform(outputPath);
+        });
+    }
+
+    @Test
+    public void testFreemarkerTotalPage() {
+        this.test(() -> {
+            // 定义fop配置文件路径
+            String configPath = "org/dromara/pdf/fop/fop.xconf";
+            // 定义pdf输出路径
+            String outputPath = "E:\\PDF\\fop\\Freemarker.pdf";
+            // 设置远程模板路径
+            // TemplateHandler.DataSource.Freemarker.setTemplatePath("http://localhost:22222/temp/");
+            // 设置模板路径
+            TemplateHandler.DataSource.Freemarker.setTemplatePath("org/dromara/pdf/fop/freemarker");
+            // 定义数据map
+            Map<String, Object> data = new HashMap<>();
+            // 定义数据list
+            List<String> list = new ArrayList<>(2);
+            list.add("hello");
+            list.add("world");
+            // 设置值
+            data.put("list", list);
+            data.put("str", "hello world");
+            Integer totalPage = TemplateHandler.Template.build()
+                    .setConfigPath(configPath)
+                    .setDataSource(
+                            TemplateHandler.DataSource.Freemarker.build()
+                                    .setTemplateName("template.fo")
+                                    .setTemplateData(data)
+                    ).getTotalPage();
+            log.info("Total page: " + totalPage);
         });
     }
 }

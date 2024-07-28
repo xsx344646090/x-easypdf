@@ -239,6 +239,15 @@ public class Document implements DocumentComponent {
     }
 
     /**
+     * 获取总页数
+     *
+     * @return 返回总页数
+     */
+    public Integer getTotalPage() {
+        return this.initTemplate().getTotalPage();
+    }
+
+    /**
      * 初始化模板
      *
      * @return 返回pdf模板

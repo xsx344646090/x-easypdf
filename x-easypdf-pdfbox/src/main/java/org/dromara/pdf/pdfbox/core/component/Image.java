@@ -5,14 +5,16 @@ import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
-import org.apache.pdfbox.util.Matrix;
-import org.dromara.pdf.pdfbox.core.base.ComponentType;
+import org.dromara.pdf.pdfbox.core.base.BorderData;
 import org.dromara.pdf.pdfbox.core.base.Page;
+import org.dromara.pdf.pdfbox.core.enums.ComponentType;
+import org.dromara.pdf.pdfbox.core.enums.ImageType;
 import org.dromara.pdf.pdfbox.util.BorderUtil;
+import org.dromara.pdf.pdfbox.util.CommonUtil;
 import org.dromara.pdf.pdfbox.util.ImageUtil;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -45,23 +47,27 @@ public class Image extends AbstractComponent {
     /**
      * pdfbox图像对象
      */
-    private PDImageXObject image;
+    protected PDImageXObject image;
     /**
      * 宽度
      */
-    private Integer width;
+    protected Integer width;
     /**
      * 高度
      */
-    private Integer height;
+    protected Integer height;
     /**
      * 旋转角度
      */
-    private Float angle;
+    protected Float angle;
+    /**
+     * 透明度
+     */
+    protected Float alpha;
     /**
      * 缩放比例
      */
-    private Float scale;
+    protected Float scale;
 
     /**
      * 有参构造
@@ -70,6 +76,24 @@ public class Image extends AbstractComponent {
      */
     public Image(Page page) {
         super(page);
+    }
+
+    /**
+     * 有参构造
+     *
+     * @param component 组件
+     */
+    protected Image(AbstractComponent component) {
+        super(component);
+    }
+
+    /**
+     * 有参构造
+     *
+     * @param page 页面
+     */
+    protected Image(Page page, boolean isResetPage) {
+        super(page, isResetPage);
     }
 
     /**
@@ -105,6 +129,17 @@ public class Image extends AbstractComponent {
     public void setImage(File file) {
         Objects.requireNonNull(file, "the image file can not be null");
         this.setImage(Files.newInputStream(file.toPath()));
+    }
+
+    /**
+     * 设置图片
+     *
+     * @param image 图片
+     */
+    @SneakyThrows
+    public void setImage(BufferedImage image) {
+        Objects.requireNonNull(image, "the image can not be null");
+        this.setImage(ImageUtil.toBytes(image, ImageType.PNG.getType()));
     }
 
     /**
@@ -150,30 +185,6 @@ public class Image extends AbstractComponent {
     }
 
     /**
-     * 虚拟渲染
-     */
-    @Override
-    public void virtualRender() {
-        // 初始化
-        this.init();
-        // 重置
-        this.reset();
-    }
-
-    /**
-     * 渲染
-     */
-    @Override
-    public void render() {
-        // 初始化
-        this.init();
-        // 写入图像
-        this.writeImage();
-        // 重置
-        this.reset();
-    }
-
-    /**
      * 初始化
      */
     @Override
@@ -188,19 +199,12 @@ public class Image extends AbstractComponent {
         if (Objects.isNull(this.angle)) {
             this.angle = 0F;
         }
-        // 检查换行
-        if (this.isWrap()) {
-            this.wrap();
+        // 初始化透明度
+        if (Objects.isNull(this.alpha)) {
+            this.alpha = 1.0F;
         }
-        // 重置Y轴坐标
-        super.setBeginY(this.getBeginY() - this.getHeight(), false);
-        // 非自定义Y轴
-        if (!this.getIsCustomY()) {
-            // 检查分页
-            if (this.isPaging(this, this.getBeginY())) {
-                super.setBeginY(this.getBeginY() - this.getHeight(), false);
-            }
-        }
+        // 初始化起始XY轴坐标
+        this.initBeginXY(this.width, this.height);
     }
 
     /**
@@ -225,72 +229,51 @@ public class Image extends AbstractComponent {
     }
 
     /**
-     * 写入图像
+     * 获取最小宽度
+     *
+     * @return 返回最小宽度
      */
-    @SneakyThrows
-    protected void writeImage() {
-        // 定义X轴偏移量
-        float offsetX = 0.5F * this.getWidth();
-        // 定义Y轴偏移量
-        float offsetY = 0.5F * this.getHeight();
-        // 新建内容流
-        PDPageContentStream contentStream = new PDPageContentStream(
-                this.getContext().getTargetDocument(),
-                this.getContext().getTargetPage(),
-                this.getContentMode().getMode(),
-                true,
-                this.getIsResetContentStream()
-        );
-        // 保存图形状态
-        contentStream.saveGraphicsState();
-        // 移动到中心点
-        contentStream.transform(
-                Matrix.getTranslateInstance(
-                        this.getBeginX() + this.getRelativeBeginX() + offsetX,
-                        this.getBeginY() - this.getRelativeBeginY() + offsetY
-                )
-        );
-        // 旋转
-        contentStream.transform(Matrix.getRotateInstance(Math.toRadians(this.getAngle()), 0, 0));
-        // 移动到左下角
-        contentStream.transform(Matrix.getTranslateInstance(-offsetX, -offsetY));
-        // 添加图片
-        contentStream.drawImage(this.getImage(), 0, 0, this.getWidth(), this.getHeight());
-        // 添加边框
-        BorderUtil.drawNormalBorder(contentStream, this.getRectangle(), this);
-        // 关闭内容流
-        contentStream.close();
+    @Override
+    protected float getMinWidth() {
+        return this.getWidth();
     }
 
     /**
-     * 获取行尺寸
-     *
-     * @return 返回尺寸
+     * 写入内容
      */
-    protected PDRectangle getRectangle() {
-        // 创建尺寸
-        PDRectangle rectangle = new PDRectangle();
-        // 设置起始X轴坐标
-        rectangle.setLowerLeftX(0);
-        // 设置结束X轴坐标
-        rectangle.setUpperRightX(this.getWidth());
-        // 设置起始Y轴坐标
-        rectangle.setLowerLeftY(0);
-        // 设置结束Y轴坐标
-        rectangle.setUpperRightY(this.getHeight());
-        // 返回尺寸
-        return rectangle;
+    @SneakyThrows
+    @Override
+    protected void writeContents() {
+        if (!this.getContext().getIsVirtualRender()) {
+            // 新建内容流
+            PDPageContentStream contentStream = new PDPageContentStream(
+                    this.getContext().getTargetDocument(),
+                    this.getContext().getTargetPage(),
+                    this.getContentMode().getMode(),
+                    true,
+                    this.getIsResetContentStream()
+            );
+            // 初始化矩阵
+            CommonUtil.initMatrix(contentStream, this.getBeginX(), this.getBeginY(), this.getRelativeBeginX(), this.getRelativeBeginY(), this.getWidth(), this.getHeight(), this.getAngle(), this.getAlpha());
+            // 添加图像
+            contentStream.drawImage(this.getImage(), 0, 0, this.getWidth(), this.getHeight());
+            // 添加边框
+            BorderUtil.drawNormalBorder(contentStream, CommonUtil.getRectangle(this.getWidth(), this.getHeight()), BorderData.create(this, this.getBorderConfiguration()));
+            // 关闭内容流
+            contentStream.close();
+        }
     }
 
     /**
      * 重置
      */
+    @Override
     protected void reset() {
-        // 重置光标X轴
-        this.getContext().getCursor().setX(this.getBeginX() + this.getWidth() + this.getMarginRight());
+        // 获取X轴坐标
+        float x = this.getBeginX() + this.getWidth() + this.getMarginRight();
+        // 获取Y轴坐标
+        float y = this.getBeginY();
         // 重置
-        super.reset(this.getType());
-        // 重置换行高度
-        this.getContext().setWrapHeight(Float.valueOf(this.getHeight()));
+        super.reset(this.getType(), x, y);
     }
 }
