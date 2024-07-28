@@ -385,35 +385,37 @@ public class TableTest extends BaseTest {
             table.setBorderColor(Color.GRAY);
             
             List<TableRow> rowList = new ArrayList<>(16);
+
+            int rowCount = 13;
             TableRow tableRow = new TableRow(table);
             tableRow.setHeight(height);
-            TableCell cell = new TableCell(tableRow);
-            Textarea textarea = new Textarea(table.getPage());
-            textarea.setText("测试");
-            textarea.setHorizontalAlignment(HorizontalAlignment.CENTER);
-            cell.setComponents(textarea);
-            cell.setColspan(3);
-            tableRow.setCells(cell);
+            Textarea textarea1 = new Textarea(table.getPage());
+            textarea1.setText("合并行");
+            textarea1.setHorizontalAlignment(HorizontalAlignment.CENTER);
+            textarea1.setVerticalAlignment(VerticalAlignment.BOTTOM);
+            Textarea textarea2 = new Textarea(table.getPage());
+            textarea2.setText("合并内容1");
+            textarea2.setHorizontalAlignment(HorizontalAlignment.CENTER);
+            textarea2.setVerticalAlignment(VerticalAlignment.BOTTOM);
+            TableCell cell1 = new TableCell(tableRow);
+            cell1.setComponents(textarea1);
+            cell1.setRowspan(rowCount);
+            TableCell cell2 = new TableCell(tableRow);
+            cell2.setComponents(textarea2);
+            cell2.setColspan(2);
+            tableRow.setCells(cell1, cell2);
             rowList.add(tableRow);
-            
-            for (int i = 1; i <= 20; i++) {
-                Textarea textarea1 = new Textarea(table.getPage());
-                textarea1.setText("第" + i + "行");
-                textarea1.setHorizontalAlignment(HorizontalAlignment.CENTER);
-                textarea1.setVerticalAlignment(VerticalAlignment.CENTER);
-                Textarea textarea2 = new Textarea(table.getPage());
-                textarea2.setText("内容" + i);
-                textarea2.setHorizontalAlignment(HorizontalAlignment.CENTER);
-                textarea2.setVerticalAlignment(VerticalAlignment.CENTER);
+
+            for (int i = 1; i <= rowCount; i++) {
                 tableRow = new TableRow(table);
                 tableRow.setHeight(height);
-                TableCell cell1 = new TableCell(tableRow);
-                cell1.setComponents(textarea1);
-                TableCell cell2 = new TableCell(tableRow);
-                cell2.setComponents(textarea2);
-                cell2.setColspan(2);
-                
-                tableRow.setCells(cell1, cell2, null);
+                Textarea textarea = new Textarea(table.getPage());
+                textarea.setText("合并内容合并内容合并内容合并内容合并内容合并内容合并内容合并内容合并内容合并内容合并内容合并内容合并内容合并内容" + (i + 1));
+                textarea.setMarginLeft(50F);
+                TableCell cell = new TableCell(tableRow);
+                cell.setColspan(2);
+                cell.setComponents(textarea);
+                tableRow.setCells(null, cell);
                 rowList.add(tableRow);
             }
             table.setRows(rowList);
