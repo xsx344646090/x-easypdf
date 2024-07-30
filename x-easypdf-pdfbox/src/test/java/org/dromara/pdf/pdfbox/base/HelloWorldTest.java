@@ -62,16 +62,16 @@ public class HelloWorldTest extends BaseTest {
     public void allTest() {
         this.test(() -> {
             Document document = PdfHandler.getDocumentHandler().create();
-            document.setFontName("微软雅黑");
+            document.setFontName("宋体");
             document.setMargin(20F);
             
             Page page = new Page(document);
             
             PageHeader pageHeader = new PageHeader(document.getCurrentPage());
-            
+
             Textarea headerText = new Textarea(pageHeader.getPage());
             headerText.setText("x-easypdf是一个简单易用的框架");
-            
+
             Barcode headerBarcode = new Barcode(pageHeader.getPage());
             headerBarcode.setCodeType(BarcodeType.QR_CODE);
             headerBarcode.setContent("https://baike.baidu.com/item/%E8%B4%B5%E9%98%B3%E5%B8%82/6085276?fr=ge_ala");
@@ -87,23 +87,23 @@ public class HelloWorldTest extends BaseTest {
             headerBarcode.setWordsOffsetY(10);
             headerBarcode.setIsShowWords(true);
             headerBarcode.setContentMode(ContentMode.APPEND);
-            
+
             pageHeader.setHeight(60F);
             pageHeader.setComponents(headerText, headerBarcode);
             pageHeader.render();
-            
+
             PageFooter pageFooter = new PageFooter(document.getCurrentPage());
-            
+
             Textarea footerText = new Textarea(pageFooter.getPage());
             footerText.setText("第 " + footerText.getPlaceholder() + " 页，共 2 页");
             footerText.setHorizontalAlignment(HorizontalAlignment.CENTER);
             footerText.setVerticalAlignment(VerticalAlignment.CENTER);
-            
+
             pageFooter.setHeight(20F);
             pageFooter.setComponents(footerText);
             pageFooter.setBackgroundColor(Color.LIGHT_GRAY);
             pageFooter.render();
-            
+
             Textarea title = new Textarea(document.getCurrentPage());
             title.setText("贵阳市简介");
             title.setHorizontalAlignment(HorizontalAlignment.CENTER);
@@ -121,7 +121,7 @@ public class HelloWorldTest extends BaseTest {
             text.setIsWrap(true);
             text.setMarginTop(12F);
             text.render();
-            
+
             Image image = new Image(document.getCurrentPage());
             image.setImage(new File("E:\\PDF\\pdfbox\\image\\jiaxiulou.jpg"));
             image.setMarginTop(12F);
@@ -129,20 +129,20 @@ public class HelloWorldTest extends BaseTest {
             image.setIsWrap(true);
             image.setHorizontalAlignment(HorizontalAlignment.CENTER);
             image.render();
-            
+
             text = new Textarea(document.getCurrentPage());
             text.setText("\t\t贵阳市是贵州省的政治、经济、文化、科教、交通中心，西南地区重要的交通和通信枢纽、工业基地及商贸旅游服务中心。是国家大数据产业发展集聚区，国家大数据综合试验区核心区。贵阳是首个国家森林城市、国家循环经济试点城市、中国综合性铁路枢纽、中国避暑之都，曾登“中国十大避暑旅游城市”榜首。");
             text.setIsWrap(true);
             text.setMarginTop(24F);
             text.render();
-            
+
             text = new Textarea(document.getCurrentPage());
             text.setText("贵阳市行政区划");
             text.setHorizontalAlignment(HorizontalAlignment.CENTER);
             text.setIsBreak(true);
             text.setMarginTop(20F);
             text.render();
-            
+
             java.util.List<Content> contentList = new ArrayList<>();
             contentList.add(new Content("名称", "区划代码", "人口（万人）", "面积（平方千米）"));
             contentList.add(new Content("贵阳市", "520100", "599", "8035"));
@@ -193,7 +193,7 @@ public class HelloWorldTest extends BaseTest {
                 index++;
             }
             table.render();
-            
+
             text = new Textarea(document.getCurrentPage());
             text.setText("-- 摘自百度百科");
             text.setHorizontalAlignment(HorizontalAlignment.RIGHT);

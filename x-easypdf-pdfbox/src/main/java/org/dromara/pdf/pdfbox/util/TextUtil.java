@@ -1,7 +1,6 @@
 package org.dromara.pdf.pdfbox.util;
 
 import lombok.SneakyThrows;
-import org.apache.pdfbox.contentstream.operator.OperatorName;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.dromara.pdf.pdfbox.core.base.Context;
@@ -176,38 +175,33 @@ public class TextUtil {
         char[] charArray = text.toCharArray();
         // 遍历字符数组
         for (char c : charArray) {
-            // 空格字符
-            if (c == ' ') {
-                width = width + blankSpaceWidth;
-            } else {
-                // 获取字符串
-                str = String.valueOf(c);
-                try {
-                    // 计算文本宽度
-                    width = width + font.getStringWidth(str);
-                } catch (Exception e) {
-                    // 定义异常标识
-                    boolean flag = true;
-                    // 特殊字体名称不为空
-                    if (Objects.nonNull(specialFontNames)) {
-                        // 遍历特殊字体
-                        for (String specialFontName : specialFontNames) {
-                            try {
-                                // 再次计算文本宽度
-                                width = width + context.getFont(specialFontName).getStringWidth(str);
-                                // 重置异常标识
-                                flag = false;
-                                // 结束
-                                break;
-                            } catch (Exception ignore) {
-                                // ignore
-                            }
+            // 获取字符串
+            str = String.valueOf(c);
+            try {
+                // 计算文本宽度
+                width = width + font.getStringWidth(str);
+            } catch (Exception e) {
+                // 定义异常标识
+                boolean flag = true;
+                // 特殊字体名称不为空
+                if (Objects.nonNull(specialFontNames)) {
+                    // 遍历特殊字体
+                    for (String specialFontName : specialFontNames) {
+                        try {
+                            // 再次计算文本宽度
+                            width = width + context.getFont(specialFontName).getStringWidth(str);
+                            // 重置异常标识
+                            flag = false;
+                            // 结束
+                            break;
+                        } catch (Exception ignore) {
+                            // ignore
                         }
                     }
-                    // 提示异常
-                    if (flag) {
-                        throw new IllegalArgumentException(e);
-                    }
+                }
+                // 提示异常
+                if (flag) {
+                    throw new IllegalArgumentException(e);
                 }
             }
         }

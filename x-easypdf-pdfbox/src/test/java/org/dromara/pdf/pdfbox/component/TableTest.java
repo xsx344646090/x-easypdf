@@ -186,7 +186,8 @@ public class TableTest extends BaseTest {
             Textarea row3cell3Textarea = new Textarea(table.getPage());
             StringBuilder builder = new StringBuilder();
             for (int i = 0; i < 10; i++) {
-                builder.append("测试测试").append(i);
+                builder.append("te st").append(i);
+                builder.append("中文 测试").append(i);
             }
             row3cell3Textarea.setText(builder.toString());
             row3cell3Textarea.setHorizontalAlignment(HorizontalAlignment.CENTER);
