@@ -41,7 +41,7 @@ import java.util.*;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class TableCell extends BorderData {
-    
+
     /**
      * 背景颜色
      */
@@ -83,6 +83,22 @@ public class TableCell extends BorderData {
      */
     protected Boolean isPagingBorder;
     /**
+     * 内容上边距
+     */
+    protected Float contentMarginTop;
+    /**
+     * 内容下边距
+     */
+    protected Float contentMarginBottom;
+    /**
+     * 内容左边距
+     */
+    protected Float contentMarginLeft;
+    /**
+     * 内容右边距
+     */
+    protected Float contentMarginRight;
+    /**
      * 内容水平对齐方式
      */
     protected HorizontalAlignment contentHorizontalAlignment;
@@ -90,7 +106,7 @@ public class TableCell extends BorderData {
      * 内容垂直对齐方式
      */
     protected VerticalAlignment contentVerticalAlignment;
-    
+
     /**
      * 有参构造
      *
@@ -99,6 +115,18 @@ public class TableCell extends BorderData {
     public TableCell(TableRow row) {
         this.row = row;
         this.borderConfiguration = new BorderConfiguration(false);
+    }
+
+    /**
+     * 设置内容边距（上下左右）
+     *
+     * @param margin 边距
+     */
+    public void setContentMargin(float margin) {
+        this.contentMarginTop = margin;
+        this.contentMarginBottom = margin;
+        this.contentMarginLeft = margin;
+        this.contentMarginRight = margin;
     }
 
     /**
@@ -244,7 +272,7 @@ public class TableCell extends BorderData {
     public void setIsBorderRight(boolean flag) {
         this.borderConfiguration.setIsBorderRight(flag);
     }
-    
+
     /**
      * 设置组件
      *
@@ -254,7 +282,7 @@ public class TableCell extends BorderData {
     public void setComponents(List<Component> components) {
         this.components = components;
     }
-    
+
     /**
      * 设置
      *
@@ -267,7 +295,7 @@ public class TableCell extends BorderData {
             this.components = null;
         }
     }
-    
+
     /**
      * 添加组件
      *
@@ -282,7 +310,7 @@ public class TableCell extends BorderData {
             }
         }
     }
-    
+
     /**
      * 添加组件
      *
@@ -296,7 +324,7 @@ public class TableCell extends BorderData {
             Collections.addAll(this.components, components);
         }
     }
-    
+
     /**
      * 获取宽度
      *
@@ -322,7 +350,7 @@ public class TableCell extends BorderData {
         // 返回总宽度
         return total;
     }
-    
+
     /**
      * 获取高度
      *
@@ -349,7 +377,7 @@ public class TableCell extends BorderData {
         // 返回总高度
         return total;
     }
-    
+
     /**
      * 获取跨行数
      *
@@ -358,7 +386,7 @@ public class TableCell extends BorderData {
     public Integer getRowspan() {
         return Optional.ofNullable(this.rowspan).orElse(0);
     }
-    
+
     /**
      * 获取跨列数
      *
@@ -367,7 +395,7 @@ public class TableCell extends BorderData {
     public Integer getColspan() {
         return Optional.ofNullable(this.colspan).orElse(0);
     }
-    
+
     /**
      * 获取页面
      *
@@ -376,21 +404,21 @@ public class TableCell extends BorderData {
     public Page getPage() {
         return this.row.getPage();
     }
-    
+
     /**
      * 虚拟渲染
      */
     public void virtualRender(Float beginX, Float beginY) {
         this.processRender(beginX, beginY, false);
     }
-    
+
     /**
      * 渲染
      */
     public void render(Float beginX, Float beginY) {
         this.processRender(beginX, beginY, true);
     }
-    
+
     /**
      * 获取分页事件
      *
@@ -399,7 +427,7 @@ public class TableCell extends BorderData {
     protected PagingEvent getPagingEvent() {
         return this.row.getPagingEvent();
     }
-    
+
     /**
      * 初始化
      *
@@ -414,6 +442,22 @@ public class TableCell extends BorderData {
         }
         if (Objects.isNull(this.backgroundColor)) {
             this.backgroundColor = this.row.getBackgroundColor();
+        }
+        // 初始化内容上边距
+        if (Objects.isNull(this.contentMarginTop)) {
+            this.contentMarginTop = this.row.getContentMarginTop();
+        }
+        // 初始化内容下边距
+        if (Objects.isNull(this.contentMarginBottom)) {
+            this.contentMarginBottom = this.row.getContentMarginBottom();
+        }
+        // 初始化内容左边距
+        if (Objects.isNull(this.contentMarginLeft)) {
+            this.contentMarginLeft = this.row.getContentMarginLeft();
+        }
+        // 初始化内容右边距
+        if (Objects.isNull(this.contentMarginRight)) {
+            this.contentMarginRight = this.row.getContentMarginRight();
         }
         if (Objects.isNull(this.contentHorizontalAlignment)) {
             this.contentHorizontalAlignment = this.row.getContentHorizontalAlignment();
@@ -438,7 +482,7 @@ public class TableCell extends BorderData {
                 )
         );
     }
-    
+
     /**
      * 初始化边框
      */
@@ -448,7 +492,7 @@ public class TableCell extends BorderData {
             this.isPagingBorder = this.row.getIsPagingBorder();
         }
     }
-    
+
     /**
      * 处理渲染
      *
@@ -473,6 +517,12 @@ public class TableCell extends BorderData {
         float tempY = this.addBorder(beginX, beginY - borderInfo.getHeight(), borderInfo);
         // 如果有组件
         if (Objects.nonNull(this.getComponents())) {
+            // 获取内容X轴开始坐标
+            float contentBeginX = beginX + this.getContentMarginLeft();
+            // 获取内容Y轴开始坐标
+            float contentBeginY = beginY - this.getContentMarginTop();
+            // 获取内容宽度
+            float contentWidth = this.getWidth() - this.getContentMarginLeft() - this.getContentMarginRight();
             // 设置页面
             context.setPage(page);
             // 设置是否是第一个组件
@@ -480,13 +530,13 @@ public class TableCell extends BorderData {
             // 设置高度
             context.setHeight(this.getHeight());
             // 重置光标位置
-            context.getCursor().reset(beginX, beginY);
+            context.getCursor().reset(contentBeginX, contentBeginY);
             // 遍历组件
             for (Component component : this.getComponents()) {
                 // 设置换行X轴起始坐标
-                context.setWrapBeginX(beginX);
+                context.setWrapBeginX(contentBeginX);
                 // 设置换行宽度
-                context.setWrapWidth(this.getWidth());
+                context.setWrapWidth(contentWidth);
                 // 设置水平对齐方式
                 component.setHorizontalAlignment(this.getContentHorizontalAlignment());
                 // 设置垂直对齐方式
@@ -504,7 +554,7 @@ public class TableCell extends BorderData {
         // 重置光标位置
         context.resetCursor(beginX + this.getWidth(), tempY);
     }
-    
+
     /**
      * 添加边框
      *

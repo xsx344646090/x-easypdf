@@ -38,7 +38,7 @@ import java.util.Objects;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class TableRow extends BorderData {
-    
+
     /**
      * 背景颜色
      */
@@ -92,6 +92,22 @@ public class TableRow extends BorderData {
      */
     protected Boolean isPagingBorder;
     /**
+     * 内容上边距
+     */
+    protected Float contentMarginTop;
+    /**
+     * 内容下边距
+     */
+    protected Float contentMarginBottom;
+    /**
+     * 内容左边距
+     */
+    protected Float contentMarginLeft;
+    /**
+     * 内容右边距
+     */
+    protected Float contentMarginRight;
+    /**
      * 内容水平对齐方式
      */
     protected HorizontalAlignment contentHorizontalAlignment;
@@ -99,7 +115,7 @@ public class TableRow extends BorderData {
      * 内容垂直对齐方式
      */
     protected VerticalAlignment contentVerticalAlignment;
-    
+
     /**
      * 有参构造
      *
@@ -109,7 +125,19 @@ public class TableRow extends BorderData {
         this.table = table;
         this.borderConfiguration = new BorderConfiguration(false);
     }
-    
+
+    /**
+     * 设置内容边距（上下左右）
+     *
+     * @param margin 边距
+     */
+    public void setContentMargin(float margin) {
+        this.contentMarginTop = margin;
+        this.contentMarginBottom = margin;
+        this.contentMarginLeft = margin;
+        this.contentMarginRight = margin;
+    }
+
     /**
      * 设置高度
      *
@@ -265,7 +293,7 @@ public class TableRow extends BorderData {
     public void setIsBorderRight(boolean flag) {
         this.borderConfiguration.setIsBorderRight(flag);
     }
-    
+
     /**
      * 设置单元格
      *
@@ -275,7 +303,7 @@ public class TableRow extends BorderData {
     public void setCells(List<TableCell> cells) {
         this.cells = cells;
     }
-    
+
     /**
      * 设置单元格
      *
@@ -289,7 +317,7 @@ public class TableRow extends BorderData {
             this.cells = null;
         }
     }
-    
+
     /**
      * 添加单元格
      *
@@ -304,7 +332,7 @@ public class TableRow extends BorderData {
             }
         }
     }
-    
+
     /**
      * 添加单元格
      *
@@ -318,7 +346,7 @@ public class TableRow extends BorderData {
             Collections.addAll(this.cells, cells);
         }
     }
-    
+
     /**
      * 获取宽度
      *
@@ -330,7 +358,7 @@ public class TableRow extends BorderData {
         }
         return (float) this.cells.stream().mapToDouble(TableCell::getWidth).sum();
     }
-    
+
     /**
      * 虚拟渲染
      */
@@ -357,7 +385,7 @@ public class TableRow extends BorderData {
             }
         }
     }
-    
+
     /**
      * 渲染
      */
@@ -384,7 +412,7 @@ public class TableRow extends BorderData {
             }
         }
     }
-    
+
     /**
      * 获取分页事件
      *
@@ -393,7 +421,7 @@ public class TableRow extends BorderData {
     protected PagingEvent getPagingEvent() {
         return this.table.getPagingEvent();
     }
-    
+
     /**
      * 初始化
      *
@@ -415,6 +443,22 @@ public class TableRow extends BorderData {
         if (Objects.isNull(this.isTogether)) {
             this.isTogether = this.table.getIsTogether();
         }
+        // 初始化内容上边距
+        if (Objects.isNull(this.contentMarginTop)) {
+            this.contentMarginTop = this.table.getContentMarginTop();
+        }
+        // 初始化内容下边距
+        if (Objects.isNull(this.contentMarginBottom)) {
+            this.contentMarginBottom = this.table.getContentMarginBottom();
+        }
+        // 初始化内容左边距
+        if (Objects.isNull(this.contentMarginLeft)) {
+            this.contentMarginLeft = this.table.getContentMarginLeft();
+        }
+        // 初始化内容右边距
+        if (Objects.isNull(this.contentMarginRight)) {
+            this.contentMarginRight = this.table.getContentMarginRight();
+        }
         if (Objects.isNull(this.contentHorizontalAlignment)) {
             this.contentHorizontalAlignment = this.table.getContentHorizontalAlignment();
         }
@@ -426,7 +470,7 @@ public class TableRow extends BorderData {
         this.checkTogether();
         this.checkBreak();
     }
-    
+
     /**
      * 初始化边框
      */
@@ -436,7 +480,7 @@ public class TableRow extends BorderData {
             this.isPagingBorder = this.table.getIsPagingBorder();
         }
     }
-    
+
     /**
      * 初始化单元格
      */
@@ -453,7 +497,7 @@ public class TableRow extends BorderData {
             }
         }
     }
-    
+
     /**
      * 检查整体
      */
@@ -462,7 +506,7 @@ public class TableRow extends BorderData {
             this.isBreak = this.beginY - this.height < this.table.getBottom();
         }
     }
-    
+
     /**
      * 检查分页
      */
