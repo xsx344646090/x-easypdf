@@ -184,6 +184,7 @@
         <dependency>
             <groupId>org.freemarker</groupId>
             <artifactId>freemarker</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.thymeleaf</groupId>
@@ -199,6 +200,7 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
