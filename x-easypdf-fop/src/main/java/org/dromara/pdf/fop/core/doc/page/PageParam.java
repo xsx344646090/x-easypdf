@@ -106,6 +106,14 @@ class PageParam {
      * 页脚参数
      */
     private RegionAfterParam regionAfterParam = new RegionAfterParam();
+    /**
+     * 页面初始化页码值
+     */
+    private String initialPageNumber;
+    /**
+     * 强制页面计数
+     */
+    private String forcePageCount;
 
     /**
      * 切换横向

@@ -28,6 +28,14 @@ public class TemplateAttributes {
      */
     public static final String MASTER_REFERENCE = "master-reference";
     /**
+     * 页面初始页码
+     */
+    public static final String INITIAL_PAGE_NUMBER = "initial-page-number";
+    /**
+     * 强制页面计数
+     */
+    public static final String FORCE_PAGE_COUNT = "force-page-count";
+    /**
      * 页面流向
      */
     public static final String FLOW_NAME = "flow-name";
