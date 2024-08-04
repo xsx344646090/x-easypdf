@@ -644,8 +644,10 @@ public class Document extends AbstractBase implements Closeable {
     public void save(OutputStream outputStream) {
         // 参数校验
         Objects.requireNonNull(outputStream, "the output stream can not be null");
+        // 获取页面数
+        int number = this.getTarget().getNumberOfPages();
         // 检查页面
-        if (this.getTarget().getNumberOfPages() == 0) {
+        if (number == 0) {
             log.error("the document has no page, please add a page before saving");
         }
         // 刷新元数据
@@ -656,7 +658,7 @@ public class Document extends AbstractBase implements Closeable {
         // 设置文档版本
         this.getTarget().setVersion(this.getVersion());
         // 保存文档
-        this.getTarget().save(outputStream, new CompressParameters(Integer.MAX_VALUE));
+        this.getTarget().save(outputStream, CompressParameters.DEFAULT_COMPRESSION);
     }
     
     /**
