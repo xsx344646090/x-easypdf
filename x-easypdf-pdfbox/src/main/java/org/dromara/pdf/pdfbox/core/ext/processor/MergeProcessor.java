@@ -7,9 +7,14 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.base.Page;
+import org.dromara.pdf.pdfbox.handler.PdfHandler;
+import org.dromara.pdf.pdfbox.support.Constants;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * 合并处理器
@@ -44,7 +49,7 @@ public class MergeProcessor extends AbstractProcessor {
     /**
      * 合并文档
      *
-     * @param documents  文档列表
+     * @param documents 文档列表
      */
     public void merge(List<Document> documents) {
         this.merge(documents.toArray(new Document[0]));
@@ -53,7 +58,7 @@ public class MergeProcessor extends AbstractProcessor {
     /**
      * 合并文档
      *
-     * @param documents    文档列表
+     * @param documents 文档列表
      */
     public void merge(Document... documents) {
         // 检查参数
@@ -63,6 +68,56 @@ public class MergeProcessor extends AbstractProcessor {
             // 导入页面
             this.importPage(this.getDocument(), document.getTarget());
         }
+    }
+
+    /**
+     * 合并文档
+     *
+     * @param files 文件列表
+     */
+    @SneakyThrows
+    public void merge(File... files) {
+        // 检查参数
+        Objects.requireNonNull(files, "the documents can not be null");
+        // 定义临时文件
+        File temp = new File(Constants.TEMP_FILE_PATH, UUID.randomUUID() + ".pdf");
+        // 定义临时文档列表
+        List<Document> tempDocuments = new ArrayList<>(files.length);
+        // 遍历文件列表
+        for (File file : files) {
+            // 加载文档
+            Document document = PdfHandler.getDocumentHandler().load(file);
+            // 获取pdfbox页面树
+            PDPageTree pageTree = document.getTarget().getPages();
+            // 遍历页面树
+            for (PDPage sourcePage : pageTree) {
+                // 添加页面
+                PDPage importPage = this.getDocument().importPage(sourcePage);
+                // 添加页面资源
+                importPage.setResources(sourcePage.getResources());
+            }
+            // 添加文档
+            tempDocuments.add(document);
+        }
+        // 保存临时文件
+        this.getDocument().save(temp);
+        // 关闭文档
+        this.document.close();
+        // 重置文档
+        this.document = PdfHandler.getDocumentHandler().load(temp);
+        // 关闭临时文档
+        tempDocuments.forEach(Document::close);
+        // 删除临时文件
+        temp.deleteOnExit();
+    }
+
+    /**
+     * 刷新文档
+     *
+     * @return 返回文档
+     */
+    public Document flush() {
+        return this.document;
     }
 
     /**
