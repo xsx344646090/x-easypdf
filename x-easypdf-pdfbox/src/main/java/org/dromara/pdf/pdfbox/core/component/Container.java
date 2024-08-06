@@ -5,7 +5,6 @@ import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.dromara.pdf.pdfbox.core.base.Context;
-import org.dromara.pdf.pdfbox.core.base.DefaultContainerPagingEvent;
 import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.base.PagingEvent;
 import org.dromara.pdf.pdfbox.core.enums.ComponentType;

@@ -1,13 +1,8 @@
-package org.dromara.pdf.pdfbox.core.base;
+package org.dromara.pdf.pdfbox.core.component;
 
 import lombok.EqualsAndHashCode;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.dromara.pdf.pdfbox.core.component.BorderInfo;
-import org.dromara.pdf.pdfbox.core.component.Component;
-import org.dromara.pdf.pdfbox.util.BorderUtil;
+import org.dromara.pdf.pdfbox.core.base.PagingEvent;
 
-import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 /**

@@ -1,8 +1,13 @@
+package org.dromara.pdf.pdfbox.core.ext.comparator;
+
+import org.dromara.pdf.pdfbox.core.base.Document;
+import org.dromara.pdf.pdfbox.core.ext.AbstractExpander;
+
 /**
- * 签名
+ * 抽象比较器
  *
  * @author xsx
- * @date 2024/3/12
+ * @date 2024/8/5
  * @since 1.8
  * <p>
  * Copyright (c) 2020 xsx All Rights Reserved.
@@ -16,4 +21,14 @@
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-package org.dromara.pdf.pdfbox.core.ext.processor.sign;
+public abstract class AbstractComparator extends AbstractExpander {
+    
+    /**
+     * 有参构造
+     *
+     * @param document 文档
+     */
+    public AbstractComparator(Document document) {
+        super(document);
+    }
+}

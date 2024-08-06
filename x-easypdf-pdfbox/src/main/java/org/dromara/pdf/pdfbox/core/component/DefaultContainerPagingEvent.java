@@ -1,10 +1,10 @@
-package org.dromara.pdf.pdfbox.core.base;
+package org.dromara.pdf.pdfbox.core.component;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.dromara.pdf.pdfbox.core.component.BorderInfo;
-import org.dromara.pdf.pdfbox.core.component.Component;
+import org.dromara.pdf.pdfbox.core.base.Context;
+import org.dromara.pdf.pdfbox.core.base.PageHeader;
 import org.dromara.pdf.pdfbox.util.BorderUtil;
 import org.dromara.pdf.pdfbox.util.CommonUtil;
 

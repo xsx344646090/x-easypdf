@@ -1,12 +1,15 @@
-package org.dromara.pdf.pdfbox.core.base;
+package org.dromara.pdf.pdfbox.core.component;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.dromara.pdf.pdfbox.core.base.AbstractBase;
+import org.dromara.pdf.pdfbox.core.base.BorderData;
+import org.dromara.pdf.pdfbox.core.base.Page;
+import org.dromara.pdf.pdfbox.core.base.PagingEvent;
 import org.dromara.pdf.pdfbox.core.base.config.BorderConfiguration;
 import org.dromara.pdf.pdfbox.core.base.config.MarginConfiguration;
-import org.dromara.pdf.pdfbox.core.component.Component;
 import org.dromara.pdf.pdfbox.core.enums.ComponentType;
 import org.dromara.pdf.pdfbox.core.enums.LineCapStyle;
 import org.dromara.pdf.pdfbox.core.enums.LineStyle;

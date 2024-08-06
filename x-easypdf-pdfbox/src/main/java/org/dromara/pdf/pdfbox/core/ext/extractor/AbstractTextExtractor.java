@@ -37,7 +37,7 @@ public abstract class AbstractTextExtractor extends AbstractExtractor {
     /**
      * 表格正则（单行单列）
      */
-    protected static final Pattern TABLE_PATTERN = Pattern.compile("(\\S[^\\n\\r]+)");
+    protected static final Pattern TABLE_PATTERN = Pattern.compile("(\\S[^\\n\\r]+)", Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE);
 
     /**
      * 有参构造
@@ -93,7 +93,7 @@ public abstract class AbstractTextExtractor extends AbstractExtractor {
         // 如果正则表达式有内容，则进行匹配
         if (Objects.nonNull(regex) && !regex.trim().isEmpty()) {
             // 获取正则匹配器
-            Matcher matcher = Pattern.compile(regex).matcher(text);
+            Matcher matcher = Pattern.compile(regex, Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE).matcher(text);
             // 循环匹配
             while (matcher.find()) {
                 // 添加文本

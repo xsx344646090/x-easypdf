@@ -32,6 +32,30 @@ import java.util.Arrays;
  * </p>
  */
 public class TextareaTest extends BaseTest {
+    
+    /**
+     * 特殊字体测试
+     */
+    @Test
+    public void specialFontTest() {
+        this.test(() -> {
+            PdfHandler.getFontHandler().addFont(Paths.get("E:\\PDF\\pdfbox\\textarea\\NotoEmoji-VariableFont_wght.ttf").toFile());
+            
+            Document document = PdfHandler.getDocumentHandler().create();
+            document.setSpecialFontNames("Noto Emoji Regular");
+            
+            Page page = new Page(document);
+            
+            Textarea textarea = new Textarea(page);
+            textarea.setText("第一个页面，包含emoji字符：\uD83E\uDEE0，测试");
+            textarea.setFontSize(20F);
+            textarea.render();
+            
+            document.appendPage(page);
+            document.save("E:\\PDF\\pdfbox\\textarea\\specialFontTest.pdf");
+            document.close();
+        });
+    }
 
     /**
      * 全局配置测试

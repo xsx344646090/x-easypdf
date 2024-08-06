@@ -1,8 +1,15 @@
+package org.dromara.pdf.pdfbox.core.info;
+
+import lombok.Builder;
+import lombok.Data;
+
+import java.awt.image.BufferedImage;
+
 /**
- * 签名
+ * 图像比较信息
  *
  * @author xsx
- * @date 2024/3/12
+ * @date 2024/8/5
  * @since 1.8
  * <p>
  * Copyright (c) 2020 xsx All Rights Reserved.
@@ -16,4 +23,23 @@
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-package org.dromara.pdf.pdfbox.core.ext.processor.sign;
+@Data
+@Builder
+public class ImageCompareInfo {
+    /**
+     * 页面索引
+     */
+    private Integer pageIndex;
+    /**
+     * 图像索引
+     */
+    private Integer imageIndex;
+    /**
+     * 原图像
+     */
+    private BufferedImage content;
+    /**
+     * 对比图像
+     */
+    private BufferedImage compareContent;
+}

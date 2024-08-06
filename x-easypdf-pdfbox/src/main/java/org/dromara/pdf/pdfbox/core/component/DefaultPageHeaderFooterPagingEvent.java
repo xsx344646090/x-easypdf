@@ -1,8 +1,8 @@
-package org.dromara.pdf.pdfbox.core.base;
+package org.dromara.pdf.pdfbox.core.component;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.dromara.pdf.pdfbox.core.component.Component;
+import org.dromara.pdf.pdfbox.core.base.Context;
 import org.dromara.pdf.pdfbox.core.enums.ComponentType;
 
 import java.util.Optional;

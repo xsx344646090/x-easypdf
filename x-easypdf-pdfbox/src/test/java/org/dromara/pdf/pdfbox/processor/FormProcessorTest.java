@@ -6,6 +6,7 @@ import org.dromara.pdf.pdfbox.core.ext.processor.FormProcessor;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.junit.Test;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,12 +39,14 @@ public class FormProcessorTest extends BaseTest {
                     Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\form\\form.pdf")
             ) {
                 FormProcessor processor = new FormProcessor(document);
+                processor.setFont("微软雅黑", 12F, Color.BLACK);
 
                 Map<String, String> map = new HashMap<>(1);
-                map.put("test", "贵阳");
+                map.put("test2", "其他");
                 processor.fillText(map);
+                processor.readOnly();
 
-                document.save("E:\\PDF\\pdfbox\\form\\fillTextTest2.pdf");
+                document.save("E:\\PDF\\pdfbox\\form\\fillTextTest3.pdf");
             }
         });
     }
