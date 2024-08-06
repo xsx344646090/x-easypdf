@@ -19,7 +19,7 @@ package org.dromara.pdf.pdfbox.core.enums;
  * </p>
  */
 public enum ComponentType {
-
+    
     /**
      * 页眉
      */
@@ -68,7 +68,7 @@ public enum ComponentType {
      * 自定义
      */
     CUSTOM;
-
+    
     /**
      * 非页眉或页脚
      *
@@ -76,5 +76,14 @@ public enum ComponentType {
      */
     public boolean isNotPageHeaderOrFooter() {
         return this != PAGE_HEADER && this != PAGE_FOOTER;
+    }
+    
+    /**
+     * 是否表格
+     *
+     * @return 返回布尔值，是为true，否为false
+     */
+    public boolean isTable() {
+        return this == TABLE;
     }
 }

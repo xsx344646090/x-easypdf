@@ -9,10 +9,7 @@ import org.dromara.pdf.pdfbox.core.enums.*;
 
 import java.awt.*;
 import java.io.Closeable;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 抽象组件
@@ -47,7 +44,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     /**
      * 分页事件列表
      */
-    protected Set<PagingEvent> pagingEvents;
+    protected LinkedHashSet<PagingEvent> pagingEvents;
     /**
      * 自定义分页条件
      */
@@ -114,7 +111,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
         this.context.reset(lastPage);
         this.marginConfiguration = new MarginConfiguration();
         this.borderConfiguration = new BorderConfiguration();
-        this.pagingEvents = new HashSet<>();
+        this.pagingEvents = new LinkedHashSet<>();
     }
 
     /**
@@ -569,13 +566,16 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
         // 初始化页眉分页事件
         if (Objects.nonNull(this.getContext().getPageHeader())) {
             if (this.getContext().getExecutingComponentType().isNotPageHeaderOrFooter()) {
-                this.getPagingEvents().add(this.getContext().getPageHeader().getPagingEvent());
+                LinkedHashSet<PagingEvent> events = new LinkedHashSet<>();
+                events.add(this.getContext().getPageHeader().getPagingEvent());
+                events.addAll(this.pagingEvents);
+                this.pagingEvents = events;
             }
         }
         // 初始化页脚分页事件
         if (Objects.nonNull(this.getContext().getPageFooter())) {
             if (this.getContext().getExecutingComponentType().isNotPageHeaderOrFooter()) {
-                this.getPagingEvents().add(this.getContext().getPageFooter().getPagingEvent());
+                this.pagingEvents.add(this.getContext().getPageFooter().getPagingEvent());
             }
         }
         // 初始化水平对齐方式

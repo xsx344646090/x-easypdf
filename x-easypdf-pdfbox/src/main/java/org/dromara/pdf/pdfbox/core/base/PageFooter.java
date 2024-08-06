@@ -1,6 +1,7 @@
 package org.dromara.pdf.pdfbox.core.base;
 
 import lombok.EqualsAndHashCode;
+import org.dromara.pdf.pdfbox.core.component.AbstractPageHeaderOrFooter;
 import org.dromara.pdf.pdfbox.core.enums.ComponentType;
 
 import java.util.Objects;

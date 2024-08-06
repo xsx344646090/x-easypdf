@@ -3,6 +3,7 @@ package org.dromara.pdf.pdfbox.handler;
 
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.ext.analyzer.DocumentAnalyzer;
+import org.dromara.pdf.pdfbox.core.ext.comparator.DocumentComparator;
 import org.dromara.pdf.pdfbox.core.ext.extractor.DocumentExtractor;
 import org.dromara.pdf.pdfbox.core.ext.processor.DocumentProcessor;
 import org.dromara.pdf.pdfbox.support.Constants;
@@ -26,7 +27,7 @@ import org.dromara.pdf.pdfbox.support.Constants;
  * </p>
  */
 public class PdfHandler {
-
+    
     /**
      * 获取字体助手
      *
@@ -35,7 +36,7 @@ public class PdfHandler {
     public static FontHandler getFontHandler() {
         return FontHandler.getInstance();
     }
-
+    
     /**
      * 获取文档助手
      *
@@ -44,7 +45,7 @@ public class PdfHandler {
     public static DocumentHandler getDocumentHandler() {
         return DocumentHandler.getInstance();
     }
-
+    
     /**
      * 获取文档处理器
      *
@@ -54,7 +55,7 @@ public class PdfHandler {
     public static DocumentProcessor getDocumentProcessor(Document document) {
         return new DocumentProcessor(document);
     }
-
+    
     /**
      * 获取文档分析器
      *
@@ -64,7 +65,7 @@ public class PdfHandler {
     public static DocumentAnalyzer getDocumentAnalyzer(Document document) {
         return new DocumentAnalyzer(document);
     }
-
+    
     /**
      * 获取文档提取器
      *
@@ -73,6 +74,16 @@ public class PdfHandler {
      */
     public static DocumentExtractor getDocumentExtractor(Document document) {
         return new DocumentExtractor(document);
+    }
+    
+    /**
+     * 获取文档比较器
+     *
+     * @param document 文档
+     * @return 返回文档比较器
+     */
+    public static DocumentComparator getDocumentComparator(Document document) {
+        return new DocumentComparator(document);
     }
     
     /**

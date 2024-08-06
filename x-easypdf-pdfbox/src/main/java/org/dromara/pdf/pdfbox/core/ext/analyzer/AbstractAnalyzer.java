@@ -31,4 +31,11 @@ public abstract class AbstractAnalyzer extends AbstractExpander {
     public AbstractAnalyzer(Document document) {
         super(document);
     }
+    
+    /**
+     * 无参构造
+     */
+    protected AbstractAnalyzer() {
+    
+    }
 }

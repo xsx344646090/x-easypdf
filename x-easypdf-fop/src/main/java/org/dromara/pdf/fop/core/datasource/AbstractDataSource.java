@@ -72,6 +72,8 @@ abstract class AbstractDataSource implements DataSource {
      * @return 返回模板输入流
      */
     protected abstract InputStream processTemplate();
+    
+    
 
     /**
      * 获取输入流
@@ -85,12 +87,21 @@ abstract class AbstractDataSource implements DataSource {
     }
 
     /**
+     * 模板数据是否非空
+     *
+     * @return 返回布尔值，是为true，否为false
+     */
+    protected boolean isNotEmptyTemplateData() {
+        return this.templateData != null && !this.templateData.isEmpty();
+    }
+    
+    /**
      * 加载模板输入流
      *
      * @return 返回模板输入流
      */
     @SneakyThrows
-    private InputStream loadTemplateInputStream() {
+    protected InputStream loadTemplateInputStream() {
         try {
             // 从资源路径加载模板
             InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(this.templatePath);
@@ -100,14 +111,5 @@ abstract class AbstractDataSource implements DataSource {
             // 提示错误信息
             throw new IllegalArgumentException("the template can not be loaded，the path['" + this.templatePath + "'] is error");
         }
-    }
-
-    /**
-     * 模板数据是否非空
-     *
-     * @return 返回布尔值，是为true，否为false
-     */
-    private boolean isNotEmptyTemplateData() {
-        return this.templateData != null && !this.templateData.isEmpty();
     }
 }

@@ -205,9 +205,9 @@ public class HelloWorldTest extends BaseTest {
             
             document.appendPage(page);
             
-            TextareaWatermark watermark = new TextareaWatermark(document);
-            watermark.setTexts("水印");
-            watermark.render(document);
+            // TextareaWatermark watermark = new TextareaWatermark(document);
+            // watermark.setTexts("水印");
+            // watermark.render(document);
             
             document.save("E:\\PDF\\pdfbox\\allTest.pdf");
             document.close();

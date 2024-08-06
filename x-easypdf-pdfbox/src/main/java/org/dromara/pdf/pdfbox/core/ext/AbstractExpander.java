@@ -43,6 +43,13 @@ public abstract class AbstractExpander {
     public AbstractExpander(Document document) {
         this.document = document;
     }
+    
+    /**
+     * 无参构造
+     */
+    protected AbstractExpander() {
+    
+    }
 
     /**
      * 获取pdfbox文档

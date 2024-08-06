@@ -26,7 +26,7 @@ import java.util.*;
  * </p>
  */
 public class TextUtil {
-
+    
     /**
      * 拆分文本（单行）
      *
@@ -76,7 +76,7 @@ public class TextUtil {
         }
         return text;
     }
-
+    
     /**
      * 拆分文本段落（换行）
      *
@@ -142,7 +142,7 @@ public class TextUtil {
         }
         return lineList;
     }
-
+    
     /**
      * 获取文本真实宽度
      *
@@ -165,18 +165,18 @@ public class TextUtil {
         if (Objects.isNull(text)) {
             return 0F;
         }
-        // 定义空格宽度
-        final float blankSpaceWidth = 500F;
         // 定义文本宽度
         float width = 0F;
         // 定义临时字符串
         String str;
-        // 获取文本字符数组
-        char[] charArray = text.toCharArray();
-        // 遍历字符数组
-        for (char c : charArray) {
+        // 获取文本字符迭代器
+        Iterator<Character> iterator = CommonUtil.toCharacterList(text.toCharArray()).iterator();
+        // 遍历文本
+        while (iterator.hasNext()) {
+            // 获取字符
+            Character character = iterator.next();
             // 获取字符串
-            str = String.valueOf(c);
+            str = String.valueOf(character);
             try {
                 // 计算文本宽度
                 width = width + font.getStringWidth(str);
@@ -198,6 +198,31 @@ public class TextUtil {
                             // ignore
                         }
                     }
+                    // 未解析成功
+                    if (flag) {
+                        // 有下一个字符
+                        if (iterator.hasNext()) {
+                            // 获取下一个字符
+                            Character next = iterator.next();
+                            // 拼接字符串
+                            char[] array = new char[]{character, next};
+                            // 重置字符串
+                            str = String.valueOf(array);
+                            // 遍历特殊字体
+                            for (String specialFontName : specialFontNames) {
+                                try {
+                                    // 再次计算文本宽度
+                                    width = width + context.getFont(specialFontName).getStringWidth(str);
+                                    // 重置异常标识
+                                    flag = false;
+                                    // 结束
+                                    break;
+                                } catch (Exception ignore) {
+                                    // ignore
+                                }
+                            }
+                        }
+                    }
                 }
                 // 提示异常
                 if (flag) {
@@ -208,7 +233,7 @@ public class TextUtil {
         // 返回真实文本宽度
         return width == 0F ? 0F : fontSize * width / 1000 + (text.length() - 1) * characterSpacing;
     }
-
+    
     /**
      * 获取文本真实高度
      *
@@ -227,7 +252,7 @@ public class TextUtil {
         int leadingCount = rowCount - 1;
         return (rowCount * fontSize) + (leadingCount * leading);
     }
-
+    
     /**
      * 转义正则字符
      *
@@ -263,7 +288,7 @@ public class TextUtil {
         }
         return builder.toString();
     }
-
+    
     /**
      * 过滤特殊字符
      *
@@ -274,7 +299,7 @@ public class TextUtil {
         // 替换特殊字符为空串
         return text.replaceAll("[\r\b\f]", "");
     }
-
+    
     /**
      * 替换全部
      *
@@ -305,7 +330,7 @@ public class TextUtil {
         // 返回替换后文本
         return temp;
     }
-
+    
     /**
      * 空白
      *
@@ -315,7 +340,7 @@ public class TextUtil {
     public static boolean isBlank(String text) {
         return !isNotBlank(text);
     }
-
+    
     /**
      * 非空白
      *
@@ -325,7 +350,7 @@ public class TextUtil {
     public static boolean isNotBlank(String text) {
         return Objects.nonNull(text) && !text.trim().isEmpty();
     }
-
+    
     /**
      * 空格
      *
@@ -339,7 +364,7 @@ public class TextUtil {
         }
         return builder.toString();
     }
-
+    
     /**
      * 替换制表符
      *
@@ -370,7 +395,7 @@ public class TextUtil {
         // 返回文本
         return builder.append(temp).toString();
     }
-
+    
     /**
      * 写入文本
      *
@@ -394,10 +419,12 @@ public class TextUtil {
         boolean flag = false;
         // 定义异常
         Exception exception = null;
-        // 获取字符数组
-        char[] charArray = text.toCharArray();
+        // 获取文本迭代器
+        Iterator<Character> iterator = CommonUtil.toCharacterList(text.toCharArray()).iterator();
         // 遍历文本
-        for (char character : charArray) {
+        while (iterator.hasNext()) {
+            // 获取字符
+            Character character = iterator.next();
             try {
                 // 写入文本
                 contentStream.showCharacter(character);
@@ -423,6 +450,36 @@ public class TextUtil {
                             break;
                         } catch (Exception ignore) {
                             // ignore
+                        }
+                    }
+                }
+                // 未解析成功
+                if (flag) {
+                    // 还有下一个字符
+                    if (iterator.hasNext()) {
+                        // 获取下一个字符
+                        Character next = iterator.next();
+                        // 获取字符数组
+                        char[] array = new char[]{character, next};
+                        // 特殊字体不为空
+                        if (Objects.nonNull(specialFontNames)) {
+                            // 遍历特殊字体
+                            for (String specialFontName : specialFontNames) {
+                                try {
+                                    // 设置字体
+                                    contentStream.setFont(context.getFont(specialFontName), fontSize);
+                                    // 写入文本
+                                    contentStream.showText(String.valueOf(array));
+                                    // 重置字体
+                                    contentStream.setFont(font, fontSize);
+                                    // 重置标记
+                                    flag = false;
+                                    // 跳出循环
+                                    break;
+                                } catch (Exception ignore) {
+                                    // ignore
+                                }
+                            }
                         }
                     }
                 }

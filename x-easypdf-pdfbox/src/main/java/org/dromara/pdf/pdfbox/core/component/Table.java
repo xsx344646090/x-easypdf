@@ -2,7 +2,6 @@ package org.dromara.pdf.pdfbox.core.component;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.dromara.pdf.pdfbox.core.base.DefaultContainerPagingEvent;
 import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.base.PagingEvent;
 import org.dromara.pdf.pdfbox.core.enums.ComponentType;
@@ -35,15 +34,23 @@ import java.util.*;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class Table extends AbstractComponent {
-
+    
     /**
      * 背景颜色
      */
     protected Color backgroundColor;
     /**
+     * 表头
+     */
+    protected TableHeader header;
+    /**
      * 行列表
      */
     protected List<TableRow> rows;
+    /**
+     * 表尾
+     */
+    protected TableFooter footer;
     /**
      * 单元格宽度
      */
@@ -84,7 +91,7 @@ public class Table extends AbstractComponent {
      * 内容垂直对齐方式
      */
     protected VerticalAlignment contentVerticalAlignment;
-
+    
     /**
      * 有参构造
      *
@@ -93,7 +100,7 @@ public class Table extends AbstractComponent {
     public Table(Page page) {
         super(page);
     }
-
+    
     /**
      * 设置内容边距（上下左右）
      *
@@ -105,7 +112,7 @@ public class Table extends AbstractComponent {
         this.contentMarginLeft = margin;
         this.contentMarginRight = margin;
     }
-
+    
     /**
      * 设置列宽
      *
@@ -127,7 +134,7 @@ public class Table extends AbstractComponent {
             this.cellWidths = null;
         }
     }
-
+    
     /**
      * 设置列宽
      *
@@ -140,7 +147,7 @@ public class Table extends AbstractComponent {
             this.cellWidths = null;
         }
     }
-
+    
     /**
      * 设置行
      *
@@ -150,7 +157,7 @@ public class Table extends AbstractComponent {
     public void setRows(List<TableRow> rows) {
         this.rows = rows;
     }
-
+    
     /**
      * 设置行
      *
@@ -164,7 +171,7 @@ public class Table extends AbstractComponent {
             this.rows = null;
         }
     }
-
+    
     /**
      * 添加行
      *
@@ -179,7 +186,7 @@ public class Table extends AbstractComponent {
             }
         }
     }
-
+    
     /**
      * 添加行
      *
@@ -193,7 +200,7 @@ public class Table extends AbstractComponent {
             Collections.addAll(this.rows, rows);
         }
     }
-
+    
     /**
      * 获取宽度
      *
@@ -205,7 +212,7 @@ public class Table extends AbstractComponent {
         }
         return (float) this.cellWidths.stream().mapToDouble(Float::doubleValue).sum();
     }
-
+    
     /**
      * 获取高度
      *
@@ -217,7 +224,7 @@ public class Table extends AbstractComponent {
         }
         return (float) this.rows.stream().mapToDouble(TableRow::getHeight).sum();
     }
-
+    
     /**
      * 获取类型
      *
@@ -227,7 +234,7 @@ public class Table extends AbstractComponent {
     public ComponentType getType() {
         return ComponentType.TABLE;
     }
-
+    
     /**
      * 初始化
      */
@@ -275,6 +282,8 @@ public class Table extends AbstractComponent {
         if (Objects.isNull(this.contentVerticalAlignment)) {
             this.contentVerticalAlignment = VerticalAlignment.TOP;
         }
+        // 添加表格分页事件
+        this.pagingEvents.add(new DefaultTablePagingEvent());
         // 初始化表格行
         this.initRows();
         // 检查换行
@@ -289,7 +298,7 @@ public class Table extends AbstractComponent {
         // 初始化起始Y轴坐标
         this.initBeginY(this.getHeight());
     }
-
+    
     /**
      * 初始化行
      */
@@ -315,7 +324,7 @@ public class Table extends AbstractComponent {
             }
         }
     }
-
+    
     /**
      * 获取最小宽度
      *
@@ -325,24 +334,32 @@ public class Table extends AbstractComponent {
     protected float getMinWidth() {
         return this.getWidth();
     }
-
+    
     /**
      * 写入内容
      */
     @Override
     protected void writeContents() {
-        // 获取起始X坐标
+        // 获取起始X轴坐标
         float beginX = this.getBeginX() + this.getRelativeBeginX();
-        // 获取起始Y坐标
+        // 获取起始Y轴坐标
         float beginY = this.getBeginY() + this.getRelativeBeginY();
+        // 获取页
+        Page page = this.getPage();
+        // 获取页面顶部坐标
+        float top = this.getContext().getMaxBeginY();
+        // 获取底部坐标
+        float bottom = this.getBottom() - this.getMarginBottom();
+        // 表头非空
+        if (Objects.nonNull(this.getHeader())) {
+            // 重置页面顶部坐标
+            top = top - this.getHeader().getHeight();
+            // 渲染表头并重置起始Y轴坐标
+            beginY = this.getHeader().render(page, beginX, beginY);
+        }
+        // todo 判断表尾
         // 判断是否有行
         if (Objects.nonNull(this.getRows())) {
-            // 获取页
-            Page page = this.getPage();
-            // 获取页顶部坐标
-            float top = this.getContext().getMaxBeginY();
-            // 获取底部坐标
-            float bottom = this.getBottom() - this.getMarginBottom();
             // 遍历行
             for (TableRow tableRow : this.getRows()) {
                 // 判断是否为虚拟渲染
@@ -380,7 +397,7 @@ public class Table extends AbstractComponent {
         // 重置
         this.reset(beginX, beginY);
     }
-
+    
     /**
      * 执行分页
      */
@@ -407,16 +424,19 @@ public class Table extends AbstractComponent {
         // 返回分页结果
         return page;
     }
-
+    
     /**
      * 获取第一行行高
      *
      * @return 返回高度
      */
     protected float getFirstRowHeight() {
+        if (Objects.nonNull(this.header)) {
+            return this.header.getHeight();
+        }
         return Optional.ofNullable(this.rows).map(rows -> rows.get(0).getHeight()).orElse(0F);
     }
-
+    
     /**
      * 获取最终高度
      *
@@ -439,7 +459,7 @@ public class Table extends AbstractComponent {
         // 递归
         return this.getLastHeight(beginY, height, top, bottom);
     }
-
+    
     /**
      * 重置
      */
@@ -448,7 +468,7 @@ public class Table extends AbstractComponent {
         this.getContext().resetWrapWidth(null);
         this.getContext().resetHeight(null);
     }
-
+    
     /**
      * 重置
      *

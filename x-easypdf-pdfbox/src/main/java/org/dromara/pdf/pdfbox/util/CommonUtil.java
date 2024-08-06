@@ -2,6 +2,7 @@ package org.dromara.pdf.pdfbox.util;
 
 import lombok.SneakyThrows;
 import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
@@ -16,6 +17,7 @@ import org.dromara.pdf.pdfbox.core.enums.FontStyle;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -28,7 +30,7 @@ import java.util.Objects;
  * @since 1.8
  * <p>
  * Copyright (c) 2020-2024 xsx All Rights Reserved.
- * x-easypdf is licensed under Mulan PSL v2.
+ * x-easypdf-pdfbox is licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  * http://license.coscl.org.cn/MulanPSL2
@@ -39,7 +41,7 @@ import java.util.Objects;
  * </p>
  */
 public class CommonUtil {
-
+    
     /**
      * 初始化字体颜色及透明度
      *
@@ -85,7 +87,7 @@ public class CommonUtil {
             state.setNonStrokingAlphaConstant(fontAlpha);
         }
     }
-
+    
     /**
      * 初始化矩阵
      *
@@ -135,15 +137,28 @@ public class CommonUtil {
         // 移动到左下角
         stream.transform(Matrix.getTranslateInstance(-offsetX, -offsetY));
     }
-
+    
     /**
      * 提取图像
      *
-     * @param imageList 待接收图像列表
+     * @param page 页面
+     * @return 返回图像列表
+     */
+    @SneakyThrows
+    public static List<BufferedImage> extractImage(PDPage page) {
+        List<BufferedImage> data = new ArrayList<>(16);
+        CommonUtil.extractImage(data, page.getResources());
+        return data;
+    }
+    
+    /**
+     * 提取图像
+     *
+     * @param list      待接收图片列表
      * @param resources 页面资源
      */
     @SneakyThrows
-    public static void extractImage(List<BufferedImage> imageList, PDResources resources) {
+    public static void extractImage(List<BufferedImage> list, PDResources resources) {
         // 获取页面资源内容名称
         Iterable<COSName> objectNames = resources.getXObjectNames();
         // 遍历资源内容名称
@@ -153,14 +168,14 @@ public class CommonUtil {
             // 如果资源内容为图片，则添加到待接收图片列表
             if (xObject instanceof PDImage) {
                 // 添加到待接收图片列表
-                imageList.add(((PDImage) xObject).getImage());
+                list.add(((PDImage) xObject).getImage());
             } else if (xObject instanceof PDFormXObject) {
                 // 提取图像
-                extractImage(imageList, ((PDFormXObject) xObject).getResources());
+                extractImage(list, ((PDFormXObject) xObject).getResources());
             }
         }
     }
-
+    
     /**
      * 添加背景颜色
      *
@@ -192,7 +207,7 @@ public class CommonUtil {
             stream.close();
         }
     }
-
+    
     /**
      * 获取行尺寸
      *
@@ -214,7 +229,7 @@ public class CommonUtil {
         // 返回尺寸
         return rectangle;
     }
-
+    
     /**
      * 转基本整型数组
      *
@@ -224,7 +239,7 @@ public class CommonUtil {
     public static int[] toIntArray(List<Integer> list) {
         return list.stream().mapToInt(Integer::intValue).toArray();
     }
-
+    
     /**
      * 转基本浮点型数组
      *
@@ -238,7 +253,7 @@ public class CommonUtil {
         }
         return array;
     }
-
+    
     /**
      * 转基本双精度浮点型数组
      *
@@ -247,5 +262,19 @@ public class CommonUtil {
      */
     public static double[] toDoubleArray(List<Double> list) {
         return list.stream().mapToDouble(Double::doubleValue).toArray();
+    }
+    
+    /**
+     * 转字符型列表
+     *
+     * @param array 数组
+     * @return 返回列表
+     */
+    public static List<Character> toCharacterList(char[] array) {
+        List<Character> list = new ArrayList<>(array.length);
+        for (char c : array) {
+            list.add(c);
+        }
+        return list;
     }
 }

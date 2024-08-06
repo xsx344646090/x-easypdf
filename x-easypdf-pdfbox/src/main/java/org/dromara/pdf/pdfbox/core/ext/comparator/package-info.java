@@ -1,8 +1,8 @@
 /**
- * 签名
+ * 比较器
  *
  * @author xsx
- * @date 2024/3/12
+ * @date 2024/8/6
  * @since 1.8
  * <p>
  * Copyright (c) 2020 xsx All Rights Reserved.
@@ -16,4 +16,4 @@
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-package org.dromara.pdf.pdfbox.core.ext.processor.sign;
+package org.dromara.pdf.pdfbox.core.ext.comparator;

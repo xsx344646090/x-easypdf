@@ -10,11 +10,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
+ * 默认内容处理器
+ *
  * @author xsx
  * @date 2024/3/13
  * @since 1.8
  * <p>
- * Copyright (c) 2020-2024 xsx All Rights Reserved.
+ * Copyright (c) 2020 xsx All Rights Reserved.
  * x-easypdf-pdfbox is licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:

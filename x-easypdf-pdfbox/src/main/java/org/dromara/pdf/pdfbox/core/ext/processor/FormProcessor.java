@@ -7,6 +7,7 @@ import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.fixup.AcroFormDefaultFixup;
+import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceCharacteristicsDictionary;
@@ -16,9 +17,13 @@ import org.apache.pdfbox.pdmodel.interactive.form.PDPushButton;
 import org.apache.pdfbox.pdmodel.interactive.form.PDTextField;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.enums.ImageType;
+import org.dromara.pdf.pdfbox.handler.PdfHandler;
+import org.dromara.pdf.pdfbox.util.ColorUtil;
 import org.dromara.pdf.pdfbox.util.ImageUtil;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.List;
 import java.util.*;
 
 /**
@@ -42,12 +47,24 @@ import java.util.*;
 @Getter
 @EqualsAndHashCode(callSuper = true)
 public class FormProcessor extends AbstractProcessor {
-
+    
     /**
      * 表单
      */
     protected PDAcroForm form;
-
+    /**
+     * 字体
+     */
+    protected PDFont font;
+    /**
+     * 字体大小
+     */
+    protected Float fontSize;
+    /**
+     * 字体颜色
+     */
+    protected Color fontColor;
+    
     /**
      * 有参构造
      *
@@ -56,7 +73,7 @@ public class FormProcessor extends AbstractProcessor {
     public FormProcessor(Document document) {
         this(document, false, true);
     }
-
+    
     /**
      * 有参构造
      *
@@ -66,7 +83,7 @@ public class FormProcessor extends AbstractProcessor {
         super(document);
         this.form = this.initForm(document.getTarget(), isFixForm, isNeedAppearance);
     }
-
+    
     /**
      * 获取字段
      *
@@ -75,7 +92,25 @@ public class FormProcessor extends AbstractProcessor {
     public List<PDField> getFields() {
         return this.form.getFields();
     }
-
+    
+    /**
+     * 设置字体
+     *
+     * @param fontName  字体名称
+     * @param fontSize  字体大小
+     * @param fontColor 字体颜色
+     */
+    public void setFont(String fontName, float fontSize, Color fontColor) {
+        // 初始化字体
+        this.font = PdfHandler.getFontHandler().getPDFont(this.getDocument(), fontName, true);
+        // 初始化字体大小
+        this.fontSize = fontSize;
+        // 初始化字体颜色
+        this.fontColor = fontColor;
+        // 添加字体
+        this.form.getDefaultResources().put(COSName.getPDFName(this.font.getName()), this.font);
+    }
+    
     /**
      * 替换关键字
      *
@@ -95,7 +130,7 @@ public class FormProcessor extends AbstractProcessor {
         // 重置表单
         this.reset();
     }
-
+    
     /**
      * 移除字段
      *
@@ -126,7 +161,7 @@ public class FormProcessor extends AbstractProcessor {
         // 重置表单
         this.reset();
     }
-
+    
     /**
      * 填写文本
      *
@@ -146,6 +181,11 @@ public class FormProcessor extends AbstractProcessor {
             if (Objects.nonNull(field)) {
                 // 文本字段
                 if (field instanceof PDTextField) {
+                    // 添加外观
+                    if (this.isAddAppearance()) {
+                        // 设置默认外观
+                        ((PDTextField) field).setDefaultAppearance(this.createDefaultAppearance());
+                    }
                     // 设置新值
                     field.setValue(entry.getValue());
                 } else {
@@ -159,8 +199,13 @@ public class FormProcessor extends AbstractProcessor {
         }
         // 重置表单
         this.reset();
+        // 添加外观
+        if (this.isAddAppearance()) {
+            // 嵌入字体
+            this.font.subset();
+        }
     }
-
+    
     /**
      * 填写图像
      *
@@ -210,7 +255,7 @@ public class FormProcessor extends AbstractProcessor {
         // 重置表单
         this.reset();
     }
-
+    
     /**
      * 扁平化表单
      *
@@ -244,7 +289,7 @@ public class FormProcessor extends AbstractProcessor {
         // 重置表单
         this.reset();
     }
-
+    
     /**
      * 只读
      *
@@ -276,7 +321,7 @@ public class FormProcessor extends AbstractProcessor {
         // 重置表单
         this.reset();
     }
-
+    
     /**
      * 初始化表单
      *
@@ -310,7 +355,32 @@ public class FormProcessor extends AbstractProcessor {
         // 返回表单
         return acroForm;
     }
-
+    
+    /**
+     * 是否添加外观
+     *
+     * @return 返回布尔值，true为是，false为否
+     */
+    protected boolean isAddAppearance() {
+        return Objects.nonNull(this.font);
+    }
+    
+    /**
+     * 创建默认样式字符串
+     */
+    protected String createDefaultAppearance() {
+        Float fontSize = this.fontSize;
+        Color fontColor = this.fontColor;
+        if (Objects.isNull(fontSize)) {
+            fontSize = 12F;
+        }
+        if (Objects.isNull(fontColor)) {
+            fontColor = Color.BLACK;
+        }
+        // 返回外观
+        return String.format("/%s %d Tf %s", font.getName(), fontSize.intValue(), ColorUtil.toPDColorString(fontColor));
+    }
+    
     /**
      * 重置表单
      */

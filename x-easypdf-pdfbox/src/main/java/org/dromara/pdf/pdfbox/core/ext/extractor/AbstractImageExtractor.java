@@ -81,12 +81,10 @@ public abstract class AbstractImageExtractor extends AbstractExtractor {
     /**
      * 处理图像
      *
-     * @param page pdfbox页面
+     * @param page 页面
      * @return 返回图像列表
      */
     protected List<BufferedImage> processImage(PDPage page) {
-        List<BufferedImage> data = new ArrayList<>(16);
-        CommonUtil.extractImage(data, page.getResources());
-        return data;
+        return CommonUtil.extractImage(page);
     }
 }

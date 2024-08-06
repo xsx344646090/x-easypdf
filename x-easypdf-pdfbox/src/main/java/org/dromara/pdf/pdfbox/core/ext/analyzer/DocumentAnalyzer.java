@@ -1,7 +1,7 @@
 package org.dromara.pdf.pdfbox.core.ext.analyzer;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageTree;
@@ -31,8 +31,8 @@ import java.util.function.BiConsumer;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-@Setter
-@Getter
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class DocumentAnalyzer extends AbstractAnalyzer implements Closeable {
 
     /**
