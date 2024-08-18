@@ -25,7 +25,6 @@ import java.util.List;
  * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  * </p>
- * jdbc:mysql://10.88.99.52:3306/test_middlestage_order_center?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&connectTimeout=5000&socketTimeout=5000&autoReconnect=true&rewriteBatchedStatements=true
  */
 public class TableTest extends BaseTest {
 
@@ -39,6 +38,9 @@ public class TableTest extends BaseTest {
             Page page = TemplateHandler.Page.build();
             Table table = TemplateHandler.Table.build();
             table.setFontFamily("微软雅黑");
+            table.setBorder("1pt solid black");
+            table.setBorderSpacing("-1pt");
+            table.setBorderCollapse("separate");
             TableHeader tableHeader = TemplateHandler.Table.Header.build();
             TableRow tableHeaderRow = TemplateHandler.Table.Row.build();
             tableHeaderRow.setFontSize("20pt");
@@ -56,10 +58,13 @@ public class TableTest extends BaseTest {
             for (int i = 0; i < 100; i++) {
                 TableRow row = TemplateHandler.Table.Row.build();
                 TableCell cell1 = TemplateHandler.Table.Cell.build();
+                cell1.setBorder("1pt solid black");
                 cell1.addComponent(TemplateHandler.Text.build().setText("姓名" + i));
                 TableCell cell2 = TemplateHandler.Table.Cell.build();
+                cell2.setBorder("1pt solid black");
                 cell2.addComponent(TemplateHandler.Text.build().setText("职务" + i));
                 TableCell cell3 = TemplateHandler.Table.Cell.build();
+                cell3.setBorder("1pt solid black");
                 cell3.addComponent(TemplateHandler.Text.build().setText("电话" + i));
                 row.addCell(cell1, cell2, cell3);
                 rows.add(row);
