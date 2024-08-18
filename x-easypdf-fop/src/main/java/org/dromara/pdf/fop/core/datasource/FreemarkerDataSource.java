@@ -11,6 +11,7 @@ import org.dromara.pdf.fop.support.freemarker.DefaultURLTemplateLoader;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
 
@@ -34,12 +35,12 @@ import java.util.Map;
  */
 @Accessors(chain = true)
 public class FreemarkerDataSource extends AbstractDataSource {
-
+    
     /**
      * 模板配置
      */
     private static final Configuration CONFIGURATION = initConfiguration();
-
+    
     /**
      * 设置模板名称
      *
@@ -54,7 +55,7 @@ public class FreemarkerDataSource extends AbstractDataSource {
         }
         return this;
     }
-
+    
     /**
      * 设置模板数据
      *
@@ -65,7 +66,27 @@ public class FreemarkerDataSource extends AbstractDataSource {
         this.templateData = templateData;
         return this;
     }
-
+    
+    /**
+     * 加载模板输入流
+     *
+     * @return 返回模板输入流
+     */
+    @Override
+    protected InputStream loadTemplateInputStream() {
+        // 获取完整路径
+        String allPath = getTemplateDirectory() + File.separator + this.templatePath;
+        try {
+            // 从资源路径加载模板
+            InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(allPath);
+            // 如果不为空，则返回，否则从绝对路径加载模板
+            return inputStream != null ? inputStream : Files.newInputStream(Paths.get(allPath));
+        } catch (Exception e) {
+            // 提示错误信息
+            throw new IllegalArgumentException("the template can not be loaded，the path['" + allPath + "'] is error");
+        }
+    }
+    
     /**
      * 处理模板
      *
@@ -85,7 +106,7 @@ public class FreemarkerDataSource extends AbstractDataSource {
             return new BufferedInputStream(new ByteArrayInputStream(output.toByteArray()));
         }
     }
-
+    
     /**
      * 初始化配置
      *
@@ -106,7 +127,7 @@ public class FreemarkerDataSource extends AbstractDataSource {
         // 设置空循环变量回退
         config.setFallbackOnNullLoopVariable(false);
         // 获取模板路径
-        String templatePath = System.getProperty(Constants.FREEMARKER_TEMPLATE_PATH_KEY);
+        String templatePath = getTemplateDirectory();
         // 如果非资源路径，则为文件目录
         if (Thread.currentThread().getContextClassLoader().getResource(templatePath) == null) {
             try {
@@ -122,5 +143,14 @@ public class FreemarkerDataSource extends AbstractDataSource {
         }
         // 返回配置
         return config;
+    }
+    
+    /**
+     * 获取模板目录
+     *
+     * @return 返回模板目录
+     */
+    private static String getTemplateDirectory() {
+        return System.getProperty(Constants.FREEMARKER_TEMPLATE_PATH_KEY);
     }
 }

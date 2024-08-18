@@ -10,8 +10,6 @@ import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.base.PagingEvent;
 import org.dromara.pdf.pdfbox.core.base.config.BorderConfiguration;
 import org.dromara.pdf.pdfbox.core.enums.HorizontalAlignment;
-import org.dromara.pdf.pdfbox.core.enums.LineCapStyle;
-import org.dromara.pdf.pdfbox.core.enums.LineStyle;
 import org.dromara.pdf.pdfbox.core.enums.VerticalAlignment;
 import org.dromara.pdf.pdfbox.util.BorderUtil;
 import org.dromara.pdf.pdfbox.util.CommonUtil;
@@ -83,6 +81,22 @@ public class TableCell extends BorderData {
      */
     protected Boolean isPagingBorder;
     /**
+     * 内容上边距
+     */
+    protected Float contentMarginTop;
+    /**
+     * 内容下边距
+     */
+    protected Float contentMarginBottom;
+    /**
+     * 内容左边距
+     */
+    protected Float contentMarginLeft;
+    /**
+     * 内容右边距
+     */
+    protected Float contentMarginRight;
+    /**
      * 内容水平对齐方式
      */
     protected HorizontalAlignment contentHorizontalAlignment;
@@ -90,6 +104,14 @@ public class TableCell extends BorderData {
      * 内容垂直对齐方式
      */
     protected VerticalAlignment contentVerticalAlignment;
+    /**
+     * 是否开启上对角线
+     */
+    protected Boolean isEnableUpLine;
+    /**
+     * 是否开启下对角线
+     */
+    protected Boolean isEnableDownLine;
     
     /**
      * 有参构造
@@ -100,149 +122,17 @@ public class TableCell extends BorderData {
         this.row = row;
         this.borderConfiguration = new BorderConfiguration(false);
     }
-
+    
     /**
-     * 设置边框样式
+     * 设置内容边距（上下左右）
      *
-     * @param style 样式
+     * @param margin 边距
      */
-    public void setBorderLineStyle(LineStyle style) {
-        this.borderConfiguration.setBorderLineStyle(style);
-    }
-
-    /**
-     * 设置线帽样式
-     *
-     * @param style 样式
-     */
-    public void setBorderLineCapStyle(LineCapStyle style) {
-        this.borderConfiguration.setBorderLineCapStyle(style);
-    }
-
-    /**
-     * 设置边框线长
-     *
-     * @param length 线长
-     */
-    public void setBorderLineLength(float length) {
-        this.borderConfiguration.setBorderLineLength(length);
-    }
-
-    /**
-     * 设置边框线宽
-     *
-     * @param width 线宽
-     */
-    public void setBorderLineWidth(float width) {
-        this.borderConfiguration.setBorderLineWidth(width);
-    }
-
-    /**
-     * 设置边框点线间隔
-     *
-     * @param spacing 间隔
-     */
-    public void setBorderDottedSpacing(float spacing) {
-        this.borderConfiguration.setBorderDottedSpacing(spacing);
-    }
-
-    /**
-     * 设置边框颜色（上下左右）
-     *
-     * @param color 颜色
-     */
-    public void setBorderColor(Color color) {
-        this.borderConfiguration.setBorderColor(color);
-    }
-
-    /**
-     * 设置上边框颜色
-     *
-     * @param color 颜色
-     */
-    public void setBorderTopColor(Color color) {
-        this.borderConfiguration.setBorderTopColor(color);
-    }
-
-    /**
-     * 设置下边框颜色
-     *
-     * @param color 颜色
-     */
-    public void setBorderBottomColor(Color color) {
-        this.borderConfiguration.setBorderBottomColor(color);
-    }
-
-    /**
-     * 设置左边框颜色
-     *
-     * @param color 颜色
-     */
-    public void setBorderLeftColor(Color color) {
-        this.borderConfiguration.setBorderLeftColor(color);
-    }
-
-    /**
-     * 设置右边框颜色
-     *
-     * @param color 颜色
-     */
-    public void setBorderRightColor(Color color) {
-        this.borderConfiguration.setBorderRightColor(color);
-    }
-
-    /**
-     * 设置是否上边框
-     *
-     * @param flag 是否上边框
-     */
-    public void setBorderRightColor(boolean flag) {
-        this.borderConfiguration.setIsBorderTop(flag);
-    }
-
-    /**
-     * 设置是否边框（上下左右）
-     *
-     * @param flag 是否边框
-     */
-    public void setIsBorder(boolean flag) {
-        this.borderConfiguration.setIsBorder(flag);
-    }
-
-    /**
-     * 设置是否上边框
-     *
-     * @param flag 是否上边框
-     */
-    public void setIsBorderTop(boolean flag) {
-        this.borderConfiguration.setIsBorderTop(flag);
-    }
-
-    /**
-     * 设置是否下边框
-     *
-     * @param flag 是否下边框
-     */
-    public void setIsBorderBottom(boolean flag) {
-        this.borderConfiguration.setIsBorderBottom(flag);
-    }
-
-    /**
-     * 设置是否左边框
-     *
-     * @param flag 是否左边框
-     */
-    public void setIsBorderLeft(boolean flag) {
-        this.borderConfiguration.setIsBorderLeft(flag);
-    }
-
-    /**
-     * 设置是否右边框
-     *
-     * @param flag 是否右边框
-     */
-    public void setIsBorderRight(boolean flag) {
-        this.borderConfiguration.setIsBorderRight(flag);
+    public void setContentMargin(float margin) {
+        this.contentMarginTop = margin;
+        this.contentMarginBottom = margin;
+        this.contentMarginLeft = margin;
+        this.contentMarginRight = margin;
     }
     
     /**
@@ -415,15 +305,62 @@ public class TableCell extends BorderData {
         if (Objects.isNull(this.backgroundColor)) {
             this.backgroundColor = this.row.getBackgroundColor();
         }
+        // 初始化内容上边距
+        if (Objects.isNull(this.contentMarginTop)) {
+            this.contentMarginTop = this.row.getContentMarginTop();
+        }
+        // 初始化内容下边距
+        if (Objects.isNull(this.contentMarginBottom)) {
+            this.contentMarginBottom = this.row.getContentMarginBottom();
+        }
+        // 初始化内容左边距
+        if (Objects.isNull(this.contentMarginLeft)) {
+            this.contentMarginLeft = this.row.getContentMarginLeft();
+        }
+        // 初始化内容右边距
+        if (Objects.isNull(this.contentMarginRight)) {
+            this.contentMarginRight = this.row.getContentMarginRight();
+        }
+        // 初始化内容水平对齐方式
         if (Objects.isNull(this.contentHorizontalAlignment)) {
             this.contentHorizontalAlignment = this.row.getContentHorizontalAlignment();
         }
+        // 初始化内容垂直对齐方式
         if (Objects.isNull(this.contentVerticalAlignment)) {
             this.contentVerticalAlignment = this.row.getContentVerticalAlignment();
         }
+        // 初始化是否开启上对角线
+        if (Objects.isNull(this.isEnableUpLine)) {
+            this.isEnableUpLine = Boolean.FALSE;
+        }
+        // 初始化是否开启下对角线
+        if (Objects.isNull(this.isEnableDownLine)) {
+            this.isEnableDownLine = Boolean.FALSE;
+        }
+        // 初始化X轴起始坐标
         this.beginX = beginX;
+        // 初始化Y轴起始坐标
         this.beginY = beginY;
+        // 初始化边框
         this.initBorder();
+        // 初始化边框信息
+        this.initBorderInfo();
+    }
+    
+    /**
+     * 初始化边框
+     */
+    protected void initBorder() {
+        super.init(this.row, this.row.getBorderConfiguration());
+        if (Objects.isNull(this.isPagingBorder)) {
+            this.isPagingBorder = this.row.getIsPagingBorder();
+        }
+    }
+    
+    /**
+     * 初始化边框信息
+     */
+    protected void initBorderInfo() {
         this.getContext().setBorderInfo(
                 new BorderInfo(
                         this,
@@ -440,13 +377,12 @@ public class TableCell extends BorderData {
     }
     
     /**
-     * 初始化边框
+     * 是否开启对角线
+     *
+     * @return 返回布尔值，true为是，false为否
      */
-    protected void initBorder() {
-        super.init(this.row, this.row.getBorderConfiguration());
-        if (Objects.isNull(this.isPagingBorder)) {
-            this.isPagingBorder = this.row.getIsPagingBorder();
-        }
+    protected boolean isEnableDiagonalLine() {
+        return this.isEnableUpLine || this.isEnableDownLine;
     }
     
     /**
@@ -470,9 +406,19 @@ public class TableCell extends BorderData {
         // 重置光标位置
         context.getCursor().reset(beginX, beginY);
         // 添加边框
-        float tempY = this.addBorder(beginX, beginY - borderInfo.getHeight(), borderInfo);
+        PDRectangle rectangle = this.addBorder(beginX, beginY - borderInfo.getHeight(), borderInfo);
+        // 添加对角线
+        this.addDiagonalLine(rectangle);
+        // 获取Y轴起始坐标
+        float tempY = rectangle.getLowerLeftY();
         // 如果有组件
         if (Objects.nonNull(this.getComponents())) {
+            // 获取内容X轴开始坐标
+            float contentBeginX = beginX + this.getContentMarginLeft();
+            // 获取内容Y轴开始坐标
+            float contentBeginY = beginY - this.getContentMarginTop();
+            // 获取内容宽度
+            float contentWidth = this.getWidth() - this.getContentMarginLeft() - this.getContentMarginRight();
             // 设置页面
             context.setPage(page);
             // 设置是否是第一个组件
@@ -480,13 +426,13 @@ public class TableCell extends BorderData {
             // 设置高度
             context.setHeight(this.getHeight());
             // 重置光标位置
-            context.getCursor().reset(beginX, beginY);
+            context.getCursor().reset(contentBeginX, contentBeginY);
             // 遍历组件
             for (Component component : this.getComponents()) {
                 // 设置换行X轴起始坐标
-                context.setWrapBeginX(beginX);
+                context.setWrapBeginX(contentBeginX);
                 // 设置换行宽度
-                context.setWrapWidth(this.getWidth());
+                context.setWrapWidth(contentWidth);
                 // 设置水平对齐方式
                 component.setHorizontalAlignment(this.getContentHorizontalAlignment());
                 // 设置垂直对齐方式
@@ -511,10 +457,10 @@ public class TableCell extends BorderData {
      * @param beginX 组件渲染前X轴坐标
      * @param beginY 组件渲染前Y轴坐标
      * @param info   容器信息
-     * @return 返回Y轴起始坐标
+     * @return 返回尺寸
      */
     @SneakyThrows
-    protected float addBorder(Float beginX, Float beginY, BorderInfo info) {
+    protected PDRectangle addBorder(Float beginX, Float beginY, BorderInfo info) {
         // 获取表格
         Table table = this.getRow().getTable();
         // 重置X轴坐标
@@ -543,8 +489,43 @@ public class TableCell extends BorderData {
             CommonUtil.addBackgroundColor(info.getContext(), info.getContentMode(), info.getIsResetContentStream(), rectangle, info.getBackgroundColor());
             // 绘制边框
             BorderUtil.drawBorderWithData(info, rectangle);
-            // 返回Y轴起始坐标
-            return rectangle.getLowerLeftY();
+            // 返回尺寸
+            return rectangle;
+        }
+    }
+    
+    /**
+     * 添加对角线
+     *
+     * @param rectangle 尺寸
+     */
+    protected void addDiagonalLine(PDRectangle rectangle) {
+        // 开启对角线
+        if (this.isEnableDiagonalLine()) {
+            // 创建对角线对象
+            DiagonalLine line = new DiagonalLine(this.getPage());
+            // 设置对角线的颜色
+            line.setLineColor(this.getBorderTopColor());
+            // 如果启用了上对角线
+            if (this.getIsEnableUpLine()) {
+                // 设置上对角线的起点和终点
+                line.setBeginX(rectangle.getLowerLeftX());
+                line.setBeginY(rectangle.getLowerLeftY());
+                line.setEndX(rectangle.getUpperRightX());
+                line.setEndY(rectangle.getUpperRightY());
+                // 渲染上对角线
+                line.render();
+            }
+            // 如果启用了下对角线
+            if (this.getIsEnableDownLine()) {
+                // 设置下对角线的起点和终点
+                line.setBeginX(rectangle.getLowerLeftX());
+                line.setBeginY(rectangle.getUpperRightY());
+                line.setEndX(rectangle.getUpperRightX());
+                line.setEndY(rectangle.getLowerLeftY());
+                // 渲染下对角线
+                line.render();
+            }
         }
     }
 }

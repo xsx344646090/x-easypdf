@@ -7,8 +7,6 @@ import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.base.PagingEvent;
 import org.dromara.pdf.pdfbox.core.base.config.BorderConfiguration;
 import org.dromara.pdf.pdfbox.core.enums.HorizontalAlignment;
-import org.dromara.pdf.pdfbox.core.enums.LineCapStyle;
-import org.dromara.pdf.pdfbox.core.enums.LineStyle;
 import org.dromara.pdf.pdfbox.core.enums.VerticalAlignment;
 
 import java.awt.*;
@@ -92,6 +90,22 @@ public class TableRow extends BorderData {
      */
     protected Boolean isPagingBorder;
     /**
+     * 内容上边距
+     */
+    protected Float contentMarginTop;
+    /**
+     * 内容下边距
+     */
+    protected Float contentMarginBottom;
+    /**
+     * 内容左边距
+     */
+    protected Float contentMarginLeft;
+    /**
+     * 内容右边距
+     */
+    protected Float contentMarginRight;
+    /**
      * 内容水平对齐方式
      */
     protected HorizontalAlignment contentHorizontalAlignment;
@@ -111,6 +125,18 @@ public class TableRow extends BorderData {
     }
     
     /**
+     * 设置内容边距（上下左右）
+     *
+     * @param margin 边距
+     */
+    public void setContentMargin(float margin) {
+        this.contentMarginTop = margin;
+        this.contentMarginBottom = margin;
+        this.contentMarginLeft = margin;
+        this.contentMarginRight = margin;
+    }
+    
+    /**
      * 设置高度
      *
      * @param height 高度
@@ -120,150 +146,6 @@ public class TableRow extends BorderData {
             throw new IllegalArgumentException("height must be positive");
         }
         this.height = height;
-    }
-
-    /**
-     * 设置边框样式
-     *
-     * @param style 样式
-     */
-    public void setBorderLineStyle(LineStyle style) {
-        this.borderConfiguration.setBorderLineStyle(style);
-    }
-
-    /**
-     * 设置线帽样式
-     *
-     * @param style 样式
-     */
-    public void setBorderLineCapStyle(LineCapStyle style) {
-        this.borderConfiguration.setBorderLineCapStyle(style);
-    }
-
-    /**
-     * 设置边框线长
-     *
-     * @param length 线长
-     */
-    public void setBorderLineLength(float length) {
-        this.borderConfiguration.setBorderLineLength(length);
-    }
-
-    /**
-     * 设置边框线宽
-     *
-     * @param width 线宽
-     */
-    public void setBorderLineWidth(float width) {
-        this.borderConfiguration.setBorderLineWidth(width);
-    }
-
-    /**
-     * 设置边框点线间隔
-     *
-     * @param spacing 间隔
-     */
-    public void setBorderDottedSpacing(float spacing) {
-        this.borderConfiguration.setBorderDottedSpacing(spacing);
-    }
-
-    /**
-     * 设置边框颜色（上下左右）
-     *
-     * @param color 颜色
-     */
-    public void setBorderColor(Color color) {
-        this.borderConfiguration.setBorderColor(color);
-    }
-
-    /**
-     * 设置上边框颜色
-     *
-     * @param color 颜色
-     */
-    public void setBorderTopColor(Color color) {
-        this.borderConfiguration.setBorderTopColor(color);
-    }
-
-    /**
-     * 设置下边框颜色
-     *
-     * @param color 颜色
-     */
-    public void setBorderBottomColor(Color color) {
-        this.borderConfiguration.setBorderBottomColor(color);
-    }
-
-    /**
-     * 设置左边框颜色
-     *
-     * @param color 颜色
-     */
-    public void setBorderLeftColor(Color color) {
-        this.borderConfiguration.setBorderLeftColor(color);
-    }
-
-    /**
-     * 设置右边框颜色
-     *
-     * @param color 颜色
-     */
-    public void setBorderRightColor(Color color) {
-        this.borderConfiguration.setBorderRightColor(color);
-    }
-
-    /**
-     * 设置是否上边框
-     *
-     * @param flag 是否上边框
-     */
-    public void setBorderRightColor(boolean flag) {
-        this.borderConfiguration.setIsBorderTop(flag);
-    }
-
-    /**
-     * 设置是否边框（上下左右）
-     *
-     * @param flag 是否边框
-     */
-    public void setIsBorder(boolean flag) {
-        this.borderConfiguration.setIsBorder(flag);
-    }
-
-    /**
-     * 设置是否上边框
-     *
-     * @param flag 是否上边框
-     */
-    public void setIsBorderTop(boolean flag) {
-        this.borderConfiguration.setIsBorderTop(flag);
-    }
-
-    /**
-     * 设置是否下边框
-     *
-     * @param flag 是否下边框
-     */
-    public void setIsBorderBottom(boolean flag) {
-        this.borderConfiguration.setIsBorderBottom(flag);
-    }
-
-    /**
-     * 设置是否左边框
-     *
-     * @param flag 是否左边框
-     */
-    public void setIsBorderLeft(boolean flag) {
-        this.borderConfiguration.setIsBorderLeft(flag);
-    }
-
-    /**
-     * 设置是否右边框
-     *
-     * @param flag 是否右边框
-     */
-    public void setIsBorderRight(boolean flag) {
-        this.borderConfiguration.setIsBorderRight(flag);
     }
     
     /**
@@ -334,7 +216,7 @@ public class TableRow extends BorderData {
     /**
      * 虚拟渲染
      */
-    public void virtualRender(Page page, Float beginX, Float beginY) {
+    protected void virtualRender(Page page, Float beginX, Float beginY) {
         // 初始化页面
         this.init(page, beginX, beginY);
         // 如果表格不为空
@@ -361,7 +243,7 @@ public class TableRow extends BorderData {
     /**
      * 渲染
      */
-    public void render(Page page, Float beginX, Float beginY) {
+    protected void render(Page page, Float beginX, Float beginY) {
         // 初始化页面
         this.init(page, beginX, beginY);
         // 如果表格不为空
@@ -402,39 +284,119 @@ public class TableRow extends BorderData {
      * @param beginY Y轴起始坐标
      */
     protected void init(Page page, Float beginX, Float beginY) {
+        // 检查参数
         Objects.requireNonNull(this.height, "the row height can not be null");
+        // 设置页码
         this.page = page;
+        // 设置起始X坐标
         this.beginX = beginX;
+        // 设置起始Y坐标
         this.beginY = beginY;
+        // 如果背景颜色为空，则设置为表格的背景颜色
         if (Objects.isNull(this.backgroundColor)) {
             this.backgroundColor = this.table.getBackgroundColor();
         }
+        // 如果是否换页为空，则设置为false
         if (Objects.isNull(this.isBreak)) {
             this.isBreak = Boolean.FALSE;
         }
+        // 如果是否同行为空，则设置为表格的同行属性
         if (Objects.isNull(this.isTogether)) {
             this.isTogether = this.table.getIsTogether();
         }
+        // 如果是否分页边框为空，则设置为表格的是否分页边框属性
+        if (Objects.isNull(this.isPagingBorder)) {
+            this.isPagingBorder = this.table.getIsPagingBorder();
+        }
+        // 初始化内容上边距
+        if (Objects.isNull(this.contentMarginTop)) {
+            this.contentMarginTop = this.table.getContentMarginTop();
+        }
+        // 初始化内容下边距
+        if (Objects.isNull(this.contentMarginBottom)) {
+            this.contentMarginBottom = this.table.getContentMarginBottom();
+        }
+        // 初始化内容左边距
+        if (Objects.isNull(this.contentMarginLeft)) {
+            this.contentMarginLeft = this.table.getContentMarginLeft();
+        }
+        // 初始化内容右边距
+        if (Objects.isNull(this.contentMarginRight)) {
+            this.contentMarginRight = this.table.getContentMarginRight();
+        }
+        // 如果内容水平对齐方式为空，则设置为表格的内容水平对齐方式
         if (Objects.isNull(this.contentHorizontalAlignment)) {
             this.contentHorizontalAlignment = this.table.getContentHorizontalAlignment();
         }
+        // 如果内容垂直对齐方式为空，则设置为表格的内容垂直对齐方式
         if (Objects.isNull(this.contentVerticalAlignment)) {
             this.contentVerticalAlignment = this.table.getContentVerticalAlignment();
         }
+        // 初始化边框
         this.initBorder();
+        // 初始化单元格
         this.initCells();
+        // 检查是否同行
         this.checkTogether();
+        // 检查是否换页
         this.checkBreak();
+    }
+    
+    /**
+     * 初始化（表头或表尾）
+     *
+     * @param headerOrFooter 表头或表尾
+     */
+    protected void initForHeaderOrFooter(AbstractTableHeaderOrFooter headerOrFooter) {
+        // 如果背景颜色为空，则设置为表格的背景颜色
+        if (Objects.isNull(this.backgroundColor)) {
+            this.backgroundColor = headerOrFooter.getBackgroundColor();
+        }
+        // 如果是否换页为空，则设置为false
+        if (Objects.isNull(this.isBreak)) {
+            this.isBreak = headerOrFooter.getIsBreak();
+        }
+        // 如果是否同行为空，则设置为表格的同行属性
+        if (Objects.isNull(this.isTogether)) {
+            this.isTogether = headerOrFooter.getIsTogether();
+        }
+        // 如果是否分页边框为空，则设置为表格的是否分页边框属性
+        if (Objects.isNull(this.isPagingBorder)) {
+            this.isPagingBorder = headerOrFooter.getIsPagingBorder();
+        }
+        // 初始化内容上边距
+        if (Objects.isNull(this.contentMarginTop)) {
+            this.contentMarginTop = headerOrFooter.getContentMarginTop();
+        }
+        // 初始化内容下边距
+        if (Objects.isNull(this.contentMarginBottom)) {
+            this.contentMarginBottom = headerOrFooter.getContentMarginBottom();
+        }
+        // 初始化内容左边距
+        if (Objects.isNull(this.contentMarginLeft)) {
+            this.contentMarginLeft = headerOrFooter.getContentMarginLeft();
+        }
+        // 初始化内容右边距
+        if (Objects.isNull(this.contentMarginRight)) {
+            this.contentMarginRight = headerOrFooter.getContentMarginRight();
+        }
+        // 如果内容水平对齐方式为空，则设置为表格的内容水平对齐方式
+        if (Objects.isNull(this.contentHorizontalAlignment)) {
+            this.contentHorizontalAlignment = headerOrFooter.getContentHorizontalAlignment();
+        }
+        // 如果内容垂直对齐方式为空，则设置为表格的内容垂直对齐方式
+        if (Objects.isNull(this.contentVerticalAlignment)) {
+            this.contentVerticalAlignment = headerOrFooter.getContentVerticalAlignment();
+        }
+        // 初始化边框
+        super.init(this.table, headerOrFooter.getBorderConfiguration());
     }
     
     /**
      * 初始化边框
      */
     protected void initBorder() {
-        super.init(this.page, this.table.getBorderConfiguration());
-        if (Objects.isNull(this.isPagingBorder)) {
-            this.isPagingBorder = this.table.getIsPagingBorder();
-        }
+        super.init(this.table, this.table.getBorderConfiguration());
     }
     
     /**
@@ -455,7 +417,7 @@ public class TableRow extends BorderData {
     }
     
     /**
-     * 检查整体
+     * 检查同行
      */
     protected void checkTogether() {
         if (this.isTogether && !this.isBreak) {

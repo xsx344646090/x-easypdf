@@ -42,7 +42,7 @@ import java.util.*;
  * </p>
  */
 public class DocumentTest extends BaseTest {
-
+    
     /**
      * 测试原生pdfbox
      */
@@ -51,17 +51,17 @@ public class DocumentTest extends BaseTest {
         this.test(() -> {
             Document document = PdfHandler.getDocumentHandler().load(new File("E:\\PDF\\pdfbox\\processor\\allTest.pdf"));
             document.setFontName("微软雅黑");
-
+            
             PDDocument pdDocument = document.getTarget();
-
+            
             PDPage page = new PDPage(PDRectangle.A4);
             pdDocument.addPage(page);
-
+            
             PDPageContentStream contentStream = new PDPageContentStream(pdDocument, page);
-
+            
             PDFont pdFont = document.getFont();
-
-            float x= 0F;
+            
+            float x = 0F;
             float y = page.getMediaBox().getHeight() - 12;
             contentStream.setFont(pdFont, 12f);
             contentStream.beginText();
@@ -74,12 +74,12 @@ public class DocumentTest extends BaseTest {
             contentStream.showText("第二段文本");
             contentStream.endText();
             contentStream.close();
-
+            
             document.save("E:\\PDF\\pdfbox\\processor\\test.pdf");
             document.close();
         });
     }
-
+    
     /**
      * 测试读取文档
      */
@@ -92,14 +92,14 @@ public class DocumentTest extends BaseTest {
                 Assert.assertEquals(1, document.getTotalPageNumber());
                 document.close();
             }, "本地读取");
-
+            
             // 本地读取
             this.test(() -> {
                 Document document = PdfHandler.getDocumentHandler().load(Paths.get("E:\\PDF\\pdfbox\\document\\test.pdf").toFile());
                 Assert.assertEquals(1, document.getTotalPageNumber());
                 document.close();
             }, "本地读取");
-
+            
             // 流读取
             this.test(() -> {
                 InputStream inputStream = Files.newInputStream(Paths.get("E:\\PDF\\pdfbox\\document\\test.pdf"));
@@ -108,14 +108,14 @@ public class DocumentTest extends BaseTest {
                 document.close();
                 inputStream.close();
             }, "流读取");
-
+            
             // 资源读取
             this.test(() -> {
                 Document document = PdfHandler.getDocumentHandler().loadByResource("org/dromara/pdf/pdfbox/test.pdf");
                 Assert.assertEquals(1, document.getTotalPageNumber());
                 document.close();
             }, "资源读取");
-
+            
             // 远程读取
             this.test(() -> {
                 Document document = PdfHandler.getDocumentHandler().loadByRemote("http://localhost:22222/temp/test.pdf");
@@ -124,7 +124,7 @@ public class DocumentTest extends BaseTest {
             }, "远程读取");
         });
     }
-
+    
     /**
      * 测试修改版本
      */
@@ -137,7 +137,7 @@ public class DocumentTest extends BaseTest {
             document.close();
         });
     }
-
+    
     /**
      * 测试加密
      */
@@ -150,7 +150,7 @@ public class DocumentTest extends BaseTest {
             document.close();
         });
     }
-
+    
     /**
      * 测试解密
      */
@@ -166,7 +166,7 @@ public class DocumentTest extends BaseTest {
             document.close();
         });
     }
-
+    
     /**
      * 测试插入页面
      */
@@ -174,9 +174,9 @@ public class DocumentTest extends BaseTest {
     public void insertPageTest() {
         this.test(() -> {
             Document document = PdfHandler.getDocumentHandler().load(Paths.get("E:\\PDF\\pdfbox\\document\\test.pdf").toFile());
-
+            
             Page page = new Page(document, PageSize.A4);
-
+            
             document.insertPage(1, page);
             document.save("E:\\PDF\\pdfbox\\document\\insertPageTest1.pdf");
             document.insertPage(3, page);
@@ -184,7 +184,7 @@ public class DocumentTest extends BaseTest {
             document.close();
         });
     }
-
+    
     /**
      * 测试追加页面
      */
@@ -192,15 +192,15 @@ public class DocumentTest extends BaseTest {
     public void appendPageTest() {
         this.test(() -> {
             Document document = PdfHandler.getDocumentHandler().load(Paths.get("E:\\PDF\\pdfbox\\document\\test.pdf").toFile());
-
+            
             Page page = new Page(document, PageSize.A4);
-
+            
             document.appendPage(page);
             document.save("E:\\PDF\\pdfbox\\document\\appendPageTest.pdf");
             document.close();
         });
     }
-
+    
     /**
      * 测试替换页面
      */
@@ -208,15 +208,15 @@ public class DocumentTest extends BaseTest {
     public void setPageTest() {
         this.test(() -> {
             Document document = PdfHandler.getDocumentHandler().load(Paths.get("E:\\PDF\\pdfbox\\document\\insertPageTest1.pdf").toFile());
-
+            
             Page page = new Page(document);
-
+            
             document.setPage(0, page);
             document.save("E:\\PDF\\pdfbox\\document\\setPageTest.pdf");
             document.close();
         });
     }
-
+    
     /**
      * 测试创建页面
      */
@@ -224,17 +224,17 @@ public class DocumentTest extends BaseTest {
     public void createPageTest() {
         this.test(() -> {
             Document document = PdfHandler.getDocumentHandler().create();
-
+            
             Page page = new Page(document);
             log.info(page.getWidth());
-
+            
             page = new Page(document);
             log.info(page.getWidth());
-
+            
             document.close();
         });
     }
-
+    
     /**
      * 测试获取当前页面
      */
@@ -242,25 +242,25 @@ public class DocumentTest extends BaseTest {
     public void getCurrentPageTest() {
         this.test(() -> {
             Document document = PdfHandler.getDocumentHandler().create();
-
+            
             Page page = document.getCurrentPage();
             System.out.println(page);
-
+            
             page = new Page(document);
             System.out.println(page);
-
+            
             document.appendPage(page);
-
+            
             page = document.getCurrentPage();
             System.out.println(page);
-
+            
             page = document.getPage(0);
             System.out.println(page);
-
+            
             document.close();
         });
     }
-
+    
     /**
      * 测试目录
      */
@@ -270,44 +270,44 @@ public class DocumentTest extends BaseTest {
             Document document = PdfHandler.getDocumentHandler().create();
             document.setMargin(50F);
             document.setFontSize(12F);
-
+            
             Page page1 = new Page(document);
-
+            
             Textarea textarea1 = new Textarea(page1);
             textarea1.setLeading(12F);
             textarea1.setTextList(Arrays.asList("第一页，爽爽的贵阳", "避暑的天堂"));
             textarea1.setCatalog(new CatalogInfo("第一页，爽爽的贵阳，避暑的天堂"));
             textarea1.render();
-
+            
             Page page2 = new Page(document);
-
+            
             Textarea textarea2 = new Textarea(page2);
             textarea2.setLeading(12F);
             textarea2.setTextList(Arrays.asList("第二页，爽爽的贵阳", "避暑的天堂"));
             textarea2.setCatalog(new CatalogInfo("第二页，爽爽的贵阳，避暑的天堂"));
             textarea2.render();
-
+            
             document.appendPage(page1, page2);
-
+            
             Page catalogPage = new Page(document);
             Textarea textarea = new Textarea(catalogPage);
             textarea.setText("目录");
             textarea.setFontSize(20F);
             textarea.render();
-
+            
             List<CatalogInfo> catalogs = document.getCatalogs();
             for (CatalogInfo catalog : catalogs) {
                 InnerDest dest = new InnerDest();
                 dest.setPage(catalog.getPage());
                 dest.setTopY(catalog.getBeginY().intValue());
-
+                
                 Textarea content = new Textarea(catalogPage);
                 content.setMarginTop(10F);
                 content.setText(catalog.getTitle());
                 content.setInnerDest(dest);
                 content.setIsWrap(true);
                 content.render();
-
+                
                 Line line = new Line(catalogPage);
                 line.setLineStyle(LineStyle.DOTTED);
                 line.setLineWidth(2F);
@@ -317,85 +317,20 @@ public class DocumentTest extends BaseTest {
                 line.setMarginRight(20F);
                 line.setRelativeBeginY(-5F);
                 line.render();
-
+                
                 Textarea contentPageIndex = new Textarea(catalogPage);
                 contentPageIndex.setText(String.valueOf((catalog.getPage().getIndex() + 1)));
                 contentPageIndex.render();
-
+                
                 log.info(catalog);
             }
-
+            
             document.insertPage(0, catalogPage);
             document.save("E:\\PDF\\pdfbox\\catalogTest.pdf");
             document.close();
         });
     }
-
-    /**
-     * 测试大数据
-     */
-    @Test
-    public void bigDataTest1() {
-        // 单次渲染耗时：2.417s 页面数：290 耗时：3.369s 大小：448KB
-        this.test(() -> {
-            Document document = PdfHandler.getDocumentHandler().create(MemoryPolicy.setupMix(2L * 1024 * 1024 * 1024, "E:\\PDF\\pdfbox\\document"));
-            document.setMargin(50F);
-
-            Page page = new Page(document);
-
-            this.test(() -> {
-                StringBuilder builder = new StringBuilder();
-                for (int j = 0; j < 100000; j++) {
-                    builder.append("测试内容").append(j);
-                }
-                Textarea textarea = new Textarea(page);
-                textarea.setText(builder.toString());
-                textarea.render();
-            }, "单次渲染");
-
-            document.appendPage(page);
-            log.info("页面数：" + document.getTotalPageNumber());
-
-            this.test(() -> document.save("E:\\PDF\\pdfbox\\document\\bigDataTest1.pdf"), "保存");
-            document.close();
-        });
-    }
-
-    /**
-     * 测试大数据
-     */
-    @Test
-    public void bigDataTest2() {
-        // 单次渲染耗时：0.022s 页面数：300 耗时：3.321s 大小：446KB
-        this.test(() -> {
-            Document document = PdfHandler.getDocumentHandler().create(MemoryPolicy.setupTempFileOnly("E:\\PDF\\pdfbox\\document"));
-            document.setMargin(50F);
-
-            int total = 100;
-            List<Page> pages = new ArrayList<>(total);
-            for (int i = 0; i < total; i++) {
-                int finalI = i;
-                this.test(() -> {
-                    Page page = new Page(document);
-                    pages.add(page);
-                    StringBuilder builder = new StringBuilder();
-                    for (int j = 0; j < 1000; j++) {
-                        builder.append(finalI).append("测试内容").append(j);
-                    }
-                    Textarea textarea = new Textarea(page);
-                    textarea.setText(builder.toString());
-                    textarea.render();
-                }, "单次渲染");
-            }
-
-            document.appendPage(pages);
-            log.info("页面数：" + document.getTotalPageNumber());
-
-            this.test(() -> document.save("E:\\PDF\\pdfbox\\document\\bigDataTest2.pdf"), "保存");
-            document.close();
-        });
-    }
-
+    
     /**
      * 测试总页数
      */
@@ -403,17 +338,17 @@ public class DocumentTest extends BaseTest {
     public void totalPageNumberTest() {
         this.test(() -> {
             Document document = this.create(null);
-
+            
             int totalPageNumber = document.getTotalPageNumber();
             log.info("总页数： " + totalPageNumber);
-
+            
             document.close();
             document = this.create(totalPageNumber);
             document.save("E:\\PDF\\pdfbox\\document\\totalPageNumberTest.pdf");
             document.close();
         });
     }
-
+    
     /**
      * 创建文档
      */
@@ -422,12 +357,9 @@ public class DocumentTest extends BaseTest {
         Document document = PdfHandler.getDocumentHandler().create();
         document.setMargin(50F);
         document.setTotalPageNumber(totalPage);
-        // document.setFontName("MicrosoftYaHeiBold");
-        document.setFontName("HarmonyOS Sans SC Medium-Bold");
-        // document.setFontStyle(FontStyle.BOLD);
-
+        
         Page page = new Page(document);
-
+        
         PageHeader pageHeader = new PageHeader(document.getCurrentPage());
         Textarea headerText = new Textarea(pageHeader.getPage());
         headerText.setText("页眉，当前第" + headerText.getContext().getPage().getPlaceholder() + "页");
@@ -439,7 +371,7 @@ public class DocumentTest extends BaseTest {
         } else {
             pageHeader.render();
         }
-
+        
         PageFooter pageFooter = new PageFooter(document.getCurrentPage());
         Textarea footerText = new Textarea(pageHeader.getPage());
         footerText.setText("页脚，共" + totalPage + "页");
@@ -451,7 +383,7 @@ public class DocumentTest extends BaseTest {
         } else {
             pageFooter.render();
         }
-
+        
         Container container = new Container(document.getCurrentPage());
         container.setWidth(200F);
         container.setHeight(100F);
@@ -485,7 +417,7 @@ public class DocumentTest extends BaseTest {
             container.setIsWrap(true);
             container.render();
         }
-
+        
         document.appendPage(page);
         return document;
     }

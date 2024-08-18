@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.dromara.pdf.pdfbox.core.base.BorderData;
 import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.enums.ComponentType;
 import org.dromara.pdf.pdfbox.core.enums.LineCapStyle;
@@ -38,6 +37,34 @@ import java.util.Objects;
 public class Line extends AbstractComponent {
     
     /**
+     * 样式
+     */
+    protected LineStyle lineStyle;
+    /**
+     * 线帽样式
+     */
+    protected LineCapStyle lineCapStyle;
+    /**
+     * 线长
+     */
+    protected Float lineLength;
+    /**
+     * 线宽
+     */
+    protected Float lineWidth;
+    /**
+     * 线条颜色
+     */
+    protected Color lineColor;
+    /**
+     * 点线长度
+     */
+    protected Float dottedLength;
+    /**
+     * 点线间隔
+     */
+    protected Float dottedSpacing;
+    /**
      * 旋转角度
      */
     protected Float angle;
@@ -55,71 +82,6 @@ public class Line extends AbstractComponent {
         super(page);
     }
     
-    /**
-     * 设置线条颜色
-     *
-     * @param color 颜色
-     */
-    public void setLineColor(Color color) {
-        if (Objects.nonNull(color)) {
-            this.borderConfiguration.setBorderColor(color);
-        }
-    }
-    
-    /**
-     * 设置线条样式
-     *
-     * @param style 样式
-     */
-    public void setLineStyle(LineStyle style) {
-        if (Objects.nonNull(style)) {
-            this.borderConfiguration.setBorderLineStyle(style);
-        }
-    }
-    
-    /**
-     * 设置线帽样式
-     *
-     * @param style 样式
-     */
-    public void setLineCapStyle(LineCapStyle style) {
-        if (Objects.nonNull(style)) {
-            this.borderConfiguration.setBorderLineCapStyle(style);
-        }
-    }
-    
-    /**
-     * 设置线条长度
-     *
-     * @param length 长度
-     */
-    public void setLineLength(Float length) {
-        if (Objects.nonNull(length)) {
-            this.borderConfiguration.setBorderLineLength(length);
-        }
-    }
-    
-    /**
-     * 设置线条宽度
-     *
-     * @param width 宽度
-     */
-    public void setLineWidth(Float width) {
-        if (Objects.nonNull(width)) {
-            this.borderConfiguration.setBorderLineWidth(width);
-        }
-    }
-    
-    /**
-     * 设置点线间距
-     *
-     * @param spacing 间距
-     */
-    public void setDottedSpacing(Float spacing) {
-        if (Objects.nonNull(spacing)) {
-            this.borderConfiguration.setBorderDottedSpacing(spacing);
-        }
-    }
     
     /**
      * 获取类型
@@ -128,61 +90,7 @@ public class Line extends AbstractComponent {
      */
     @Override
     public ComponentType getType() {
-        return ComponentType.SPLIT_LINE;
-    }
-    
-    /**
-     * 获取线条颜色
-     *
-     * @return 返回颜色
-     */
-    public Color getLineColor() {
-        return this.borderConfiguration.getBorderTopColor();
-    }
-    
-    /**
-     * 获取线条样式
-     *
-     * @return 返回样式
-     */
-    public LineStyle getLineStyle() {
-        return this.borderConfiguration.getBorderLineStyle();
-    }
-    
-    /**
-     * 获取线帽样式
-     *
-     * @return 返回样式
-     */
-    public LineCapStyle getLineCapStyle() {
-        return this.borderConfiguration.getBorderLineCapStyle();
-    }
-    
-    /**
-     * 获取线条长度
-     *
-     * @return 返回长度
-     */
-    public Float getLineLength() {
-        return this.borderConfiguration.getBorderLineLength();
-    }
-    
-    /**
-     * 获取线条宽度
-     *
-     * @return 返回宽度
-     */
-    public Float getLineWidth() {
-        return this.borderConfiguration.getBorderLineWidth();
-    }
-    
-    /**
-     * 获取点线间距
-     *
-     * @return 返回间距
-     */
-    public Float getDottedSpacing() {
-        return this.borderConfiguration.getBorderDottedSpacing();
+        return ComponentType.LINE;
     }
     
     /**
@@ -193,9 +101,33 @@ public class Line extends AbstractComponent {
     protected void init() {
         // 初始化
         super.init();
+        // 初始化样式
+        if (Objects.isNull(this.lineStyle)) {
+            this.lineStyle = LineStyle.SOLID;
+        }
+        // 初始化样式
+        if (Objects.isNull(this.lineCapStyle)) {
+            this.lineCapStyle = LineCapStyle.NORMAL;
+        }
         // 初始化线长
-        if (Objects.isNull(this.getLineLength())) {
-            this.setLineLength(this.getContext().getWrapWidth() - this.getMarginLeft() - this.getMarginRight());
+        if (Objects.isNull(this.lineLength)) {
+            this.lineLength = this.getContext().getWrapWidth() - this.getMarginLeft() - this.getMarginRight();
+        }
+        // 初始化线宽
+        if (Objects.isNull(this.lineWidth)) {
+            this.lineWidth = 1F;
+        }
+        // 初始化线条颜色
+        if (Objects.isNull(this.lineColor)) {
+            this.lineColor = Color.BLACK;
+        }
+        // 初始化点线长度
+        if (Objects.isNull(this.dottedLength)) {
+            this.dottedLength = 1F;
+        }
+        // 初始化点线间隔
+        if (Objects.isNull(this.dottedSpacing)) {
+            this.dottedSpacing = 1F;
         }
         // 初始化旋转角度
         if (Objects.isNull(this.angle)) {
@@ -205,9 +137,6 @@ public class Line extends AbstractComponent {
         if (Objects.isNull(this.alpha)) {
             this.alpha = 1.0F;
         }
-        // 开启上边框
-        this.borderConfiguration.setIsBorder(false);
-        this.borderConfiguration.setIsBorderTop(true);
         // 初始化起始XY轴坐标
         this.initBeginXY(this.getLineLength(), this.getLineWidth());
     }
@@ -232,8 +161,27 @@ public class Line extends AbstractComponent {
         PDPageContentStream stream = this.initContentStream();
         // 初始化矩阵
         CommonUtil.initMatrix(stream, this.getBeginX(), this.getBeginY(), this.getRelativeBeginX(), this.getRelativeBeginY(), this.getLineLength(), this.getLineWidth(), this.getAngle(), this.getAlpha());
-        // 添加边框
-        BorderUtil.drawNormalBorder(stream, CommonUtil.getRectangle(this.getLineLength(), this.getLineWidth()), BorderData.create(this, this.getBorderConfiguration()));
+        // 定义X轴起始坐标
+        float beginX = 0F;
+        // 定义Y轴起始坐标
+        float beginY = 0F;
+        // 定义X轴结束坐标
+        float endX = this.getLineLength();
+        // 定义Y轴结束坐标
+        float endY = 0F;
+        // 判断样式
+        switch (this.getLineStyle()) {
+            // 实线
+            case SOLID: {
+                BorderUtil.drawSolidLine(stream, this.getLineColor(), beginX, beginY, endX, endY);
+                break;
+            }
+            // 虚线
+            case DOTTED: {
+                BorderUtil.drawDottedLine(stream, this.getLineColor(), this.getDottedLength(), this.getDottedSpacing(), beginX, beginY, endX, endY);
+                break;
+            }
+        }
         // 关闭内容流
         stream.close();
     }

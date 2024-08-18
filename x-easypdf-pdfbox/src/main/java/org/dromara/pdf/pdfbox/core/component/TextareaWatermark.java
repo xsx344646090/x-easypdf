@@ -133,6 +133,15 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
     public void setFontColor(Color color) {
         this.fontConfiguration.setFontColor(color);
     }
+    
+    /**
+     * 设置字体描边颜色
+     *
+     * @param color 颜色
+     */
+    public void setStrokColor(Color color) {
+        this.fontConfiguration.setStrokColor(color);
+    }
 
     /**
      * 设置字体透明度
@@ -248,6 +257,10 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
 
     public Color getFontColor() {
         return this.fontConfiguration.getFontColor();
+    }
+    
+    public Color getStrokColor() {
+        return this.fontConfiguration.getStrokColor();
     }
 
     public Float getFontAlpha() {
@@ -387,7 +400,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
                     stream.beginText();
                     // 初始化字体颜色及透明度
                     // 初始化字体颜色及透明度
-                    CommonUtil.initFontColorAndAlpha(stream, this.getPage().getBackgroundColor(), this.getFontStyle(), this.getFontColor(), this.getFontAlpha());
+                    CommonUtil.initFontColorAndAlpha(stream, this.getPage().getBackgroundColor(), this.getFontStyle(), this.getFontColor(), this.getStrokColor(), this.getFontAlpha());
                     // 初始化位置
                     this.initPosition(stream, beginX, beginY);
                     // 写入文本

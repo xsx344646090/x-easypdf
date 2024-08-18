@@ -2,7 +2,6 @@ package org.dromara.pdf.pdfbox.core.component;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.dromara.pdf.pdfbox.core.base.DefaultContainerPagingEvent;
 import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.base.PagingEvent;
 import org.dromara.pdf.pdfbox.core.enums.ComponentType;
@@ -41,9 +40,17 @@ public class Table extends AbstractComponent {
      */
     protected Color backgroundColor;
     /**
+     * 表头
+     */
+    protected TableHeader header;
+    /**
      * 行列表
      */
     protected List<TableRow> rows;
+    /**
+     * 表尾
+     */
+    protected TableFooter footer;
     /**
      * 单元格宽度
      */
@@ -61,6 +68,22 @@ public class Table extends AbstractComponent {
      */
     protected Boolean isPagingBorder;
     /**
+     * 内容上边距
+     */
+    protected Float contentMarginTop;
+    /**
+     * 内容下边距
+     */
+    protected Float contentMarginBottom;
+    /**
+     * 内容左边距
+     */
+    protected Float contentMarginLeft;
+    /**
+     * 内容右边距
+     */
+    protected Float contentMarginRight;
+    /**
      * 内容水平对齐方式
      */
     protected HorizontalAlignment contentHorizontalAlignment;
@@ -76,6 +99,18 @@ public class Table extends AbstractComponent {
      */
     public Table(Page page) {
         super(page);
+    }
+    
+    /**
+     * 设置内容边距（上下左右）
+     *
+     * @param margin 边距
+     */
+    public void setContentMargin(float margin) {
+        this.contentMarginTop = margin;
+        this.contentMarginBottom = margin;
+        this.contentMarginLeft = margin;
+        this.contentMarginRight = margin;
     }
     
     /**
@@ -223,6 +258,22 @@ public class Table extends AbstractComponent {
         if (!this.isCustomPosition && this.relativeBeginY == 0F) {
             this.relativeBeginY = this.getFirstRowHeight();
         }
+        // 初始化内容上边距
+        if (Objects.isNull(this.contentMarginTop)) {
+            this.contentMarginTop = 0F;
+        }
+        // 初始化内容下边距
+        if (Objects.isNull(this.contentMarginBottom)) {
+            this.contentMarginBottom = 0F;
+        }
+        // 初始化内容左边距
+        if (Objects.isNull(this.contentMarginLeft)) {
+            this.contentMarginLeft = 0F;
+        }
+        // 初始化内容右边距
+        if (Objects.isNull(this.contentMarginRight)) {
+            this.contentMarginRight = 0F;
+        }
         // 初始化内容水平对齐方式
         if (Objects.isNull(this.contentHorizontalAlignment)) {
             this.contentHorizontalAlignment = HorizontalAlignment.LEFT;
@@ -231,6 +282,8 @@ public class Table extends AbstractComponent {
         if (Objects.isNull(this.contentVerticalAlignment)) {
             this.contentVerticalAlignment = VerticalAlignment.TOP;
         }
+        // 添加表格分页事件
+        this.pagingEvents.add(new DefaultTablePagingEvent());
         // 初始化表格行
         this.initRows();
         // 检查换行
@@ -287,18 +340,26 @@ public class Table extends AbstractComponent {
      */
     @Override
     protected void writeContents() {
-        // 获取起始X坐标
+        // 获取起始X轴坐标
         float beginX = this.getBeginX() + this.getRelativeBeginX();
-        // 获取起始Y坐标
+        // 获取起始Y轴坐标
         float beginY = this.getBeginY() + this.getRelativeBeginY();
+        // 获取页
+        Page page = this.getPage();
+        // 获取页面顶部坐标
+        float top = this.getContext().getMaxBeginY();
+        // 获取底部坐标
+        float bottom = this.getBottom() - this.getMarginBottom();
+        // 表头非空
+        if (Objects.nonNull(this.getHeader())) {
+            // 重置页面顶部坐标
+            top = top - this.getHeader().getHeight();
+            // 渲染表头并重置起始Y轴坐标
+            beginY = this.getHeader().render(page, beginX, beginY);
+        }
+        // todo 判断表尾
         // 判断是否有行
         if (Objects.nonNull(this.getRows())) {
-            // 获取页
-            Page page = this.getPage();
-            // 获取页顶部坐标
-            float top = this.getContext().getMaxBeginY();
-            // 获取底部坐标
-            float bottom = this.getBottom() - this.getMarginBottom();
             // 遍历行
             for (TableRow tableRow : this.getRows()) {
                 // 判断是否为虚拟渲染
@@ -370,6 +431,9 @@ public class Table extends AbstractComponent {
      * @return 返回高度
      */
     protected float getFirstRowHeight() {
+        if (Objects.nonNull(this.header)) {
+            return this.header.getHeight();
+        }
         return Optional.ofNullable(this.rows).map(rows -> rows.get(0).getHeight()).orElse(0F);
     }
     
@@ -407,6 +471,7 @@ public class Table extends AbstractComponent {
     
     /**
      * 重置
+     *
      * @param x X轴坐标
      * @param y Y轴坐标
      */

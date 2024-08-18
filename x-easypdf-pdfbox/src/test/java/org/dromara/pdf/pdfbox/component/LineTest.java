@@ -63,7 +63,8 @@ public class LineTest extends BaseTest {
             line.setMarginTop(50F);
             line.setLineStyle(LineStyle.DOTTED);
             line.setDottedSpacing(5F);
-            line.setLineWidth(1F);
+            line.setDottedLength(5F);
+            line.setLineWidth(5F);
             line.setLineLength(200F);
             line.render();
 

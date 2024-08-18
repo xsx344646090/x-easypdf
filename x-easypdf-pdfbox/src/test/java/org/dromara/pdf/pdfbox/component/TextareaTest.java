@@ -32,6 +32,70 @@ import java.util.Arrays;
  * </p>
  */
 public class TextareaTest extends BaseTest {
+    
+    /**
+     * 角标测试
+     */
+    @Test
+    public void riseTest() {
+        this.test(() -> {
+            
+            Document document = PdfHandler.getDocumentHandler().create();
+            document.setSpecialFontNames("思源宋体");
+            
+            Page page = new Page(document);
+            
+            Textarea textarea = new Textarea(page);
+            textarea.setText("测试1");
+            textarea.setFontSize(20F);
+            textarea.render();
+            
+            textarea = new Textarea(page);
+            textarea.setText("下标");
+            textarea.setFontSize(10F);
+            textarea.render();
+            
+            textarea = new Textarea(page);
+            textarea.setText("测试2");
+            textarea.setFontSize(20F);
+            textarea.setIsWrap(true);
+            textarea.render();
+            
+            textarea = new Textarea(page);
+            textarea.setText("上标");
+            textarea.setFontSize(10F);
+            textarea.setRise(10F);
+            textarea.render();
+            
+            document.appendPage(page);
+            document.save("E:\\PDF\\pdfbox\\textarea\\riseTest.pdf");
+            document.close();
+        });
+    }
+    
+    /**
+     * 特殊字体测试
+     */
+    @Test
+    public void specialFontTest() {
+        this.test(() -> {
+            PdfHandler.getFontHandler().addFont(Paths.get("E:\\PDF\\pdfbox\\textarea\\NotoEmoji-VariableFont_wght.ttf").toFile());
+            
+            Document document = PdfHandler.getDocumentHandler().create();
+            document.setSpecialFontNames("Noto Emoji Regular");
+            
+            Page page = new Page(document);
+            
+            Textarea textarea = new Textarea(page);
+            textarea.setText("第一个页面，包含emoji字符：\uD83E\uDEE0，测试");
+            textarea.setFontSize(20F);
+            textarea.render();
+            
+            document.appendPage(page);
+            document.save("E:\\PDF\\pdfbox\\textarea\\specialFontTest.pdf");
+            document.close();
+        });
+    }
 
     /**
      * 全局配置测试
@@ -149,70 +213,63 @@ public class TextareaTest extends BaseTest {
     @Test
     public void fontStyleTest() {
         this.test(() -> {
-            PdfHandler.getFontHandler().getFontNames().forEach(System.out::println);
+            PdfHandler.disableScanSystemFonts();
             Document document = PdfHandler.getDocumentHandler().create();
             document.setMargin(50F);
             document.setFontSize(12F);
-            document.setFontName("微软雅黑");
 
             Page page = new Page(document);
 
             Textarea textarea = new Textarea(page);
             textarea.setIsWrap(true);
             textarea.setFontStyle(FontStyle.NORMAL);
-            textarea.setText("x-easypdf（NORMAL）");
+            textarea.setText("贵阳x-easypdf（NORMAL）");
             textarea.render();
 
             textarea.setIsWrap(true);
             textarea.setFontStyle(FontStyle.BOLD);
-            textarea.setText("x-easypdf（BOLD）");
-            textarea.render();
-            
-            textarea.setIsWrap(true);
-            textarea.setFontStyle(FontStyle.NORMAL);
-            textarea.setFontName("微软雅黑 Bold");
-            textarea.setText("x-easypdf（BOLD）");
+            textarea.setText("贵阳x-easypdf（BOLD）");
             textarea.render();
 
             textarea.setIsWrap(true);
             textarea.setFontStyle(FontStyle.LIGHT);
-            textarea.setText("x-easypdf（LIGHT）");
+            textarea.setText("贵阳x-easypdf（LIGHT）");
             textarea.render();
 
             textarea.setIsWrap(true);
             textarea.setFontStyle(FontStyle.STROKE);
-            textarea.setText("x-easypdf（STROKE）");
+            textarea.setText("贵阳x-easypdf（STROKE）");
             textarea.render();
 
             textarea.setIsWrap(true);
             textarea.setFontStyle(FontStyle.HIDDEN);
-            textarea.setText("x-easypdf（HIDDEN）");
+            textarea.setText("贵阳x-easypdf（HIDDEN）");
             textarea.render();
 
             textarea.setIsWrap(true);
             textarea.setFontStyle(FontStyle.ITALIC);
             textarea.setFontSlope(0.3F);
-            textarea.setText("x-easypdf（ITALIC）");
+            textarea.setText("贵阳x-easypdf（ITALIC）");
             textarea.render();
 
             textarea.setIsWrap(true);
             textarea.setFontStyle(FontStyle.ITALIC_BOLD);
             textarea.setFontSlope(0.5F);
-            textarea.setText("x-easypdf（ITALIC_BOLD）");
+            textarea.setText("贵阳x-easypdf（ITALIC_BOLD）");
             textarea.render();
 
             textarea.setIsWrap(true);
             textarea.setFontStyle(FontStyle.ITALIC_LIGHT);
             textarea.setFontSlope(0.5F);
-            textarea.setText("x-easypdf（ITALIC_LIGHT）");
+            textarea.setText("贵阳x-easypdf（ITALIC_LIGHT）");
             textarea.render();
 
             textarea.setIsWrap(true);
             textarea.setFontStyle(FontStyle.ITALIC_STROKE);
             textarea.setFontSlope(0.5F);
-            textarea.setText("x-easypdf（ITALIC_STROKE）");
+            textarea.setText("贵阳x-easypdf（ITALIC_STROKE）");
             textarea.render();
-
+            
             document.appendPage(page);
             document.save("E:\\PDF\\pdfbox\\textarea\\fontStyleTest.pdf");
             document.close();

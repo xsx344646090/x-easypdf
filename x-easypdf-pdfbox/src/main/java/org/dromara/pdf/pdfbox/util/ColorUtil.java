@@ -15,7 +15,7 @@ import java.util.Objects;
  * @since 1.8
  * <p>
  * Copyright (c) 2020 xsx All Rights Reserved.
- * x-easypdf is licensed under Mulan PSL v2.
+ * x-easypdf-pdfbox is licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  * http://license.coscl.org.cn/MulanPSL2
@@ -42,7 +42,17 @@ public class ColorUtil {
                 PDDeviceRGB.INSTANCE
         );
     }
-
+    
+    /**
+     * 转为PDColor对象
+     *
+     * @param color 颜色对象
+     * @return PDColor对象
+     */
+    public static String toPDColorString(Color color) {
+        float[] components = toPDColor(color).getComponents();
+        return String.join(" ", Float.toString(components[0]), Float.toString(components[1]), Float.toString(components[2]), "rg");
+    }
 
     /**
      * 转为Color对象

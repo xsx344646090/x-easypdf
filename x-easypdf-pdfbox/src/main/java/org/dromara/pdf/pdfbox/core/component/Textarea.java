@@ -72,6 +72,10 @@ public class Textarea extends AbstractComponent {
      */
     protected List<String> textList;
     /**
+     * 上升值
+     */
+    protected Float rise;
+    /**
      * 高亮颜色
      */
     protected Color highlightColor;
@@ -128,8 +132,12 @@ public class Textarea extends AbstractComponent {
      * @param fontName 字体名称
      */
     public void setFontName(String fontName) {
-        this.getContext().addFontCache(fontName);
-        this.fontConfiguration.setFontName(fontName);
+        if (Objects.nonNull(fontName)) {
+            this.getContext().addFontCache(fontName);
+            this.fontConfiguration.setFontName(fontName);
+        } else {
+            this.fontConfiguration.setFontName(this.getPage().getFontName());
+        }
     }
     
     /**
@@ -158,6 +166,15 @@ public class Textarea extends AbstractComponent {
      */
     public void setFontColor(Color color) {
         this.fontConfiguration.setFontColor(color);
+    }
+    
+    /**
+     * 设置字体描边颜色
+     *
+     * @param color 颜色
+     */
+    public void setStrokColor(Color color) {
+        this.fontConfiguration.setStrokColor(color);
     }
     
     /**
@@ -309,6 +326,15 @@ public class Textarea extends AbstractComponent {
     }
     
     /**
+     * 获取字体描边颜色
+     *
+     * @return 返回字体描边颜色
+     */
+    public Color getStrokColor() {
+        return this.fontConfiguration.getStrokColor();
+    }
+    
+    /**
      * 获取字体透明度
      *
      * @return 返回字体透明度
@@ -362,7 +388,11 @@ public class Textarea extends AbstractComponent {
         super.init();
         // 初始化制表符大小
         if (Objects.isNull(this.tabSize)) {
-            this.tabSize = 2;
+            this.tabSize = 4;
+        }
+        // 初始化上升值
+        if (Objects.isNull(this.rise)) {
+            this.rise = 0F;
         }
         // 初始化高亮颜色
         if (Objects.isNull(this.highlightColor)) {
@@ -830,10 +860,11 @@ public class Textarea extends AbstractComponent {
      */
     @SneakyThrows
     protected void addText(String text, PDRectangle rectangle, PDPageContentStream contentStream) {
+        // 初始化字体颜色及透明度
+        CommonUtil.initFontColorAndAlpha(contentStream, this.getPage().getBackgroundColor(), this.getFontStyle(), this.getFontColor(), this.getStrokColor(), this.getFontAlpha());
         // 开始写入
         contentStream.beginText();
-        // 初始化字体颜色及透明度
-        CommonUtil.initFontColorAndAlpha(contentStream, this.getPage().getBackgroundColor(), this.getFontStyle(), this.getFontColor(), this.getFontAlpha());
+        
         // 初始化位置
         this.initMatrix(contentStream, rectangle.getLowerLeftX(), rectangle.getLowerLeftY());
         // 写入文本
@@ -981,6 +1012,12 @@ public class Textarea extends AbstractComponent {
      */
     @SneakyThrows
     protected PDPageContentStream initContentStream() {
+        // 定义线宽
+        float lineWidth = 0.31543F;
+        // 细体重置线宽
+        if (this.getFontStyle().isLight()) {
+            lineWidth = 0F;
+        }
         // 获取上下文
         Context context = this.getContext();
         // 初始化内容流
@@ -994,7 +1031,9 @@ public class Textarea extends AbstractComponent {
         // 初始化字体
         contentStream.setFont(this.getFont(), this.getFontSize());
         // 初始化渲染模式
-        contentStream.setRenderingMode(this.getFontStyle().getMode());
+        contentStream.setRenderingMode(this.getFontStyle().getMode(), lineWidth);
+        // 初始化文本上升值
+        contentStream.setTextRise(this.getRise());
         // 初始化行间距
         contentStream.setLeading(this.getLeading());
         // 初始化文本间隔
@@ -1048,9 +1087,9 @@ public class Textarea extends AbstractComponent {
                 // 获取偏移量
                 float offset = this.getContext().getWrapWidth() - textWidth - this.getMarginRight();
                 // 设置起始X轴坐标
-                rectangle.setLowerLeftX(position.getX() + offset);
+                rectangle.setLowerLeftX(Math.min(this.getBeginX() + offset, this.getContext().getMaxBeginX() - textWidth));
                 // 设置结束X轴坐标为起始坐标+文本真实宽度
-                rectangle.setUpperRightX(rectangle.getLowerLeftX() + textWidth);
+                rectangle.setUpperRightX(offset + textWidth);
                 // 结束
                 break;
             }

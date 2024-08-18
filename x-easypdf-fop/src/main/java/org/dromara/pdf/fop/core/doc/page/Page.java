@@ -1225,6 +1225,10 @@ public class Page implements PageComponent {
             // 添加页脚
             pageSequence.appendChild(this.addRegionAfter(document));
         }
+        // 设置初始页码
+        Optional.ofNullable(this.param.getInitialPageNumber()).ifPresent(v -> pageSequence.setAttribute(TemplateAttributes.INITIAL_PAGE_NUMBER, v.intern().toLowerCase()));
+        // 设置强制页面计数
+        Optional.ofNullable(this.param.getForcePageCount()).ifPresent(v -> pageSequence.setAttribute(TemplateAttributes.FORCE_PAGE_COUNT, v.intern().toLowerCase()));
         // 添加页面主体区域
         pageSequence.appendChild(this.addRegionBody(document));
         // 返回页面序列
@@ -1292,6 +1296,31 @@ public class Page implements PageComponent {
         // 返回页脚内容
         return this.addRegion(document, TemplateTags.STATIC_CONTENT, "xsl-region-after", this.param.getRegionAfterParam());
     }
+
+    /**
+     * 初始化页码
+     *
+     * @param initialPageNumber 初始页码
+     * @return 返回页面
+     */
+    public Page setInitialPageNumber(String initialPageNumber) {
+        this.param.setInitialPageNumber(initialPageNumber);
+
+        return this;
+    }
+
+    /**
+     * 强制页面计数
+     *
+     * @param forcePageCount 强制页面计数
+     * @return 返回页面
+     */
+    public Page setForcePageCount(String forcePageCount) {
+        this.param.setForcePageCount(forcePageCount);
+
+        return this;
+    }
+
 
     /**
      * 添加区域

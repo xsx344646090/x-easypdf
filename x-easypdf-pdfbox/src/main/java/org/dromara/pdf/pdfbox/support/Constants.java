@@ -55,11 +55,11 @@ public final class Constants {
     /**
      * 默认字体
      */
-    public static final String DEFAULT_FONT_NAME = "HarmonyOS_Sans_SC_Medium";
+    public static final String DEFAULT_FONT_NAME = "HarmonyOS Sans SC";
     /**
      * 默认字体路径
      */
-    public static final String DEFAULT_FONT_RESOURCE_PATH = "org/dromara/pdf/pdfbox/ttf/HarmonyOS_Sans_SC_Medium.ttf";
+    public static final String DEFAULT_FONT_RESOURCE_PATH = "org/dromara/pdf/pdfbox/ttf/HarmonyOS_Sans_SC_Regular.ttf";
     /**
      * 默认字体大小
      */
