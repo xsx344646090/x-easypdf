@@ -46,9 +46,9 @@ public class CommonUtil {
      * 初始化字体颜色及透明度
      *
      * @param stream          内容流
-     * @param backgroundColor 背景色
      * @param fontStyle       字体样式
      * @param fontColor       字体颜色
+     * @param fontColor       字体描边颜色
      * @param fontAlpha       字体透明度
      */
     @SneakyThrows
@@ -57,6 +57,7 @@ public class CommonUtil {
             Color backgroundColor,
             FontStyle fontStyle,
             Color fontColor,
+            Color strokColor,
             float fontAlpha
     ) {
         // 创建扩展图形状态
@@ -73,7 +74,7 @@ public class CommonUtil {
         // 空心
         if (fontStyle.isStroke()) {
             // 设置字体颜色
-            stream.setStrokingColor(fontColor);
+            stream.setStrokingColor(strokColor);
             // 设置透明度
             state.setStrokingAlphaConstant(fontAlpha);
         }
@@ -211,23 +212,27 @@ public class CommonUtil {
     /**
      * 获取行尺寸
      *
+     * @param beginX X轴起始坐标
+     * @param beginY Y轴起始坐标
+     * @param width  宽度
+     * @param height 高度
+     * @return 返回尺寸
+     */
+    public static PDRectangle getRectangle(float beginX, float beginY, float width, float height) {
+        // 返回尺寸
+        return new PDRectangle(beginX, beginY, width, height);
+    }
+    
+    /**
+     * 获取行尺寸
+     *
      * @param width  宽度
      * @param height 高度
      * @return 返回尺寸
      */
     public static PDRectangle getRectangle(float width, float height) {
-        // 创建尺寸
-        PDRectangle rectangle = new PDRectangle();
-        // 设置起始X轴坐标
-        rectangle.setLowerLeftX(0F);
-        // 设置结束X轴坐标
-        rectangle.setUpperRightX(width);
-        // 设置起始Y轴坐标
-        rectangle.setLowerLeftY(0F);
-        // 设置结束Y轴坐标
-        rectangle.setUpperRightY(height);
         // 返回尺寸
-        return rectangle;
+        return new PDRectangle(width, height);
     }
     
     /**

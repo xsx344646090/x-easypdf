@@ -46,6 +46,10 @@ public class FontConfiguration {
      */
     protected Color fontColor;
     /**
+     * 字体描边颜色
+     */
+    protected Color strokColor;
+    /**
      * 字体透明度
      */
     protected Float fontAlpha;
@@ -128,6 +132,8 @@ public class FontConfiguration {
         this.fontSize = Constants.DEFAULT_FONT_SIZE;
         // 初始化字体颜色
         this.fontColor = Constants.DEFAULT_FONT_COLOR;
+        // 初始化字体描边颜色
+        this.strokColor = Constants.DEFAULT_FONT_COLOR;
         // 初始化字体透明度
         this.fontAlpha = Constants.DEFAULT_FONT_ALPHA;
         // 初始化字体样式
@@ -161,6 +167,10 @@ public class FontConfiguration {
         // 初始化字体颜色
         if (Objects.isNull(this.fontColor)) {
             this.fontColor = configuration.fontColor;
+        }
+        // 初始化字体描边颜色
+        if (Objects.isNull(this.strokColor)) {
+            this.strokColor = configuration.strokColor;
         }
         // 初始化字体透明度
         if (Objects.isNull(this.fontAlpha)) {

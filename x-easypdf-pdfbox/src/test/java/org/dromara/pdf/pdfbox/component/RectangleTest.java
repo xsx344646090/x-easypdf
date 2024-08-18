@@ -3,6 +3,7 @@ package org.dromara.pdf.pdfbox.component;
 import org.dromara.pdf.pdfbox.base.BaseTest;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.base.Page;
+import org.dromara.pdf.pdfbox.core.component.DiagonalLine;
 import org.dromara.pdf.pdfbox.core.component.Rectangle;
 import org.dromara.pdf.pdfbox.core.enums.HorizontalAlignment;
 import org.dromara.pdf.pdfbox.core.enums.VerticalAlignment;
@@ -71,13 +72,20 @@ public class RectangleTest extends BaseTest {
                     Page page = new Page(document);
 
                     Rectangle rectangle = new Rectangle(page);
-                    rectangle.setBackgroundColor(Color.BLUE);
                     rectangle.setBeginX(100F);
                     rectangle.setBeginY(100F);
                     rectangle.setWidth(150F);
-                    rectangle.setHeight(1F);
-                    rectangle.setAngle(45F);
+                    rectangle.setHeight(150F);
+                    rectangle.setBorderColor(Color.BLACK);
                     rectangle.render();
+                    
+                    DiagonalLine line = new DiagonalLine(page);
+                    line.setBeginX(100F);
+                    line.setBeginY(100F);
+                    line.setEndX(100F+150F);
+                    line.setEndY(100F+150F);
+                    line.setAngle(90F);
+                    line.render();
 
                     document.appendPage(page);
                     document.save("E:\\PDF\\pdfbox\\rectangle\\rectangleTest2.pdf");

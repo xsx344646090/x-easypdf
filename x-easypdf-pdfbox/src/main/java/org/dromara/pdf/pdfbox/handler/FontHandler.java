@@ -133,6 +133,23 @@ public class FontHandler {
      * 添加自定义字体
      * <p>注：添加一次即可</p>
      *
+     * @param file  字体文件
+     * @param alias 别名
+     */
+    public void addFont(File file, String alias) {
+        if (Objects.nonNull(file)) {
+            FontMapperImpl.getInstance().getProvider().addFont(file, alias);
+            if (log.isDebugEnabled()) {
+                log.debug("Added font ['" + alias + "']");
+            }
+            FontMapperImpl.getInstance().resetFontInfoByName();
+        }
+    }
+    
+    /**
+     * 添加自定义字体
+     * <p>注：添加一次即可</p>
+     *
      * @param files 字体文件
      */
     public void addFont(File... files) {
@@ -205,6 +222,7 @@ public class FontHandler {
                 // 重置偏移量
                 offset += Character.charCount(codePoint);
             }
+            // 添加字体到子集
             document.addFontToSubset(font);
         }
     }
