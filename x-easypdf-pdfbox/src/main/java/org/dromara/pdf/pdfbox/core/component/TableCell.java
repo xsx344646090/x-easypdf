@@ -39,7 +39,7 @@ import java.util.*;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class TableCell extends BorderData {
-
+    
     /**
      * 背景颜色
      */
@@ -104,7 +104,15 @@ public class TableCell extends BorderData {
      * 内容垂直对齐方式
      */
     protected VerticalAlignment contentVerticalAlignment;
-
+    /**
+     * 是否开启上对角线
+     */
+    protected Boolean isEnableUpLine;
+    /**
+     * 是否开启下对角线
+     */
+    protected Boolean isEnableDownLine;
+    
     /**
      * 有参构造
      *
@@ -114,7 +122,7 @@ public class TableCell extends BorderData {
         this.row = row;
         this.borderConfiguration = new BorderConfiguration(false);
     }
-
+    
     /**
      * 设置内容边距（上下左右）
      *
@@ -126,7 +134,7 @@ public class TableCell extends BorderData {
         this.contentMarginLeft = margin;
         this.contentMarginRight = margin;
     }
-
+    
     /**
      * 设置组件
      *
@@ -136,7 +144,7 @@ public class TableCell extends BorderData {
     public void setComponents(List<Component> components) {
         this.components = components;
     }
-
+    
     /**
      * 设置
      *
@@ -149,7 +157,7 @@ public class TableCell extends BorderData {
             this.components = null;
         }
     }
-
+    
     /**
      * 添加组件
      *
@@ -164,7 +172,7 @@ public class TableCell extends BorderData {
             }
         }
     }
-
+    
     /**
      * 添加组件
      *
@@ -178,7 +186,7 @@ public class TableCell extends BorderData {
             Collections.addAll(this.components, components);
         }
     }
-
+    
     /**
      * 获取宽度
      *
@@ -204,7 +212,7 @@ public class TableCell extends BorderData {
         // 返回总宽度
         return total;
     }
-
+    
     /**
      * 获取高度
      *
@@ -231,7 +239,7 @@ public class TableCell extends BorderData {
         // 返回总高度
         return total;
     }
-
+    
     /**
      * 获取跨行数
      *
@@ -240,7 +248,7 @@ public class TableCell extends BorderData {
     public Integer getRowspan() {
         return Optional.ofNullable(this.rowspan).orElse(0);
     }
-
+    
     /**
      * 获取跨列数
      *
@@ -249,7 +257,7 @@ public class TableCell extends BorderData {
     public Integer getColspan() {
         return Optional.ofNullable(this.colspan).orElse(0);
     }
-
+    
     /**
      * 获取页面
      *
@@ -258,21 +266,21 @@ public class TableCell extends BorderData {
     public Page getPage() {
         return this.row.getPage();
     }
-
+    
     /**
      * 虚拟渲染
      */
     public void virtualRender(Float beginX, Float beginY) {
         this.processRender(beginX, beginY, false);
     }
-
+    
     /**
      * 渲染
      */
     public void render(Float beginX, Float beginY) {
         this.processRender(beginX, beginY, true);
     }
-
+    
     /**
      * 获取分页事件
      *
@@ -281,7 +289,7 @@ public class TableCell extends BorderData {
     protected PagingEvent getPagingEvent() {
         return this.row.getPagingEvent();
     }
-
+    
     /**
      * 初始化
      *
@@ -313,15 +321,46 @@ public class TableCell extends BorderData {
         if (Objects.isNull(this.contentMarginRight)) {
             this.contentMarginRight = this.row.getContentMarginRight();
         }
+        // 初始化内容水平对齐方式
         if (Objects.isNull(this.contentHorizontalAlignment)) {
             this.contentHorizontalAlignment = this.row.getContentHorizontalAlignment();
         }
+        // 初始化内容垂直对齐方式
         if (Objects.isNull(this.contentVerticalAlignment)) {
             this.contentVerticalAlignment = this.row.getContentVerticalAlignment();
         }
+        // 初始化是否开启上对角线
+        if (Objects.isNull(this.isEnableUpLine)) {
+            this.isEnableUpLine = Boolean.FALSE;
+        }
+        // 初始化是否开启下对角线
+        if (Objects.isNull(this.isEnableDownLine)) {
+            this.isEnableDownLine = Boolean.FALSE;
+        }
+        // 初始化X轴起始坐标
         this.beginX = beginX;
+        // 初始化Y轴起始坐标
         this.beginY = beginY;
+        // 初始化边框
         this.initBorder();
+        // 初始化边框信息
+        this.initBorderInfo();
+    }
+    
+    /**
+     * 初始化边框
+     */
+    protected void initBorder() {
+        super.init(this.row, this.row.getBorderConfiguration());
+        if (Objects.isNull(this.isPagingBorder)) {
+            this.isPagingBorder = this.row.getIsPagingBorder();
+        }
+    }
+    
+    /**
+     * 初始化边框信息
+     */
+    protected void initBorderInfo() {
         this.getContext().setBorderInfo(
                 new BorderInfo(
                         this,
@@ -336,17 +375,16 @@ public class TableCell extends BorderData {
                 )
         );
     }
-
+    
     /**
-     * 初始化边框
+     * 是否开启对角线
+     *
+     * @return 返回布尔值，true为是，false为否
      */
-    protected void initBorder() {
-        super.init(this.row, this.row.getBorderConfiguration());
-        if (Objects.isNull(this.isPagingBorder)) {
-            this.isPagingBorder = this.row.getIsPagingBorder();
-        }
+    protected boolean isEnableDiagonalLine() {
+        return this.isEnableUpLine || this.isEnableDownLine;
     }
-
+    
     /**
      * 处理渲染
      *
@@ -368,7 +406,11 @@ public class TableCell extends BorderData {
         // 重置光标位置
         context.getCursor().reset(beginX, beginY);
         // 添加边框
-        float tempY = this.addBorder(beginX, beginY - borderInfo.getHeight(), borderInfo);
+        PDRectangle rectangle = this.addBorder(beginX, beginY - borderInfo.getHeight(), borderInfo);
+        // 添加对角线
+        this.addDiagonalLine(rectangle);
+        // 获取Y轴起始坐标
+        float tempY = rectangle.getLowerLeftY();
         // 如果有组件
         if (Objects.nonNull(this.getComponents())) {
             // 获取内容X轴开始坐标
@@ -408,17 +450,17 @@ public class TableCell extends BorderData {
         // 重置光标位置
         context.resetCursor(beginX + this.getWidth(), tempY);
     }
-
+    
     /**
      * 添加边框
      *
      * @param beginX 组件渲染前X轴坐标
      * @param beginY 组件渲染前Y轴坐标
      * @param info   容器信息
-     * @return 返回Y轴起始坐标
+     * @return 返回尺寸
      */
     @SneakyThrows
-    protected float addBorder(Float beginX, Float beginY, BorderInfo info) {
+    protected PDRectangle addBorder(Float beginX, Float beginY, BorderInfo info) {
         // 获取表格
         Table table = this.getRow().getTable();
         // 重置X轴坐标
@@ -447,8 +489,43 @@ public class TableCell extends BorderData {
             CommonUtil.addBackgroundColor(info.getContext(), info.getContentMode(), info.getIsResetContentStream(), rectangle, info.getBackgroundColor());
             // 绘制边框
             BorderUtil.drawBorderWithData(info, rectangle);
-            // 返回Y轴起始坐标
-            return rectangle.getLowerLeftY();
+            // 返回尺寸
+            return rectangle;
+        }
+    }
+    
+    /**
+     * 添加对角线
+     *
+     * @param rectangle 尺寸
+     */
+    protected void addDiagonalLine(PDRectangle rectangle) {
+        // 开启对角线
+        if (this.isEnableDiagonalLine()) {
+            // 创建对角线对象
+            DiagonalLine line = new DiagonalLine(this.getPage());
+            // 设置对角线的颜色
+            line.setLineColor(this.getBorderTopColor());
+            // 如果启用了上对角线
+            if (this.getIsEnableUpLine()) {
+                // 设置上对角线的起点和终点
+                line.setBeginX(rectangle.getLowerLeftX());
+                line.setBeginY(rectangle.getLowerLeftY());
+                line.setEndX(rectangle.getUpperRightX());
+                line.setEndY(rectangle.getUpperRightY());
+                // 渲染上对角线
+                line.render();
+            }
+            // 如果启用了下对角线
+            if (this.getIsEnableDownLine()) {
+                // 设置下对角线的起点和终点
+                line.setBeginX(rectangle.getLowerLeftX());
+                line.setBeginY(rectangle.getUpperRightY());
+                line.setEndX(rectangle.getUpperRightX());
+                line.setEndY(rectangle.getLowerLeftY());
+                // 渲染下对角线
+                line.render();
+            }
         }
     }
 }

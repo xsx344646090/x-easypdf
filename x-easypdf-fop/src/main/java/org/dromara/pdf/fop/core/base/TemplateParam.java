@@ -232,6 +232,8 @@ class TemplateParam {
      */
     @SneakyThrows
     private Map<String, String> initResource(Configuration configuration) {
+        // 定义渲染类型
+        final String renderType = "application/pdf";
         // 定义资源字典
         Map<String, String> resource = new HashMap<>(10);
         // 获取类加载器
@@ -243,7 +245,7 @@ class TemplateParam {
         // 遍历renderer节点
         for (Configuration renderer : rendererArray) {
             // 如果为pdf渲染器，则解析
-            if ("application/pdf".equals(renderer.getAttribute("mime"))) {
+            if (renderType.equals(renderer.getAttribute("mime"))) {
                 // 获取fonts节点
                 Configuration fonts = renderer.getChild("fonts");
                 // 获取font节点

@@ -10,9 +10,7 @@ import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.base.PagingEvent;
 import org.dromara.pdf.pdfbox.core.base.config.BorderConfiguration;
 import org.dromara.pdf.pdfbox.core.base.config.MarginConfiguration;
-import org.dromara.pdf.pdfbox.core.enums.ComponentType;
-import org.dromara.pdf.pdfbox.core.enums.LineCapStyle;
-import org.dromara.pdf.pdfbox.core.enums.LineStyle;
+import org.dromara.pdf.pdfbox.core.enums.*;
 import org.dromara.pdf.pdfbox.util.BorderUtil;
 import org.dromara.pdf.pdfbox.util.CommonUtil;
 
@@ -81,6 +79,14 @@ public abstract class AbstractPageHeaderOrFooter extends AbstractBase {
      * 是否已经绘制
      */
     protected Boolean isAlreadyRendered;
+    /**
+     * 内容水平对齐方式
+     */
+    protected HorizontalAlignment contentHorizontalAlignment;
+    /**
+     * 内容垂直对齐方式
+     */
+    protected VerticalAlignment contentVerticalAlignment;
     
     
     /**
@@ -580,9 +586,13 @@ public abstract class AbstractPageHeaderOrFooter extends AbstractBase {
      *
      * @param component 组件
      */
-    public void virtualRenderComponent(org.dromara.pdf.pdfbox.core.component.Component component) {
+    public void virtualRenderComponent(Component component) {
         // 初始化类型
         component.getContext().setExecutingComponentType(this.getType());
+        // 初始化水平对齐方式
+        component.setHorizontalAlignment(this.getContentHorizontalAlignment());
+        // 初始化垂直对齐方式
+        component.setVerticalAlignment(this.getContentVerticalAlignment());
         // 初始化X轴换行起始坐标
         this.getContext().setWrapBeginX(this.getBeginX());
         // 初始化换行宽度
@@ -596,7 +606,7 @@ public abstract class AbstractPageHeaderOrFooter extends AbstractBase {
      *
      * @param component 组件
      */
-    public void renderComponent(org.dromara.pdf.pdfbox.core.component.Component component) {
+    public void renderComponent(Component component) {
         // 初始化类型
         component.getContext().setExecutingComponentType(this.getType());
         // 初始化X轴换行起始坐标

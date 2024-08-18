@@ -49,9 +49,13 @@ public enum ComponentType {
      */
     CIRCLE,
     /**
-     * 分割线
+     * 线条
      */
-    SPLIT_LINE,
+    LINE,
+    /**
+     * 对角线
+     */
+    DIAGONAL_LINE,
     /**
      * 容器
      */

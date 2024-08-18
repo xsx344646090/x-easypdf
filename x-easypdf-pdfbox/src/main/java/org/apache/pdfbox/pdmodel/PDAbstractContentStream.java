@@ -64,7 +64,8 @@ public abstract class PDAbstractContentStream implements Closeable {
     
     protected final Map<PDType0Font, GsubWorker> gsubWorkers = new HashMap<>();
     private final GsubWorkerFactory gsubWorkerFactory = new GsubWorkerFactory();
-
+    private Float fontSize;
+    
     /**
      * Create a new appearance stream.
      *
@@ -161,7 +162,7 @@ public abstract class PDAbstractContentStream implements Closeable {
                 }
             }
         }
-        
+        this.fontSize = fontSize;
         writeOperand(resources.add(font));
         writeOperand(fontSize);
         writeOperator(OperatorName.SET_FONT_AND_SIZE);
@@ -203,8 +204,7 @@ public abstract class PDAbstractContentStream implements Closeable {
      */
     public void showText(String text) throws IOException {
         showTextInternal(text);
-        write(" ");
-        writeOperator(OperatorName.SHOW_TEXT);
+        endTextInternal();
     }
     
     /**
@@ -216,8 +216,7 @@ public abstract class PDAbstractContentStream implements Closeable {
      */
     public void showCharacter(Character character) throws IOException {
         showCharacterInternal(character);
-        write(" ");
-        writeOperator(OperatorName.SHOW_TEXT);
+        endTextInternal();
     }
     
     /**
@@ -268,7 +267,7 @@ public abstract class PDAbstractContentStream implements Closeable {
      *
      * @throws IOException If an io exception occurs.
      */
-    public void endCharacterInternal() throws IOException {
+    public void endTextInternal() throws IOException {
         write(" ");
         writeOperator(OperatorName.SHOW_TEXT);
     }
@@ -1313,6 +1312,17 @@ public abstract class PDAbstractContentStream implements Closeable {
     }
     
     /**
+     * Writes a COSName to the content stream.
+     *
+     * @param text the text to be added to the content stream
+     * @throws IOException If the underlying stream has a problem being written to.
+     */
+    protected void writeOperand(String text) throws IOException {
+        write(text);
+        outputStream.write(' ');
+    }
+    
+    /**
      * Writes a string to the content stream as ASCII.
      *
      * @param text the text to be added to the content stream followed by a newline
@@ -1455,8 +1465,26 @@ public abstract class PDAbstractContentStream implements Closeable {
      * @throws IOException If the content stream could not be written.
      */
     public void setRenderingMode(RenderingMode rm) throws IOException {
+        float defaultWeight = 0.31543F;
         writeOperand(rm.intValue());
-        writeOperator(OperatorName.SET_TEXT_RENDERINGMODE);
+        writeOperand(OperatorName.SET_TEXT_RENDERINGMODE);
+        writeOperand(defaultWeight);
+        writeOperator(OperatorName.SET_LINE_WIDTH);
+    }
+    
+    /**
+     * Set the text rendering mode. This determines whether showing text shall cause glyph outlines
+     * to be stroked, filled, used as a clipping boundary, or some combination of the three.
+     *
+     * @param rm    The text rendering mode.
+     * @param width The line width.
+     * @throws IOException If the content stream could not be written.
+     */
+    public void setRenderingMode(RenderingMode rm, float width) throws IOException {
+        writeOperand(rm.intValue());
+        writeOperand(OperatorName.SET_TEXT_RENDERINGMODE);
+        writeOperand(width);
+        writeOperator(OperatorName.SET_LINE_WIDTH);
     }
     
     /**

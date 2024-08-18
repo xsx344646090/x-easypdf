@@ -118,7 +118,7 @@ public class TableTest extends BaseTest {
             page.setMarginBottom(20F);
             page.setFontName("仿宋");
             page.setFontSize(15F);
-            page.setFontStyle(FontStyle.BOLD);
+            page.setFontStyle(FontStyle.NORMAL);
             
             Textarea textarea = new Textarea(document.getCurrentPage());
             textarea.setText("物料标签");
@@ -449,6 +449,7 @@ public class TableTest extends BaseTest {
             table.setCellWidths(width, width, width);
             table.setIsBorder(true);
             table.setIsPagingBorder(true);
+            table.setIsTogether(true);
             table.setBorderColor(Color.GRAY);
             
             for (int i = 0; i < 5; i++) {
@@ -460,13 +461,17 @@ public class TableTest extends BaseTest {
                 //     row.setIsBreak(true);
                 // }
                 for (int j = 0; j < 3; j++) {
-                    Textarea textarea = new Textarea(table.getPage());
-                    textarea.setText("贵阳");
                     TableCell cell = new TableCell(row);
-                    cell.setComponents(textarea);
-                    cell.setContentHorizontalAlignment(HorizontalAlignment.CENTER);
-                    cell.setContentVerticalAlignment(VerticalAlignment.CENTER);
-                    // cell.setBorderColor(Color.BLUE);
+                    if (j==0) {
+                        cell.setIsEnableUpLine(Boolean.TRUE);
+                        cell.setIsEnableDownLine(Boolean.TRUE);
+                    }else {
+                        Textarea textarea = new Textarea(table.getPage());
+                        textarea.setText("贵阳");
+                        cell.setComponents(textarea);
+                        cell.setContentHorizontalAlignment(HorizontalAlignment.CENTER);
+                        cell.setContentVerticalAlignment(VerticalAlignment.CENTER);
+                    }
                     row.addCells(cell);
                 }
                 table.addRows(row);

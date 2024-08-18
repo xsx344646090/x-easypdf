@@ -3,12 +3,16 @@ package org.dromara.pdf.pdfbox.component;
 import org.dromara.pdf.pdfbox.base.BaseTest;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.base.Page;
+import org.dromara.pdf.pdfbox.core.base.PageFooter;
 import org.dromara.pdf.pdfbox.core.base.PageHeader;
 import org.dromara.pdf.pdfbox.core.component.Image;
 import org.dromara.pdf.pdfbox.core.component.Textarea;
+import org.dromara.pdf.pdfbox.core.enums.FontStyle;
+import org.dromara.pdf.pdfbox.core.enums.HorizontalAlignment;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.junit.Test;
 
+import java.io.File;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
@@ -181,5 +185,56 @@ public class PageHeaderTest extends BaseTest {
             document.save("E:\\PDF\\pdfbox\\pageHeader\\textareaAndImageTest.pdf");
             document.close();
         });
+    }
+    
+    /**
+     * 测试页眉
+     */
+    @Test
+    public void test() {
+        PdfHandler.disableScanSystemFonts();
+        PdfHandler.getFontHandler().addFont(new File("E:\\PDF\\pdfbox\\textarea\\NotoEmoji-VariableFont_wght.ttf"), "emoji");
+        Document document = PdfHandler.getDocumentHandler().create();
+        document.setFontStyle(FontStyle.NORMAL);
+        document.setMarginTop(10F);
+        document.setMarginBottom(10F);
+        document.setMarginRight(20F);
+        document.setMarginLeft(20F);
+        document.setSpecialFontNames("emoji");
+        
+        Page page = new Page(document);
+        
+        // 页眉 -- start
+        PageHeader pageHeader = new PageHeader(document.getCurrentPage());
+        pageHeader.setHeight(16F);
+        pageHeader.setIsBorderBottom(true);
+        
+        Textarea headerTextLeft = new Textarea(pageHeader.getPage());
+        headerTextLeft.setText("测试小程序");
+        headerTextLeft.setHorizontalAlignment(HorizontalAlignment.LEFT);
+        
+        Textarea headerTextRight = new Textarea(pageHeader.getPage());
+        headerTextRight.setText("数据来源于微信小程序：测试小程序");
+        headerTextRight.setHorizontalAlignment(HorizontalAlignment.RIGHT);
+        
+        pageHeader.setComponents(headerTextLeft, headerTextRight);
+        pageHeader.render();
+        // 页眉 -- end
+        
+        // 页脚 -- start
+        PageFooter pageFooter = new PageFooter(document.getCurrentPage());
+        pageFooter.setHeight(12F);
+        pageFooter.setIsBorder(false);
+        
+        Textarea footerText = new Textarea(pageFooter.getPage());
+        footerText.setText("第" + footerText.getPlaceholder() + "页");
+        footerText.setHorizontalAlignment(HorizontalAlignment.CENTER);
+        
+        pageFooter.setComponents(footerText);
+        pageFooter.render();
+        // 页脚 -- end
+        
+        document.appendPage(page);
+        document.saveAndClose(new File("E:\\PDF\\pdfbox\\document\\test.pdf"));
     }
 }

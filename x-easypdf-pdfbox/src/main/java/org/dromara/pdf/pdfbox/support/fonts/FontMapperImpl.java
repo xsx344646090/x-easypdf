@@ -155,6 +155,7 @@ public class FontMapperImpl implements FontMapper {
         return fontCache;
     }
 
+    
     public Map<String, FontInfo> getFontInfoByName() {
         return fontInfoByName;
     }
@@ -164,14 +165,14 @@ public class FontMapperImpl implements FontMapper {
         if (!list.isEmpty()) {
             List<FontInfo> tempList = new ArrayList<>(1);
             tempList.add(list.get(list.size() - 1));
-            fontInfoByName.putAll(createFontInfoByName(tempList));
+            fontInfoByName.putAll(this.createFontInfoByName(tempList));
         }
     }
 
     private Map<String, FontInfo> createFontInfoByName(List<? extends FontInfo> fontInfoList) {
         Map<String, FontInfo> map = new LinkedHashMap<>();
         for (FontInfo info : fontInfoList) {
-            for (String name : getPostScriptNames(info.getPostScriptName())) {
+            for (String name : this.getPostScriptNames(info.getPostScriptName())) {
                 map.put(name, info);
             }
             map.put(info.getFontName(), info);

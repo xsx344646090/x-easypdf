@@ -12,7 +12,7 @@ import java.util.List;
  * @author John Hewson
  */
 public abstract class FontProvider {
-
+    
     /**
      * Adds a font to the list of available fonts.
      *
@@ -20,7 +20,16 @@ public abstract class FontProvider {
      * @return returns the font name
      */
     public abstract String addFont(File file);
-
+    
+    /**
+     * Adds a font to the list of available fonts.
+     *
+     * @param file  the font file
+     * @param alias the font alias
+     * @return returns the font name
+     */
+    public abstract String addFont(File file, String alias);
+    
     /**
      * Adds a font to the list of available fonts.
      *
@@ -30,13 +39,13 @@ public abstract class FontProvider {
      * @return returns the font name
      */
     public abstract String addFont(InputStream inputStream, String tempName, FontType type);
-
+    
     /**
      * Returns a string containing debugging information. This will be written to the log if no
      * suitable fonts are found and no fallback fonts are available. May be null.
      */
     public abstract String toDebugString();
-
+    
     /**
      * Returns a list of information about fonts on the system.
      */
