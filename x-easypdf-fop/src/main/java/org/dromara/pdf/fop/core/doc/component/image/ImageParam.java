@@ -39,4 +39,8 @@ class ImageParam extends ComponentParam {
      * 图像路径
      */
     private String path;
+    /**
+     * 缩放类型
+     */
+    private String scaling;
 }
