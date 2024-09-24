@@ -26,7 +26,7 @@ import java.util.*;
  * </p>
  */
 public class TextUtil {
-    
+
     /**
      * 拆分文本（单行）
      *
@@ -76,7 +76,7 @@ public class TextUtil {
         }
         return text;
     }
-    
+
     /**
      * 拆分文本段落（换行）
      *
@@ -142,7 +142,7 @@ public class TextUtil {
         }
         return lineList;
     }
-    
+
     /**
      * 获取文本真实宽度
      *
@@ -233,7 +233,7 @@ public class TextUtil {
         // 返回真实文本宽度
         return width == 0F ? 0F : fontSize * width / 1000 + (text.length() - 1) * characterSpacing;
     }
-    
+
     /**
      * 获取文本真实高度
      *
@@ -252,7 +252,7 @@ public class TextUtil {
         int leadingCount = rowCount - 1;
         return (rowCount * fontSize) + (leadingCount * leading);
     }
-    
+
     /**
      * 转义正则字符
      *
@@ -288,7 +288,7 @@ public class TextUtil {
         }
         return builder.toString();
     }
-    
+
     /**
      * 过滤特殊字符
      *
@@ -299,7 +299,7 @@ public class TextUtil {
         // 替换特殊字符为空串
         return text.replaceAll("[\r\b\f]", "");
     }
-    
+
     /**
      * 替换全部
      *
@@ -330,7 +330,7 @@ public class TextUtil {
         // 返回替换后文本
         return temp;
     }
-    
+
     /**
      * 空白
      *
@@ -340,7 +340,7 @@ public class TextUtil {
     public static boolean isBlank(String text) {
         return !isNotBlank(text);
     }
-    
+
     /**
      * 非空白
      *
@@ -350,7 +350,7 @@ public class TextUtil {
     public static boolean isNotBlank(String text) {
         return Objects.nonNull(text) && !text.trim().isEmpty();
     }
-    
+
     /**
      * 空格
      *
@@ -358,13 +358,14 @@ public class TextUtil {
      * @return 返回字符串
      */
     public static String spacing(int size) {
+        final char space = ' ';
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < size; i++) {
-            builder.append(" ");
+            builder.append(space);
         }
         return builder.toString();
     }
-    
+
     /**
      * 替换制表符
      *
@@ -395,7 +396,7 @@ public class TextUtil {
         // 返回文本
         return builder.append(temp).toString();
     }
-    
+
     /**
      * 写入文本
      *

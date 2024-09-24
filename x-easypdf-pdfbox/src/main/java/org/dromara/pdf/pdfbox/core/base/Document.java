@@ -55,7 +55,7 @@ import java.util.*;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class Document extends AbstractBase implements Closeable {
-    
+
     /**
      * 边框配置
      */
@@ -92,7 +92,7 @@ public class Document extends AbstractBase implements Closeable {
      * 是否刷新元数据
      */
     protected Boolean isFlushMetadata;
-    
+
     /**
      * 无参构造
      */
@@ -100,7 +100,7 @@ public class Document extends AbstractBase implements Closeable {
         // 初始化参数
         this.init();
     }
-    
+
     /**
      * 有参构造
      *
@@ -112,7 +112,7 @@ public class Document extends AbstractBase implements Closeable {
         // 初始化参数
         this.init(policy);
     }
-    
+
     /**
      * 有参构造
      *
@@ -126,7 +126,7 @@ public class Document extends AbstractBase implements Closeable {
         // 初始化参数
         this.init(file, password, keyStore, alias, policy);
     }
-    
+
     /**
      * 有参构造
      *
@@ -140,7 +140,7 @@ public class Document extends AbstractBase implements Closeable {
         // 初始化参数
         this.init(bytes, password, keyStore, alias, policy);
     }
-    
+
     /**
      * 有参构造
      *
@@ -154,7 +154,7 @@ public class Document extends AbstractBase implements Closeable {
         // 初始化参数
         this.init(inputStream, password, keyStore, alias, policy);
     }
-    
+
     /**
      * 设置版本
      *
@@ -173,7 +173,7 @@ public class Document extends AbstractBase implements Closeable {
         // 重置版本
         this.version = version;
     }
-    
+
     /**
      * 设置缓存
      *
@@ -183,7 +183,7 @@ public class Document extends AbstractBase implements Closeable {
         Objects.requireNonNull(cache, "the cache can not be null");
         this.target.setResourceCache(cache);
     }
-    
+
     /**
      * 设置边距（上下左右）
      *
@@ -192,7 +192,7 @@ public class Document extends AbstractBase implements Closeable {
     public void setMargin(float margin) {
         this.marginConfiguration.setMargin(margin);
     }
-    
+
     /**
      * 设置上边距
      *
@@ -201,7 +201,7 @@ public class Document extends AbstractBase implements Closeable {
     public void setMarginTop(float margin) {
         this.marginConfiguration.setMarginTop(margin);
     }
-    
+
     /**
      * 设置下边距
      *
@@ -210,7 +210,7 @@ public class Document extends AbstractBase implements Closeable {
     public void setMarginBottom(float margin) {
         this.marginConfiguration.setMarginBottom(margin);
     }
-    
+
     /**
      * 设置左边距
      *
@@ -219,7 +219,7 @@ public class Document extends AbstractBase implements Closeable {
     public void setMarginLeft(float margin) {
         this.marginConfiguration.setMarginLeft(margin);
     }
-    
+
     /**
      * 设置右边距
      *
@@ -228,7 +228,7 @@ public class Document extends AbstractBase implements Closeable {
     public void setMarginRight(float margin) {
         this.marginConfiguration.setMarginRight(margin);
     }
-    
+
     /**
      * 设置字体名称
      *
@@ -238,7 +238,7 @@ public class Document extends AbstractBase implements Closeable {
         this.fontConfiguration.setFontName(fontName);
         this.getContext().addFontCache(fontName);
     }
-    
+
     /**
      * 设置特殊字体名称
      *
@@ -251,7 +251,7 @@ public class Document extends AbstractBase implements Closeable {
         }
         Collections.addAll(this.fontConfiguration.getSpecialFontNames(), fontNames);
     }
-    
+
     /**
      * 设置字体大小
      *
@@ -260,7 +260,7 @@ public class Document extends AbstractBase implements Closeable {
     public void setFontSize(float size) {
         this.fontConfiguration.setFontSize(size);
     }
-    
+
     /**
      * 设置字体颜色
      *
@@ -269,7 +269,7 @@ public class Document extends AbstractBase implements Closeable {
     public void setFontColor(Color color) {
         this.fontConfiguration.setFontColor(color);
     }
-    
+
     /**
      * 设置字体描边颜色
      *
@@ -278,7 +278,7 @@ public class Document extends AbstractBase implements Closeable {
     public void setStrokColor(Color color) {
         this.fontConfiguration.setStrokColor(color);
     }
-    
+
     /**
      * 设置字体透明度
      *
@@ -287,7 +287,7 @@ public class Document extends AbstractBase implements Closeable {
     public void setFontAlpha(float alpha) {
         this.fontConfiguration.setFontAlpha(alpha);
     }
-    
+
     /**
      * 设置字体样式
      *
@@ -303,7 +303,7 @@ public class Document extends AbstractBase implements Closeable {
             }
         }
     }
-    
+
     /**
      * 设置字体斜率（斜体字）
      *
@@ -312,7 +312,7 @@ public class Document extends AbstractBase implements Closeable {
     public void setFontSlope(float slope) {
         this.fontConfiguration.setFontSlope(slope);
     }
-    
+
     /**
      * 设置字符间距
      *
@@ -321,7 +321,7 @@ public class Document extends AbstractBase implements Closeable {
     public void setCharacterSpacing(float spacing) {
         this.fontConfiguration.setCharacterSpacing(spacing);
     }
-    
+
     /**
      * 设置行间距
      *
@@ -330,7 +330,7 @@ public class Document extends AbstractBase implements Closeable {
     public void setLeading(float leading) {
         this.fontConfiguration.setLeading(leading);
     }
-    
+
     /**
      * 获取字体
      *
@@ -339,7 +339,7 @@ public class Document extends AbstractBase implements Closeable {
     public PDFont getFont() {
         return this.getContext().getFont(this.fontConfiguration.getFontName());
     }
-    
+
     /**
      * 获取上边距
      *
@@ -348,7 +348,7 @@ public class Document extends AbstractBase implements Closeable {
     public Float getMarginTop() {
         return this.marginConfiguration.getMarginTop();
     }
-    
+
     /**
      * 获取下边距
      *
@@ -357,7 +357,7 @@ public class Document extends AbstractBase implements Closeable {
     public Float getMarginBottom() {
         return this.marginConfiguration.getMarginBottom();
     }
-    
+
     /**
      * 获取左边距
      *
@@ -366,7 +366,7 @@ public class Document extends AbstractBase implements Closeable {
     public Float getMarginLeft() {
         return this.marginConfiguration.getMarginLeft();
     }
-    
+
     /**
      * 获取右边距
      *
@@ -375,7 +375,7 @@ public class Document extends AbstractBase implements Closeable {
     public Float getMarginRight() {
         return this.marginConfiguration.getMarginRight();
     }
-    
+
     /**
      * 获取字体名称
      *
@@ -384,7 +384,7 @@ public class Document extends AbstractBase implements Closeable {
     public String getFontName() {
         return this.fontConfiguration.getFontName();
     }
-    
+
     /**
      * 获取特殊字体名称
      *
@@ -393,7 +393,7 @@ public class Document extends AbstractBase implements Closeable {
     public List<String> getSpecialFontNames() {
         return this.fontConfiguration.getSpecialFontNames();
     }
-    
+
     /**
      * 获取字体大小
      *
@@ -402,7 +402,7 @@ public class Document extends AbstractBase implements Closeable {
     public Float getFontSize() {
         return this.fontConfiguration.getFontSize();
     }
-    
+
     /**
      * 获取字体颜色
      *
@@ -411,7 +411,7 @@ public class Document extends AbstractBase implements Closeable {
     public Color getFontColor() {
         return this.fontConfiguration.getFontColor();
     }
-    
+
     /**
      * 获取字体描边颜色
      *
@@ -420,7 +420,7 @@ public class Document extends AbstractBase implements Closeable {
     public Color getStrokColor() {
         return this.fontConfiguration.getStrokColor();
     }
-    
+
     /**
      * 获取字体透明度
      *
@@ -429,7 +429,7 @@ public class Document extends AbstractBase implements Closeable {
     public Float getFontAlpha() {
         return this.fontConfiguration.getFontAlpha();
     }
-    
+
     /**
      * 获取字体样式
      *
@@ -438,7 +438,7 @@ public class Document extends AbstractBase implements Closeable {
     public FontStyle getFontStyle() {
         return this.fontConfiguration.getFontStyle();
     }
-    
+
     /**
      * 获取字体斜率
      *
@@ -447,7 +447,7 @@ public class Document extends AbstractBase implements Closeable {
     public Float getFontSlope() {
         return this.fontConfiguration.getFontSlope();
     }
-    
+
     /**
      * 获取字符间距
      *
@@ -456,7 +456,7 @@ public class Document extends AbstractBase implements Closeable {
     public Float getCharacterSpacing() {
         return this.fontConfiguration.getCharacterSpacing();
     }
-    
+
     /**
      * 获取行间距
      *
@@ -465,7 +465,7 @@ public class Document extends AbstractBase implements Closeable {
     public Float getLeading() {
         return this.fontConfiguration.getLeading();
     }
-    
+
     /**
      * 获取总页数
      *
@@ -474,7 +474,7 @@ public class Document extends AbstractBase implements Closeable {
     public int getTotalPageNumber() {
         return Optional.ofNullable(this.totalPageNumber).orElse(this.context.getPageCount());
     }
-    
+
     /**
      * 获取当前页面
      *
@@ -483,7 +483,7 @@ public class Document extends AbstractBase implements Closeable {
     public Page getCurrentPage() {
         return this.getContext().getPage();
     }
-    
+
     /**
      * 获取指定页面
      *
@@ -496,7 +496,7 @@ public class Document extends AbstractBase implements Closeable {
         }
         return this.pages.get(index);
     }
-    
+
     /**
      * 获取目录列表
      *
@@ -505,14 +505,14 @@ public class Document extends AbstractBase implements Closeable {
     public List<CatalogInfo> getCatalogs() {
         return this.getContext().getCatalogs();
     }
-    
+
     /**
      * 加密（标准）
      */
     public void encryption() {
         this.encryption(false, PWLength.LENGTH_40, "", "");
     }
-    
+
     /**
      * 加密（标准）
      *
@@ -532,7 +532,7 @@ public class Document extends AbstractBase implements Closeable {
         // 设置文档权限
         this.getTarget().protect(policy);
     }
-    
+
     /**
      * 加密（公钥）
      * <p>注：仅支持"X.509"</p>
@@ -554,7 +554,7 @@ public class Document extends AbstractBase implements Closeable {
         // 设置文档权限
         this.getTarget().protect(policy);
     }
-    
+
     /**
      * 解密
      * <p>注：需读取文档时，传入密码</p>
@@ -562,7 +562,7 @@ public class Document extends AbstractBase implements Closeable {
     public void decrypt() {
         this.getTarget().setAllSecurityToBeRemoved(true);
     }
-    
+
     /**
      * 插入页面
      *
@@ -574,7 +574,7 @@ public class Document extends AbstractBase implements Closeable {
         processor.insert(index, page);
         processor.flush();
     }
-    
+
     /**
      * 追加页面
      *
@@ -587,7 +587,7 @@ public class Document extends AbstractBase implements Closeable {
         }
         processor.flush();
     }
-    
+
     /**
      * 追加页面
      *
@@ -596,7 +596,7 @@ public class Document extends AbstractBase implements Closeable {
     public void appendPage(List<Page> pages) {
         this.appendPage(pages.toArray(new Page[0]));
     }
-    
+
     /**
      * 设置页面（替换）
      *
@@ -608,7 +608,7 @@ public class Document extends AbstractBase implements Closeable {
         processor.set(index, page);
         processor.flush();
     }
-    
+
     /**
      * 保存文档
      *
@@ -619,7 +619,7 @@ public class Document extends AbstractBase implements Closeable {
         Objects.requireNonNull(file, "the file can not be null");
         this.save(file.getAbsolutePath());
     }
-    
+
     /**
      * 保存关闭文档
      *
@@ -630,7 +630,7 @@ public class Document extends AbstractBase implements Closeable {
         Objects.requireNonNull(file, "the file can not be null");
         this.saveAndClose(file.getAbsolutePath());
     }
-    
+
     /**
      * 保存文档
      *
@@ -644,7 +644,7 @@ public class Document extends AbstractBase implements Closeable {
             this.save(outputStream);
         }
     }
-    
+
     /**
      * 保存关闭文档
      *
@@ -658,7 +658,7 @@ public class Document extends AbstractBase implements Closeable {
             this.saveAndClose(outputStream);
         }
     }
-    
+
     /**
      * 保存文档
      *
@@ -684,7 +684,6 @@ public class Document extends AbstractBase implements Closeable {
         // 保存文档
         this.getTarget().save(outputStream, new CompressParameters(number));
     }
-    
     /**
      * 保存关闭文档
      *
@@ -695,7 +694,7 @@ public class Document extends AbstractBase implements Closeable {
         this.save(outputStream);
         this.close();
     }
-    
+
     /**
      * 关闭文档
      */
@@ -712,7 +711,7 @@ public class Document extends AbstractBase implements Closeable {
             log.warn("an error occurred when the document was closed", e);
         }
     }
-    
+
     /**
      * 初始化基础
      */
@@ -722,14 +721,14 @@ public class Document extends AbstractBase implements Closeable {
         this.fontConfiguration = new FontConfiguration();
         this.initOtherParams();
     }
-    
+
     /**
      * 初始化
      */
     protected void init() {
         this.init(MemoryPolicy.setupMainMemoryOnly());
     }
-    
+
     /**
      * 初始化
      */
@@ -737,7 +736,7 @@ public class Document extends AbstractBase implements Closeable {
         // 初始化任务文档
         this.target = new PDDocument(policy.getSetting().streamCache);
         // 初始化版本
-        this.target.setVersion(Constants.DEFAULT_VERSION);
+        this.target.getDocument().setVersion(Constants.DEFAULT_VERSION);
         // 初始化资源缓存
         this.target.setResourceCache(new DefaultResourceCache());
         // 初始化基础参数
@@ -745,7 +744,7 @@ public class Document extends AbstractBase implements Closeable {
         // 初始化页面
         this.initPages();
     }
-    
+
     /**
      * 初始化
      *
@@ -764,7 +763,7 @@ public class Document extends AbstractBase implements Closeable {
         // 初始化加载
         this.initLoad();
     }
-    
+
     /**
      * 初始化
      *
@@ -778,7 +777,7 @@ public class Document extends AbstractBase implements Closeable {
     protected void init(byte[] bytes, String password, InputStream keyStore, String alias, MemoryPolicy policy) {
         this.initLoad(new RandomAccessReadBuffer(bytes), password, keyStore, alias, policy);
     }
-    
+
     /**
      * 初始化
      *
@@ -792,7 +791,7 @@ public class Document extends AbstractBase implements Closeable {
     protected void init(InputStream inputStream, String password, InputStream keyStore, String alias, MemoryPolicy policy) {
         this.initLoad(new RandomAccessReadBuffer(inputStream), password, keyStore, alias, policy);
     }
-    
+
     /**
      * 初始化
      *
@@ -811,7 +810,7 @@ public class Document extends AbstractBase implements Closeable {
         // 初始化加载
         this.initLoad();
     }
-    
+
     /**
      * 初始化加载
      */
@@ -823,7 +822,7 @@ public class Document extends AbstractBase implements Closeable {
         // 初始化页面
         this.initPages();
     }
-    
+
     /**
      * 初始化页面列表
      */
@@ -840,7 +839,7 @@ public class Document extends AbstractBase implements Closeable {
             this.pages.add(new Page(this, pageTree.get(i)));
         }
     }
-    
+
     /**
      * 初始化其他参数
      */
