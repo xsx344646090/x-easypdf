@@ -299,7 +299,7 @@ public class TemplateTest extends BaseTest {
             list.add("world");
             // 设置值
             data.put("list", list);
-            data.put("str", "hello world");
+            data.put("str", "测试");
             TemplateHandler.Template.build()
                     .setConfigPath(configPath)
                     .setDataSource(

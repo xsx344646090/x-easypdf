@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--根标签-->
-<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
+<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format"  fo:noNamespaceSchemaLocation="xsl-fo-schema.xsd">
     <!--页面模板-->
     <fo:layout-master-set>
         <!--单页面模板-->
@@ -12,12 +12,12 @@
     <!--页面序列-->
     <fo:page-sequence master-reference="A4">
         <!--页面流-->
-        <fo:flow flow-name="xsl-region-body">
+        <fo:flow flow-name="xsl-region-body" >
             <#list list as data>
             <fo:block>${data}</fo:block>
         </#list>
         <#if str??>
-        <fo:block>${str}</fo:block>
+        <fo:block font-family="思源宋体">${str}</fo:block>
         <#else>
         <fo:block>为空</fo:block>
     </#if>
