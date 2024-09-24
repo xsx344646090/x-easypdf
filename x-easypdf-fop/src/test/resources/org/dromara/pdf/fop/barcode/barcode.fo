@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--根标签-->
-<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
+<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format"
+         xmlns:fox="http://xmlgraphics.apache.org/fop/extensions"
+         xmlns:xe="http://www.x-easypdf.cn/ns"
+         xmlns:svg="http://www.w3.org/2000/svg">
     <!--页面模板-->
     <fo:layout-master-set>
         <!--单页面模板-->
@@ -13,13 +16,12 @@
     <fo:page-sequence master-reference="A4">
         <!--页面流-->
         <fo:flow flow-name="xsl-region-body">
-
             <fo:block text-align="center">
                 <!-- 条形码 -->
                 <fo:instream-foreign-object>
                     <!-- 二维码 -->
-                    <fo:barcode xmlns:fo="http://www.x-easypdf.cn/ns"
-                                type="QR_CODE"
+                    <xe:barcode
+                                type="qr_code"
                                 scale-rate="3"
                                 code-margin="0"
                                 error-level="H"
@@ -40,8 +42,8 @@
                 <!-- 条形码 -->
                 <fo:instream-foreign-object>
                     <!-- 一维码 -->
-                    <fo:barcode xmlns:fo="http://www.x-easypdf.cn/ns"
-                                type="EAN_13"
+                    <xe:barcode xmlns:fo="http://www.x-easypdf.cn/ns"
+                                type="ean_13"
                                 code-margin="0"
                                 radians="0"
                                 width="100pt"

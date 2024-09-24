@@ -59,7 +59,7 @@ public class TableTest extends BaseTest {
                 TableRow row = TemplateHandler.Table.Row.build();
                 TableCell cell1 = TemplateHandler.Table.Cell.build();
                 cell1.setBorder("1pt solid black");
-                cell1.addComponent(TemplateHandler.Text.build().setText("姓名" + i));
+                cell1.addComponent(TemplateHandler.Text.build().setText("姓名fdsdsffdfdsfdsfdsfsdf111111111111111111111111111111111111111111111111111111111111111111111111111111" + i));
                 TableCell cell2 = TemplateHandler.Table.Cell.build();
                 cell2.setBorder("1pt solid black");
                 cell2.addComponent(TemplateHandler.Text.build().setText("职务" + i));
