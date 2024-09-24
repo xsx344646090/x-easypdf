@@ -280,6 +280,10 @@ public class TemplateAttributes {
      */
     public static final String CONTENT_HEIGHT = "content-height";
     /**
+     * 缩放类型
+     */
+    public static final String SCALING = "scaling";
+    /**
      * 分割线样式
      */
     public static final String LEADER_PATTERN = "leader-pattern";
