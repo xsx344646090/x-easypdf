@@ -1,5 +1,8 @@
 package org.dromara.pdf.pdfbox.core.enums;
 
+import lombok.Getter;
+import org.apache.pdfbox.pdmodel.interactive.form.PDVariableText;
+
 /**
  * 水平对齐
  *
@@ -18,17 +21,32 @@ package org.dromara.pdf.pdfbox.core.enums;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
+@Getter
 public enum HorizontalAlignment {
     /**
-     * 左
+     * 居左
      */
-    LEFT,
+    LEFT(PDVariableText.QUADDING_LEFT),
     /**
-     * 右
+     * 居中
      */
-    RIGHT,
+    CENTER(PDVariableText.QUADDING_CENTERED),
     /**
-     * 中
+     * 居右
      */
-    CENTER;
+    RIGHT(PDVariableText.QUADDING_RIGHT);
+
+    /**
+     * 有参构造
+     *
+     * @param alignment 对齐方式
+     */
+    HorizontalAlignment(int alignment) {
+        this.alignment = alignment;
+    }
+
+    /**
+     * 对齐方式
+     */
+    private final int alignment;
 }

@@ -2,6 +2,7 @@ package org.dromara.pdf.pdfbox.core.ext.processor;
 
 import lombok.EqualsAndHashCode;
 import org.dromara.pdf.pdfbox.core.base.Document;
+import org.dromara.pdf.pdfbox.core.ext.processor.form.FormProcessor;
 import org.dromara.pdf.pdfbox.core.ext.processor.sign.SignProcessor;
 
 /**

@@ -13,6 +13,7 @@ import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.base.config.FontConfiguration;
 import org.dromara.pdf.pdfbox.core.enums.ComponentType;
 import org.dromara.pdf.pdfbox.core.enums.FontStyle;
+import org.dromara.pdf.pdfbox.core.ext.handler.AbstractTextHandler;
 import org.dromara.pdf.pdfbox.support.Constants;
 import org.dromara.pdf.pdfbox.util.CommonUtil;
 import org.dromara.pdf.pdfbox.util.TextUtil;
@@ -49,6 +50,10 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
      * 字体配置
      */
     protected FontConfiguration fontConfiguration;
+    /**
+     * 文本助手
+     */
+    protected AbstractTextHandler textHandler;
     /**
      * 自定义起始X轴坐标
      */
@@ -97,6 +102,16 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
     }
 
     /**
+     * 设置文本助手
+     *
+     * @param handler 助手
+     */
+    public void setTextHandler(AbstractTextHandler handler) {
+        Objects.requireNonNull(handler, "the handler can not be null");
+        this.textHandler = handler;
+    }
+
+    /**
      * 设置字体名称
      *
      * @param fontName 字体名称
@@ -133,7 +148,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
     public void setFontColor(Color color) {
         this.fontConfiguration.setFontColor(color);
     }
-    
+
     /**
      * 设置字体描边颜色
      *
@@ -258,7 +273,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
     public Color getFontColor() {
         return this.fontConfiguration.getFontColor();
     }
-    
+
     public Color getStrokColor() {
         return this.fontConfiguration.getStrokColor();
     }
@@ -328,6 +343,10 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
             for (String specialFontName : this.fontConfiguration.getSpecialFontNames()) {
                 this.getContext().addFontCache(specialFontName);
             }
+        }
+        // 初始化文本助手
+        if (Objects.isNull(this.textHandler)) {
+            this.textHandler = this.getContext().getTextHandler();;
         }
         // 初始化当前执行组件类型
         if (Objects.isNull(this.getContext().getExecutingComponentType())) {
@@ -399,12 +418,11 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
                     // 开始写入
                     stream.beginText();
                     // 初始化字体颜色及透明度
-                    // 初始化字体颜色及透明度
                     CommonUtil.initFontColorAndAlpha(stream, this.getPage().getBackgroundColor(), this.getFontStyle(), this.getFontColor(), this.getStrokColor(), this.getFontAlpha());
                     // 初始化位置
                     this.initPosition(stream, beginX, beginY);
                     // 写入文本
-                    TextUtil.writeText(this.getContext(), stream, text, this.getSpecialFontNames(), this.getFont(), this.getFontSize());
+                    this.getContext().getTextHandler().writeText(this.getFontConfiguration(), stream, text);
                     // 结束写入
                     stream.endText();
                     // 重置Y轴起始坐标
@@ -412,7 +430,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
                     // 重置最大宽度
                     if (initFlag) {
                         // 重置最大宽度
-                        maxWidth = Math.max(maxWidth, TextUtil.getTextRealWidth(this.getContext(), writeText, this.getFont(), this.getFontSize(), this.getCharacterSpacing(), this.getSpecialFontNames()));
+                        maxWidth = Math.max(maxWidth, this.getContext().getTextHandler().getTextWidth(this.getFontConfiguration(), writeText));
                     }
                 }
                 // 重置X轴起始坐标

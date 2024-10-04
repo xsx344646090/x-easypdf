@@ -3,6 +3,8 @@ package org.dromara.pdf.pdfbox.support;
 import org.dromara.pdf.pdfbox.core.enums.FontStyle;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 常量
@@ -57,6 +59,10 @@ public final class Constants {
      */
     public static final String DEFAULT_FONT_NAME = "HarmonyOS Sans SC";
     /**
+     * 默认特殊字体
+     */
+    public static final List<String> DEFAULT_FONT_SPECIAL_NAMES = new ArrayList<>();
+    /**
      * 默认字体路径
      */
     public static final String DEFAULT_FONT_RESOURCE_PATH = "org/dromara/pdf/pdfbox/ttf/HarmonyOS_Sans_SC_Regular.ttf";
@@ -88,6 +94,10 @@ public final class Constants {
      * 默认字符间距
      */
     public static final Float DEFAULT_CHARACTER_SPACING = 0F;
+    /**
+     * 默认未知字符
+     */
+    public static final Character DEFAULT_UNKNOWN_CHARACTER = '□';
     /**
      * 默认行间距
      */

@@ -6,6 +6,7 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.dromara.pdf.pdfbox.core.component.BorderInfo;
 import org.dromara.pdf.pdfbox.core.enums.ComponentType;
+import org.dromara.pdf.pdfbox.core.ext.handler.AbstractTextHandler;
 import org.dromara.pdf.pdfbox.core.info.CatalogInfo;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 
@@ -108,6 +109,10 @@ public class Context {
      * 字体字典
      */
     protected Map<String, PDFont> fontMap;
+    /**
+     * 文本助手
+     */
+    protected AbstractTextHandler textHandler;
 
     /**
      * 有参构造
@@ -125,6 +130,16 @@ public class Context {
         this.catalogs = new ArrayList<>(16);
         this.customInfo = new HashMap<>(16);
         this.fontMap = new HashMap<>(16);
+    }
+
+    /**
+     * 设置文本助手
+     *
+     * @param handler 助手
+     */
+    public void setTextHandler(AbstractTextHandler handler) {
+        Objects.requireNonNull(handler, "the handler can not be null");
+        this.textHandler = handler;
     }
 
     /**
@@ -204,7 +219,7 @@ public class Context {
     public float getPageFooterHeight() {
         return Optional.ofNullable(this.pageFooter).map(PageFooter::getHeight).orElse(0F);
     }
-    
+
     /**
      * 获取最大X轴起始坐标
      *
