@@ -18,6 +18,8 @@ import org.dromara.pdf.pdfbox.core.base.config.FontConfiguration;
 import org.dromara.pdf.pdfbox.core.base.config.MarginConfiguration;
 import org.dromara.pdf.pdfbox.core.enums.FontStyle;
 import org.dromara.pdf.pdfbox.core.enums.PWLength;
+import org.dromara.pdf.pdfbox.core.ext.handler.AbstractTextHandler;
+import org.dromara.pdf.pdfbox.core.ext.handler.TextHandler;
 import org.dromara.pdf.pdfbox.core.ext.processor.MetadataProcessor;
 import org.dromara.pdf.pdfbox.core.ext.processor.PageProcessor;
 import org.dromara.pdf.pdfbox.core.info.CatalogInfo;
@@ -194,141 +196,12 @@ public class Document extends AbstractBase implements Closeable {
     }
 
     /**
-     * 设置上边距
+     * 设置文本助手
      *
-     * @param margin 边距
+     * @param handler 助手
      */
-    public void setMarginTop(float margin) {
-        this.marginConfiguration.setMarginTop(margin);
-    }
-
-    /**
-     * 设置下边距
-     *
-     * @param margin 边距
-     */
-    public void setMarginBottom(float margin) {
-        this.marginConfiguration.setMarginBottom(margin);
-    }
-
-    /**
-     * 设置左边距
-     *
-     * @param margin 边距
-     */
-    public void setMarginLeft(float margin) {
-        this.marginConfiguration.setMarginLeft(margin);
-    }
-
-    /**
-     * 设置右边距
-     *
-     * @param margin 边距
-     */
-    public void setMarginRight(float margin) {
-        this.marginConfiguration.setMarginRight(margin);
-    }
-
-    /**
-     * 设置字体名称
-     *
-     * @param fontName 字体名称
-     */
-    public void setFontName(String fontName) {
-        this.fontConfiguration.setFontName(fontName);
-        this.getContext().addFontCache(fontName);
-    }
-
-    /**
-     * 设置特殊字体名称
-     *
-     * @param fontNames 字体名称
-     */
-    public void setSpecialFontNames(String... fontNames) {
-        this.getContext().addFontCache(fontNames);
-        if (Objects.isNull(this.fontConfiguration.getSpecialFontNames())) {
-            this.fontConfiguration.setSpecialFontNames(new ArrayList<>(10));
-        }
-        Collections.addAll(this.fontConfiguration.getSpecialFontNames(), fontNames);
-    }
-
-    /**
-     * 设置字体大小
-     *
-     * @param size 大小
-     */
-    public void setFontSize(float size) {
-        this.fontConfiguration.setFontSize(size);
-    }
-
-    /**
-     * 设置字体颜色
-     *
-     * @param color 颜色
-     */
-    public void setFontColor(Color color) {
-        this.fontConfiguration.setFontColor(color);
-    }
-
-    /**
-     * 设置字体描边颜色
-     *
-     * @param color 颜色
-     */
-    public void setStrokColor(Color color) {
-        this.fontConfiguration.setStrokColor(color);
-    }
-
-    /**
-     * 设置字体透明度
-     *
-     * @param alpha 透明度
-     */
-    public void setFontAlpha(float alpha) {
-        this.fontConfiguration.setFontAlpha(alpha);
-    }
-
-    /**
-     * 设置字体样式
-     *
-     * @param style 样式
-     */
-    public void setFontStyle(FontStyle style) {
-        this.fontConfiguration.setFontStyle(style);
-        if (Objects.nonNull(style)) {
-            if (style.isItalic()) {
-                this.fontConfiguration.setFontSlope(Constants.DEFAULT_FONT_ITALIC_SLOPE);
-            } else {
-                this.fontConfiguration.setFontSlope(Constants.DEFAULT_FONT_SLOPE);
-            }
-        }
-    }
-
-    /**
-     * 设置字体斜率（斜体字）
-     *
-     * @param slope 斜率
-     */
-    public void setFontSlope(float slope) {
-        this.fontConfiguration.setFontSlope(slope);
-    }
-
-    /**
-     * 设置字符间距
-     *
-     * @param spacing 间距
-     */
-    public void setCharacterSpacing(float spacing) {
-        this.fontConfiguration.setCharacterSpacing(spacing);
-    }
-
-    /**
-     * 设置行间距
-     *
-     * @param leading 行间距
-     */
-    public void setLeading(float leading) {
-        this.fontConfiguration.setLeading(leading);
+    public void setTextHandler(AbstractTextHandler handler) {
+        this.context.setTextHandler(handler);
     }
 
     /**
@@ -350,12 +223,30 @@ public class Document extends AbstractBase implements Closeable {
     }
 
     /**
+     * 设置上边距
+     *
+     * @param margin 边距
+     */
+    public void setMarginTop(float margin) {
+        this.marginConfiguration.setMarginTop(margin);
+    }
+
+    /**
      * 获取下边距
      *
      * @return 返回下边距
      */
     public Float getMarginBottom() {
         return this.marginConfiguration.getMarginBottom();
+    }
+
+    /**
+     * 设置下边距
+     *
+     * @param margin 边距
+     */
+    public void setMarginBottom(float margin) {
+        this.marginConfiguration.setMarginBottom(margin);
     }
 
     /**
@@ -368,12 +259,30 @@ public class Document extends AbstractBase implements Closeable {
     }
 
     /**
+     * 设置左边距
+     *
+     * @param margin 边距
+     */
+    public void setMarginLeft(float margin) {
+        this.marginConfiguration.setMarginLeft(margin);
+    }
+
+    /**
      * 获取右边距
      *
      * @return 返回右边距
      */
     public Float getMarginRight() {
         return this.marginConfiguration.getMarginRight();
+    }
+
+    /**
+     * 设置右边距
+     *
+     * @param margin 边距
+     */
+    public void setMarginRight(float margin) {
+        this.marginConfiguration.setMarginRight(margin);
     }
 
     /**
@@ -386,12 +295,35 @@ public class Document extends AbstractBase implements Closeable {
     }
 
     /**
+     * 设置字体名称
+     *
+     * @param fontName 字体名称
+     */
+    public void setFontName(String fontName) {
+        this.fontConfiguration.setFontName(fontName);
+        this.getContext().addFontCache(fontName);
+    }
+
+    /**
      * 获取特殊字体名称
      *
      * @return 返回特殊字体名称
      */
     public List<String> getSpecialFontNames() {
         return this.fontConfiguration.getSpecialFontNames();
+    }
+
+    /**
+     * 设置特殊字体名称
+     *
+     * @param fontNames 字体名称
+     */
+    public void setSpecialFontNames(String... fontNames) {
+        this.getContext().addFontCache(fontNames);
+        if (Objects.isNull(this.fontConfiguration.getSpecialFontNames())) {
+            this.fontConfiguration.setSpecialFontNames(new ArrayList<>(10));
+        }
+        Collections.addAll(this.fontConfiguration.getSpecialFontNames(), fontNames);
     }
 
     /**
@@ -404,12 +336,30 @@ public class Document extends AbstractBase implements Closeable {
     }
 
     /**
+     * 设置字体大小
+     *
+     * @param size 大小
+     */
+    public void setFontSize(float size) {
+        this.fontConfiguration.setFontSize(size);
+    }
+
+    /**
      * 获取字体颜色
      *
      * @return 返回字体颜色
      */
     public Color getFontColor() {
         return this.fontConfiguration.getFontColor();
+    }
+
+    /**
+     * 设置字体颜色
+     *
+     * @param color 颜色
+     */
+    public void setFontColor(Color color) {
+        this.fontConfiguration.setFontColor(color);
     }
 
     /**
@@ -422,12 +372,30 @@ public class Document extends AbstractBase implements Closeable {
     }
 
     /**
+     * 设置字体描边颜色
+     *
+     * @param color 颜色
+     */
+    public void setStrokColor(Color color) {
+        this.fontConfiguration.setStrokColor(color);
+    }
+
+    /**
      * 获取字体透明度
      *
      * @return 返回字体透明度
      */
     public Float getFontAlpha() {
         return this.fontConfiguration.getFontAlpha();
+    }
+
+    /**
+     * 设置字体透明度
+     *
+     * @param alpha 透明度
+     */
+    public void setFontAlpha(float alpha) {
+        this.fontConfiguration.setFontAlpha(alpha);
     }
 
     /**
@@ -440,12 +408,37 @@ public class Document extends AbstractBase implements Closeable {
     }
 
     /**
+     * 设置字体样式
+     *
+     * @param style 样式
+     */
+    public void setFontStyle(FontStyle style) {
+        this.fontConfiguration.setFontStyle(style);
+        if (Objects.nonNull(style)) {
+            if (style.isItalic()) {
+                this.fontConfiguration.setFontSlope(Constants.DEFAULT_FONT_ITALIC_SLOPE);
+            } else {
+                this.fontConfiguration.setFontSlope(Constants.DEFAULT_FONT_SLOPE);
+            }
+        }
+    }
+
+    /**
      * 获取字体斜率
      *
      * @return 返回字体斜率
      */
     public Float getFontSlope() {
         return this.fontConfiguration.getFontSlope();
+    }
+
+    /**
+     * 设置字体斜率（斜体字）
+     *
+     * @param slope 斜率
+     */
+    public void setFontSlope(float slope) {
+        this.fontConfiguration.setFontSlope(slope);
     }
 
     /**
@@ -458,12 +451,30 @@ public class Document extends AbstractBase implements Closeable {
     }
 
     /**
+     * 设置字符间距
+     *
+     * @param spacing 间距
+     */
+    public void setCharacterSpacing(float spacing) {
+        this.fontConfiguration.setCharacterSpacing(spacing);
+    }
+
+    /**
      * 获取行间距
      *
      * @return 返回行间距
      */
     public Float getLeading() {
         return this.fontConfiguration.getLeading();
+    }
+
+    /**
+     * 设置行间距
+     *
+     * @param leading 行间距
+     */
+    public void setLeading(float leading) {
+        this.fontConfiguration.setLeading(leading);
     }
 
     /**
@@ -684,6 +695,7 @@ public class Document extends AbstractBase implements Closeable {
         // 保存文档
         this.getTarget().save(outputStream, new CompressParameters(number));
     }
+
     /**
      * 保存关闭文档
      *
@@ -844,6 +856,10 @@ public class Document extends AbstractBase implements Closeable {
      * 初始化其他参数
      */
     protected void initOtherParams() {
+        // 添加字体缓存
+        this.context.addFontCache(this.fontConfiguration.getFontName());
+        // 设置文本助手
+        this.context.setTextHandler(new TextHandler(this));
         // 初始化文档访问权限
         this.accessPermission = this.target.getCurrentAccessPermission();
         // 初始化文档版本
@@ -852,13 +868,5 @@ public class Document extends AbstractBase implements Closeable {
         this.isFlushMetadata = Boolean.TRUE;
         // 初始化背景颜色
         this.backgroundColor = Color.WHITE;
-        // 添加字体缓存
-        this.context.addFontCache(this.fontConfiguration.getFontName());
-        // 初始化特殊字体
-        if (Objects.nonNull(this.fontConfiguration.getSpecialFontNames())) {
-            for (String specialFontName : this.fontConfiguration.getSpecialFontNames()) {
-                this.getContext().addFontCache(specialFontName);
-            }
-        }
     }
 }

@@ -442,4 +442,62 @@ public class TableTest extends BaseTest {
             document.transform(outputPath);
         });
     }
+
+    @Test
+    public void test() {
+        // 定义输出路径
+        String outputPath = "E:\\PDF\\fop\\table\\test.pdf";
+// 创建文档
+        Document document = TemplateHandler.Document.build();
+// 创建页面
+        Page page = TemplateHandler.Page.build();
+// 创建表格
+        Table table = TemplateHandler.Table.build();
+// 创建表格体
+        TableBody tableBody = TemplateHandler.Table.Body.build();
+// 循环创建表格行
+        for (int i = 1; i <= 3; i++) {
+            // 创建表格行
+            TableRow row = TemplateHandler.Table.Row.build();
+            // 循环创建表格单元格
+            for (int j = 1; j <= 3; j++) {
+                // 如果为第三行第一列或第二行第三列，则跳过
+                if (i == 3 && j == 1 || i == 2 && j == 3) {
+                    continue;
+                }
+                // 创建表格单元格
+                TableCell cell = TemplateHandler.Table.Cell.build();
+                // 设置单元格边框
+                cell.setBorder("1 solid black");
+                // 创建文本
+                Text text = TemplateHandler.Text.build().setText(String.format("%s-hello-world-%s", i, j));
+                // 添加文本
+                cell.addComponent(text);
+                // 如果为第二行
+                if (i == 2) {
+                    // 如果为第一列
+                    if (j == 1) {
+                        // 合并两行
+                        cell.setRowSpan(2);
+                    } else {
+                        // 合并两列
+                        cell.setColumnSpan(2);
+                    }
+                }
+                // 添加单元格
+                row.addCell(cell);
+            }
+            // 添加行
+            tableBody.addRow(row);
+        }
+// 设置表格体
+        table.setBody(tableBody);
+// 添加表格
+        page.addBodyComponent(table);
+// 添加页面
+        document.addPage(page);
+// 转换pdf
+        document.transform(outputPath);
+
+    }
 }
