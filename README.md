@@ -21,7 +21,7 @@
 ---
 
 #### 当前版本
-> v3.1.1
+> v3.1.2
 
 ---
 
@@ -58,7 +58,7 @@
 <dependency>
     <groupId>org.dromara.x-easypdf</groupId>
     <artifactId>x-easypdf</artifactId>
-    <version>3.1.1</version>
+    <version>3.1.2</version>
 </dependency>
 ```
 
@@ -67,7 +67,7 @@
 <dependency>
     <groupId>org.dromara.x-easypdf</groupId>
     <artifactId>x-easypdf-pdfbox</artifactId>
-    <version>3.1.1</version>
+    <version>3.1.2</version>
 </dependency>
 ```
 
@@ -76,7 +76,7 @@
 <dependency>
     <groupId>org.dromara.x-easypdf</groupId>
     <artifactId>x-easypdf-fop</artifactId>
-    <version>3.1.1</version>
+    <version>3.1.2</version>
 </dependency>
 ```
 
