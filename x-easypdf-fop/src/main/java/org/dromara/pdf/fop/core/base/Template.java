@@ -6,7 +6,6 @@ import org.apache.commons.logging.LogFactory;
 import org.dromara.pdf.fop.core.datasource.DataSource;
 import org.dromara.pdf.fop.support.layout.ExpandLayoutManagerMaker;
 import org.dromara.pdf.fop.util.FileUtil;
-import org.dromara.pdf.pdfbox.core.base.Document;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -205,7 +204,7 @@ public class Template {
      * @return 返回pdf文档
      */
     @SneakyThrows
-    public Document transform() {
+    public org.dromara.pdf.pdfbox.core.base.Document transform() {
         // 创建输出流
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             // 转换pdf
