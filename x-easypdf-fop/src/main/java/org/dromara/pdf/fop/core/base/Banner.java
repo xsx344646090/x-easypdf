@@ -24,6 +24,10 @@ import java.util.Properties;
  */
 public class Banner {
     /**
+     * 标语键
+     */
+    private static final String BANNER_KEY = "x-easypdf.banner";
+    /**
      * 当前版本
      */
     private static final String VERSION = initVersion();
@@ -43,10 +47,20 @@ public class Banner {
             "# If you find it useful, please give a star.\n";
 
     /**
+     * 关闭
+     */
+    public static void disable() {
+        System.setProperty(BANNER_KEY, "false");
+    }
+
+    /**
      * 打印
      */
     public static void print() {
-        System.out.println(TEXT);
+        String flag = System.getProperty(BANNER_KEY, "true");
+        if ("true".equals(flag)) {
+            System.out.println(TEXT);
+        }
     }
 
     /**
