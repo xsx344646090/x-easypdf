@@ -45,13 +45,13 @@ public class TextTest extends BaseTest {
                                     .addBodyComponent(
                                             TemplateHandler.Text.build()
                                                     .setText("加粗需要字体支持")
-                                                    .setFontFamily("仿宋")
+                                                    .setFontFamily("宋体")
                                                     .setFontWeight("bold")
                                                     .setHorizontalStyle("right")
                                                     .setMarginRight("10pt"),
                                             TemplateHandler.Text.build()
                                                     .setText("不加粗            文本间隔")
-                                                    .setFontFamily("仿宋")
+                                                    .setFontFamily("宋体")
                                                     .setFontColor("BLUE")
                                                     .setWhiteSpaceCollapse("false")
                                                     .enableDeleteLine()
