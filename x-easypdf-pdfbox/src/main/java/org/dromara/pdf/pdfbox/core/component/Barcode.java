@@ -49,7 +49,7 @@ import java.util.concurrent.locks.ReentrantLock;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class Barcode extends AbstractComponent {
-
+    
     /**
      * 缓存
      */
@@ -135,10 +135,14 @@ public class Barcode extends AbstractComponent {
      */
     protected Boolean isShowWords;
     /**
+     * 是否无白边
+     */
+    protected Boolean isNoWhiteBorder;
+    /**
      * 是否缓存
      */
     protected Boolean isCache;
-
+    
     /**
      * 有参构造
      *
@@ -147,7 +151,7 @@ public class Barcode extends AbstractComponent {
     public Barcode(Page page) {
         super(page);
     }
-
+    
     /**
      * 设置宽度（显示）
      *
@@ -159,7 +163,7 @@ public class Barcode extends AbstractComponent {
         }
         this.width = width;
     }
-
+    
     /**
      * 设置高度（显示）
      *
@@ -171,7 +175,7 @@ public class Barcode extends AbstractComponent {
         }
         this.height = height;
     }
-
+    
     /**
      * 设置图像宽度（生成）
      *
@@ -183,7 +187,7 @@ public class Barcode extends AbstractComponent {
         }
         this.imageWidth = width;
     }
-
+    
     /**
      * 设置图像高度（生成）
      *
@@ -195,7 +199,7 @@ public class Barcode extends AbstractComponent {
         }
         this.imageHeight = height;
     }
-
+    
     /**
      * 设置条形码边距
      *
@@ -208,7 +212,7 @@ public class Barcode extends AbstractComponent {
         // 设置边距
         this.encodeHints.put(EncodeHintType.MARGIN, margin);
     }
-
+    
     /**
      * 设置纠错级别
      *
@@ -219,7 +223,7 @@ public class Barcode extends AbstractComponent {
             this.encodeHints.put(EncodeHintType.ERROR_CORRECTION, level.getLevel());
         }
     }
-
+    
     /**
      * 设置二维码版本（仅二维码有效）
      *
@@ -234,7 +238,7 @@ public class Barcode extends AbstractComponent {
             throw new IllegalArgumentException("the version must be between 1 and 40");
         }
     }
-
+    
     /**
      * 设置二维码掩码模式（仅二维码有效）
      *
@@ -246,7 +250,7 @@ public class Barcode extends AbstractComponent {
         }
         this.encodeHints.put(EncodeHintType.QR_MASK_PATTERN, pattern);
     }
-
+    
     /**
      * 设置二维码紧凑模式（仅二维码有效）
      *
@@ -255,7 +259,7 @@ public class Barcode extends AbstractComponent {
     public void setQrCompact(boolean isCompact) {
         this.encodeHints.put(EncodeHintType.QR_COMPACT, isCompact);
     }
-
+    
     /**
      * 设置编码提示
      *
@@ -265,7 +269,7 @@ public class Barcode extends AbstractComponent {
     public void setEncodeHints(EncodeHintType type, Object value) {
         this.encodeHints.put(type, value);
     }
-
+    
     /**
      * 获取类型
      *
@@ -275,7 +279,7 @@ public class Barcode extends AbstractComponent {
     public ComponentType getType() {
         return ComponentType.BARCODE;
     }
-
+    
     /**
      * 获取最小宽度
      *
@@ -285,7 +289,7 @@ public class Barcode extends AbstractComponent {
     protected float getMinWidth() {
         return this.getWidth();
     }
-
+    
     /**
      * 初始化
      */
@@ -321,6 +325,10 @@ public class Barcode extends AbstractComponent {
         if (Objects.isNull(this.isShowWords)) {
             this.isShowWords = Boolean.FALSE;
         }
+        // 初始化是否无白边
+        if (Objects.isNull(this.isNoWhiteBorder)) {
+            this.isNoWhiteBorder = Boolean.FALSE;
+        }
         // 初始化是否缓存
         if (Objects.isNull(this.isCache)) {
             this.isCache = Boolean.FALSE;
@@ -328,7 +336,7 @@ public class Barcode extends AbstractComponent {
         // 初始化起始XY轴坐标
         this.initBeginXY(this.width, this.height);
     }
-
+    
     /**
      * 初始化宽度与高度
      */
@@ -352,7 +360,7 @@ public class Barcode extends AbstractComponent {
             this.imageHeight = this.height;
         }
     }
-
+    
     /**
      * 初始化纠错级别
      */
@@ -371,7 +379,7 @@ public class Barcode extends AbstractComponent {
                 // 重置纠错级别
                 this.encodeHints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M);
             }
-
+            
         } else {
             // 类型转换
             ErrorCorrectionLevel level = (ErrorCorrectionLevel) errorLevel;
@@ -382,7 +390,7 @@ public class Barcode extends AbstractComponent {
             }
         }
     }
-
+    
     /**
      * 写入内容
      */
@@ -408,7 +416,7 @@ public class Barcode extends AbstractComponent {
             contentStream.close();
         }
     }
-
+    
     /**
      * 重置
      */
@@ -421,16 +429,7 @@ public class Barcode extends AbstractComponent {
         // 重置
         super.reset(this.getType(), x, y);
     }
-
-    /**
-     * 是否显示文字
-     *
-     * @return 返回布尔值，是为true，否为false
-     */
-    protected boolean isShowWords() {
-        return this.getIsShowWords();
-    }
-
+    
     /**
      * 获取图像对象
      *
@@ -444,7 +443,7 @@ public class Barcode extends AbstractComponent {
                 ImageType.PNG.getType()
         );
     }
-
+    
     /**
      * 获取条形码图像
      *
@@ -486,7 +485,7 @@ public class Barcode extends AbstractComponent {
         // 返回图像
         return this.createBarcodeImage();
     }
-
+    
     /**
      * 创建条形码图像
      *
@@ -505,14 +504,14 @@ public class Barcode extends AbstractComponent {
                 )
         );
         // 如果显示文字，则添加图像文字
-        if (this.isShowWords()) {
+        if (this.getIsShowWords()) {
             // 添加图像文字
             bufferedImage = this.addImageWords(bufferedImage);
         }
         // 返回图像
         return bufferedImage;
     }
-
+    
     /**
      * 转图像
      *
@@ -521,6 +520,10 @@ public class Barcode extends AbstractComponent {
      */
     @SneakyThrows
     protected BufferedImage toBufferedImage(BitMatrix matrix) {
+        // 移除白边
+        if (this.getIsNoWhiteBorder()) {
+            matrix = this.removeWhiteBorder(matrix);
+        }
         // 获取前景色
         final int onColor = this.getOnColor().getRGB();
         // 获取背景色
@@ -550,7 +553,37 @@ public class Barcode extends AbstractComponent {
         // 返回图像
         return image;
     }
-
+    
+    /**
+     * 移除白边
+     *
+     * @param matrix 矩阵
+     * @return 返回矩阵
+     */
+    protected BitMatrix removeWhiteBorder(BitMatrix matrix) {
+        // 获取矩阵的外接矩形
+        int[] rectangle = matrix.getEnclosingRectangle();
+        // 获取矩形的宽度
+        int width = rectangle[2] + 1;
+        // 获取矩形的高度
+        int height = rectangle[3] + 1;
+        // 创建一个BitMatrix对象，宽度为width，高度为height
+        BitMatrix bitMatrix = new BitMatrix(width, height);
+        // 清空BitMatrix对象
+        bitMatrix.clear();
+        // 遍历矩阵中的每个元素
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                // 如果矩阵中的元素为true，则在BitMatrix对象中设置对应的元素为true
+                if (matrix.get(i + rectangle[0], j + rectangle[1])) {
+                    bitMatrix.set(i, j);
+                }
+            }
+        }
+        // 返回BitMatrix对象
+        return bitMatrix;
+    }
+    
     /**
      * 添加图像文字
      *
@@ -606,7 +639,7 @@ public class Barcode extends AbstractComponent {
         // 返回图像
         return out;
     }
-
+    
     /**
      * 缓存key
      *
@@ -630,7 +663,8 @@ public class Barcode extends AbstractComponent {
                 this.wordsSize,
                 this.wordsOffsetX,
                 this.wordsOffsetY,
-                this.isShowWords
+                this.isShowWords,
+                this.isNoWhiteBorder
         );
     }
 }

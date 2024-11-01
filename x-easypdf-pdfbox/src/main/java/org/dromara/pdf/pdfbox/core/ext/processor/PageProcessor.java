@@ -1,15 +1,18 @@
 package org.dromara.pdf.pdfbox.core.ext.processor;
 
 import lombok.EqualsAndHashCode;
+import lombok.SneakyThrows;
+import org.apache.pdfbox.multipdf.LayerUtility;
 import org.apache.pdfbox.pdmodel.PDPageTree;
+import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.base.PageSize;
+import org.dromara.pdf.pdfbox.core.enums.PageJoinType;
 import org.dromara.pdf.pdfbox.core.enums.RotationAngle;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.awt.geom.AffineTransform;
+import java.util.*;
 
 /**
  * 页面处理器
@@ -31,7 +34,7 @@ import java.util.Objects;
  */
 @EqualsAndHashCode(callSuper = true)
 public class PageProcessor extends AbstractProcessor {
-
+    
     /**
      * 有参构造
      *
@@ -40,7 +43,7 @@ public class PageProcessor extends AbstractProcessor {
     public PageProcessor(Document document) {
         super(document);
     }
-
+    
     /**
      * 获取页面
      *
@@ -49,7 +52,7 @@ public class PageProcessor extends AbstractProcessor {
     public List<Page> getPages() {
         return this.document.getPages();
     }
-
+    
     /**
      * 插入页面
      *
@@ -80,7 +83,7 @@ public class PageProcessor extends AbstractProcessor {
             log.warn("the index['" + index + "'] is invalid, will be ignored");
         }
     }
-
+    
     /**
      * 追加页面
      *
@@ -103,7 +106,7 @@ public class PageProcessor extends AbstractProcessor {
             this.document.getPages().add(page);
         }
     }
-
+    
     /**
      * 设置页面（替换）
      *
@@ -134,7 +137,7 @@ public class PageProcessor extends AbstractProcessor {
             log.warn("the index['" + index + "'] is invalid, will be ignored");
         }
     }
-
+    
     /**
      * 移除页面
      *
@@ -156,7 +159,64 @@ public class PageProcessor extends AbstractProcessor {
             }
         }
     }
-
+    
+    /**
+     * 拼接页面
+     *
+     * @param type    拼接类型
+     * @param newPage 新页面
+     * @param pages   页面列表
+     */
+    @SneakyThrows
+    public void join(PageJoinType type, Page newPage, Page... pages) {
+        // 参数校验
+        Objects.requireNonNull(type, "the type can not be null");
+        Objects.requireNonNull(type, "the new page can not be null");
+        Objects.requireNonNull(pages, "the pages can not be null");
+        // 拼接页面
+        this.join(type, null, null, newPage, pages);
+    }
+    
+    /**
+     * 拼接页面
+     *
+     * @param type    拼接类型
+     * @param beginX  X轴起始坐标
+     * @param beginY  Y轴起始坐标
+     * @param newPage 新页面
+     * @param pages   页面列表
+     */
+    @SneakyThrows
+    public void join(PageJoinType type, Float beginX, Float beginY, Page newPage, Page... pages) {
+        // 定义x轴坐标
+        float x = Optional.ofNullable(beginX).orElse(0F);
+        // 定义Y轴坐标
+        float y = Optional.ofNullable(beginY).orElse(newPage.getHeight());
+        // 遍历页面
+        for (Page page : pages) {
+            // 垂直拼接
+            if (type == PageJoinType.VERTICAL) {
+                // y轴坐标-页面高度
+                y = y - page.getHeight();
+            }
+            // 定义层级
+            LayerUtility layer = new LayerUtility(this.document.getTarget());
+            // 定义页面
+            PDFormXObject form = layer.importPageAsForm(page.getContext().getTargetDocument(), page.getTarget());
+            // 添加页面
+            layer.appendFormAsLayer(newPage.getTarget(), form, AffineTransform.getTranslateInstance(x, y), UUID.randomUUID().toString());
+            // 水平拼接
+            if (type == PageJoinType.HORIZONTAL) {
+                // x轴坐标+页面宽度
+                x = x + page.getWidth();
+            }
+        }
+        // 添加页面
+        if (!this.document.getPages().contains(newPage)) {
+            this.document.getPages().add(newPage);
+        }
+    }
+    
     /**
      * 重组页面
      *
@@ -182,7 +242,7 @@ public class PageProcessor extends AbstractProcessor {
         // 重置页面列表
         this.document.setPages(newPages);
     }
-
+    
     /**
      * 重排序页面
      *
@@ -210,7 +270,7 @@ public class PageProcessor extends AbstractProcessor {
         // 重置页面列表
         this.document.setPages(orderPages);
     }
-
+    
     /**
      * 旋转页面
      *
@@ -241,7 +301,7 @@ public class PageProcessor extends AbstractProcessor {
             }
         }
     }
-
+    
     /**
      * 缩放页面
      *
@@ -272,7 +332,7 @@ public class PageProcessor extends AbstractProcessor {
             }
         }
     }
-
+    
     /**
      * 裁剪页面
      *
@@ -303,14 +363,14 @@ public class PageProcessor extends AbstractProcessor {
             }
         }
     }
-
+    
     /**
      * 重置尺寸（恢复原有尺寸）
      */
     public void resetSize() {
         this.document.getPages().forEach(Page::resetRectangle);
     }
-
+    
     /**
      * 刷新页面
      */

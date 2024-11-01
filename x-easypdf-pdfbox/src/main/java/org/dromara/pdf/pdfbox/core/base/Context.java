@@ -266,6 +266,8 @@ public class Context {
             this.pageCount = Optional.ofNullable(this.pageCount).orElse(0) + 1;
             // 重置页面
             this.page = page;
+            // 重置是否第一个组件
+            this.setIsFirstComponent(true);
             // 重置高度
             this.resetHeight(this.height);
             // 重置光标

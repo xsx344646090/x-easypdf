@@ -45,11 +45,11 @@ public class CommonUtil {
     /**
      * 初始化字体颜色及透明度
      *
-     * @param stream          内容流
-     * @param fontStyle       字体样式
-     * @param fontColor       字体颜色
-     * @param fontColor       字体描边颜色
-     * @param fontAlpha       字体透明度
+     * @param stream    内容流
+     * @param fontStyle 字体样式
+     * @param fontColor 字体颜色
+     * @param fontColor 字体描边颜色
+     * @param fontAlpha 字体透明度
      */
     @SneakyThrows
     public static void initFontColorAndAlpha(
@@ -137,6 +137,27 @@ public class CommonUtil {
         stream.transform(Matrix.getRotateInstance(Math.toRadians(angle), 0, 0));
         // 移动到左下角
         stream.transform(Matrix.getTranslateInstance(-offsetX, -offsetY));
+    }
+    
+    /**
+     * 初始化线宽
+     *
+     * @param style 字体样式
+     * @return 返回线宽
+     */
+    public static float initLineWidth(FontStyle style) {
+        // 定义线宽
+        float lineWidth = 1F;
+        // 重置线宽
+        if (style.isBold()) {
+            lineWidth = 0.31415926F;
+        } else if (style.isLight()) {
+            lineWidth = 0F;
+        } else if (style.isStroke()) {
+            lineWidth = 0.5F;
+        }
+        // 返回线宽
+        return lineWidth;
     }
     
     /**
@@ -281,5 +302,19 @@ public class CommonUtil {
             list.add(c);
         }
         return list;
+    }
+    
+    /**
+     * 创建基本整型数组
+     *
+     * @param size 大小
+     * @return 返回数组
+     */
+    public static int[] createIntArray(int size) {
+        int[] array = new int[size];
+        for (int i = 0; i < size; i++) {
+            array[i] = i;
+        }
+        return array;
     }
 }

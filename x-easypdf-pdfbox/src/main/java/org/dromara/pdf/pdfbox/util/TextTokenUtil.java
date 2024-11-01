@@ -33,7 +33,7 @@ import java.util.*;
  * </p>
  */
 public class TextTokenUtil {
-
+    
     /**
      * 替换文本标记
      *
@@ -77,7 +77,7 @@ public class TextTokenUtil {
         // 返回替换结果
         return result;
     }
-
+    
     /**
      * 替换文本
      *
@@ -104,7 +104,7 @@ public class TextTokenUtil {
         // 返回替换结果
         return normalFlag || specialFlag;
     }
-
+    
     /**
      * 尝试替换正常文本
      *
@@ -242,7 +242,7 @@ public class TextTokenUtil {
         // 返回结果
         return result;
     }
-
+    
     /**
      * 尝试替换特殊文本
      *
@@ -311,7 +311,7 @@ public class TextTokenUtil {
         // 返回结果
         return result;
     }
-
+    
     /**
      * 处理相同长度替换文本
      *
@@ -345,7 +345,7 @@ public class TextTokenUtil {
             begin = end;
         }
     }
-
+    
     /**
      * 处理不同长度替换文本
      *
@@ -363,21 +363,62 @@ public class TextTokenUtil {
             TextTokenInfo info,
             String replaceText
     ) {
-        // 获取迭代器
-        Iterator<TextTokenInfo.TextValue> iterator = info.getTokens().iterator();
-        // 获取文本
-        TextTokenInfo.TextValue textValue = iterator.next();
-        // 处理替换文本
-        processReplaceText(document, resources, font, textValue.getToken(), replaceText);
-        // 遍历文本
-        while (iterator.hasNext()) {
-            // 重置文本
-            textValue = iterator.next();
+        // 定义空白
+        final String blank = "";
+        // 处理空白
+        if (Objects.equals(replaceText, blank)) {
+            // 遍历文本
+            for (TextTokenInfo.TextValue textValue : info.getTokens()) {
+                // 处理替换文本
+                processReplaceText(document, resources, font, textValue.getToken(), "");
+            }
+        } else {
+            // 定义替换文本
+            String text;
+            // 定义起始索引
+            int beginIndex = 0;
+            // 定义结束索引
+            int endIndex;
+            // 定义总索引
+            int totalIndex = replaceText.length();
+            // 获取迭代器
+            Iterator<TextTokenInfo.TextValue> iterator = info.getTokens().iterator();
+            // 获取文本
+            TextTokenInfo.TextValue textValue = iterator.next();
+            // 初始化结束索引
+            endIndex = textValue.getValue().length();
+            // 初始化替换文本
+            text = replaceText.substring(beginIndex, endIndex);
+            // 重置起始索引
+            beginIndex = endIndex;
             // 处理替换文本
-            processReplaceText(document, resources, font, textValue.getToken(), "");
+            processReplaceText(document, resources, font, textValue.getToken(), text);
+            // 遍历文本
+            while (iterator.hasNext()) {
+                // 重置文本
+                textValue = iterator.next();
+                // 最大索引
+                if (beginIndex == totalIndex) {
+                    // 处理替换空白
+                    processReplaceText(document, resources, font, textValue.getToken(), "");
+                } else {
+                    // 重置结束索引
+                    endIndex = endIndex + textValue.getValue().length();
+                    // 重置结束索引为最大索引
+                    if (endIndex > totalIndex) {
+                        endIndex = totalIndex;
+                    }
+                    // 重置替换文本
+                    text = replaceText.substring(beginIndex, endIndex);
+                    // 重置起始索引
+                    beginIndex = endIndex;
+                    // 处理替换文本
+                    processReplaceText(document, resources, font, textValue.getToken(), text);
+                }
+            }
         }
     }
-
+    
     /**
      * 处理替换文本
      *
@@ -420,7 +461,7 @@ public class TextTokenUtil {
             resources.put(replaceFontName, font);
         }
     }
-
+    
     /**
      * 初始化文本标记信息列表
      *
@@ -468,7 +509,7 @@ public class TextTokenUtil {
         // 返回信息列表
         return infoList;
     }
-
+    
     /**
      * 初始化文本标记信息列表
      *
@@ -512,7 +553,7 @@ public class TextTokenUtil {
         // 返回文本标记信息列表
         return infoList;
     }
-
+    
     /**
      * 初始化文本标记值
      *
@@ -620,7 +661,7 @@ public class TextTokenUtil {
             }
         }
     }
-
+    
     /**
      * 获取文本
      *
@@ -666,7 +707,7 @@ public class TextTokenUtil {
         // 返回文本内容
         return builder.length() > 0 ? builder.toString() : null;
     }
-
+    
     /**
      * 获取文本
      *
@@ -689,7 +730,7 @@ public class TextTokenUtil {
         // 返回文本
         return builder.toString();
     }
-
+    
     /**
      * 初始化资源字体字典
      *
@@ -711,7 +752,7 @@ public class TextTokenUtil {
         // 返回字体字典
         return resourceFontMap;
     }
-
+    
     /**
      * 拼接字符串
      *

@@ -34,7 +34,6 @@ public class TextComparator extends AbstractComparator {
      */
     public TextComparator(Document document) {
         super(document);
-        
     }
     
     /**

@@ -11,10 +11,7 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceCharacteristicsDictionary;
-import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
-import org.apache.pdfbox.pdmodel.interactive.form.PDField;
-import org.apache.pdfbox.pdmodel.interactive.form.PDPushButton;
-import org.apache.pdfbox.pdmodel.interactive.form.PDTextField;
+import org.apache.pdfbox.pdmodel.interactive.form.*;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.enums.ImageType;
 import org.dromara.pdf.pdfbox.core.ext.processor.AbstractProcessor;
@@ -26,7 +23,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.*;
-import java.util.function.Function;
 
 /**
  * 表单处理器
@@ -49,15 +45,15 @@ import java.util.function.Function;
 @Getter
 @EqualsAndHashCode(callSuper = true)
 public class FormProcessor extends AbstractProcessor {
-
+    
     /**
      * 表单
      */
     protected PDAcroForm form;
     /**
-     * 字体
+     * 字体名称
      */
-    protected PDFont font;
+    protected String fontName;
     /**
      * 字体大小
      */
@@ -66,7 +62,7 @@ public class FormProcessor extends AbstractProcessor {
      * 字体颜色
      */
     protected Color fontColor;
-
+    
     /**
      * 有参构造
      *
@@ -75,7 +71,7 @@ public class FormProcessor extends AbstractProcessor {
     public FormProcessor(Document document) {
         this(document, false, true);
     }
-
+    
     /**
      * 有参构造
      *
@@ -85,7 +81,7 @@ public class FormProcessor extends AbstractProcessor {
         super(document);
         this.form = this.initForm(document.getTarget(), isFixForm, isNeedAppearance);
     }
-
+    
     /**
      * 获取字段
      *
@@ -94,7 +90,7 @@ public class FormProcessor extends AbstractProcessor {
     public List<PDField> getFields() {
         return this.form.getFields();
     }
-
+    
     /**
      * 设置字体
      *
@@ -103,26 +99,27 @@ public class FormProcessor extends AbstractProcessor {
      * @param fontColor 字体颜色
      */
     public void setFont(String fontName, float fontSize, Color fontColor) {
-        // 初始化字体
-        this.font = PdfHandler.getFontHandler().getPDFont(this.getDocument(), fontName, true);
+        // 初始化字体名称
+        this.fontName = fontName;
         // 初始化字体大小
         this.fontSize = fontSize;
         // 初始化字体颜色
         this.fontColor = fontColor;
-        // 添加字体
-        this.form.getDefaultResources().put(COSName.getPDFName(this.font.getName()), this.font);
     }
-
+    
     /**
      * 添加字段
      *
-     * @param function 表单助手
+     * @param builders 构建器
      */
-    public void addField(Function<PDAcroForm, PDField> function) {
-        this.getFields().add(function.apply(this.form));
+    public void addField(AbstractFormFieldBuilder... builders) {
+        List<PDField> fields = this.getFields();
+        for (AbstractFormFieldBuilder builder : builders) {
+            fields.add(builder.build(this.form));
+        }
         this.reset();
     }
-
+    
     /**
      * 替换关键字
      *
@@ -142,7 +139,7 @@ public class FormProcessor extends AbstractProcessor {
         // 重置表单
         this.reset();
     }
-
+    
     /**
      * 移除字段
      *
@@ -173,7 +170,7 @@ public class FormProcessor extends AbstractProcessor {
         // 重置表单
         this.reset();
     }
-
+    
     /**
      * 填写文本
      *
@@ -183,23 +180,29 @@ public class FormProcessor extends AbstractProcessor {
     public void fillText(Map<String, String> formMap) {
         // 检查参数
         Objects.requireNonNull(formMap, "the form map can not be null");
+        // 定义字体
+        PDFont font = null;
         // 获取表单字典键值集合
         Set<Map.Entry<String, String>> entrySet = formMap.entrySet();
         // 遍历表单字典
         for (Map.Entry<String, String> entry : entrySet) {
-            // 获取表单字典中对应的pdfBox表单字段
+            // 获取字段
             PDField field = this.form.getField(entry.getKey());
-            // 存在字段
+            // 非空
             if (Objects.nonNull(field)) {
-                // 文本字段
+                // 文本类型
                 if (field instanceof PDTextField) {
+                    // 转文本字段
+                    PDTextField textField = (PDTextField) field;
                     // 添加外观
                     if (this.isAddAppearance()) {
-                        // 设置默认外观
-                        ((PDTextField) field).setDefaultAppearance(this.createDefaultAppearance());
+                        // 初始化字体
+                        font = PdfHandler.getFontHandler().getPDFont(this.getDocument(), this.fontName, true);
+                        // 重置外观
+                        textField.setDefaultAppearance(this.createDefaultAppearance(font));
                     }
                     // 设置新值
-                    field.setValue(entry.getValue());
+                    textField.setValue(entry.getValue());
                 } else {
                     // 提示信息
                     log.warn("the field['" + entry.getKey() + "'] is not text field, will be ignored");
@@ -209,15 +212,17 @@ public class FormProcessor extends AbstractProcessor {
                 log.warn("the field['" + entry.getKey() + "'] is not exist, will be ignored");
             }
         }
+        // 嵌入字体
+        if (Objects.nonNull(font)) {
+            // 添加字体
+            this.form.getDefaultResources().put(COSName.getPDFName(font.getName()), font);
+            // 嵌入字体
+            font.subset();
+        }
         // 重置表单
         this.reset();
-        // 添加外观
-        if (this.isAddAppearance()) {
-            // 嵌入字体
-            this.font.subset();
-        }
     }
-
+    
     /**
      * 填写图像
      *
@@ -233,41 +238,118 @@ public class FormProcessor extends AbstractProcessor {
         for (Map.Entry<String, BufferedImage> entry : entrySet) {
             // 获取表单字典中对应的pdfBox表单字段
             PDField field = this.form.getField(entry.getKey());
-            // 非空且为按钮类型
-            if (Objects.nonNull(field) && field instanceof PDPushButton) {
-                // 获取部件列表
-                List<PDAnnotationWidget> widgets = field.getWidgets();
-                // 非空
-                if (!widgets.isEmpty()) {
-                    // 获取外观
-                    PDAppearanceCharacteristicsDictionary appearanceCharacteristics = field.getWidgets().get(0).getAppearanceCharacteristics();
+            // 非空
+            if (Objects.nonNull(field)) {
+                // 按钮类型
+                if (field instanceof PDPushButton) {
+                    // 获取部件列表
+                    List<PDAnnotationWidget> widgets = field.getWidgets();
                     // 非空
-                    if (Objects.nonNull(appearanceCharacteristics)) {
-                        // 获取图像
-                        BufferedImage image = entry.getValue();
+                    if (!widgets.isEmpty()) {
+                        // 获取外观
+                        PDAppearanceCharacteristicsDictionary appearanceCharacteristics = field.getWidgets().get(0).getAppearanceCharacteristics();
                         // 非空
-                        if (Objects.nonNull(image)) {
-                            // 设置图像
-                            appearanceCharacteristics.getCOSObject().setItem(
-                                    COSName.I,
-                                    PDImageXObject.createFromByteArray(
-                                            this.getDocument(),
-                                            ImageUtil.toBytes(image, ImageType.PNG.getType()),
-                                            ImageType.PNG.getType()
-                                    ).getCOSObject()
-                            );
-                        } else {
-                            // 清空图像
-                            appearanceCharacteristics.getCOSObject().setItem(COSName.I, null);
+                        if (Objects.nonNull(appearanceCharacteristics)) {
+                            // 获取图像
+                            BufferedImage image = entry.getValue();
+                            // 非空
+                            if (Objects.nonNull(image)) {
+                                // 设置图像
+                                appearanceCharacteristics.getCOSObject().setItem(
+                                        COSName.I,
+                                        PDImageXObject.createFromByteArray(
+                                                this.getDocument(),
+                                                ImageUtil.toBytes(image, ImageType.PNG.getType()),
+                                                ImageType.PNG.getType()
+                                        ).getCOSObject()
+                                );
+                            } else {
+                                // 清空图像
+                                appearanceCharacteristics.getCOSObject().setItem(COSName.I, null);
+                            }
                         }
                     }
+                } else {
+                    // 提示信息
+                    log.warn("the field['" + entry.getKey() + "'] is not image field, will be ignored");
                 }
+            } else {
+                // 提示信息
+                log.warn("the field['" + entry.getKey() + "'] is not exist, will be ignored");
             }
         }
         // 重置表单
         this.reset();
     }
-
+    
+    /**
+     * 填写单选
+     *
+     * @param key   字段键
+     * @param index 选项索引
+     */
+    public void fillRadio(String key, int index) {
+        // 检查参数
+        Objects.requireNonNull(key, "the key can not be null");
+        // 获取字段
+        PDField field = this.form.getField(key);
+        // 非空
+        if (Objects.nonNull(field)) {
+            // 单选类型
+            if (field instanceof PDRadioButton) {
+                try {
+                    // 设置状态
+                    field.getWidgets().get(index).setAppearanceState(String.valueOf(index));
+                } catch (Exception e) {
+                    throw new IllegalArgumentException("the field['" + key + "'] radio index is error");
+                }
+            } else {
+                // 提示信息
+                log.warn("the field['" + key + "'] is not radio field, will be ignored");
+            }
+        } else {
+            // 提示信息
+            log.warn("the field['" + key + "'] is not exist, will be ignored");
+        }
+        // 重置表单
+        this.reset();
+    }
+    
+    /**
+     * 填写多选
+     *
+     * @param formMap 表单字典
+     */
+    public void fillCheckBox(Map<String, Boolean> formMap) {
+        // 检查参数
+        Objects.requireNonNull(formMap, "the form map can not be null");
+        // 获取表单字典键值集合
+        Set<Map.Entry<String, Boolean>> entrySet = formMap.entrySet();
+        // 遍历表单字典
+        for (Map.Entry<String, Boolean> entry : entrySet) {
+            // 获取key
+            String key = entry.getKey();
+            // 获取字段
+            PDField field = this.form.getField(entry.getKey());
+            // 非空
+            if (Objects.nonNull(field)) {
+                // 多选类型
+                if (field instanceof PDCheckBox) {
+                    // 设置状态
+                    field.getWidgets().get(0).setAppearanceState(entry.getValue() ? "0" : "off");
+                } else {
+                    // 提示信息
+                    log.warn("the field['" + key + "'] is not checkbox field, will be ignored");
+                }
+            } else {
+                // 提示信息
+                log.warn("the field['" + key + "'] is not exist, will be ignored");
+            }
+        }
+        // 重置表单
+        this.reset();
+    }
+    
     /**
      * 扁平化表单
      *
@@ -301,7 +383,7 @@ public class FormProcessor extends AbstractProcessor {
         // 重置表单
         this.reset();
     }
-
+    
     /**
      * 只读
      *
@@ -333,7 +415,7 @@ public class FormProcessor extends AbstractProcessor {
         // 重置表单
         this.reset();
     }
-
+    
     /**
      * 初始化表单
      *
@@ -367,20 +449,22 @@ public class FormProcessor extends AbstractProcessor {
         // 返回表单
         return acroForm;
     }
-
+    
     /**
      * 是否添加外观
      *
      * @return 返回布尔值，true为是，false为否
      */
     protected boolean isAddAppearance() {
-        return Objects.nonNull(this.font);
+        return Objects.nonNull(this.fontName);
     }
-
+    
     /**
      * 创建默认样式字符串
+     *
+     * @param font 字体
      */
-    protected String createDefaultAppearance() {
+    protected String createDefaultAppearance(PDFont font) {
         Float fontSize = this.fontSize;
         Color fontColor = this.fontColor;
         if (Objects.isNull(fontSize)) {
@@ -392,7 +476,7 @@ public class FormProcessor extends AbstractProcessor {
         // 返回外观
         return String.format("/%s %d Tf %s", font.getName(), fontSize.intValue(), ColorUtil.toPDColorString(fontColor));
     }
-
+    
     /**
      * 重置表单
      */

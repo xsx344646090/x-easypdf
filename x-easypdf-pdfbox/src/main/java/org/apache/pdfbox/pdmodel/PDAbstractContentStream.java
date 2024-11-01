@@ -30,10 +30,7 @@ import org.apache.pdfbox.util.StringUtil;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
-import java.io.ByteArrayOutputStream;
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
 import java.util.List;
@@ -1328,7 +1325,7 @@ public abstract class PDAbstractContentStream implements Closeable {
      * @param text the text to be added to the content stream followed by a newline
      * @throws IOException If the underlying stream has a problem being written to.
      */
-    protected void writeOperator(String text) throws IOException {
+    public void writeOperator(String text) throws IOException {
         write(text);
         writeLine();
     }
@@ -1469,21 +1466,6 @@ public abstract class PDAbstractContentStream implements Closeable {
         writeOperand(rm.intValue());
         writeOperand(OperatorName.SET_TEXT_RENDERINGMODE);
         writeOperand(defaultWeight);
-        writeOperator(OperatorName.SET_LINE_WIDTH);
-    }
-    
-    /**
-     * Set the text rendering mode. This determines whether showing text shall cause glyph outlines
-     * to be stroked, filled, used as a clipping boundary, or some combination of the three.
-     *
-     * @param rm    The text rendering mode.
-     * @param width The line width.
-     * @throws IOException If the content stream could not be written.
-     */
-    public void setRenderingMode(RenderingMode rm, float width) throws IOException {
-        writeOperand(rm.intValue());
-        writeOperand(OperatorName.SET_TEXT_RENDERINGMODE);
-        writeOperand(width);
         writeOperator(OperatorName.SET_LINE_WIDTH);
     }
     

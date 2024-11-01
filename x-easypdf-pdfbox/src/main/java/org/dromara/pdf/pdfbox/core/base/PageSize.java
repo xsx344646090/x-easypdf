@@ -29,7 +29,7 @@ import java.awt.*;
 @ToString
 @Getter
 public class PageSize {
-
+    
     /**
      * 每英寸像素点
      */
@@ -38,19 +38,6 @@ public class PageSize {
      * 每毫米像素点
      */
     private static final Float POINTS_PER_MM = Constants.POINTS_PER_MM;
-    /**
-     * 宽度
-     */
-    private final Float width;
-    /**
-     * 高度
-     */
-    private final Float height;
-    /**
-     * pdfBox页面尺寸
-     */
-    private final PDRectangle size;
-
     /**
      * ************************************************** A类 ****************************************************
      * /**
@@ -107,7 +94,6 @@ public class PageSize {
      * <p>147.40158 * 209.76378，单位：px</p>
      */
     public static final PageSize A8 = new PageSize(52 * POINTS_PER_MM, 74 * POINTS_PER_MM);
-
     /**
      * ************************************************** B类 ****************************************************
      * /**
@@ -164,7 +150,19 @@ public class PageSize {
      * <p>181.41733 * 257.95276，单位：px</p>
      */
     public static final PageSize B8 = new PageSize(64 * POINTS_PER_MM, 91 * POINTS_PER_MM);
-
+    /**
+     * 宽度
+     */
+    private final Float width;
+    /**
+     * 高度
+     */
+    private final Float height;
+    /**
+     * pdfBox页面尺寸
+     */
+    private final PDRectangle size;
+    
     /**
      * 有参构造
      *
@@ -175,7 +173,7 @@ public class PageSize {
         this.height = size.getHeight();
         this.size = size;
     }
-
+    
     /**
      * 有参构造
      *
@@ -187,7 +185,7 @@ public class PageSize {
         this.height = Math.abs(height);
         this.size = new PDRectangle(this.width, this.height);
     }
-
+    
     /**
      * 有参构造
      *
@@ -201,7 +199,7 @@ public class PageSize {
         this.height = Math.abs(topY - bottomY);
         this.size = new PDRectangle(new BoundingBox(leftX, bottomY, rightX, topY));
     }
-
+    
     /**
      * 创建页面尺寸
      *
@@ -212,7 +210,7 @@ public class PageSize {
     public static PageSize create(float width, float height) {
         return new PageSize(width, height);
     }
-
+    
     /**
      * 创建页面尺寸
      *
@@ -225,7 +223,16 @@ public class PageSize {
     public static PageSize create(float leftX, float rightX, float bottomY, float topY) {
         return new PageSize(leftX, rightX, bottomY, topY);
     }
-
+    
+    /**
+     * 获取每毫米像素点
+     *
+     * @return 返回每毫米像素点
+     */
+    public static float getUnit() {
+        return POINTS_PER_MM;
+    }
+    
     /**
      * 切换横向
      *
@@ -235,16 +242,20 @@ public class PageSize {
     public PageSize toLandscape() {
         return new PageSize(this.height, this.width);
     }
-
+    
     /**
-     * 获取每毫米像素点
+     * 缩放
      *
-     * @return 返回每毫米像素点
+     * @param scale 比例
+     * @return 返回页面尺寸
      */
-    public static float getUnit() {
-        return POINTS_PER_MM;
+    public PageSize scale(float scale) {
+        if (scale <= 0) {
+            throw new IllegalArgumentException("the scale must be greater than to 0");
+        }
+        return new PageSize(this.width * scale, this.height * scale);
     }
-
+    
     /**
      * 获取X轴左坐标
      *
@@ -253,7 +264,7 @@ public class PageSize {
     public float getLeftX() {
         return this.size.getLowerLeftX();
     }
-
+    
     /**
      * 获取X轴右坐标
      *
@@ -262,7 +273,7 @@ public class PageSize {
     public float getRightX() {
         return this.size.getUpperRightX();
     }
-
+    
     /**
      * 获取Y轴下坐标
      *
@@ -271,7 +282,7 @@ public class PageSize {
     public float getBottomY() {
         return this.size.getLowerLeftY();
     }
-
+    
     /**
      * 获取Y轴上坐标
      *
@@ -280,7 +291,7 @@ public class PageSize {
     public float getTopY() {
         return this.size.getUpperRightY();
     }
-
+    
     /**
      * 转为矩形
      *

@@ -7,6 +7,7 @@ import org.dromara.pdf.pdfbox.core.base.PageHeader;
 import org.dromara.pdf.pdfbox.core.component.Component;
 import org.dromara.pdf.pdfbox.core.component.Image;
 import org.dromara.pdf.pdfbox.core.component.*;
+import org.dromara.pdf.pdfbox.core.component.Image;
 import org.dromara.pdf.pdfbox.core.enums.FontStyle;
 import org.dromara.pdf.pdfbox.core.enums.HorizontalAlignment;
 import org.dromara.pdf.pdfbox.core.enums.VerticalAlignment;

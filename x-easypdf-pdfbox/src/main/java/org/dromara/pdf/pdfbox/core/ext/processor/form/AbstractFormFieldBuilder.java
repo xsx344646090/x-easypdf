@@ -1,15 +1,17 @@
 package org.dromara.pdf.pdfbox.core.ext.processor.form;
 
+import lombok.Setter;
 import lombok.SneakyThrows;
-import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 import org.dromara.pdf.pdfbox.core.base.Document;
+import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.base.Size;
 import org.dromara.pdf.pdfbox.core.enums.HorizontalAlignment;
 
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * 抽象表单字段构建器
@@ -38,7 +40,7 @@ public abstract class AbstractFormFieldBuilder {
     /**
      * 页面
      */
-    protected PDPage page;
+    protected Page page;
     /**
      * 尺寸
      */
@@ -46,22 +48,27 @@ public abstract class AbstractFormFieldBuilder {
     /**
      * 水平对齐
      */
+    @Setter
     protected HorizontalAlignment alignment;
     /**
      * 字段名称
      */
+    @Setter
     protected String name;
     /**
      * 是否只读
      */
+    @Setter
     protected Boolean isReadonly;
     /**
      * 是否必须
      */
+    @Setter
     protected Boolean isRequired;
     /**
      * 是否不导出
      */
+    @Setter
     protected Boolean isNoExport;
 
     /**
@@ -71,7 +78,7 @@ public abstract class AbstractFormFieldBuilder {
      * @param page     页面
      * @param size     尺寸
      */
-    public AbstractFormFieldBuilder(Document document, PDPage page, Size size) {
+    public AbstractFormFieldBuilder(Document document, Page page, Size size) {
         Objects.requireNonNull(document, "the document can not be null");
         Objects.requireNonNull(page, "the page can not be null");
         Objects.requireNonNull(size, "the size can not be null");
@@ -87,62 +94,20 @@ public abstract class AbstractFormFieldBuilder {
      * @return 返回字段
      */
     public abstract PDField build(PDAcroForm form);
-
+    
     /**
-     * 设置字段名称
+     * 初始化属性
      *
-     * @param name 字段名称
-     * @return 返回字段构建器
+     * @param field 字段
      */
-    public AbstractFormFieldBuilder setName(String name) {
-        this.name = name;
-        return this;
+    protected void initProperties(PDField field) {
+        Objects.requireNonNull(this.name, "the name can not be null");
+        field.setPartialName(this.name);
+        Optional.ofNullable(this.isReadonly).ifPresent(field::setReadOnly);
+        Optional.ofNullable(this.isRequired).ifPresent(field::setRequired);
+        Optional.ofNullable(this.isNoExport).ifPresent(field::setNoExport);
     }
-
-    /**
-     * 设置对齐方式
-     *
-     * @param alignment 对齐方式
-     * @return 返回字段构建器
-     */
-    public AbstractFormFieldBuilder setAlignment(HorizontalAlignment alignment) {
-        this.alignment = alignment;
-        return this;
-    }
-
-    /**
-     * 设置是否只读
-     *
-     * @param isReadonly 是否只读
-     * @return 返回字段构建器
-     */
-    public AbstractFormFieldBuilder setReadonly(boolean isReadonly) {
-        this.isReadonly = isReadonly;
-        return this;
-    }
-
-    /**
-     * 设置是否必须
-     *
-     * @param isRequired 是否必须
-     * @return 返回字段构建器
-     */
-    public AbstractFormFieldBuilder setRequired(boolean isRequired) {
-        this.isRequired = isRequired;
-        return this;
-    }
-
-    /**
-     * 设置是否不导出
-     *
-     * @param isNoExport 是否不导出
-     * @return 返回字段构建器
-     */
-    public AbstractFormFieldBuilder setNoExport(boolean isNoExport) {
-        this.isNoExport = isNoExport;
-        return this;
-    }
-
+    
     /**
      * 初始化尺寸
      *
@@ -152,8 +117,8 @@ public abstract class AbstractFormFieldBuilder {
     protected void initSize(PDField field) {
         PDAnnotationWidget widget = field.getWidgets().get(0);
         widget.setRectangle(this.size.getRectangle());
-        widget.setPage(this.page);
+        widget.setPage(this.page.getTarget());
         widget.setPrinted(true);
-        this.page.getAnnotations().add(widget);
+        this.page.getTarget().getAnnotations().add(widget);
     }
 }

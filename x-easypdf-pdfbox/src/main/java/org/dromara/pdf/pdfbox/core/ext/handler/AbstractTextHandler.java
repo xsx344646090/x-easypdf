@@ -11,7 +11,6 @@ import org.dromara.pdf.pdfbox.core.base.config.FontConfiguration;
 import org.dromara.pdf.pdfbox.core.ext.AbstractExpander;
 import org.dromara.pdf.pdfbox.support.CharacterList;
 import org.dromara.pdf.pdfbox.support.Constants;
-import org.dromara.pdf.pdfbox.util.TextUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +66,7 @@ public abstract class AbstractTextHandler extends AbstractExpander {
      */
     public String splitText(FontConfiguration fontConfiguration, String text, float lineWidth) {
         // 如果待输入文本为空，或文本长度为0，或行宽减字体大小小于0，则直接返回空字符串
-        if (TextUtil.isBlank(text) || lineWidth - fontConfiguration.getFontSize() < 0) {
+        if (Objects.isNull(text) || lineWidth - fontConfiguration.getFontSize() < 0) {
             // 返回空字符串
             return null;
         }
@@ -105,7 +104,7 @@ public abstract class AbstractTextHandler extends AbstractExpander {
      */
     public List<String> splitLines(FontConfiguration fontConfiguration, String text, float lineWidth) {
         // 如果待输入文本为空，或文本长度为0，或行宽减字体大小小于0，则直接返回空列表
-        if (TextUtil.isBlank(text) || lineWidth - fontConfiguration.getFontSize() < 0) {
+        if (Objects.isNull(text) || lineWidth - fontConfiguration.getFontSize() < 0) {
             // 返回空列表
             return new ArrayList<>(0);
         }
