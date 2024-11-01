@@ -5,11 +5,11 @@
     <parent>
         <groupId>org.dromara.x-easypdf</groupId>
         <artifactId>x-easypdf-parent</artifactId>
-        <version>3.1.2</version>
+        <version>3.2.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>x-easypdf-pdfbox</artifactId>
-    <version>3.1.2</version>
+    <version>3.2.0</version>
     <packaging>jar</packaging>
     <name>x-easypdf-pdfbox</name>
     <url>https://www.x-easypdf.cn</url>
@@ -191,6 +191,11 @@
             <groupId>org.apache.xmlgraphics</groupId>
             <artifactId>batik-codec</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
         <dependency>
             <groupId>junit</groupId>
@@ -201,7 +206,6 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.2.13</version>
             <scope>test</scope>
         </dependency>
 
@@ -222,25 +226,26 @@
         <dependency>
             <groupId>com.itextpdf</groupId>
             <artifactId>kernel</artifactId>
-            <version>8.0.4</version>
+            <!--<version>8.0.4</version>-->
+            <version>7.0.8</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.itextpdf</groupId>
             <artifactId>io</artifactId>
-            <version>8.0.4</version>
+            <version>7.0.8</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.itextpdf</groupId>
             <artifactId>layout</artifactId>
-            <version>8.0.4</version>
+            <version>7.0.8</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.itextpdf</groupId>
             <artifactId>font-asian</artifactId>
-            <version>8.0.4</version>
+            <version>7.0.8</version>
             <scope>test</scope>
         </dependency>
 

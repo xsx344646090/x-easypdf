@@ -3,10 +3,10 @@ package org.dromara.pdf.pdfbox.core.enums;
 import lombok.Getter;
 
 /**
- * 密钥长度
+ * 图像字段布局
  *
  * @author xsx
- * @date 2023/10/18
+ * @date 2024/10/18
  * @since 1.8
  * <p>
  * Copyright (c) 2020 xsx All Rights Reserved.
@@ -21,30 +21,46 @@ import lombok.Getter;
  * </p>
  */
 @Getter
-public enum PWLength {
+public enum ImageFieldLayout {
     /**
-     * 长度40
+     * 无图像
      */
-    LENGTH_40(40),
+    IMAGE_NONE(0),
     /**
-     * 长度128
+     * 仅图像
      */
-    LENGTH_128(128),
+    IMAGE_ONLY(1),
     /**
-     * 长度256
+     * 图像在标签上
      */
-    LENGTH_256(256);
+    IMAGE_UP(2),
     /**
-     * 长度
+     * 图像在标签下
      */
-    private final int length;
+    IMAGE_DOWN(3),
+    /**
+     * 图像在标签左
+     */
+    IMAGE_LEFT(4),
+    /**
+     * 图像在标签右
+     */
+    IMAGE_RIGHT(5),
+    /**
+     * 图像在标签后
+     */
+    IMAGE_BEHIND(6);
+    /**
+     * 类型
+     */
+    private final int type;
 
     /**
      * 构造方法
      *
-     * @param length 长度
+     * @param type 类型
      */
-    PWLength(int length) {
-        this.length = length;
+    ImageFieldLayout(int type) {
+        this.type = type;
     }
 }

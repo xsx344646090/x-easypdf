@@ -1,5 +1,6 @@
 package org.dromara.pdf.pdfbox.core.enums;
 
+import lombok.Getter;
 import org.apache.pdfbox.pdmodel.graphics.state.RenderingMode;
 
 /**
@@ -20,6 +21,7 @@ import org.apache.pdfbox.pdmodel.graphics.state.RenderingMode;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
+@Getter
 public enum FontStyle {
 
     /**
@@ -72,23 +74,14 @@ public enum FontStyle {
     FontStyle(RenderingMode mode) {
         this.mode = mode;
     }
-
-    /**
-     * 获取渲染模式
-     *
-     * @return 返回pdfbox文本渲染模式
-     */
-    public RenderingMode getMode() {
-        return this.mode;
-    }
-
+    
     /**
      * 是否空心
      *
      * @return 返回布尔值，是为true，否为false
      */
     public boolean isStroke() {
-        return this == STROKE || this == BOLD || this == ITALIC_STROKE || this == ITALIC_BOLD;
+        return this == STROKE || this == BOLD || this == LIGHT || this == ITALIC_STROKE || this == ITALIC_BOLD || this == ITALIC_LIGHT;
     }
 
     /**

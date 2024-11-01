@@ -45,7 +45,7 @@ import java.util.Objects;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class TextareaWatermark extends AbstractBase implements Watermark {
-
+    
     /**
      * 字体配置
      */
@@ -86,7 +86,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
      * 旋转角度
      */
     protected Float angle;
-
+    
     /**
      * 有参构造
      *
@@ -100,7 +100,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
         this.setFontAlpha(0.5F);
         this.setFontColor(Color.GRAY);
     }
-
+    
     /**
      * 设置文本助手
      *
@@ -110,102 +110,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
         Objects.requireNonNull(handler, "the handler can not be null");
         this.textHandler = handler;
     }
-
-    /**
-     * 设置字体名称
-     *
-     * @param fontName 字体名称
-     */
-    public void setFontName(String fontName) {
-        this.fontConfiguration.setFontName(fontName);
-        this.getContext().addFontCache(fontName);
-    }
-
-    /**
-     * 设置特殊字体名称
-     *
-     * @param fontNames 字体名称
-     */
-    public void setSpecialFontNames(String... fontNames) {
-        this.getContext().addFontCache(fontNames);
-        Collections.addAll(this.fontConfiguration.getSpecialFontNames(), fontNames);
-    }
-
-    /**
-     * 设置字体大小
-     *
-     * @param size 大小
-     */
-    public void setFontSize(float size) {
-        this.fontConfiguration.setFontSize(size);
-    }
-
-    /**
-     * 设置字体颜色
-     *
-     * @param color 颜色
-     */
-    public void setFontColor(Color color) {
-        this.fontConfiguration.setFontColor(color);
-    }
-
-    /**
-     * 设置字体描边颜色
-     *
-     * @param color 颜色
-     */
-    public void setStrokColor(Color color) {
-        this.fontConfiguration.setStrokColor(color);
-    }
-
-    /**
-     * 设置字体透明度
-     *
-     * @param alpha 透明度
-     */
-    public void setFontAlpha(float alpha) {
-        this.fontConfiguration.setFontAlpha(alpha);
-    }
-
-    /**
-     * 设置字体样式
-     *
-     * @param style 样式
-     */
-    public void setFontStyle(FontStyle style) {
-        this.fontConfiguration.setFontStyle(style);
-        if (style.isItalic() && this.getFontSlope() == 0F) {
-            this.setFontSlope(Constants.DEFAULT_FONT_ITALIC_SLOPE);
-        }
-    }
-
-    /**
-     * 设置字体斜率（斜体字）
-     *
-     * @param slope 斜率
-     */
-    public void setFontSlope(float slope) {
-        this.fontConfiguration.setFontSlope(slope);
-    }
-
-    /**
-     * 设置字符间距
-     *
-     * @param spacing 间距
-     */
-    public void setCharacterSpacing(float spacing) {
-        this.fontConfiguration.setCharacterSpacing(spacing);
-    }
-
-    /**
-     * 设置行间距
-     *
-     * @param leading 行间距
-     */
-    public void setLeading(float leading) {
-        this.fontConfiguration.setLeading(leading);
-    }
-
+    
     /**
      * 设置制表符大小（空格数）
      *
@@ -217,7 +122,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
         }
         this.tabSize = size;
     }
-
+    
     /**
      * 设置文本
      *
@@ -229,7 +134,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
             Collections.addAll(this.textList, texts);
         }
     }
-
+    
     /**
      * 获取类型
      *
@@ -239,7 +144,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
     public ComponentType getType() {
         return ComponentType.WATERMARK;
     }
-
+    
     /**
      * 获取页面
      *
@@ -248,7 +153,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
     public Page getPage() {
         return this.getContext().getPage();
     }
-
+    
     /**
      * 获取字体
      *
@@ -257,47 +162,192 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
     public PDFont getFont() {
         return this.getContext().getFont(this.fontConfiguration.getFontName());
     }
-
+    
+    /**
+     * 获取字体名称
+     *
+     * @return 返回字体名称
+     */
     public String getFontName() {
         return this.fontConfiguration.getFontName();
     }
-
+    
+    /**
+     * 设置字体名称
+     *
+     * @param fontName 字体名称
+     */
+    public void setFontName(String fontName) {
+        this.fontConfiguration.setFontName(fontName);
+        this.getContext().addFontCache(fontName);
+    }
+    
+    /**
+     * 获取特殊字体名称
+     *
+     * @return 返回特殊字体名称
+     */
     public List<String> getSpecialFontNames() {
         return this.fontConfiguration.getSpecialFontNames();
     }
-
+    
+    /**
+     * 设置特殊字体名称
+     *
+     * @param fontNames 字体名称
+     */
+    public void setSpecialFontNames(String... fontNames) {
+        this.getContext().addFontCache(fontNames);
+        Collections.addAll(this.fontConfiguration.getSpecialFontNames(), fontNames);
+    }
+    
+    /**
+     * 获取字体大小
+     *
+     * @return 返回字体大小
+     */
     public Float getFontSize() {
         return this.fontConfiguration.getFontSize();
     }
-
+    
+    /**
+     * 设置字体大小
+     *
+     * @param size 大小
+     */
+    public void setFontSize(float size) {
+        this.fontConfiguration.setFontSize(size);
+    }
+    
+    /**
+     * 获取字体颜色
+     *
+     * @return 返回字体颜色
+     */
     public Color getFontColor() {
         return this.fontConfiguration.getFontColor();
     }
-
+    
+    /**
+     * 设置字体颜色
+     *
+     * @param color 颜色
+     */
+    public void setFontColor(Color color) {
+        this.fontConfiguration.setFontColor(color);
+    }
+    
+    /**
+     * 获取字体描边颜色
+     *
+     * @return 返回字体描边颜色
+     */
     public Color getStrokColor() {
         return this.fontConfiguration.getStrokColor();
     }
-
+    
+    /**
+     * 设置字体描边颜色
+     *
+     * @param color 颜色
+     */
+    public void setStrokColor(Color color) {
+        this.fontConfiguration.setStrokColor(color);
+    }
+    
+    /**
+     * 获取字体透明度
+     *
+     * @return 返回字体透明度
+     */
     public Float getFontAlpha() {
         return this.fontConfiguration.getFontAlpha();
     }
-
+    
+    /**
+     * 设置字体透明度
+     *
+     * @param alpha 透明度
+     */
+    public void setFontAlpha(float alpha) {
+        this.fontConfiguration.setFontAlpha(alpha);
+    }
+    
+    /**
+     * 获取字体样式
+     *
+     * @return 返回字体样式
+     */
     public FontStyle getFontStyle() {
         return this.fontConfiguration.getFontStyle();
     }
-
+    
+    /**
+     * 设置字体样式
+     *
+     * @param style 样式
+     */
+    public void setFontStyle(FontStyle style) {
+        this.fontConfiguration.setFontStyle(style);
+        if (style.isItalic() && this.getFontSlope() == 0F) {
+            this.setFontSlope(Constants.DEFAULT_FONT_ITALIC_SLOPE);
+        }
+    }
+    
+    /**
+     * 获取字体斜率（斜体字）
+     *
+     * @return 返回字体斜率
+     */
     public Float getFontSlope() {
         return this.fontConfiguration.getFontSlope();
     }
-
+    
+    /**
+     * 设置字体斜率（斜体字）
+     *
+     * @param slope 斜率
+     */
+    public void setFontSlope(float slope) {
+        this.fontConfiguration.setFontSlope(slope);
+    }
+    
+    /**
+     * 获取字符间距
+     *
+     * @return 返回字符间距
+     */
     public Float getCharacterSpacing() {
         return this.fontConfiguration.getCharacterSpacing();
     }
-
+    
+    /**
+     * 设置字符间距
+     *
+     * @param spacing 间距
+     */
+    public void setCharacterSpacing(float spacing) {
+        this.fontConfiguration.setCharacterSpacing(spacing);
+    }
+    
+    /**
+     * 获取行间距
+     *
+     * @return 返回行间距
+     */
     public Float getLeading() {
         return this.fontConfiguration.getLeading();
     }
-
+    
+    /**
+     * 设置行间距
+     *
+     * @param leading 行间距
+     */
+    public void setLeading(float leading) {
+        this.fontConfiguration.setLeading(leading);
+    }
+    
     /**
      * 渲染
      *
@@ -312,7 +362,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
         // 渲染文本
         this.renderText(page);
     }
-
+    
     /**
      * 渲染
      *
@@ -325,7 +375,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
         // 渲染文本
         document.getPages().forEach(this::render);
     }
-
+    
     /**
      * 初始化
      *
@@ -346,7 +396,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
         }
         // 初始化文本助手
         if (Objects.isNull(this.textHandler)) {
-            this.textHandler = this.getContext().getTextHandler();;
+            this.textHandler = this.getContext().getTextHandler();
         }
         // 初始化当前执行组件类型
         if (Objects.isNull(this.getContext().getExecutingComponentType())) {
@@ -387,7 +437,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
             this.beginY = page.getHeight() - this.getFontSize();
         }
     }
-
+    
     /**
      * 渲染文本
      *
@@ -422,7 +472,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
                     // 初始化位置
                     this.initPosition(stream, beginX, beginY);
                     // 写入文本
-                    this.getContext().getTextHandler().writeText(this.getFontConfiguration(), stream, text);
+                    this.getTextHandler().writeText(this.getFontConfiguration(), stream, text);
                     // 结束写入
                     stream.endText();
                     // 重置Y轴起始坐标
@@ -430,7 +480,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
                     // 重置最大宽度
                     if (initFlag) {
                         // 重置最大宽度
-                        maxWidth = Math.max(maxWidth, this.getContext().getTextHandler().getTextWidth(this.getFontConfiguration(), writeText));
+                        maxWidth = Math.max(maxWidth, this.getTextHandler().getTextWidth(this.getFontConfiguration(), writeText));
                     }
                 }
                 // 重置X轴起始坐标
@@ -451,7 +501,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
         // 关闭流
         stream.close();
     }
-
+    
     /**
      * 初始化内容流
      *
@@ -476,10 +526,12 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
         contentStream.setRenderingMode(this.getFontStyle().getMode());
         // 初始化字符间隔
         contentStream.setCharacterSpacing(this.getCharacterSpacing());
+        // 初始化线宽
+        contentStream.setLineWidth(CommonUtil.initLineWidth(this.getFontStyle()));
         // 返回内容流
         return contentStream;
     }
-
+    
     /**
      * 初始化位置
      *

@@ -158,10 +158,11 @@ public class PageTest extends BaseTest {
     public void scaleTest() {
         this.test(
                 () -> {
-                    try (Document document = PdfHandler.getDocumentHandler().load(Paths.get("E:\\PDF\\pdfbox\\page\\rotationTest.pdf").toFile())) {
-                        Page page = document.getPage(0);
-                        page.scale(PageSize.A5);
-
+                    try (Document document = PdfHandler.getDocumentHandler().load(Paths.get("E:\\PDF\\pdfbox\\table\\tableTest.pdf").toFile())) {
+                        for (Page page : document.getPages()) {
+                            page.scale(PageSize.create(page.getWidth() * 0.5F, page.getHeight() * 0.5F));
+                        }
+                        
                         document.save("E:\\PDF\\pdfbox\\page\\scaleTest.pdf");
                     }
                 }

@@ -36,7 +36,7 @@ public class BigDataTest extends BaseTest {
     public void bigDataTest1() {
         // 单次渲染耗时：2.417s 页面数：290 耗时：3.369s 大小：448KB
         this.test(() -> {
-            Document document = PdfHandler.getDocumentHandler().create(MemoryPolicy.setupMix(2L * 1024 * 1024 * 1024, "E:\\PDF\\pdfbox\\document"));
+            Document document = PdfHandler.getDocumentHandler().create(MemoryPolicy.setupMix(20L * 1024 * 1024, "E:\\PDF\\pdfbox\\document"));
             document.setMargin(50F);
             
             Page page = new Page(document);
@@ -66,7 +66,7 @@ public class BigDataTest extends BaseTest {
     public void bigDataTest2() {
         // 单次渲染耗时：0.022s 页面数：300 耗时：3.321s 大小：446KB
         this.test(() -> {
-            Document document = PdfHandler.getDocumentHandler().create(MemoryPolicy.setupTempFileOnly("E:\\PDF\\pdfbox\\document"));
+            Document document = PdfHandler.getDocumentHandler().create(MemoryPolicy.setupMix(50L * 1024 * 1024, "E:\\PDF\\pdfbox\\document"));
             document.setMargin(50F);
             
             int total = 300;

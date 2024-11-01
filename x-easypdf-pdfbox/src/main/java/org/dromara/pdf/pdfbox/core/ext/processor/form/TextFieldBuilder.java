@@ -1,18 +1,18 @@
 package org.dromara.pdf.pdfbox.core.ext.processor.form;
 
 import lombok.EqualsAndHashCode;
-import org.apache.pdfbox.pdmodel.PDPage;
+import lombok.Setter;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 import org.apache.pdfbox.pdmodel.interactive.form.PDTextField;
 import org.dromara.pdf.pdfbox.core.base.Document;
+import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.base.Size;
 import org.dromara.pdf.pdfbox.core.enums.HorizontalAlignment;
 import org.dromara.pdf.pdfbox.support.Constants;
 import org.dromara.pdf.pdfbox.util.ColorUtil;
 
 import java.awt.*;
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -33,9 +33,10 @@ import java.util.Optional;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
+@Setter
 @EqualsAndHashCode(callSuper = true)
 public class TextFieldBuilder extends AbstractFormFieldBuilder {
-
+    
     /**
      * 默认外观格式化
      */
@@ -92,177 +93,30 @@ public class TextFieldBuilder extends AbstractFormFieldBuilder {
      * 默认值
      */
     protected String defaultValue;
-    /**
-     * 默认外观
-     */
-    protected String defaultAppearance;
-
-
+    
     /**
      * 有参构造
      *
-     * @param document
-     * @param page
-     * @param size
+     * @param document 文档
+     * @param page     页面
+     * @param size     尺寸
      */
-    public TextFieldBuilder(Document document, PDPage page, Size size) {
+    private TextFieldBuilder(Document document, Page page, Size size) {
         super(document, page, size);
     }
-
+    
     /**
-     * 设置字体名称
+     * 构建器
      *
-     * @param fontName 字体名称
-     * @return 返回字段构建器
+     * @param document 文档
+     * @param page     页面
+     * @param size     尺寸
+     * @return 返回文本字段构建器
      */
-    public TextFieldBuilder setFontName(String fontName) {
-        this.fontName = fontName;
-        return this;
+    public static TextFieldBuilder builder(Document document, Page page, Size size) {
+        return new TextFieldBuilder(document, page, size);
     }
-
-    /**
-     * 设置字体大小
-     *
-     * @param fontSize 字体大小
-     * @return 返回字段构建器
-     */
-    public TextFieldBuilder setFontSize(Float fontSize) {
-        this.fontSize = fontSize;
-        return this;
-    }
-
-    /**
-     * 设置字体颜色
-     *
-     * @param fontColor 字体颜色
-     * @return 返回字段构建器
-     */
-    public TextFieldBuilder setFontColor(Color fontColor) {
-        this.fontColor = fontColor;
-        return this;
-    }
-
-    /**
-     * 设置字体颜色
-     *
-     * @param isMultiline 字体颜色
-     * @return 返回字段构建器
-     */
-    public TextFieldBuilder setMultiline(boolean isMultiline) {
-        this.isMultiline = isMultiline;
-        return this;
-    }
-
-    /**
-     * 设置是否密码
-     *
-     * @param isPassword 是否密码
-     * @return 返回字段构建器
-     */
-    public TextFieldBuilder setPassword(boolean isPassword) {
-        this.isPassword = isPassword;
-        return this;
-    }
-
-    /**
-     * 设置是否文件选择
-     *
-     * @param isFileSelect 是否文件选择
-     * @return 返回字段构建器
-     */
-    public TextFieldBuilder setFileSelect(boolean isFileSelect) {
-        this.isFileSelect = isFileSelect;
-        return this;
-    }
-
-    /**
-     * 设置是否非拼写检查
-     *
-     * @param isDoNotSpellCheck 是否非拼写检查
-     * @return 返回字段构建器
-     */
-    public TextFieldBuilder setDoNotSpellCheck(boolean isDoNotSpellCheck) {
-        this.isDoNotSpellCheck = isDoNotSpellCheck;
-        return this;
-    }
-
-    /**
-     * 设置是否非滚动
-     *
-     * @param isDoNotScroll 是否非滚动
-     * @return 返回字段构建器
-     */
-    public TextFieldBuilder setDoNotScroll(boolean isDoNotScroll) {
-        this.isDoNotScroll = isDoNotScroll;
-        return this;
-    }
-
-    /**
-     * 设置是否组合
-     *
-     * @param isCombination 是否组合
-     * @return 返回字段构建器
-     */
-    public TextFieldBuilder setCombination(boolean isCombination) {
-        this.isCombination = isCombination;
-        return this;
-    }
-
-    /**
-     * 设置是否富文本
-     *
-     * @param isRichText 是否富文本
-     * @return 返回字段构建器
-     */
-    public TextFieldBuilder setRichText(boolean isRichText) {
-        this.isRichText = isRichText;
-        return this;
-    }
-
-    /**
-     * 设置富文本值
-     *
-     * @param richTextValue 富文本值
-     * @return 返回字段构建器
-     */
-    public TextFieldBuilder setRichTextValue(String richTextValue) {
-        this.richTextValue = richTextValue;
-        return this;
-    }
-
-    /**
-     * 设置最大长度
-     *
-     * @param maxLength 最大长度
-     * @return 返回字段构建器
-     */
-    public TextFieldBuilder setMaxLength(int maxLength) {
-        this.maxLength = maxLength;
-        return this;
-    }
-
-    /**
-     * 设置默认值
-     *
-     * @param defaultValue 默认值
-     * @return 返回字段构建器
-     */
-    public TextFieldBuilder setDefaultValue(String defaultValue) {
-        this.defaultValue = defaultValue;
-        return this;
-    }
-
-    /**
-     * 设置默认外观
-     *
-     * @param defaultAppearance 默认外观
-     * @return 返回字段构建器
-     */
-    public TextFieldBuilder setDefaultAppearance(String defaultAppearance) {
-        this.defaultAppearance = defaultAppearance;
-        return this;
-    }
-
+    
     /**
      * 构建
      *
@@ -274,21 +128,17 @@ public class TextFieldBuilder extends AbstractFormFieldBuilder {
         PDTextField field = new PDTextField(form);
         this.initProperties(field);
         this.initSize(field);
-        this.initDefaultAppearance(field);
+        this.initAppearance(field);
         return field;
     }
-
+    
     /**
      * 初始化属性
      *
      * @param field 字段
      */
     protected void initProperties(PDTextField field) {
-        Objects.requireNonNull(this.name, "the name can not be null");
-        field.setPartialName(this.name);
-        Optional.ofNullable(this.isReadonly).ifPresent(field::setReadOnly);
-        Optional.ofNullable(this.isRequired).ifPresent(field::setRequired);
-        Optional.ofNullable(this.isNoExport).ifPresent(field::setNoExport);
+        super.initProperties(field);
         Optional.ofNullable(this.alignment).map(HorizontalAlignment::getAlignment).ifPresent(field::setQ);
         Optional.ofNullable(this.isMultiline).ifPresent(field::setMultiline);
         Optional.ofNullable(this.isPassword).ifPresent(field::setPassword);
@@ -301,13 +151,13 @@ public class TextFieldBuilder extends AbstractFormFieldBuilder {
         Optional.ofNullable(this.maxLength).ifPresent(field::setMaxLen);
         Optional.ofNullable(this.defaultValue).ifPresent(field::setDefaultValue);
     }
-
+    
     /**
-     * 初始化默认外观
+     * 初始化外观
      *
      * @param field 字段
      */
-    protected void initDefaultAppearance(PDTextField field) {
+    protected void initAppearance(PDTextField field) {
         String fontName = Optional.ofNullable(this.fontName).map(this.document.getContext()::getFont).orElse(this.document.getFont()).getName();
         Float fontSize = Optional.ofNullable(this.fontSize).orElse(Constants.DEFAULT_FONT_SIZE);
         Color fontColor = Optional.ofNullable(this.fontColor).orElse(Constants.DEFAULT_FONT_COLOR);

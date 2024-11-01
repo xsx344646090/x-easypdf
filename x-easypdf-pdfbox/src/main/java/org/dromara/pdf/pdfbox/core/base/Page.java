@@ -3,11 +3,18 @@ package org.dromara.pdf.pdfbox.core.base;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
+import org.apache.pdfbox.contentstream.operator.Operator;
+import org.apache.pdfbox.contentstream.operator.OperatorName;
 import org.apache.pdfbox.cos.COSArray;
+import org.apache.pdfbox.cos.COSFloat;
+import org.apache.pdfbox.cos.COSInteger;
 import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.pdfparser.PDFStreamParser;
+import org.apache.pdfbox.pdfwriter.ContentStreamWriter;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.common.PDStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.dromara.pdf.pdfbox.core.base.config.FontConfiguration;
 import org.dromara.pdf.pdfbox.core.base.config.MarginConfiguration;
@@ -19,6 +26,7 @@ import org.dromara.pdf.pdfbox.support.Constants;
 
 import java.awt.*;
 import java.io.Closeable;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.*;
 
@@ -43,7 +51,7 @@ import java.util.*;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class Page extends AbstractBase implements Closeable {
-
+    
     /**
      * 边距配置
      */
@@ -88,7 +96,7 @@ public class Page extends AbstractBase implements Closeable {
      * 垂直对齐方式
      */
     protected VerticalAlignment verticalAlignment;
-
+    
     /**
      * 有参构造
      *
@@ -97,7 +105,7 @@ public class Page extends AbstractBase implements Closeable {
     public Page(Document document) {
         this(document, new PDPage(PageSize.A4.getSize()));
     }
-
+    
     /**
      * 有参构造
      *
@@ -110,7 +118,7 @@ public class Page extends AbstractBase implements Closeable {
         }
         this.init(new PDPage(pageSize.getSize()), document, document.getMarginConfiguration(), document.getFontConfiguration(), document.getBackgroundColor());
     }
-
+    
     /**
      * 有参构造
      *
@@ -120,7 +128,7 @@ public class Page extends AbstractBase implements Closeable {
     public Page(Document document, PDPage target) {
         this.init(target, document, document.getMarginConfiguration(), document.getFontConfiguration(), document.getBackgroundColor());
     }
-
+    
     /**
      * 有参构造
      *
@@ -131,7 +139,7 @@ public class Page extends AbstractBase implements Closeable {
         this.parentPage = page;
         page.setSubPage(this);
     }
-
+    
     /**
      * 设置边距（上下左右）
      *
@@ -145,7 +153,57 @@ public class Page extends AbstractBase implements Closeable {
         this.getContext().resetWrapWidth(null);
         this.getContext().resetHeight(null);
     }
-
+    
+    /**
+     * 设置背景颜色
+     *
+     * @param color 颜色
+     */
+    public void setBackgroundColor(Color color) {
+        if (!Objects.equals(this.backgroundColor, color)) {
+            this.backgroundColor = color;
+            this.initBackgroundColor();
+        }
+    }
+    
+    /**
+     * 设置水平对齐方式
+     *
+     * @param horizontalAlignment 水平对齐方式
+     */
+    public void setHorizontalAlignment(HorizontalAlignment horizontalAlignment) {
+        Objects.requireNonNull(horizontalAlignment, "the horizontal alignment can not be null");
+        this.horizontalAlignment = horizontalAlignment;
+    }
+    
+    /**
+     * 设置垂直对齐方式
+     *
+     * @param verticalAlignment 垂直对齐方式
+     */
+    public void setVerticalAlignment(VerticalAlignment verticalAlignment) {
+        Objects.requireNonNull(verticalAlignment, "the vertical alignment can not be null");
+        this.verticalAlignment = verticalAlignment;
+    }
+    
+    /**
+     * 获取字体
+     *
+     * @return 返回字体
+     */
+    public PDFont getFont() {
+        return this.getContext().getFont(this.fontConfiguration.getFontName());
+    }
+    
+    /**
+     * 获取上边距
+     *
+     * @return 返回上边距
+     */
+    public Float getMarginTop() {
+        return this.marginConfiguration.getMarginTop();
+    }
+    
     /**
      * 设置上边距
      *
@@ -166,7 +224,16 @@ public class Page extends AbstractBase implements Closeable {
         }
         this.getContext().resetHeight(null);
     }
-
+    
+    /**
+     * 获取下边距
+     *
+     * @return 返回下边距
+     */
+    public Float getMarginBottom() {
+        return this.marginConfiguration.getMarginBottom();
+    }
+    
     /**
      * 设置下边距
      *
@@ -176,7 +243,16 @@ public class Page extends AbstractBase implements Closeable {
         this.marginConfiguration.setMarginBottom(margin);
         this.getContext().resetHeight(null);
     }
-
+    
+    /**
+     * 获取左边距
+     *
+     * @return 返回左边距
+     */
+    public Float getMarginLeft() {
+        return this.marginConfiguration.getMarginLeft();
+    }
+    
     /**
      * 设置左边距
      *
@@ -196,7 +272,16 @@ public class Page extends AbstractBase implements Closeable {
         this.getContext().setWrapBeginX(margin);
         this.getContext().resetWrapWidth(null);
     }
-
+    
+    /**
+     * 获取右边距
+     *
+     * @return 返回右边距
+     */
+    public Float getMarginRight() {
+        return this.marginConfiguration.getMarginRight();
+    }
+    
     /**
      * 设置右边距
      *
@@ -206,19 +291,16 @@ public class Page extends AbstractBase implements Closeable {
         this.marginConfiguration.setMarginRight(margin);
         this.getContext().resetWrapWidth(null);
     }
-
+    
     /**
-     * 设置背景颜色
+     * 获取字体名称
      *
-     * @param color 颜色
+     * @return 返回字体名称
      */
-    public void setBackgroundColor(Color color) {
-        if (!Objects.equals(this.backgroundColor, color)) {
-            this.backgroundColor = color;
-            this.initBackgroundColor();
-        }
+    public String getFontName() {
+        return this.fontConfiguration.getFontName();
     }
-
+    
     /**
      * 设置字体名称
      *
@@ -228,7 +310,16 @@ public class Page extends AbstractBase implements Closeable {
         this.fontConfiguration.setFontName(fontName);
         this.getContext().addFontCache(fontName);
     }
-
+    
+    /**
+     * 获取特殊字体名称
+     *
+     * @return 返回特殊字体名称
+     */
+    public List<String> getSpecialFontNames() {
+        return this.fontConfiguration.getSpecialFontNames();
+    }
+    
     /**
      * 设置特殊字体名称
      *
@@ -238,7 +329,16 @@ public class Page extends AbstractBase implements Closeable {
         this.getContext().addFontCache(fontNames);
         Collections.addAll(this.fontConfiguration.getSpecialFontNames(), fontNames);
     }
-
+    
+    /**
+     * 获取字体大小
+     *
+     * @return 返回字体大小
+     */
+    public Float getFontSize() {
+        return this.fontConfiguration.getFontSize();
+    }
+    
     /**
      * 设置字体大小
      *
@@ -247,7 +347,16 @@ public class Page extends AbstractBase implements Closeable {
     public void setFontSize(float size) {
         this.fontConfiguration.setFontSize(size);
     }
-
+    
+    /**
+     * 获取字体颜色
+     *
+     * @return 返回字体颜色
+     */
+    public Color getFontColor() {
+        return this.fontConfiguration.getFontColor();
+    }
+    
     /**
      * 设置字体颜色
      *
@@ -256,7 +365,16 @@ public class Page extends AbstractBase implements Closeable {
     public void setFontColor(Color color) {
         this.fontConfiguration.setFontColor(color);
     }
-
+    
+    /**
+     * 获取字体透明度
+     *
+     * @return 返回字体透明度
+     */
+    public Float getFontAlpha() {
+        return this.fontConfiguration.getFontAlpha();
+    }
+    
     /**
      * 设置字体透明度
      *
@@ -265,7 +383,16 @@ public class Page extends AbstractBase implements Closeable {
     public void setFontAlpha(float alpha) {
         this.fontConfiguration.setFontAlpha(alpha);
     }
-
+    
+    /**
+     * 获取字体样式
+     *
+     * @return 返回字体样式
+     */
+    public FontStyle getFontStyle() {
+        return this.fontConfiguration.getFontStyle();
+    }
+    
     /**
      * 设置字体样式
      *
@@ -277,7 +404,16 @@ public class Page extends AbstractBase implements Closeable {
             this.setFontSlope(Constants.DEFAULT_FONT_ITALIC_SLOPE);
         }
     }
-
+    
+    /**
+     * 获取字体斜率（斜体字）
+     *
+     * @return 返回字体斜率（斜体字）
+     */
+    public Float getFontSlope() {
+        return this.fontConfiguration.getFontSlope();
+    }
+    
     /**
      * 设置字体斜率（斜体字）
      *
@@ -286,7 +422,16 @@ public class Page extends AbstractBase implements Closeable {
     public void setFontSlope(float slope) {
         this.fontConfiguration.setFontSlope(slope);
     }
-
+    
+    /**
+     * 获取字符间距
+     *
+     * @return 返回字符间距
+     */
+    public Float getCharacterSpacing() {
+        return this.fontConfiguration.getCharacterSpacing();
+    }
+    
     /**
      * 设置字符间距
      *
@@ -295,7 +440,16 @@ public class Page extends AbstractBase implements Closeable {
     public void setCharacterSpacing(float spacing) {
         this.fontConfiguration.setCharacterSpacing(spacing);
     }
-
+    
+    /**
+     * 获取行间距
+     *
+     * @return 返回行间距
+     */
+    public Float getLeading() {
+        return this.fontConfiguration.getLeading();
+    }
+    
     /**
      * 设置行间距
      *
@@ -304,108 +458,7 @@ public class Page extends AbstractBase implements Closeable {
     public void setLeading(float leading) {
         this.fontConfiguration.setLeading(leading);
     }
-
-    /**
-     * 设置水平对齐方式
-     *
-     * @param horizontalAlignment 水平对齐方式
-     */
-    public void setHorizontalAlignment(HorizontalAlignment horizontalAlignment) {
-        Objects.requireNonNull(horizontalAlignment, "the horizontal alignment can not be null");
-        this.horizontalAlignment = horizontalAlignment;
-    }
-
-    /**
-     * 设置垂直对齐方式
-     *
-     * @param verticalAlignment 垂直对齐方式
-     */
-    public void setVerticalAlignment(VerticalAlignment verticalAlignment) {
-        Objects.requireNonNull(verticalAlignment, "the vertical alignment can not be null");
-        this.verticalAlignment = verticalAlignment;
-    }
-
-    /**
-     * 获取字体
-     *
-     * @return 返回字体
-     */
-    public PDFont getFont() {
-        return this.getContext().getFont(this.fontConfiguration.getFontName());
-    }
-
-    /**
-     * 获取上边距
-     *
-     * @return 返回上边距
-     */
-    public Float getMarginTop() {
-        return this.marginConfiguration.getMarginTop();
-    }
-
-    /**
-     * 获取下边距
-     *
-     * @return 返回下边距
-     */
-    public Float getMarginBottom() {
-        return this.marginConfiguration.getMarginBottom();
-    }
-
-    /**
-     * 获取左边距
-     *
-     * @return 返回左边距
-     */
-    public Float getMarginLeft() {
-        return this.marginConfiguration.getMarginLeft();
-    }
-
-    /**
-     * 获取右边距
-     *
-     * @return 返回右边距
-     */
-    public Float getMarginRight() {
-        return this.marginConfiguration.getMarginRight();
-    }
-
-    public String getFontName() {
-        return this.fontConfiguration.getFontName();
-    }
-
-    public List<String> getSpecialFontNames() {
-        return this.fontConfiguration.getSpecialFontNames();
-    }
-
-    public Float getFontSize() {
-        return this.fontConfiguration.getFontSize();
-    }
-
-    public Color getFontColor() {
-        return this.fontConfiguration.getFontColor();
-    }
-
-    public Float getFontAlpha() {
-        return this.fontConfiguration.getFontAlpha();
-    }
-
-    public FontStyle getFontStyle() {
-        return this.fontConfiguration.getFontStyle();
-    }
-
-    public Float getFontSlope() {
-        return this.fontConfiguration.getFontSlope();
-    }
-
-    public Float getCharacterSpacing() {
-        return this.fontConfiguration.getCharacterSpacing();
-    }
-
-    public Float getLeading() {
-        return this.fontConfiguration.getLeading();
-    }
-
+    
     /**
      * 获取页面宽度
      *
@@ -414,7 +467,7 @@ public class Page extends AbstractBase implements Closeable {
     public Float getWidth() {
         return this.pageSize.getWidth();
     }
-
+    
     /**
      * 获取页面高度
      *
@@ -423,7 +476,7 @@ public class Page extends AbstractBase implements Closeable {
     public Float getHeight() {
         return this.pageSize.getHeight();
     }
-
+    
     /**
      * 获取排除页面边距的页面宽度
      *
@@ -432,7 +485,7 @@ public class Page extends AbstractBase implements Closeable {
     public Float getWithoutMarginWidth() {
         return this.getWidth() - this.getMarginLeft() - this.getMarginRight();
     }
-
+    
     /**
      * 获取排除页面边距的页面高度
      *
@@ -441,7 +494,7 @@ public class Page extends AbstractBase implements Closeable {
     public Float getWithoutMarginHeight() {
         return this.getHeight() - this.getMarginTop() - this.getMarginBottom();
     }
-
+    
     /**
      * 获取第一个父页面
      *
@@ -460,7 +513,7 @@ public class Page extends AbstractBase implements Closeable {
         // 返回父页面
         return parent;
     }
-
+    
     /**
      * 获取最后一个子页面
      *
@@ -480,7 +533,7 @@ public class Page extends AbstractBase implements Closeable {
         // 返回子页面
         return subPage;
     }
-
+    
     /**
      * 获取最新页面
      *
@@ -489,7 +542,7 @@ public class Page extends AbstractBase implements Closeable {
     public Page getLastPage() {
         return Optional.ofNullable(this.getLastSubPage()).orElse(this);
     }
-
+    
     /**
      * 获取最新页码
      *
@@ -515,7 +568,7 @@ public class Page extends AbstractBase implements Closeable {
         // 返回索引
         return index;
     }
-
+    
     /**
      * 获取页码占位符
      *
@@ -524,7 +577,7 @@ public class Page extends AbstractBase implements Closeable {
     public String getPlaceholder() {
         return Constants.CURRENT_PAGE_PLACEHOLDER;
     }
-
+    
     /**
      * 旋转
      *
@@ -534,7 +587,7 @@ public class Page extends AbstractBase implements Closeable {
         Objects.requireNonNull(angle, "the rotation angle can not be null");
         this.target.setRotation(angle.getAngle());
     }
-
+    
     /**
      * 缩放
      *
@@ -543,14 +596,29 @@ public class Page extends AbstractBase implements Closeable {
     public void scale(PageSize rectangle) {
         // 校验
         Objects.requireNonNull(rectangle, "the rectangle can not be null");
+        // 获取宽度比例
+        float widthScale = rectangle.getWidth() / this.getPageSize().getWidth();
+        // 获取高度比例
+        float heightScale = rectangle.getHeight() / this.getPageSize().getHeight();
         // 设置原尺寸
         this.getTarget().setArtBox(this.getPageSize().getSize());
         // 重置尺寸
         this.getTarget().setMediaBox(rectangle.getSize());
         this.getTarget().setCropBox(null);
         this.setPageSize(rectangle);
+        // 缩放内容
+        this.scaleContents(widthScale, heightScale);
     }
-
+    
+    /**
+     * 缩放
+     *
+     * @param scale 比例
+     */
+    public void scale(float scale) {
+        this.scale(this.getPageSize().scale(scale));
+    }
+    
     /**
      * 裁剪
      *
@@ -565,7 +633,7 @@ public class Page extends AbstractBase implements Closeable {
         this.getTarget().setCropBox(rectangle.getSize());
         this.setPageSize(rectangle);
     }
-
+    
     /**
      * 重置尺寸
      */
@@ -584,14 +652,14 @@ public class Page extends AbstractBase implements Closeable {
         this.getTarget().setCropBox(null);
         this.getTarget().setArtBox(null);
     }
-
+    
     /**
      * 创建子页面
      */
     public Page createSubPage() {
         return new Page(this);
     }
-
+    
     /**
      * 关闭
      */
@@ -606,7 +674,7 @@ public class Page extends AbstractBase implements Closeable {
         // 重置子页面
         this.setSubPage(null);
     }
-
+    
     /**
      * 初始化
      *
@@ -660,7 +728,7 @@ public class Page extends AbstractBase implements Closeable {
             context.getPageFooter().setIsAlreadyRendered(Boolean.FALSE);
         }
     }
-
+    
     /**
      * 初始化背景颜色
      */
@@ -675,12 +743,49 @@ public class Page extends AbstractBase implements Closeable {
                 this.getIsResetContentStream()
         );
         // 绘制矩形（背景矩形）
-        contentStream.addRect(0, 0, this.getWithoutMarginWidth(), this.getWithoutMarginHeight());
+        contentStream.addRect(0, 0, this.getWidth(), this.getHeight());
         // 设置矩形颜色（背景颜色）
         contentStream.setNonStrokingColor(this.getBackgroundColor());
         // 填充矩形（背景矩形）
         contentStream.fill();
         // 关闭内容流
         contentStream.close();
+    }
+    
+    /**
+     * 缩放内容
+     *
+     * @param widthScale  宽度比例
+     * @param heightScale 高度比例
+     */
+    @SneakyThrows
+    protected void scaleContents(float widthScale, float heightScale) {
+        // 获取目标页面
+        PDPage page = this.getTarget();
+        // 创建流解析器
+        PDFStreamParser parser = new PDFStreamParser(page);
+        // 获取标记
+        List<Object> tokens = parser.parse();
+        // 添加宽度比例
+        tokens.add(0, new COSFloat(widthScale));
+        tokens.add(1, COSInteger.ZERO);
+        tokens.add(2, COSInteger.ZERO);
+        // 添加高度比例
+        tokens.add(3, new COSFloat(heightScale));
+        tokens.add(4, COSInteger.ZERO);
+        tokens.add(5, COSInteger.ZERO);
+        // 添加连接标记
+        tokens.add(6, Operator.getOperator(OperatorName.CONCAT));
+        // 创建流
+        PDStream contents = new PDStream(this.getContext().getTargetDocument());
+        // 创建输出流
+        try (OutputStream outputStream = contents.createOutputStream()) {
+            // 创建内容流写入器
+            ContentStreamWriter writer = new ContentStreamWriter(outputStream);
+            // 写入标记
+            writer.writeTokens(tokens);
+            // 设置内容
+            page.setContents(contents);
+        }
     }
 }

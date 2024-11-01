@@ -1,12 +1,12 @@
 package org.dromara.pdf.pdfbox.core.enums;
 
-import lombok.Getter;
+import org.apache.pdfbox.cos.COSString;
 
 /**
- * 密钥长度
+ * 单选字段样式
  *
  * @author xsx
- * @date 2023/10/18
+ * @date 2024/10/18
  * @since 1.8
  * <p>
  * Copyright (c) 2020 xsx All Rights Reserved.
@@ -20,31 +20,51 @@ import lombok.Getter;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-@Getter
-public enum PWLength {
+public enum FormFieldStateStyle {
     /**
-     * 长度40
+     * 勾形
      */
-    LENGTH_40(40),
+    HOOK("4"),
     /**
-     * 长度128
+     * 圆形
      */
-    LENGTH_128(128),
+    CIRCLE("l"),
     /**
-     * 长度256
+     * 叉形
      */
-    LENGTH_256(256);
+    FORK("8"),
     /**
-     * 长度
+     * 菱形
      */
-    private final int length;
-
+    RHOMBUS("u"),
+    /**
+     * 正方形
+     */
+    SQUARE("n"),
+    /**
+     * 星形
+     */
+    STAR("H");
+    /**
+     * 类型
+     */
+    private final String type;
+    
     /**
      * 构造方法
      *
-     * @param length 长度
+     * @param type 类型
      */
-    PWLength(int length) {
-        this.length = length;
+    FormFieldStateStyle(String type) {
+        this.type = type;
+    }
+    
+    /**
+     * 获取类型
+     *
+     * @return 返回类型
+     */
+    public COSString getType() {
+        return new COSString(this.type);
     }
 }
