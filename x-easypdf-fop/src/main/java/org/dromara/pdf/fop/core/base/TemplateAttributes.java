@@ -280,6 +280,10 @@ public class TemplateAttributes {
      */
     public static final String CONTENT_HEIGHT = "content-height";
     /**
+     * 缩放类型
+     */
+    public static final String SCALING = "scaling";
+    /**
      * 分割线样式
      */
     public static final String LEADER_PATTERN = "leader-pattern";
@@ -412,7 +416,7 @@ public class TemplateAttributes {
      * <p>auto：自动</p>
      * <p>always：总是</p>
      */
-    public static final String KEEP_TOGETHER = "keep-together";
+    public static final String KEEP_TOGETHER = "keep-together.within-column";
     /**
      * 分页时与上一个保持一起
      * <p>auto：自动</p>

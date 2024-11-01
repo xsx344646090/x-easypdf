@@ -4,7 +4,7 @@
 ---
 
 #### 项目主页
-https://www.x-easypdf.cn
+https://x-easypdf.cn
 
 ---
 

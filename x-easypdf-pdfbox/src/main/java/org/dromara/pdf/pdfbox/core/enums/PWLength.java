@@ -3,6 +3,8 @@ package org.dromara.pdf.pdfbox.core.enums;
 import lombok.Getter;
 
 /**
+ * 密钥长度
+ *
  * @author xsx
  * @date 2023/10/18
  * @since 1.8

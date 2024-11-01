@@ -179,6 +179,17 @@ public class Image implements Component {
     }
 
     /**
+     * 设置缩放类型
+     *
+     * @param scaling 缩放类型
+     * @return 返回图像组件
+     */
+    public Image setScaling(String scaling) {
+        this.param.setScaling(scaling);
+        return this;
+    }
+
+    /**
      * 设置图像路径
      * <p>注：当为windows系统绝对路径时，须添加前缀“/”，例如：”/E:\test\test.png“</p>
      *
@@ -311,6 +322,8 @@ public class Image implements Component {
         Optional.ofNullable(this.param.getWidth()).ifPresent(v -> externalGraphic.setAttribute(TemplateAttributes.CONTENT_WIDTH, v.intern().toLowerCase()));
         // 设置图像高度
         Optional.ofNullable(this.param.getHeight()).ifPresent(v -> externalGraphic.setAttribute(TemplateAttributes.CONTENT_HEIGHT, v.intern().toLowerCase()));
+        // 设置缩放类型
+        Optional.ofNullable(this.param.getScaling()).ifPresent(v -> externalGraphic.setAttribute(TemplateAttributes.SCALING, v.intern().toLowerCase()));
         // 设置图像路径
         externalGraphic.setAttribute(TemplateAttributes.SRC, this.param.getPath().intern());
         // 返回externalGraphic元素

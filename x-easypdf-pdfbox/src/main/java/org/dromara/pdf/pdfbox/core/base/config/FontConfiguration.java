@@ -28,7 +28,7 @@ import java.util.Objects;
  */
 @Data
 public class FontConfiguration {
-    
+
     /**
      * 字体名称
      */
@@ -69,14 +69,14 @@ public class FontConfiguration {
      * 行间距
      */
     protected Float leading;
-    
+
     /**
      * 无参构造
      */
     public FontConfiguration() {
         this.init();
     }
-    
+
     /**
      * 有参构造
      *
@@ -85,7 +85,7 @@ public class FontConfiguration {
     public FontConfiguration(FontConfiguration configuration) {
         this.init(configuration);
     }
-    
+
     /**
      * 设置字体大小
      *
@@ -97,7 +97,7 @@ public class FontConfiguration {
         }
         this.fontSize = fontSize;
     }
-    
+
     /**
      * 设置字符间距
      *
@@ -109,7 +109,7 @@ public class FontConfiguration {
         }
         this.characterSpacing = spacing;
     }
-    
+
     /**
      * 设置行间距
      *
@@ -121,13 +121,15 @@ public class FontConfiguration {
         }
         this.leading = leading;
     }
-    
+
     /**
      * 初始化
      */
     public void init() {
         // 初始化字体名称
         this.fontName = Constants.DEFAULT_FONT_NAME;
+        // 初始化特殊字体名称
+        this.specialFontNames = Constants.DEFAULT_FONT_SPECIAL_NAMES;
         // 初始化字体大小
         this.fontSize = Constants.DEFAULT_FONT_SIZE;
         // 初始化字体颜色
@@ -145,7 +147,7 @@ public class FontConfiguration {
         // 初始化行间距
         this.leading = Constants.DEFAULT_LEADING;
     }
-    
+
     /**
      * 初始化
      *

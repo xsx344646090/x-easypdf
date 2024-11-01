@@ -1,6 +1,7 @@
 package org.dromara.pdf.pdfbox.handler;
 
 
+import org.dromara.pdf.pdfbox.core.base.Banner;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.ext.analyzer.DocumentAnalyzer;
 import org.dromara.pdf.pdfbox.core.ext.comparator.DocumentComparator;
@@ -91,5 +92,12 @@ public class PdfHandler {
      */
     public static void disableScanSystemFonts() {
         System.setProperty(Constants.FONT_SCAN_SWITCH, "false");
+    }
+    
+    /**
+     * 关闭标语
+     */
+    public static void disableBanner() {
+        Banner.disable();
     }
 }

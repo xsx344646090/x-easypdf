@@ -410,4 +410,17 @@ public class TemplateHandler {
             return new FontHandler();
         }
     }
+    
+    /**
+     * pdf模板标语
+     */
+    public static class Banner {
+        
+        /**
+         * 关闭
+         */
+        public static void disable() {
+            org.dromara.pdf.fop.core.base.Banner.disable();
+        }
+    }
 }

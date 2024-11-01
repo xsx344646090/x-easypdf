@@ -47,6 +47,8 @@ public class ImageTest extends BaseTest {
                         .setWidth("150px")
                         // 设置图像高度
                         .setHeight("150px")
+                        // 设置缩放类型
+                        .setScaling("non-uniform")
                         // 设置水平居中
                         .setHorizontalStyle("center");
                 // 添加图像

@@ -27,9 +27,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 1.8
  */
 public abstract class PDFont implements COSObjectable, PDFontLike {
-    private static final Log LOG = LogFactory.getLog(PDFont.class);
     protected static final Matrix DEFAULT_FONT_MATRIX = new Matrix(0.001f, 0, 0, 0.001f, 0, 0);
-
+    private static final Log LOG = LogFactory.getLog(PDFont.class);
     protected final COSDictionary dict;
     private final CMap toUnicodeCMap;
 
@@ -37,12 +36,11 @@ public abstract class PDFont implements COSObjectable, PDFontLike {
      * AFM for standard 14 fonts
      */
     private final FontMetrics afmStandard14;
-
+    private final Map<Integer, Float> codeToWidthMap;
     private PDFontDescriptor fontDescriptor;
     private List<Float> widths;
     private float avgFontWidth;
     private float fontWidthOfSpace = -1f;
-    private final Map<Integer, Float> codeToWidthMap;
 
     /**
      * Constructor for embedding.
@@ -284,6 +282,18 @@ public abstract class PDFont implements COSObjectable, PDFontLike {
     }
 
     /**
+     * Encodes the given character for use in a PDF content stream.
+     *
+     * @param character Any Unicode character.
+     * @return Array of PDF content stream bytes.
+     * @throws IOException              If the text could not be encoded.
+     * @throws IllegalArgumentException if a character isn't supported by the font.
+     */
+    public final byte[] encode(Character character) throws IOException {
+        return encode(Character.codePointAt(new char[]{character}, 0, 1));
+    }
+
+    /**
      * Encodes the given Unicode code point for use in a PDF content stream.
      * Content streams use a multi-byte encoding with 1 to 4 bytes.
      *
@@ -306,6 +316,27 @@ public abstract class PDFont implements COSObjectable, PDFontLike {
      */
     public float getStringWidth(String text) throws IOException {
         byte[] bytes = encode(text);
+        ByteArrayInputStream in = new ByteArrayInputStream(bytes);
+
+        float width = 0;
+        while (in.available() > 0) {
+            int code = readCode(in);
+            width += getWidth(code);
+        }
+
+        return width;
+    }
+
+    /**
+     * Returns the width of the given Unicode character.
+     *
+     * @param character The character to get the width of.
+     * @return The width of the string in 1/1000 units of text space.
+     * @throws IOException              If there is an error getting the width information.
+     * @throws IllegalArgumentException if a character isn't supported by the font.
+     */
+    public float getCharacterWidth(Character character) throws IOException {
+        byte[] bytes = this.encode(character);
         ByteArrayInputStream in = new ByteArrayInputStream(bytes);
 
         float width = 0;

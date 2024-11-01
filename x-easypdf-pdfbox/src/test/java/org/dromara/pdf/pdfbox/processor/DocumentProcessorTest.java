@@ -7,13 +7,13 @@ import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureOptions;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 import org.dromara.pdf.pdfbox.base.BaseTest;
-import org.dromara.pdf.pdfbox.core.base.Document;
-import org.dromara.pdf.pdfbox.core.base.MemoryPolicy;
-import org.dromara.pdf.pdfbox.core.base.Page;
-import org.dromara.pdf.pdfbox.core.base.Size;
+import org.dromara.pdf.pdfbox.core.base.*;
+import org.dromara.pdf.pdfbox.core.component.Rectangle;
 import org.dromara.pdf.pdfbox.core.component.Textarea;
 import org.dromara.pdf.pdfbox.core.enums.ImageType;
+import org.dromara.pdf.pdfbox.core.enums.PageJoinType;
 import org.dromara.pdf.pdfbox.core.ext.processor.*;
+import org.dromara.pdf.pdfbox.core.ext.processor.form.FormProcessor;
 import org.dromara.pdf.pdfbox.core.ext.processor.sign.EncryptAlgorithm;
 import org.dromara.pdf.pdfbox.core.ext.processor.sign.KeyStoreType;
 import org.dromara.pdf.pdfbox.core.ext.processor.sign.SignOptions;
@@ -69,7 +69,7 @@ public class DocumentProcessorTest extends BaseTest {
             for (int i = 0; i < count; i++) {
                 int finalI = i;
                 tasks.add(
-                        CompletableFuture.runAsync(()->{
+                        CompletableFuture.runAsync(() -> {
                             this.test(() -> {
                                 try (
                                         Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\processor\\2.pdf", MemoryPolicy.setupTempFileOnly());
@@ -95,9 +95,15 @@ public class DocumentProcessorTest extends BaseTest {
     @Test
     public void splitTest() {
         this.test(() -> {
-            try (Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\processor\\mergeTest.pdf")) {
+            try (Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\Pdf1.7.pdf")) {
                 SplitProcessor processor = PdfHandler.getDocumentProcessor(document).getSplitProcessor();
-                processor.split("E:\\PDF\\pdfbox\\processor\\splitTest.pdf", 1, 0);
+                int[] indexes = new int[703 - 682];
+                int index = 0;
+                for (int i = 682; i <= 702; i++) {
+                    indexes[index] = i;
+                    index++;
+                }
+                processor.split("E:\\PDF\\pdfbox\\processor\\splitTest.pdf", indexes);
             }
         });
     }
@@ -141,6 +147,23 @@ public class DocumentProcessorTest extends BaseTest {
     }
     
     /**
+     * 测试文本替换
+     */
+    @Test
+    public void replaceTest2() {
+        this.test(() -> {
+            try (Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\allTest.pdf")) {
+                ReplaceProcessor processor = PdfHandler.getDocumentProcessor(document).getReplaceProcessor();
+                PDFont font = document.getContext().getFont("仿宋");
+                Map<String, String> map = new HashMap<>();
+                map.put("水印", "");
+                processor.replaceText(font, map, 0);
+                document.save("E:\\PDF\\pdfbox\\processor\\replaceTest.pdf");
+            }
+        });
+    }
+    
+    /**
      * 测试打印
      */
     @Test
@@ -167,6 +190,67 @@ public class DocumentProcessorTest extends BaseTest {
                 processor.flush();
                 
                 document.save("E:\\PDF\\pdfbox\\processor\\pageTest.pdf");
+            }
+        });
+    }
+    
+    /**
+     * 测试拼接页面
+     */
+    @Test
+    public void pageJoinTest1() {
+        this.test(() -> {
+            try (Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\table\\tableTest.pdf")) {
+                PageProcessor processor = PdfHandler.getDocumentProcessor(document).getPageProcessor();
+                processor.join(PageJoinType.VERTICAL, document.getPage(0), document.getPage(1));
+                processor.flush();
+                
+                document.save("E:\\PDF\\pdfbox\\processor\\pageJoinTest.pdf");
+            }
+        });
+    }
+    
+    /**
+     * 测试拼接页面
+     */
+    @Test
+    public void pageJoinTest2() {
+        this.test(() -> {
+            try (
+                    Document document = PdfHandler.getDocumentHandler().create();
+                    Document document1 = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\allTest.pdf");
+                    Document document2 = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\allTest.pdf");
+            ) {
+                Page page = new Page(document, PageSize.A4);
+                PageProcessor processor = PdfHandler.getDocumentProcessor(document).getPageProcessor();
+                List<Page> pages1 = document1.getPages();
+                List<Page> pages2 = document2.getPages();
+                float x = 0F;
+                float y = page.getHeight();
+                for (int i = 0; i < 2; i++) {
+                    Page page1 = pages1.get(i);
+                    Rectangle rectangle1 = new Rectangle(page1);
+                    rectangle1.setWidth(page1.getWidth());
+                    rectangle1.setHeight(page1.getHeight());
+                    rectangle1.setBorderColor(Color.BLACK);
+                    rectangle1.render();
+                    page1.scale(0.5F);
+                    
+                    Page page2 = pages2.get(i);
+                    Rectangle rectangle2 = new Rectangle(page2);
+                    rectangle2.setWidth(page2.getWidth());
+                    rectangle2.setHeight(page2.getHeight());
+                    rectangle2.setBorderColor(Color.BLACK);
+                    rectangle2.render();
+                    page2.scale(0.5F);
+                    
+                    y = y - Math.max(page1.getHeight(), page2.getHeight());
+                    processor.join(PageJoinType.HORIZONTAL, x, y, page, page1, page2);
+                }
+                
+                processor.flush();
+                
+                document.save("E:\\PDF\\pdfbox\\processor\\pageJoinTest.pdf");
             }
         });
     }

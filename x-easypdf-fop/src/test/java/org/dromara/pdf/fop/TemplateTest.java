@@ -79,8 +79,11 @@ public class TemplateTest extends BaseTest {
     @Test
     public void testThymeleaf3() {
         this.test(() -> {
+            // 定义fop配置文件路径
+            String configPath = "C:\\Users\\xsx\\Downloads\\fop.xconf";
             // 定义xsl-fo模板路径
-            String templatePath = "org/dromara/pdf/fop/thymeleaf/template2.html";
+            // String templatePath = "org/dromara/pdf/fop/thymeleaf/template2.html";
+            String templatePath = "org/dromara/pdf/fop/jte/templste.fo";
             // 定义pdf输出路径
             String outputPath = "E:\\PDF\\fop\\Thymeleaf.pdf";
             // 定义数据map
@@ -94,7 +97,7 @@ public class TemplateTest extends BaseTest {
             TemplateHandler.Template.build().setDataSource(
                     TemplateHandler.DataSource.Thymeleaf.build()
                             .setTemplatePath(templatePath)
-                            .setTemplateData(data)
+                            // .setTemplateData(data)
             ).transform(outputPath);
         });
     }
@@ -299,7 +302,7 @@ public class TemplateTest extends BaseTest {
             list.add("world");
             // 设置值
             data.put("list", list);
-            data.put("str", "hello world");
+            data.put("str", "测试");
             TemplateHandler.Template.build()
                     .setConfigPath(configPath)
                     .setDataSource(

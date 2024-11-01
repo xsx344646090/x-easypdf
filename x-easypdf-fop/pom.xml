@@ -5,19 +5,17 @@
     <parent>
         <groupId>org.dromara.x-easypdf</groupId>
         <artifactId>x-easypdf-parent</artifactId>
-        <version>3.1.1</version>
+        <version>3.2.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>x-easypdf-fop</artifactId>
-    <version>3.1.1</version>
+    <version>3.2.0</version>
     <packaging>jar</packaging>
     <name>x-easypdf-fop</name>
     <url>https://www.x-easypdf.cn</url>
     <description>A framework based on fop</description>
 
     <properties>
-        <font-box.version>2.0.31</font-box.version>
-        <slf4j.version>2.0.7</slf4j.version>
         <skipTests>true</skipTests>
     </properties>
 
@@ -156,12 +154,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
             <groupId>org.dromara.x-easypdf</groupId>
             <artifactId>x-easypdf-pdfbox</artifactId>
             <version>${project.version}</version>
@@ -169,13 +161,22 @@
         </dependency>
 
         <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
             <groupId>org.apache.xmlgraphics</groupId>
             <artifactId>fop</artifactId>
         </dependency>
         <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>fontbox</artifactId>
-            <version>${font-box.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.zxing</groupId>
@@ -199,13 +200,18 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

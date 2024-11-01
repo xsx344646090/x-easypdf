@@ -67,6 +67,13 @@ public class TextareaTest extends BaseTest {
             textarea.setRise(10F);
             textarea.render();
             
+            textarea = new Textarea(page);
+            textarea.setText("                 ");
+            textarea.setFontSize(10F);
+            textarea.setIsUnderline(true);
+            textarea.setUnderlineColor(Color.BLACK);
+            textarea.render();
+            
             document.appendPage(page);
             document.save("E:\\PDF\\pdfbox\\textarea\\riseTest.pdf");
             document.close();
@@ -213,10 +220,11 @@ public class TextareaTest extends BaseTest {
     @Test
     public void fontStyleTest() {
         this.test(() -> {
-            PdfHandler.disableScanSystemFonts();
+            // PdfHandler.disableScanSystemFonts();
             Document document = PdfHandler.getDocumentHandler().create();
             document.setMargin(50F);
-            document.setFontSize(12F);
+            document.setFontSize(30F);
+            document.setFontName("宋体");
 
             Page page = new Page(document);
 
