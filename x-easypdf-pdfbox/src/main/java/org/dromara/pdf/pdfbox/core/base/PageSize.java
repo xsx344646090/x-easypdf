@@ -31,10 +31,6 @@ import java.awt.*;
 public class PageSize {
     
     /**
-     * 每英寸像素点
-     */
-    private static final Integer POINTS_PER_INCH = Constants.POINTS_PER_INCH;
-    /**
      * 每毫米像素点
      */
     private static final Float POINTS_PER_MM = Constants.POINTS_PER_MM;
@@ -68,6 +64,7 @@ public class PageSize {
      * A4
      * <p>210 * 297，单位：mm</p>
      * <p>595.27563 * 841.8898，单位：px</p>
+     * <p>761 * 841.8898，单位：px</p>
      */
     public static final PageSize A4 = new PageSize(210 * POINTS_PER_MM, 297 * POINTS_PER_MM);
     /**
