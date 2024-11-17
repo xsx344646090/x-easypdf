@@ -96,6 +96,10 @@ public class Page extends AbstractBase implements Closeable {
      * 垂直对齐方式
      */
     protected VerticalAlignment verticalAlignment;
+    /**
+     * 是否开启内容边框
+     */
+    protected Boolean isContentBorder;
     
     /**
      * 有参构造
@@ -136,6 +140,7 @@ public class Page extends AbstractBase implements Closeable {
      */
     protected Page(Page page) {
         this.init(new PDPage(page.getPageSize().getSize()), page, page.getMarginConfiguration(), page.getFontConfiguration(), page.getBackgroundColor());
+        this.setIsContentBorder(page.getIsContentBorder());
         this.parentPage = page;
         page.setSubPage(this);
     }
@@ -184,6 +189,18 @@ public class Page extends AbstractBase implements Closeable {
     public void setVerticalAlignment(VerticalAlignment verticalAlignment) {
         Objects.requireNonNull(verticalAlignment, "the vertical alignment can not be null");
         this.verticalAlignment = verticalAlignment;
+    }
+    
+    /**
+     * 设置是否开启内容边框
+     *
+     * @param isContentBorder 是否开启内容边框
+     */
+    public void setIsContentBorder(boolean isContentBorder) {
+        this.isContentBorder = isContentBorder;
+        if (this.isContentBorder) {
+            this.initContentBorder();
+        }
     }
     
     /**
@@ -269,7 +286,9 @@ public class Page extends AbstractBase implements Closeable {
         if (Objects.equals(cursor.getX(), marginLeft)) {
             cursor.setX(margin);
         }
+        // 重置换行起始坐标
         this.getContext().setWrapBeginX(margin);
+        // 重置换行宽度
         this.getContext().resetWrapWidth(null);
     }
     
@@ -701,6 +720,8 @@ public class Page extends AbstractBase implements Closeable {
         this.horizontalAlignment = HorizontalAlignment.LEFT;
         // 初始化垂直对齐方式
         this.verticalAlignment = VerticalAlignment.TOP;
+        // 初始化是否开启内容边框
+        this.isContentBorder = Boolean.FALSE;
         // 父类初始化
         super.init(base);
         // 获取上下文
@@ -748,6 +769,29 @@ public class Page extends AbstractBase implements Closeable {
         contentStream.setNonStrokingColor(this.getBackgroundColor());
         // 填充矩形（背景矩形）
         contentStream.fill();
+        // 关闭内容流
+        contentStream.close();
+    }
+    
+    /**
+     * 初始化内容边框
+     */
+    @SneakyThrows
+    protected void initContentBorder() {
+        // 新建内容流
+        PDPageContentStream contentStream = new PDPageContentStream(
+                this.getContext().getTargetDocument(),
+                this.getTarget(),
+                PDPageContentStream.AppendMode.APPEND,
+                true,
+                false
+        );
+        // 绘制矩形（背景矩形）
+        contentStream.addRect(this.getMarginLeft(), this.getMarginBottom(), this.getWithoutMarginWidth(), this.getWithoutMarginHeight());
+        // 设置矩形颜色（背景颜色）
+        contentStream.setStrokingColor(Color.BLACK);
+        // 填充矩形（背景矩形）
+        contentStream.stroke();
         // 关闭内容流
         contentStream.close();
     }

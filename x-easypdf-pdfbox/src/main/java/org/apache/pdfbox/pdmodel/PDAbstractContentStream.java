@@ -30,7 +30,10 @@ import org.apache.pdfbox.util.StringUtil;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
 import java.util.List;
@@ -61,7 +64,6 @@ public abstract class PDAbstractContentStream implements Closeable {
     
     protected final Map<PDType0Font, GsubWorker> gsubWorkers = new HashMap<>();
     private final GsubWorkerFactory gsubWorkerFactory = new GsubWorkerFactory();
-    private Float fontSize;
     
     /**
      * Create a new appearance stream.
@@ -159,7 +161,6 @@ public abstract class PDAbstractContentStream implements Closeable {
                 }
             }
         }
-        this.fontSize = fontSize;
         writeOperand(resources.add(font));
         writeOperand(fontSize);
         writeOperator(OperatorName.SET_FONT_AND_SIZE);
@@ -232,31 +233,12 @@ public abstract class PDAbstractContentStream implements Closeable {
         }
         PDFont font = fontStack.peek();
         
-        // complex text layout
-        byte[] encodedText = null;
-        if (font instanceof PDType0Font) {
-            
-            GsubWorker gsubWorker = gsubWorkers.get(font);
-            if (gsubWorker != null) {
-                PDType0Font pdType0Font = (PDType0Font) font;
-                Set<Integer> glyphIds = new HashSet<>();
-                encodedText = encodeForGsub(gsubWorker, glyphIds, pdType0Font, character);
-                if (pdType0Font.willBeSubset()) {
-                    pdType0Font.addGlyphsToSubset(glyphIds);
-                }
-            }
-        }
-        
-        if (encodedText == null) {
-            encodedText = font.encode(character);
-        }
-        
         // Unicode code points to keep when subsetting
         if (font.willBeSubset()) {
             font.addToSubset(character);
         }
         
-        COSWriter.writeString(encodedText, outputStream);
+        COSWriter.writeString(font.encode(character), outputStream);
     }
     
     /**
@@ -1539,7 +1521,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         if (character == ' ') {
             glyphIds.addAll(applyGSUBRules(gsubWorker, out, font, character));
         } else {
-            out.write(font.encode(String.valueOf(character)));
+            out.write(font.encode(character));
         }
         return out.toByteArray();
     }
