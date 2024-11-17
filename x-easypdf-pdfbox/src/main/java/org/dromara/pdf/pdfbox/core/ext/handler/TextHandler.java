@@ -5,7 +5,7 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.base.config.FontConfiguration;
-import org.dromara.pdf.pdfbox.support.CharacterList;
+import org.dromara.pdf.pdfbox.core.component.TextLineInfo;
 import org.dromara.pdf.pdfbox.support.Constants;
 
 import java.util.List;
@@ -30,7 +30,7 @@ import java.util.Objects;
  * </p>
  */
 public class TextHandler extends AbstractTextHandler {
-
+    
     /**
      * 有参构造
      *
@@ -39,7 +39,7 @@ public class TextHandler extends AbstractTextHandler {
     public TextHandler(Document document) {
         super(document);
     }
-
+    
     /**
      * 写入文本
      *
@@ -49,74 +49,51 @@ public class TextHandler extends AbstractTextHandler {
      */
     @SneakyThrows
     @Override
-    public void writeText(FontConfiguration fontConfiguration, PDPageContentStream contentStream, String text) {
+    public void writeText(FontConfiguration fontConfiguration, PDPageContentStream contentStream, TextLineInfo text) {
         // 获取特殊字体名称
         List<String> specialFontNames = fontConfiguration.getSpecialFontNames();
         // 获取字体
         PDFont font = this.getContext().getFont(fontConfiguration.getFontName());
         // 获取字体大小
         Float fontSize = fontConfiguration.getFontSize();
-        // 获取字符链表
-        CharacterList list = CharacterList.create(text);
-        // 遍历链表
-        while (list.hasNext()) {
-            // 获取下一个
-            list = list.getNext();
-            // 处理
-            this.process(contentStream, list, specialFontNames, font, fontSize);
-        }
-    }
-
-    /**
-     * 处理
-     *
-     * @param contentStream    内容流
-     * @param list             字符链表
-     * @param specialFontNames 特殊字体名称
-     * @param font             字体
-     * @param fontSize         字体大小
-     */
-    @SneakyThrows
-    protected void process(
-            PDPageContentStream contentStream,
-            CharacterList list,
-            List<String> specialFontNames,
-            PDFont font,
-            Float fontSize
-    ) {
-        // 获取字符
-        Character character = list.getData();
-        try {
-            // 写入文本
-            contentStream.showCharacter(character);
-        } catch (Exception e) {
-            // 处理单字符
-            boolean flag = this.processSingle(contentStream, character, specialFontNames, font, fontSize);
-            // 未解析成功
-            if (flag) {
-                // 还有下一个字符
-                if (list.hasNext()) {
-                    // 获取下一个字符
-                    Character next = list.getNext().getData();
-                    // 处理双字符
-                    flag = this.processDouble(contentStream, character, next, specialFontNames, font, fontSize);
-                    // 未解析成功
-                    if (flag) {
-                        // 重置字体
-                        contentStream.setFont(this.getContext().getFont(Constants.DEFAULT_FONT_NAME), fontSize);
-                        // 写入未知字符
-                        contentStream.showCharacter(Constants.DEFAULT_UNKNOWN_CHARACTER);
-                        // 重置字体
-                        contentStream.setFont(font, fontSize);
-                    } else {
-                        // 跳过下一个
-                        list.skipNext();
+        // 获取字符数组
+        char[] charArray = text.getText().toCharArray();
+        // 遍历字符
+        for (int i = 0; i < charArray.length; i++) {
+            // 获取字符
+            char character = charArray[i];
+            try {
+                // 写入文本
+                contentStream.showCharacter(character);
+            } catch (Exception e) {
+                // 处理单字符
+                boolean flag = this.processSingle(contentStream, character, specialFontNames, font, fontSize);
+                // 未解析成功
+                if (flag) {
+                    // 还有下一个字符
+                    if (i + 1 < charArray.length) {
+                        // 获取下一个字符
+                        char next = charArray[i + 1];
+                        // 处理双字符
+                        flag = this.processDouble(contentStream, character, next, specialFontNames, font, fontSize);
+                        // 未解析成功
+                        if (flag) {
+                            // 重置字体
+                            contentStream.setFont(this.getContext().getFont(Constants.DEFAULT_FONT_NAME), fontSize);
+                            // 写入未知字符
+                            contentStream.showCharacter(Constants.DEFAULT_UNKNOWN_CHARACTER);
+                            // 重置字体
+                            contentStream.setFont(font, fontSize);
+                        } else {
+                            // 跳过下一个
+                            i++;
+                        }
                     }
                 }
             }
         }
     }
-
+    
     /**
      * 处理单字符
      *
@@ -160,7 +137,7 @@ public class TextHandler extends AbstractTextHandler {
         // 返回标记
         return flag;
     }
-
+    
     /**
      * 处理双字符
      *

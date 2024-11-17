@@ -472,7 +472,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
                     // 初始化位置
                     this.initPosition(stream, beginX, beginY);
                     // 写入文本
-                    this.getTextHandler().writeText(this.getFontConfiguration(), stream, text);
+                    this.getTextHandler().writeText(this.getFontConfiguration(), stream, new TextLineInfo(text, 0F));
                     // 结束写入
                     stream.endText();
                     // 重置Y轴起始坐标

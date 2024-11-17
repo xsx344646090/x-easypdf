@@ -1,6 +1,7 @@
 package org.dromara.pdf.pdfbox.handler;
 
 
+import org.apache.pdfbox.filter.Filter;
 import org.dromara.pdf.pdfbox.core.base.Banner;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.ext.analyzer.DocumentAnalyzer;
@@ -85,6 +86,19 @@ public class PdfHandler {
      */
     public static DocumentComparator getDocumentComparator(Document document) {
         return new DocumentComparator(document);
+    }
+    
+    /**
+     * 开启压缩
+     * <p>注：等级越高，压缩率越高，速度越慢</p>
+     *
+     * @param level 压缩等级（0~9）
+     */
+    public static void enableCompression(int level) {
+        if (level < 0 || level > 9) {
+            throw new IllegalArgumentException("the level must be between 0 and 9");
+        }
+        System.setProperty(Filter.SYSPROP_DEFLATELEVEL, String.valueOf(level));
     }
     
     /**

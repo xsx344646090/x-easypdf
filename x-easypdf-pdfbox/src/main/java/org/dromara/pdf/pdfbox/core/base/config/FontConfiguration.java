@@ -104,9 +104,6 @@ public class FontConfiguration {
      * @param spacing 字符间距
      */
     public void setCharacterSpacing(float spacing) {
-        if (spacing < 0) {
-            throw new IllegalArgumentException("the character spacing must be greater than 0");
-        }
         this.characterSpacing = spacing;
     }
 
