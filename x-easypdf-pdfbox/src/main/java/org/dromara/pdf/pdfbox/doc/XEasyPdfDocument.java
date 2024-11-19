@@ -8,6 +8,7 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.apache.pdfbox.pdmodel.common.PDMetadata;
 import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.interactive.documentnavigation.destination.PDPageFitWidthDestination;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDDocumentOutline;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 import org.apache.pdfbox.printing.PDFPageable;
@@ -18,6 +19,7 @@ import org.apache.xmpbox.schema.AdobePDFSchema;
 import org.apache.xmpbox.xml.XmpSerializer;
 import org.dromara.pdf.pdfbox.component.XEasyPdfComponent;
 import org.dromara.pdf.pdfbox.component.image.XEasyPdfImage;
+import org.dromara.pdf.pdfbox.doc.XEasyPdfDocumentBookmark.BookmarkNode;
 import org.dromara.pdf.pdfbox.footer.XEasyPdfFooter;
 import org.dromara.pdf.pdfbox.handler.XEasyPdfHandler;
 import org.dromara.pdf.pdfbox.header.XEasyPdfHeader;
@@ -1074,14 +1076,17 @@ public class XEasyPdfDocument implements Closeable, Serializable {
         // 获取pdfbox书签
         PDDocumentOutline outline = target.getDocumentCatalog().getDocumentOutline();
         // 如果书签不为空，则设置书签信息
-        if (this.param.getBookmark() != null) {
+        XEasyPdfDocumentBookmark bookmark = this.param.getBookmark();
+        if (bookmark != null) {
             // 如果书签为空，则创建书签
             if (outline == null) {
                 // 创建书签
                 outline = new PDDocumentOutline();
             }
+            // 看看是否设置了书签跳转为跳转对象
+            setBookmarkPage(bookmark);
             // 获取书签项
-            List<PDOutlineItem> items = this.param.getBookmark().getBookMark();
+            List<PDOutlineItem> items = bookmark.getBookMark();
             // 遍历书签项
             for (PDOutlineItem item : items) {
                 // 添加书签项
@@ -1090,6 +1095,48 @@ public class XEasyPdfDocument implements Closeable, Serializable {
         }
         // 设置书签
         target.getDocumentCatalog().setDocumentOutline(outline);
+    }
+
+    private void setBookmarkPage(XEasyPdfDocumentBookmark bookmark) {
+        List<BookmarkNode> nodeList = bookmark.getPageList();
+        List<PDOutlineItem> items = bookmark.getBookMark();
+        // 如果设置的页面书签，并且页面数量与书签数量一致，则更新书签页
+        if(nodeList.size() == items.size()){
+            for (BookmarkNode bookmarkNode : nodeList) {
+                // 递归设置子书签
+                dpSetBookmark(bookmarkNode);
+                // 设置父书签
+                if (bookmarkNode.getPage() != null) {
+                    bookmarkSetPage(bookmarkNode);
+                }
+            }
+        }
+    }
+
+    private void dpSetBookmark(BookmarkNode bookmarkNode) {
+        if(!bookmarkNode.getChildNodeList().isEmpty()){
+            bookmarkNode.getChildNodeList().forEach(this::dpSetBookmark);
+        }
+        PDOutlineItem item = bookmarkNode.getItem();
+        // 查看是否有子书签，先设置子书签
+        List<BookmarkNode> childNodeList = bookmarkNode.getChildNodeList();
+        childNodeList.forEach(childNode -> {
+            bookmarkSetPage(childNode);
+            item.addLast(childNode.getItem());
+        });
+    }
+
+    private void bookmarkSetPage(BookmarkNode childNode) {
+        PDPageFitWidthDestination destination;
+        try {
+            destination = (PDPageFitWidthDestination) childNode.getItem().getDestination();
+            destination.setPage(childNode.getPage().getNewPageList().get(0));
+            if(childNode.getTop() != null){
+                destination.setTop(childNode.getTop());
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

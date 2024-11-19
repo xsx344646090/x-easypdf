@@ -43,6 +43,11 @@ public class XEasyPdfDocumentBookmark implements Serializable {
     private final List<PDOutlineItem> itemList = new ArrayList<>(64);
 
     /**
+     * 子书签节点列表
+     */
+    private final List<BookmarkNode> nodeList = new ArrayList<>(64);
+
+    /**
      * 有参构造
      *
      * @param document pdf文档
@@ -83,6 +88,18 @@ public class XEasyPdfDocumentBookmark implements Serializable {
      */
     public XEasyPdfDocumentBookmark setBookMark(BookmarkNode node) {
         this.itemList.add(node.getItem());
+        this.nodeList.add(node);
+        return this;
+    }
+
+    /**
+     * 设置书签
+     *
+     * @param node 书签节点
+     * @return 返回pdf文档书签
+     */
+    public XEasyPdfDocumentBookmark setBookMark(PDOutlineItem node) {
+        this.itemList.add(node);
         return this;
     }
 
@@ -93,6 +110,14 @@ public class XEasyPdfDocumentBookmark implements Serializable {
      */
     public List<PDOutlineItem> getBookMark() {
         return this.itemList;
+    }
+
+    /**
+     * 获取书签页面列表
+     * @return 返回书签页面列表
+     */
+    public List<BookmarkNode> getPageList(){
+        return this.nodeList;
     }
 
     /**
@@ -120,6 +145,21 @@ public class XEasyPdfDocumentBookmark implements Serializable {
         private final PDPageFitWidthDestination destination;
 
         /**
+         * 书签跳转的页面
+         */
+        private XEasyPdfPage page;
+
+        /**
+         * 书签的子书签节点列表
+         */
+        private final List<BookmarkNode> childNodeList;
+
+        /**
+         * 跳转页面的y轴定位
+         */
+        private Integer top;
+
+        /**
          * 有参构造
          *
          * @param outlineItem pdf书签节点
@@ -128,6 +168,7 @@ public class XEasyPdfDocumentBookmark implements Serializable {
             this.outlineItem = outlineItem;
             this.destination = new PDPageFitWidthDestination();
             this.outlineItem.setDestination(this.destination);
+            this.childNodeList = new ArrayList<>();
         }
 
         /**
@@ -151,6 +192,17 @@ public class XEasyPdfDocumentBookmark implements Serializable {
         }
 
         /**
+         * 添加子节点
+         *
+         * @param childNode 子书签节点
+         * @return 返回书签节点
+         */
+        public BookmarkNode addChildNode(BookmarkNode childNode) {
+            this.childNodeList.add(childNode);
+            return this;
+        }
+
+        /**
          * 设置pdfbox页面索引
          *
          * @param pageIndex pdfbox页面索引
@@ -162,6 +214,17 @@ public class XEasyPdfDocumentBookmark implements Serializable {
         }
 
         /**
+         * 设置pdfbox页面
+         *
+         * @param page page页面
+         * @return 返回书签节点
+         */
+        public BookmarkNode setPage(XEasyPdfPage page) {
+            this.page = page;
+            return this;
+        }
+
+        /**
          * 设置定位顶点坐标
          *
          * @param pageY 页面y轴坐标
@@ -169,6 +232,7 @@ public class XEasyPdfDocumentBookmark implements Serializable {
          */
         public BookmarkNode setTop(int pageY) {
             this.destination.setTop(pageY);
+            this.top = pageY;
             return this;
         }
 
@@ -221,6 +285,31 @@ public class XEasyPdfDocumentBookmark implements Serializable {
          */
         PDOutlineItem getItem() {
             return this.outlineItem;
+        }
+
+        /**
+         * 获取pdfbox书签页面
+         *
+         * @return 返回pdfbox书签页面
+         */
+        XEasyPdfPage getPage() {
+            return this.page;
+        }
+
+        /**
+         * 获取子书签节点列表
+         * @return 返回子书签节点列表
+         */
+        List<BookmarkNode> getChildNodeList() {
+            return this.childNodeList;
+        }
+
+        /**
+         * 获取顶部坐标
+         * @return 返回顶部坐标
+         */
+        Integer getTop() {
+            return this.top;
         }
     }
 
