@@ -28,6 +28,7 @@ import org.dromara.pdf.pdfbox.support.DefaultResourceCache;
 import org.dromara.pdf.pdfbox.util.FileUtil;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -70,6 +71,10 @@ public class Document extends AbstractBase implements Closeable {
      * 背景颜色
      */
     protected Color backgroundColor;
+    /**
+     * 背景图片
+     */
+    protected BufferedImage backgroundImage;
     /**
      * 任务文档
      */
