@@ -33,7 +33,7 @@ import java.util.*;
  * </p>
  */
 public class TextTokenUtil {
-    
+
     /**
      * 替换文本标记
      *
@@ -77,7 +77,7 @@ public class TextTokenUtil {
         // 返回替换结果
         return result;
     }
-    
+
     /**
      * 替换文本
      *
@@ -104,7 +104,7 @@ public class TextTokenUtil {
         // 返回替换结果
         return normalFlag || specialFlag;
     }
-    
+
     /**
      * 尝试替换正常文本
      *
@@ -127,6 +127,7 @@ public class TextTokenUtil {
     ) {
         // 定义结果
         boolean result = false;
+        boolean processFlag = false;
         // 定义空白字符串
         final String blank = " ";
         // 获取信息列表
@@ -168,7 +169,7 @@ public class TextTokenUtil {
                         // 重置子集
                         children = new ArrayList<>();
                         // 重置结果
-                        result = true;
+                        processFlag = true;
                     } else {
                         // 添加文本
                         builder.append(value);
@@ -176,7 +177,7 @@ public class TextTokenUtil {
                 }
             }
             // 结果为单文本
-            if (!result) {
+            if (!processFlag) {
                 // 遍历标记
                 for (TextTokenInfo.TextValue textValue : info.getTokens()) {
                     // 设置替换标记
@@ -184,7 +185,7 @@ public class TextTokenUtil {
                 }
             }
             // 重置结果
-            result = false;
+            processFlag = false;
             // 遍历标记
             for (TextTokenInfo.TextValue textValue : info.getTokens()) {
                 // 替换标记为true
@@ -214,6 +215,7 @@ public class TextTokenUtil {
                                 }
                             }
                             // 重置结果
+                            processFlag = true;
                             result = true;
                             // 打印日志
                             if (log.isDebugEnabled()) {
@@ -226,7 +228,7 @@ public class TextTokenUtil {
                 }
             }
             // 结果为已替换
-            if (result) {
+            if (processFlag) {
                 // 遍历文本标记
                 for (TextTokenInfo.TextValue textValue : info.getTokens()) {
                     // 嵌入子集标记为空
@@ -242,7 +244,7 @@ public class TextTokenUtil {
         // 返回结果
         return result;
     }
-    
+
     /**
      * 尝试替换特殊文本
      *
@@ -311,7 +313,7 @@ public class TextTokenUtil {
         // 返回结果
         return result;
     }
-    
+
     /**
      * 处理相同长度替换文本
      *
@@ -345,7 +347,7 @@ public class TextTokenUtil {
             begin = end;
         }
     }
-    
+
     /**
      * 处理不同长度替换文本
      *
@@ -418,7 +420,7 @@ public class TextTokenUtil {
             }
         }
     }
-    
+
     /**
      * 处理替换文本
      *
@@ -461,7 +463,7 @@ public class TextTokenUtil {
             resources.put(replaceFontName, font);
         }
     }
-    
+
     /**
      * 初始化文本标记信息列表
      *
@@ -509,7 +511,7 @@ public class TextTokenUtil {
         // 返回信息列表
         return infoList;
     }
-    
+
     /**
      * 初始化文本标记信息列表
      *
@@ -553,7 +555,7 @@ public class TextTokenUtil {
         // 返回文本标记信息列表
         return infoList;
     }
-    
+
     /**
      * 初始化文本标记值
      *
@@ -661,7 +663,7 @@ public class TextTokenUtil {
             }
         }
     }
-    
+
     /**
      * 获取文本
      *
@@ -707,7 +709,7 @@ public class TextTokenUtil {
         // 返回文本内容
         return builder.length() > 0 ? builder.toString() : null;
     }
-    
+
     /**
      * 获取文本
      *
@@ -730,7 +732,7 @@ public class TextTokenUtil {
         // 返回文本
         return builder.toString();
     }
-    
+
     /**
      * 初始化资源字体字典
      *
@@ -752,7 +754,7 @@ public class TextTokenUtil {
         // 返回字体字典
         return resourceFontMap;
     }
-    
+
     /**
      * 拼接字符串
      *
