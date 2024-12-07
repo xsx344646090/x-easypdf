@@ -11,6 +11,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Date;
+import java.util.Optional;
 
 /**
  * pdf模板
@@ -76,6 +77,128 @@ public class Template {
      */
     public Template setLayoutManagerMaker(ExpandLayoutManagerMaker maker) {
         this.param.setLayoutManagerMaker(maker);
+        return this;
+    }
+    
+    /**
+     * 设置加密长度
+     * <p>注：长度仅为40、128、256</p>
+     *
+     * @param length 长度
+     * @return 返回pdf模板
+     */
+    public Template setEncryptionLength(Integer length) {
+        Optional.ofNullable(length).ifPresent(this.param::setEncryptionLength);
+        return this;
+    }
+    
+    /**
+     * 设置拥有者密码
+     *
+     * @param password 密码
+     * @return 返回pdf模板
+     */
+    public Template setOwnerPassword(String password) {
+        Optional.ofNullable(password).ifPresent(this.param::setOwnerPassword);
+        return this;
+    }
+    
+    /**
+     * 设置用户密码
+     *
+     * @param password 密码
+     * @return 返回pdf模板
+     */
+    public Template setUserPassword(String password) {
+        Optional.ofNullable(password).ifPresent(this.param::setUserPassword);
+        return this;
+    }
+    
+    /**
+     * 设置是否禁止打印
+     *
+     * @param flag 是否禁止打印
+     * @return 返回pdf模板
+     */
+    public Template setIsNoPrint(Boolean flag) {
+        Optional.ofNullable(flag).ifPresent(this.param::setIsNoPrint);
+        return this;
+    }
+    
+    /**
+     * 设置是否禁止编辑
+     *
+     * @param flag 是否禁止编辑
+     * @return 返回pdf模板
+     */
+    public Template setIsNoEdit(Boolean flag) {
+        Optional.ofNullable(flag).ifPresent(this.param::setIsNoEdit);
+        return this;
+    }
+    
+    /**
+     * 设置是否禁止文档组合
+     *
+     * @param flag 是否禁止文档组合
+     * @return 返回pdf模板
+     */
+    public Template setIsNoAssembleDoc(Boolean flag) {
+        Optional.ofNullable(flag).ifPresent(this.param::setIsNoAssembleDoc);
+        return this;
+    }
+    
+    /**
+     * 设置是否禁止复制
+     *
+     * @param flag 是否禁止复制
+     * @return 返回pdf模板
+     */
+    public Template setIsNoCopy(Boolean flag) {
+        Optional.ofNullable(flag).ifPresent(this.param::setIsNoCopy);
+        return this;
+    }
+    
+    /**
+     * 设置是否禁止复制内容用于辅助工具
+     *
+     * @param flag 是否禁止复制内容用于辅助工具
+     * @return 返回pdf模板
+     */
+    public Template setIsNoAccessContent(Boolean flag) {
+        Optional.ofNullable(flag).ifPresent(this.param::setIsNoAccessContent);
+        return this;
+    }
+    
+    /**
+     * 设置是否禁止页面提取
+     *
+     * @param flag 是否禁止页面提取
+     * @return 返回pdf模板
+     */
+    public Template setIsNoPrintHQ(Boolean flag) {
+        Optional.ofNullable(flag).ifPresent(this.param::setIsNoPrintHQ);
+        return this;
+    }
+    
+    /**
+     * 设置是否禁止注释
+     *
+     * @param flag 是否禁止注释
+     * @return 返回pdf模板
+     */
+    public Template setIsNoAnnotations(Boolean flag) {
+        Optional.ofNullable(flag).ifPresent(this.param::setIsNoAnnotations);
+        return this;
+    }
+    
+    /**
+     * 设置是否禁止填写表单
+     *
+     * @param flag 是否禁止填写表单
+     * @return 返回pdf模板
+     */
+    public Template setIsNoFillForm(Boolean flag) {
+        Optional.ofNullable(flag).ifPresent(this.param::setIsNoFillForm);
         return this;
     }
 

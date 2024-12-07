@@ -352,6 +352,10 @@ public class TemplateAttributes {
      */
     public static final String RADIANS = "radians";
     /**
+     * 无白边
+     */
+    public static final String NO_WHITE_BORDER = "no-white-border";
+    /**
      * 前景色
      */
     public static final String ON_COLOR = "on-color";

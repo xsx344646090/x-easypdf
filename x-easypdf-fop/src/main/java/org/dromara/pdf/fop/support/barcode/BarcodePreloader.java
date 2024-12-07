@@ -158,6 +158,10 @@ public class BarcodePreloader extends AbstractImagePreloader {
      * @return 返回条形码图像
      */
     private BufferedImage getBarCodeImage(BitMatrix matrix, BarCodeConfig config) {
+        // 移除白边
+        if (config.getIsNoWhiteBorder()) {
+            matrix = this.removeWhiteBorder(matrix);
+        }
         // 获取前景色
         final int onColor = config.getOnColor().getRGB();
         // 获取背景色
@@ -186,6 +190,36 @@ public class BarcodePreloader extends AbstractImagePreloader {
         }
         // 返回图片
         return image;
+    }
+    
+    /**
+     * 移除白边
+     *
+     * @param matrix 矩阵
+     * @return 返回矩阵
+     */
+    private BitMatrix removeWhiteBorder(BitMatrix matrix) {
+        // 获取矩阵的外接矩形
+        int[] rectangle = matrix.getEnclosingRectangle();
+        // 获取矩形的宽度
+        int width = rectangle[2] + 1;
+        // 获取矩形的高度
+        int height = rectangle[3] + 1;
+        // 创建一个BitMatrix对象，宽度为width，高度为height
+        BitMatrix bitMatrix = new BitMatrix(width, height);
+        // 清空BitMatrix对象
+        bitMatrix.clear();
+        // 遍历矩阵中的每个元素
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                // 如果矩阵中的元素为true，则在BitMatrix对象中设置对应的元素为true
+                if (matrix.get(i + rectangle[0], j + rectangle[1])) {
+                    bitMatrix.set(i, j);
+                }
+            }
+        }
+        // 返回BitMatrix对象
+        return bitMatrix;
     }
 
     /**

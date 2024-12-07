@@ -116,6 +116,10 @@ public class BarCodeConfig {
      */
     private Double radians;
     /**
+     * 是否无白边
+     */
+    private Boolean isNoWhiteBorder;
+    /**
      * 编码设置
      */
     private final Map<EncodeHintType, Object> encodeHints = new HashMap<>(8);
@@ -210,6 +214,8 @@ public class BarCodeConfig {
         this.wordsOffsetY = this.resolveValue(attributes, TemplateAttributes.WORDS_OFFSET_Y, "2pt", this::parseUnit);
         // 初始化旋转弧度
         this.radians = this.resolveValue(attributes, TemplateAttributes.RADIANS, "0", Double::parseDouble);
+        // 初始化是否无白边
+        this.isNoWhiteBorder = this.resolveValue(attributes, TemplateAttributes.NO_WHITE_BORDER, "false", Boolean::parseBoolean);
     }
 
     /**
