@@ -2,6 +2,8 @@ package org.dromara.pdf.pdfbox.util;
 
 import lombok.SneakyThrows;
 import org.apache.commons.logging.Log;
+import org.apache.pdfbox.contentstream.operator.Operator;
+import org.apache.pdfbox.contentstream.operator.OperatorName;
 import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDResources;
@@ -98,11 +100,11 @@ public class TextTokenUtil {
             PDFont font,
             Map<String, String> replaceMap
     ) {
-        // 尝试替换
-        boolean normalFlag = tryReplaceTextForNormal(log, document, resources, tokens, font, replaceMap);
-        boolean specialFlag = tryReplaceTextForSpecial(log, document, resources, tokens, font, replaceMap);
+        boolean normalResult = tryReplaceTextForNormal(log, document, resources, tokens, font, replaceMap);
+        boolean specialResult = tryReplaceTextForSpecial(log, document, resources, tokens, font, replaceMap);
+        ;
         // 返回替换结果
-        return normalFlag || specialFlag;
+        return normalResult || specialResult;
     }
 
     /**
@@ -215,8 +217,8 @@ public class TextTokenUtil {
                                 }
                             }
                             // 重置结果
-                            processFlag = true;
                             result = true;
+                            processFlag = true;
                             // 打印日志
                             if (log.isDebugEnabled()) {
                                 log.debug("Replaced normal text: original [\"" + allText + "\"], now [\"" + replaceText + "\"]");
@@ -304,7 +306,7 @@ public class TextTokenUtil {
                     processSameLengthReplaceText(document, resources, font, info, replaceText);
                 } else {
                     // 处理不同长度文本
-                    processNotSameLengthReplaceText(document, resources, font, info, replaceText);
+                    processNotSameLengthReplaceText(document, resources, font, tokens, info, replaceText);
                 }
                 // 设置字体
                 tokens.set(info.getFontIndex(), COSName.getPDFName(font.getName()));
@@ -354,6 +356,7 @@ public class TextTokenUtil {
      * @param document    文档
      * @param resources   页面资源
      * @param font        替换字体
+     * @param tokens      标记列表
      * @param info        文本标记信息
      * @param replaceText 替换文本
      */
@@ -362,9 +365,14 @@ public class TextTokenUtil {
             PDDocument document,
             PDResources resources,
             PDFont font,
+            List<Object> tokens,
             TextTokenInfo info,
             String replaceText
     ) {
+        // 定义上一次X轴坐标
+        float lastX = -1F;
+        // 定义上一次Y轴坐标
+        float lastY = -1F;
         // 定义空白
         final String blank = "";
         // 处理空白
@@ -375,47 +383,41 @@ public class TextTokenUtil {
                 processReplaceText(document, resources, font, textValue.getToken(), "");
             }
         } else {
-            // 定义替换文本
-            String text;
+            // 获取字符数组
+            char[] charArray = replaceText.toCharArray();
+            // 定义完成标记
+            boolean isFinish = false;
             // 定义起始索引
-            int beginIndex = 0;
-            // 定义结束索引
-            int endIndex;
+            int index = 0;
             // 定义总索引
-            int totalIndex = replaceText.length();
-            // 获取迭代器
-            Iterator<TextTokenInfo.TextValue> iterator = info.getTokens().iterator();
-            // 获取文本
-            TextTokenInfo.TextValue textValue = iterator.next();
-            // 初始化结束索引
-            endIndex = textValue.getValue().length();
-            // 初始化替换文本
-            text = replaceText.substring(beginIndex, endIndex);
-            // 重置起始索引
-            beginIndex = endIndex;
-            // 处理替换文本
-            processReplaceText(document, resources, font, textValue.getToken(), text);
+            int totalIndex = charArray.length - 1;
             // 遍历文本
-            while (iterator.hasNext()) {
-                // 重置文本
-                textValue = iterator.next();
-                // 最大索引
-                if (beginIndex == totalIndex) {
+            for (TextTokenInfo.TextValue textValue : info.getTokens()) {
+                // 完成
+                if (isFinish) {
                     // 处理替换空白
                     processReplaceText(document, resources, font, textValue.getToken(), "");
                 } else {
-                    // 重置结束索引
-                    endIndex = endIndex + textValue.getValue().length();
-                    // 重置结束索引为最大索引
-                    if (endIndex > totalIndex) {
-                        endIndex = totalIndex;
-                    }
-                    // 重置替换文本
-                    text = replaceText.substring(beginIndex, endIndex);
-                    // 重置起始索引
-                    beginIndex = endIndex;
                     // 处理替换文本
-                    processReplaceText(document, resources, font, textValue.getToken(), text);
+                    processReplaceText(document, resources, font, textValue.getToken(), String.valueOf(charArray[index]));
+                    // 重置完成标记
+                    isFinish = index == totalIndex;
+                    // Y轴坐标一致
+                    if (lastY == textValue.getY()) {
+                        // 获取最小X轴坐标
+                        float minX = lastX + font.getCharacterWidth(charArray[index]) * info.getFontSize() / 1000F;
+                        // 重置文本X轴坐标
+                        if (minX > textValue.getX()) {
+                            textValue.setX(minX);
+                            tokens.set(textValue.getMatrixIndex() - 2, new COSFloat(minX));
+                        }
+                    }
+                    // 重置X轴坐标
+                    lastX = textValue.getX();
+                    // 重置Y轴坐标
+                    lastY = textValue.getY();
+                    // 索引自增
+                    index++;
                 }
             }
         }
@@ -474,6 +476,7 @@ public class TextTokenUtil {
      * @param replaceIndexMap 替换索引字典
      * @return 返回文本信息列表
      */
+    @SuppressWarnings("all")
     @SneakyThrows
     public static List<TextTokenInfo> initTextTokenInfoListForCharacter(
             Log log,
@@ -484,6 +487,12 @@ public class TextTokenUtil {
     ) {
         // 获取资源字典
         Map<COSName, PDFont> resourceFontMap = initResourceFontMap(resources);
+        // 定义文本矩阵索引
+        int matrixIndex = 0;
+        // 定义X轴坐标
+        float x = 0;
+        // 定义Y轴坐标
+        float y = 0;
         // 定义基本信息
         TextTokenInfo tokenInfo = null;
         // 定义信息列表
@@ -492,20 +501,36 @@ public class TextTokenUtil {
         for (int i = 0; i < tokens.size(); i++) {
             // 获取标记
             Object token = tokens.get(i);
-            // 如果标记为cosName，则重置资源字体
-            if (token instanceof COSName) {
-                // 获取资源字体
-                PDFont resourceFont = resourceFontMap.get(token);
-                // 如果资源字体不为空，则重置资源字体索引与名称
-                if (Objects.nonNull(resourceFont)) {
-                    // 返回文本标记信息
-                    tokenInfo = new TextTokenInfo(i, resourceFont, resourceFont, false, new ArrayList<>(16));
-                    // 添加文本标记信息
-                    infoList.add(tokenInfo);
+            // 操作标记
+            if (token instanceof Operator) {
+                // 转换为操作类型
+                Operator operator = (Operator) token;
+                // 字体大小标记
+                if (operator.getName().equals(OperatorName.SET_FONT_AND_SIZE)) {
+                    // 获取字体索引
+                    int fontIndex = i - 2;
+                    // 获取字体大小
+                    float fontSize = ((COSNumber) tokens.get(i - 1)).floatValue() / 20F;
+                    // 获取资源字体
+                    PDFont resourceFont = resourceFontMap.get(tokens.get(fontIndex));
+                    // 如果资源字体不为空，则重置资源字体索引与名称
+                    if (Objects.nonNull(resourceFont)) {
+                        // 返回文本标记信息
+                        tokenInfo = new TextTokenInfo(fontIndex, resourceFont, resourceFont, fontSize, false, new ArrayList<>(16));
+                        // 添加文本标记信息
+                        infoList.add(tokenInfo);
+                    }
+                } else if (operator.getName().equals(OperatorName.SET_MATRIX)) {
+                    // 重置文本矩阵索引
+                    matrixIndex = i;
+                    // 重置X轴坐标
+                    x = ((COSNumber) tokens.get(i - 2)).floatValue();
+                    // 重置Y轴坐标
+                    y = ((COSNumber) tokens.get(i - 1)).floatValue();
                 }
             } else if (token instanceof COSArray || token instanceof COSString) {
                 // 初始化文本标记值
-                initTextTokenInfoTextValue(log, tokenInfo, token, i, replaceList, replaceIndexMap);
+                initTextTokenInfoTextValue(log, tokenInfo, token, i, matrixIndex, x, y, replaceList, replaceIndexMap);
             }
         }
         // 返回信息列表
@@ -519,10 +544,17 @@ public class TextTokenUtil {
      * @param tokens    标记列表
      * @return 返回文本信息列表
      */
+    @SuppressWarnings("all")
     @SneakyThrows
     public static List<TextTokenInfo> initTextTokenInfoListForString(PDResources resources, List<Object> tokens) {
         // 获取资源字体字典
         Map<COSName, PDFont> resourceFontMap = initResourceFontMap(resources);
+        // 定义文本矩阵索引
+        int matrixIndex = 0;
+        // 定义X轴坐标
+        float x = 0;
+        // 定义Y轴坐标
+        float y = 0;
         // 定义文本信息
         TextTokenInfo tokenInfo = null;
         // 定义文本列表
@@ -531,25 +563,38 @@ public class TextTokenUtil {
         for (int i = 0; i < tokens.size(); i++) {
             // 获取标记
             Object token = tokens.get(i);
-            // 如果标记为cosName，则重置资源字体
-            if (token instanceof COSName) {
-                // 获取资源字体
-                PDFont resourceFont = resourceFontMap.get(token);
-                // 如果资源字体不为空，则重置资源字体索引与名称
-                if (Objects.nonNull(resourceFont)) {
-                    // 返回文本标记信息
-                    tokenInfo = new TextTokenInfo(i, resourceFont, resourceFont, false, new ArrayList<>(16));
-                    // 添加文本标记信息
-                    infoList.add(tokenInfo);
+            // 操作标记
+            if (token instanceof Operator) {
+                // 转换为操作类型
+                Operator operator = (Operator) token;
+                // 字体大小标记
+                if (operator.getName().equals(OperatorName.SET_FONT_AND_SIZE)) {
+                    // 获取字体索引
+                    int fontIndex = i - 2;
+                    // 获取字体大小
+                    float fontSize = ((COSNumber) tokens.get(i - 1)).floatValue() / 20F;
+                    // 获取资源字体
+                    PDFont resourceFont = resourceFontMap.get(tokens.get(fontIndex));
+                    // 如果资源字体不为空，则重置资源字体索引与名称
+                    if (Objects.nonNull(resourceFont)) {
+                        // 返回文本标记信息
+                        tokenInfo = new TextTokenInfo(fontIndex, resourceFont, resourceFont, fontSize, false, new ArrayList<>(16));
+                        // 添加文本标记信息
+                        infoList.add(tokenInfo);
+                    }
+                } else if (operator.getName().equals(OperatorName.SET_MATRIX)) {
+                    // 重置文本矩阵索引
+                    matrixIndex = i;
+                    // 重置X轴坐标
+                    x = ((COSNumber) tokens.get(i - 2)).floatValue();
+                    // 重置Y轴坐标
+                    y = ((COSNumber) tokens.get(i - 1)).floatValue();
                 }
             } else if (token instanceof COSArray || token instanceof COSString) {
-                // 标记信息不为空
-                if (Objects.nonNull(tokenInfo)) {
-                    // 获取原字符串
-                    String source = getTextForToken(token, tokenInfo.getFont());
-                    // 添加token
-                    tokenInfo.getTokens().add(new TextTokenInfo.TextValue(i, token, source));
-                }
+                // 获取原字符串
+                String source = getTextForToken(token, tokenInfo.getFont());
+                // 添加token
+                tokenInfo.getTokens().add(new TextTokenInfo.TextValue(i, matrixIndex, x, y, token, source));
             }
         }
         // 返回文本标记信息列表
@@ -563,6 +608,9 @@ public class TextTokenUtil {
      * @param tokenInfo       标记信息
      * @param token           标记
      * @param tokenIndex      标记索引
+     * @param matrixIndex     文本矩阵索引
+     * @param x               X轴坐标
+     * @param y               Y轴坐标
      * @param replaceList     替换列表
      * @param replaceIndexMap 替换索引字典
      */
@@ -571,6 +619,9 @@ public class TextTokenUtil {
             TextTokenInfo tokenInfo,
             Object token,
             int tokenIndex,
+            int matrixIndex,
+            float x,
+            float y,
             List<ReplaceInfo> replaceList,
             Map<Character, Integer> replaceIndexMap
     ) {
@@ -656,7 +707,7 @@ public class TextTokenUtil {
                         newValue.append(character);
                     }
                     // 重置标记值
-                    tokenValue = new TextTokenInfo.TextValue(tokenIndex, token, newValue.toString());
+                    tokenValue = new TextTokenInfo.TextValue(tokenIndex, matrixIndex, x, y, token, newValue.toString());
                     // 添加标记值
                     tokenInfo.getTokens().add(tokenValue);
                 }

@@ -41,6 +41,10 @@ public class TextTokenInfo {
      */
     private PDFont replaceFont;
     /**
+     * 字体大小
+     */
+    private Float fontSize;
+    /**
      * 是否替换
      */
     private Boolean isReplace;
@@ -58,6 +62,18 @@ public class TextTokenInfo {
          * 索引
          */
         private Integer index;
+        /**
+         * 文本矩阵索引
+         */
+        private Integer matrixIndex;
+        /**
+         * X轴坐标
+         */
+        private Float x;
+        /**
+         * Y轴坐标
+         */
+        private Float y;
         /**
          * 标记
          */
@@ -86,12 +102,18 @@ public class TextTokenInfo {
         /**
          * 有参构造
          *
-         * @param index 索引
-         * @param token 标记
-         * @param value 文本值
+         * @param index       索引
+         * @param matrixIndex 文本矩阵索引
+         * @param x           X轴坐标
+         * @param y           Y轴坐标
+         * @param token       标记
+         * @param value       文本值
          */
-        public TextValue(Integer index, Object token, String value) {
+        public TextValue(Integer index, Integer matrixIndex, Float x, Float y, Object token, String value) {
             this.index = index;
+            this.matrixIndex = matrixIndex;
+            this.x = x;
+            this.y = y;
             this.token = token;
             this.value = value;
             this.replaceValue = value;
