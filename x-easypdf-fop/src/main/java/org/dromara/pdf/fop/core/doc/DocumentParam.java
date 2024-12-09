@@ -35,6 +35,50 @@ class DocumentParam {
      */
     private String configPath;
     /**
+     * 加密长度
+     */
+    private Integer encryptionLength;
+    /**
+     * 拥有者密码
+     */
+    private String ownerPassword;
+    /**
+     * 用户密码
+     */
+    private String userPassword;
+    /**
+     * 是否禁止打印
+     */
+    private Boolean isNoPrint;
+    /**
+     * 是否禁止编辑
+     */
+    private Boolean isNoEdit;
+    /**
+     * 是否禁止文档组合
+     */
+    private Boolean isNoAssembleDoc;
+    /**
+     * 是否禁止复制
+     */
+    private Boolean isNoCopy;
+    /**
+     * 是否禁止复制内容用于辅助工具
+     */
+    private Boolean isNoAccessContent;
+    /**
+     * 是否禁止页面提取
+     */
+    private Boolean isNoPrintHQ;
+    /**
+     * 是否禁止注释
+     */
+    private Boolean isNoAnnotations;
+    /**
+     * 是否禁止填写表单
+     */
+    private Boolean isNoFillForm;
+    /**
      * 标题
      */
     private String title;

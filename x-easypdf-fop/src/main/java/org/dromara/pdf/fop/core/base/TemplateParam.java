@@ -9,6 +9,8 @@ import org.apache.fop.apps.FopFactoryBuilder;
 import org.apache.fop.apps.io.ResourceResolverFactory;
 import org.apache.fop.configuration.Configuration;
 import org.apache.fop.configuration.DefaultConfigurationBuilder;
+import org.apache.fop.pdf.PDFEncryptionParams;
+import org.apache.fop.render.pdf.PDFEncryptionOption;
 import org.apache.xmlgraphics.io.Resource;
 import org.apache.xmlgraphics.io.ResourceResolver;
 import org.dromara.pdf.fop.core.datasource.DataSource;
@@ -47,7 +49,7 @@ import java.util.Objects;
  */
 @Data
 class TemplateParam {
-
+    
     /**
      * 配置路径
      */
@@ -112,7 +114,51 @@ class TemplateParam {
      * 是否开启保留内存
      */
     private Boolean isConserveMemory = Boolean.FALSE;
-
+    /**
+     * 加密长度
+     */
+    private Integer encryptionLength = 128;
+    /**
+     * 拥有者密码
+     */
+    private String ownerPassword;
+    /**
+     * 用户密码
+     */
+    private String userPassword;
+    /**
+     * 是否禁止打印
+     */
+    private Boolean isNoPrint = Boolean.FALSE;
+    /**
+     * 是否禁止编辑
+     */
+    private Boolean isNoEdit = Boolean.FALSE;
+    /**
+     * 是否禁止文档组合
+     */
+    private Boolean isNoAssembleDoc = Boolean.FALSE;
+    /**
+     * 是否禁止复制
+     */
+    private Boolean isNoCopy = Boolean.FALSE;
+    /**
+     * 是否禁止复制内容用于辅助工具
+     */
+    private Boolean isNoAccessContent = Boolean.FALSE;
+    /**
+     * 是否禁止页面提取
+     */
+    private Boolean isNoPrintHQ = Boolean.FALSE;
+    /**
+     * 是否禁止注释
+     */
+    private Boolean isNoAnnotations = Boolean.FALSE;
+    /**
+     * 是否禁止填写表单
+     */
+    private Boolean isNoFillForm = Boolean.FALSE;
+    
     /**
      * 初始化参数
      */
@@ -145,7 +191,7 @@ class TemplateParam {
         // 初始化布局管理器
         this.layoutManagerMaker.initialize(this.userAgent);
     }
-
+    
     /**
      * 初始化fop工厂
      *
@@ -182,7 +228,7 @@ class TemplateParam {
             }
         }
     }
-
+    
     /**
      * 初始化用户代理
      *
@@ -220,10 +266,12 @@ class TemplateParam {
         userAgent.setLocatorEnabled(this.isErrorInfo);
         // 设置开启保留内存
         userAgent.setConserveMemoryPolicy(this.isConserveMemory);
+        // 初始化权限
+        this.initPermission(userAgent);
         // 返回代理
         return userAgent;
     }
-
+    
     /**
      * 初始化资源
      *
@@ -265,7 +313,7 @@ class TemplateParam {
         // 返回资源字典
         return resource;
     }
-
+    
     /**
      * 初始化配置
      *
@@ -289,17 +337,39 @@ class TemplateParam {
         // 返回配置
         return configuration;
     }
-
+    
+    /**
+     * 初始化权限
+     *
+     * @param userAgent 用户代理
+     */
+    @SuppressWarnings("all")
+    private void initPermission(FOUserAgent userAgent) {
+        PDFEncryptionParams encryption = new PDFEncryptionParams();
+        encryption.setEncryptionLengthInBits(this.encryptionLength);
+        encryption.setOwnerPassword(this.ownerPassword);
+        encryption.setUserPassword(this.userPassword);
+        encryption.setAllowPrint(!this.isNoPrint);
+        encryption.setAllowEditContent(!this.isNoEdit);
+        encryption.setAllowAssembleDocument(!this.isNoAssembleDoc);
+        encryption.setAllowCopyContent(!this.isNoCopy);
+        encryption.setAllowAccessContent(!this.isNoAccessContent);
+        encryption.setAllowPrintHq(!this.isNoPrintHQ);
+        encryption.setAllowEditAnnotations(!this.isNoAnnotations);
+        encryption.setAllowFillInForms(!this.isNoFillForm);
+        userAgent.getRendererOptions().put(PDFEncryptionOption.ENCRYPTION_PARAMS, encryption);
+    }
+    
     /**
      * 字体资源解析器
      */
     public static final class FontResourceResolver implements ResourceResolver {
-
+        
         /**
          * 资源字体
          */
         private final Map<String, String> resources;
-
+        
         /**
          * 有参构造
          *
@@ -308,7 +378,7 @@ class TemplateParam {
         public FontResourceResolver(Map<String, String> resources) {
             this.resources = resources;
         }
-
+        
         /**
          * 获取资源
          *
@@ -333,7 +403,7 @@ class TemplateParam {
             // 返回资源
             return new Resource(inputStream);
         }
-
+        
         /**
          * 获取输出流
          *
@@ -347,21 +417,21 @@ class TemplateParam {
             return uri.toURL().openConnection().getOutputStream();
         }
     }
-
+    
     /**
      * 图像资源解析器
      */
     public static final class ImageResourceResolver implements ResourceResolver {
-
-        /**
-         * 基础索引
-         */
-        private final Integer baseIndexOf;
+        
         /**
          * 类型
          */
         private static final String TYPE = "file";
-
+        /**
+         * 基础索引
+         */
+        private final Integer baseIndexOf;
+        
         /**
          * 有参构造
          *
@@ -371,7 +441,7 @@ class TemplateParam {
         public ImageResourceResolver(URI baseUri) {
             this.baseIndexOf = Paths.get(baseUri).toRealPath().toUri().getPath().length();
         }
-
+        
         /**
          * 获取资源
          *
@@ -399,7 +469,7 @@ class TemplateParam {
             // 返回资源
             return new Resource(inputStream);
         }
-
+        
         /**
          * 获取输出流
          *
