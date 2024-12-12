@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.dromara.x-easypdf</groupId>
     <artifactId>x-easypdf-parent</artifactId>
-    <version>3.2.1</version>
+    <version>3.2.2</version>
     <packaging>pom</packaging>
     <name>x-easypdf-parent</name>
     <url>https://www.x-easypdf.cn</url>
@@ -17,6 +17,7 @@
         <zxing.core.version>3.5.3</zxing.core.version>
         <bouncycastle.version>1.79</bouncycastle.version>
         <batik.version>1.18</batik.version>
+        <jj2000.version>5.2</jj2000.version>
         <xmlgraphics-commons.version>2.10</xmlgraphics-commons.version>
         <fop.version>2.10</fop.version>
         <commons-io.version>2.16.1</commons-io.version>
@@ -204,6 +205,12 @@
                 <groupId>org.apache.xmlgraphics</groupId>
                 <artifactId>batik-codec</artifactId>
                 <version>${batik.version}</version>
+                <optional>true</optional>
+            </dependency>
+            <dependency>
+                <groupId>edu.ucar</groupId>
+                <artifactId>jj2000</artifactId>
+                <version>${jj2000.version}</version>
                 <optional>true</optional>
             </dependency>
             <dependency>

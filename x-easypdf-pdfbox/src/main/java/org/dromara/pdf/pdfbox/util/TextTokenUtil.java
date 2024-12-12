@@ -37,6 +37,11 @@ import java.util.*;
 public class TextTokenUtil {
 
     /**
+     * 英文字符字典
+     */
+    public static final Map<Character, Boolean> EN_CHARACTERS = initEnCharacters();
+
+    /**
      * 替换文本标记
      *
      * @param log             日志
@@ -100,9 +105,10 @@ public class TextTokenUtil {
             PDFont font,
             Map<String, String> replaceMap
     ) {
+        // 正常替换
         boolean normalResult = tryReplaceTextForNormal(log, document, resources, tokens, font, replaceMap);
+        // 特殊替换
         boolean specialResult = tryReplaceTextForSpecial(log, document, resources, tokens, font, replaceMap);
-        ;
         // 返回替换结果
         return normalResult || specialResult;
     }
@@ -301,12 +307,9 @@ public class TextTokenUtil {
                 if (info.getTokens().size() == 1) {
                     // 处理替换文本
                     processReplaceText(document, resources, font, info.getTokens().get(0).getToken(), replaceText);
-                } else if (allText.length() == replaceText.length()) {
-                    // 处理相同长度文本
-                    processSameLengthReplaceText(document, resources, font, info, replaceText);
                 } else {
                     // 处理不同长度文本
-                    processNotSameLengthReplaceText(document, resources, font, tokens, info, replaceText);
+                    processReplaceText(document, resources, font, tokens, info, replaceText);
                 }
                 // 设置字体
                 tokens.set(info.getFontIndex(), COSName.getPDFName(font.getName()));
@@ -314,40 +317,6 @@ public class TextTokenUtil {
         }
         // 返回结果
         return result;
-    }
-
-    /**
-     * 处理相同长度替换文本
-     *
-     * @param document    文档
-     * @param resources   页面资源
-     * @param font        替换字体
-     * @param info        文本标记信息
-     * @param replaceText 替换文本
-     */
-    @SneakyThrows
-    public static void processSameLengthReplaceText(
-            PDDocument document,
-            PDResources resources,
-            PDFont font,
-            TextTokenInfo info,
-            String replaceText
-    ) {
-        // 定义起始索引
-        int begin = 0;
-        // 定义文本
-        String value;
-        // 遍历标记
-        for (TextTokenInfo.TextValue token : info.getTokens()) {
-            // 获取结束索引
-            int end = begin + token.getValue().length();
-            // 截取文本
-            value = replaceText.substring(begin, end);
-            // 替换文本
-            processReplaceText(document, resources, font, token.getToken(), value);
-            // 重置起始索引
-            begin = end;
-        }
     }
 
     /**
@@ -361,7 +330,7 @@ public class TextTokenUtil {
      * @param replaceText 替换文本
      */
     @SneakyThrows
-    public static void processNotSameLengthReplaceText(
+    public static void processReplaceText(
             PDDocument document,
             PDResources resources,
             PDFont font,
@@ -369,10 +338,6 @@ public class TextTokenUtil {
             TextTokenInfo info,
             String replaceText
     ) {
-        // 定义上一次X轴坐标
-        float lastX = -1F;
-        // 定义上一次Y轴坐标
-        float lastY = -1F;
         // 定义空白
         final String blank = "";
         // 处理空白
@@ -380,36 +345,112 @@ public class TextTokenUtil {
             // 遍历文本
             for (TextTokenInfo.TextValue textValue : info.getTokens()) {
                 // 处理替换文本
-                processReplaceText(document, resources, font, textValue.getToken(), "");
+                processReplaceText(document, resources, font, textValue.getToken(), blank);
             }
         } else {
             // 获取字符数组
             char[] charArray = replaceText.toCharArray();
-            // 定义完成标记
-            boolean isFinish = false;
-            // 定义起始索引
-            int index = 0;
             // 定义总索引
             int totalIndex = charArray.length - 1;
+            // 定义上一次X轴坐标
+            float lastX = -1F;
+            // 定义上一次Y轴坐标
+            float lastY = -1F;
+            // 定义起始索引
+            int index = 0;
+            // 定义完成标记
+            boolean isFinish = false;
+            // 定义英文标记
+            boolean isEnglish = true;
             // 遍历文本
             for (TextTokenInfo.TextValue textValue : info.getTokens()) {
                 // 完成
                 if (isFinish) {
                     // 处理替换空白
-                    processReplaceText(document, resources, font, textValue.getToken(), "");
+                    processReplaceText(document, resources, font, textValue.getToken(), blank);
                 } else {
+                    // 获取当前字符
+                    char chars = charArray[index];
                     // 处理替换文本
-                    processReplaceText(document, resources, font, textValue.getToken(), String.valueOf(charArray[index]));
+                    processReplaceText(document, resources, font, textValue.getToken(), String.valueOf(chars));
                     // 重置完成标记
                     isFinish = index == totalIndex;
-                    // Y轴坐标一致
-                    if (lastY == textValue.getY()) {
-                        // 获取最小X轴坐标
-                        float minX = lastX + font.getCharacterWidth(charArray[index]) * info.getFontSize() / 1000F;
-                        // 重置文本X轴坐标
-                        if (minX > textValue.getX()) {
-                            textValue.setX(minX);
-                            tokens.set(textValue.getMatrixIndex() - 2, new COSFloat(minX));
+                    // 第一个字符
+                    if (index == 0) {
+                        // 重置英文标记
+                        isEnglish = EN_CHARACTERS.containsKey(chars);
+                    } else {
+                        // Y轴坐标一致
+                        if (lastY == textValue.getY()) {
+                            // 获取文本前一个token
+                            Object token = tokens.get(textValue.getIndex() - 1);
+                            // 操作符
+                            if (token instanceof Operator) {
+                                // 转操作对象
+                                Operator operator = (Operator) token;
+                                // 文本偏移操作
+                                if (operator.getName().equals(OperatorName.MOVE_TEXT_SET_LEADING) || operator.getName().equals(OperatorName.MOVE_TEXT)) {
+                                    // 获取X轴偏移量
+                                    float offsetX = ((COSNumber) tokens.get(textValue.getIndex() - 3)).floatValue();
+                                    // 当前被替换文本为英文字符
+                                    if (EN_CHARACTERS.containsKey(textValue.getValue().charAt(0))) {
+                                        // 当前替换文本为英文字符
+                                        if (EN_CHARACTERS.containsKey(chars)) {
+                                            // 非英文
+                                            if (!isEnglish) {
+                                                tokens.set(textValue.getIndex() - 3, new COSFloat(offsetX + info.getFontSize() * 10));
+                                            }
+                                            // 重置英文标记
+                                            isEnglish = true;
+                                        } else {
+                                            // 英文
+                                            if (isEnglish) {
+                                                tokens.set(textValue.getIndex() - 3, new COSFloat(offsetX - info.getFontSize()));
+                                            } else {
+                                                tokens.set(textValue.getIndex() - 3, new COSFloat(offsetX + info.getFontSize() * 10));
+                                            }
+                                            // 重置英文标记
+                                            isEnglish = false;
+                                        }
+                                    } else {
+                                        // 当前替换文本为英文字符
+                                        if (EN_CHARACTERS.containsKey(chars)) {
+                                            tokens.set(textValue.getIndex() - 3, new COSFloat(offsetX - info.getFontSize() * 10));
+                                        } else {
+                                            tokens.set(textValue.getIndex() - 3, new COSFloat(offsetX + info.getFontSize() * 10));
+                                        }
+                                    }
+                                    // 文本矩阵操作
+                                } else if (operator.getName().equals(OperatorName.SET_MATRIX)) {
+                                    // 定义最小X轴坐标
+                                    float minX;
+                                    // 当前替换文本为英文字符
+                                    if (EN_CHARACTERS.containsKey(chars)) {
+                                        // 英文
+                                        if (isEnglish) {
+                                            minX = lastX + font.getCharacterWidth(chars) * info.getFontSize() / 1000F;
+                                        } else {
+                                            minX = lastX + font.getCharacterWidth(chars) * info.getFontSize() / 500F;
+                                        }
+                                        // 重置英文标记
+                                        isEnglish = true;
+                                    } else {
+                                        // 英文
+                                        if (isEnglish) {
+                                            minX = lastX + font.getCharacterWidth(chars) * info.getFontSize() / 2000F;
+                                        } else {
+                                            minX = lastX + font.getCharacterWidth(chars) * info.getFontSize() / 1000F;
+                                        }
+                                        // 重置英文标记
+                                        isEnglish = false;
+                                    }
+                                    // 重置文本X轴坐标
+                                    if (minX > textValue.getX()) {
+                                        textValue.setX(minX);
+                                        tokens.set(textValue.getMatrixIndex() - 2, new COSFloat(minX));
+                                    }
+                                }
+                            }
                         }
                     }
                     // 重置X轴坐标
@@ -419,6 +460,11 @@ public class TextTokenUtil {
                     // 索引自增
                     index++;
                 }
+            }
+            // 未完成
+            if (!isFinish) {
+                // 替换剩余文本
+                processReplaceText(document, resources, font, info.getTokens().get(info.getTokens().size() - 1).getToken(), replaceText.substring(index - 1));
             }
         }
     }
@@ -738,7 +784,7 @@ public class TextTokenUtil {
                     // 空格,暂时不知道空格的实际表示值，据观测
                     if (cosInteger.intValue() <= -199) {
                         // 添加空格
-                        builder.append(" ");
+                        builder.append(' ');
                     }
                 } else if (cosBase instanceof COSArray) {
                     // 获取文本
@@ -833,5 +879,24 @@ public class TextTokenUtil {
                 }
             }
         }
+    }
+
+    /**
+     * 初始化英文字符
+     *
+     * @return 返回字典
+     */
+    protected static Map<Character, Boolean> initEnCharacters() {
+        char[] characters = {
+                'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+                'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+                '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '+', '-', '*', '/', '=', '_', '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')',
+                '`', ',', '.', '\'', ';', '[', ']', '{', '}', ':', '"', '<', '>', '?'
+        };
+        Map<Character, Boolean> map = new HashMap<>(characters.length);
+        for (char c : characters) {
+            map.put(c, true);
+        }
+        return map;
     }
 }

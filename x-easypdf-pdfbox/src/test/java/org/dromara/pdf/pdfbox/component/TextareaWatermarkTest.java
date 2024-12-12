@@ -33,7 +33,10 @@ public class TextareaWatermarkTest extends BaseTest {
     @Test
     public void documentTest() {
         this.test(() -> {
-            Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\textarea\\fontStyleTest.pdf");
+            Document document = PdfHandler.getDocumentHandler().create();
+
+            Page page = new Page(document);
+            document.appendPage(page);
 
             TextareaWatermark watermark = new TextareaWatermark(document);
             watermark.setTextList(Arrays.asList("test\ttest", "test123"));
@@ -43,6 +46,8 @@ public class TextareaWatermarkTest extends BaseTest {
             watermark.setCountOfLine(1);
             watermark.setLeading(50F);
             watermark.render(document);
+
+
 
             document.save("E:\\PDF\\pdfbox\\watermark\\textarea\\documentTest.pdf");
             document.close();
@@ -55,6 +60,7 @@ public class TextareaWatermarkTest extends BaseTest {
     @Test
     public void pageTest() {
         Document document = PdfHandler.getDocumentHandler().create();
+
         Page page = new Page(document);
         document.appendPage(page);
         document.appendPage(new Page(document));

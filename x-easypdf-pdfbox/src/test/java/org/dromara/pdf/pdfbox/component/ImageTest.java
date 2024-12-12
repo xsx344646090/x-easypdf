@@ -110,6 +110,29 @@ public class ImageTest extends BaseTest {
     }
 
     /**
+     * 测试jpeg2000图片
+     */
+    @Test
+    public void j2kTest() {
+        this.test(() -> {
+            Document document = PdfHandler.getDocumentHandler().create();
+            document.setMargin(50F);
+
+            Page page = new Page(document);
+
+            Image image = new Image(page);
+            image.setWidth(100);
+            image.setHeight(100);
+            image.setImage(new File("E:\\PDF\\pdfbox\\image\\test.jp2"));
+            image.render();
+
+            document.appendPage(page);
+            document.save("E:\\PDF\\pdfbox\\image\\j2kTest.pdf");
+            document.close();
+        });
+    }
+
+    /**
      * 测试图片尺寸
      */
     @Test

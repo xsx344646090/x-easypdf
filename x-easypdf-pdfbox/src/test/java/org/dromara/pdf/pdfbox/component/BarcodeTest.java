@@ -80,6 +80,7 @@ public class BarcodeTest extends BaseTest {
             barcode.setVerticalAlignment(VerticalAlignment.CENTER);
             // 渲染二维码
             barcode.render();
+            barcode.setIsNoWhiteBorder(true);
 
             // 添加页面
             document.appendPage(page);
