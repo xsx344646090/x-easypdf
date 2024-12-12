@@ -192,6 +192,11 @@
             <artifactId>batik-codec</artifactId>
         </dependency>
         <dependency>
+            <groupId>edu.ucar</groupId>
+            <artifactId>jj2000</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <scope>provided</scope>
@@ -213,13 +218,6 @@
             <groupId>net.sourceforge.tess4j</groupId>
             <artifactId>tess4j</artifactId>
             <version>5.10.0</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.github.vandeseer</groupId>
-            <artifactId>easytable</artifactId>
-            <version>1.0.0</version>
             <scope>test</scope>
         </dependency>
 
@@ -248,6 +246,5 @@
             <version>7.0.8</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 </project>

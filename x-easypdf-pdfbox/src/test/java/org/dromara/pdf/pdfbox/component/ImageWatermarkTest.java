@@ -38,9 +38,9 @@ public class ImageWatermarkTest extends BaseTest {
             document.appendPage(new Page(document));
 
             ImageWatermark watermark = new ImageWatermark(document);
-            watermark.setImage(Paths.get("E:\\PDF\\pdfbox\\image\\test.jpg").toFile());
-            watermark.setBeginX(30F);
-            watermark.setBeginY(470F);
+            watermark.setImage(Paths.get("E:\\PDF\\pdfbox\\test.jpg").toFile());
+            // watermark.setBeginX(30F);
+            // watermark.setBeginY(470F);
             watermark.setWidth(100);
             watermark.setHeight(100);
             watermark.setLines(2);
