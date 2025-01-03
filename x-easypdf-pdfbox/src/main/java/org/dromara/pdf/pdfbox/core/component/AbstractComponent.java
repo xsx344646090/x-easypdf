@@ -778,7 +778,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
      * @return 返回布尔值，true为是，false为否
      */
     protected boolean isNeedWrap() {
-        boolean flag = this.getContext().getWrapWidth() - (this.getBeginX() - this.getContext().getPage().getMarginLeft()) < this.getMinWidth();
+        boolean flag = this.getContext().getWrapWidth() - (this.getBeginX() - this.getContext().getWrapBeginX()) < this.getMinWidth();
         return this.getContext().getIsFirstComponent() || flag;
     }
     

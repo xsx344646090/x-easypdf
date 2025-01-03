@@ -1,18 +1,15 @@
 package org.dromara.pdf.pdfbox.util;
 
 import lombok.SneakyThrows;
-import org.apache.batik.transcoder.TranscoderInput;
-import org.apache.batik.transcoder.TranscoderOutput;
-import org.apache.batik.transcoder.image.PNGTranscoder;
 import org.apache.pdfbox.tools.imageio.ImageIOUtil;
 import org.dromara.pdf.pdfbox.core.enums.ImageType;
-import org.dromara.pdf.pdfbox.support.image.J2kImageHandler;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Files;
+import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
 
@@ -154,7 +151,7 @@ public class ImageUtil {
                     ByteArrayOutputStream outputStream = new ByteArrayOutputStream(8192)
             ) {
                 // 解析svg
-                new PNGTranscoder().transcode(new TranscoderInput(inputStream), new TranscoderOutput(outputStream));
+                new org.apache.batik.transcoder.image.PNGTranscoder().transcode(new org.apache.batik.transcoder.TranscoderInput(inputStream), new org.apache.batik.transcoder.TranscoderOutput(outputStream));
                 // 重置字节数组
                 byteArray = outputStream.toByteArray();
             }
@@ -167,7 +164,7 @@ public class ImageUtil {
                     ByteArrayOutputStream outputStream = new ByteArrayOutputStream(8192)
             ) {
                 // 解析jpeg2000
-                J2kImageHandler.parse(inputStream, outputStream, ImageType.PNG);
+                org.dromara.pdf.pdfbox.support.image.J2kImageHandler.parse(inputStream, outputStream, ImageType.PNG);
                 // 重置字节数组
                 byteArray = outputStream.toByteArray();
             }
@@ -196,6 +193,22 @@ public class ImageUtil {
             // 返回字节数组
             return outputStream.toByteArray();
         }
+    }
+
+    /**
+     * 转为base64
+     *
+     * @param sourceImage 源图片
+     * @param imageType   图片类型
+     * @return 返回base64
+     */
+    public static String toBase64(BufferedImage sourceImage, String imageType) {
+        // 如果源图片为空，则提示错误信息
+        Objects.requireNonNull(sourceImage, "the source image can not be null");
+        // 如果图片类型为空，则提示错误信息
+        Objects.requireNonNull(imageType, "the image type can not be null");
+        // 返回base64
+        return Base64.getEncoder().encodeToString(toBytes(sourceImage, imageType));
     }
 
     /**

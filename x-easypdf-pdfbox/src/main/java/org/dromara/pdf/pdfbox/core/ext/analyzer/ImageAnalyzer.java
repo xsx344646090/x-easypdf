@@ -4,7 +4,7 @@ import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.dromara.pdf.pdfbox.core.base.Document;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Objects;
 
 /**
@@ -53,7 +53,7 @@ public class ImageAnalyzer extends AbstractImageAnalyzer {
         // 重置图像索引
         this.streamEngine.setImageIndex(0);
         // 重置图像信息列表
-        this.streamEngine.setInfoSet(new HashSet<>(16));
+        this.streamEngine.setInfoSet(new LinkedHashSet<>());
         // 处理页面
         this.streamEngine.processPage(page);
         // 添加图像信息

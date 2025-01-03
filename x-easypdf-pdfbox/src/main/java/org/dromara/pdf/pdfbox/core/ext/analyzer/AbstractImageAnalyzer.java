@@ -20,7 +20,7 @@ import org.apache.pdfbox.util.Matrix;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.info.ImageInfo;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -52,7 +52,7 @@ public abstract class AbstractImageAnalyzer extends AbstractAnalyzer {
     /**
      * 图像信息列表
      */
-    protected final Set<ImageInfo> infoSet = new HashSet<>(16);
+    protected final Set<ImageInfo> infoSet = new LinkedHashSet<>();
 
     /**
      * 有参构造
@@ -107,7 +107,7 @@ public abstract class AbstractImageAnalyzer extends AbstractAnalyzer {
             this.addOperator(new Restore(this));
             this.addOperator(new SetMatrix(this));
             this.log = log;
-            this.infoSet = new HashSet<>(16);
+            this.infoSet = new LinkedHashSet<>();
         }
 
         /**
