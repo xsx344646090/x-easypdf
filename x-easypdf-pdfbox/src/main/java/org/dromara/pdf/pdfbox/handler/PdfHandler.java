@@ -4,6 +4,7 @@ package org.dromara.pdf.pdfbox.handler;
 import org.apache.pdfbox.filter.Filter;
 import org.dromara.pdf.pdfbox.core.base.Banner;
 import org.dromara.pdf.pdfbox.core.base.Document;
+import org.dromara.pdf.pdfbox.core.ext.ai.DocumentAIParser;
 import org.dromara.pdf.pdfbox.core.ext.analyzer.DocumentAnalyzer;
 import org.dromara.pdf.pdfbox.core.ext.comparator.DocumentComparator;
 import org.dromara.pdf.pdfbox.core.ext.extractor.DocumentExtractor;
@@ -86,6 +87,16 @@ public class PdfHandler {
      */
     public static DocumentComparator getDocumentComparator(Document document) {
         return new DocumentComparator(document);
+    }
+    
+    /**
+     * 获取文档AI解析器
+     *
+     * @param document 文档
+     * @return 返回文档AI解析器
+     */
+    public static DocumentAIParser getDocumentAIParser(Document document) {
+        return new DocumentAIParser(document);
     }
     
     /**

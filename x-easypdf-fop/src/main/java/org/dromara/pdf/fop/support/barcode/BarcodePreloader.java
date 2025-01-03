@@ -92,29 +92,34 @@ public class BarcodePreloader extends AbstractImagePreloader {
      * @return 返回图像
      */
     private BufferedImage getImage(String uri, BarCodeConfig config) {
-        // 获取图像
-        BufferedImage barcodeImage = CACHE.get(uri);
-        // 如果图像为空，则创建图像
-        if (barcodeImage == null) {
-            try {
-                // 加锁
-                LOCK.lock();
-                // 再次获取图像
-                barcodeImage = CACHE.get(uri);
-                // 如果图像为空，则创建图像
-                if (barcodeImage == null) {
-                    // 创建图像
-                    barcodeImage = this.createBarCodeImage(config);
-                    // 添加缓存
-                    CACHE.put(uri, barcodeImage);
+        // 是否缓存
+        if (config.getIsCache()) {
+            // 获取图像
+            BufferedImage barcodeImage = CACHE.get(uri);
+            // 如果图像为空，则创建图像
+            if (barcodeImage == null) {
+                try {
+                    // 加锁
+                    LOCK.lock();
+                    // 再次获取图像
+                    barcodeImage = CACHE.get(uri);
+                    // 如果图像为空，则创建图像
+                    if (barcodeImage == null) {
+                        // 创建图像
+                        barcodeImage = this.createBarCodeImage(config);
+                        // 添加缓存
+                        CACHE.put(uri, barcodeImage);
+                    }
+                } finally {
+                    // 解锁
+                    LOCK.unlock();
                 }
-            } finally {
-                // 解锁
-                LOCK.unlock();
             }
+            // 返回图像
+            return barcodeImage;
         }
         // 返回图像
-        return barcodeImage;
+        return this.createBarCodeImage(config);
     }
 
     /**

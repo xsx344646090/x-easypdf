@@ -16,12 +16,12 @@
 ---
 
 #### 项目概述
-> x-easypdf是一个java语言简化处理pdf的框架，包含fop模块与pdfbox模块，fop模块以创建功能为主，基于xsl-fo模板生成pdf文档，以数据源的方式进行模板渲染；pdfbox模块以编辑功能为主，对标准的pdfbox进行扩展，添加了成吨的功能。
+> dromara x-easypdf是一个java语言简化处理pdf的框架，包含fop模块与pdfbox模块，fop模块以创建功能为主，基于xsl-fo模板生成pdf文档，以数据源的方式进行模板渲染；pdfbox模块以编辑功能为主，对标准的pdfbox进行扩展，添加了成吨的功能。
 
 ---
 
 #### 当前版本
-> v3.2.1
+> v3.3.0
 
 ---
 
@@ -58,7 +58,7 @@
 <dependency>
     <groupId>org.dromara.x-easypdf</groupId>
     <artifactId>x-easypdf</artifactId>
-    <version>3.2.1</version>
+    <version>3.3.0</version>
 </dependency>
 ```
 
@@ -67,7 +67,7 @@
 <dependency>
     <groupId>org.dromara.x-easypdf</groupId>
     <artifactId>x-easypdf-pdfbox</artifactId>
-    <version>3.2.1</version>
+    <version>3.3.0</version>
 </dependency>
 ```
 
@@ -76,7 +76,7 @@
 <dependency>
     <groupId>org.dromara.x-easypdf</groupId>
     <artifactId>x-easypdf-fop</artifactId>
-    <version>3.2.1</version>
+    <version>3.3.0</version>
 </dependency>
 ```
 

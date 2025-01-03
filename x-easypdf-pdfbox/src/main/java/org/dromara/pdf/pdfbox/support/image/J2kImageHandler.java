@@ -29,7 +29,7 @@ import java.util.Objects;
  * </p>
  */
 public class J2kImageHandler {
-
+    
     /**
      * 解析
      *
@@ -102,7 +102,7 @@ public class J2kImageHandler {
         // 返回图像
         return image;
     }
-
+    
     /**
      * 解析
      *

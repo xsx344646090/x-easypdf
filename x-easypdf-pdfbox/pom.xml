@@ -5,17 +5,19 @@
     <parent>
         <groupId>org.dromara.x-easypdf</groupId>
         <artifactId>x-easypdf-parent</artifactId>
-        <version>3.2.2</version>
+        <version>3.3.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>x-easypdf-pdfbox</artifactId>
-    <version>3.2.2</version>
+    <version>3.3.0</version>
     <packaging>jar</packaging>
     <name>x-easypdf-pdfbox</name>
     <url>https://www.x-easypdf.cn</url>
     <description>A framework based on pdfbox</description>
 
     <properties>
+        <okhttp.version>4.12.0</okhttp.version>
+        <fastjson.version>2.0.53</fastjson.version>
         <skipTests>true</skipTests>
     </properties>
 
@@ -197,6 +199,18 @@
             <optional>true</optional>
         </dependency>
         <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>${okhttp.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>${fastjson.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <scope>provided</scope>
@@ -224,26 +238,25 @@
         <dependency>
             <groupId>com.itextpdf</groupId>
             <artifactId>kernel</artifactId>
-            <!--<version>8.0.4</version>-->
-            <version>7.0.8</version>
+            <version>8.0.4</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.itextpdf</groupId>
             <artifactId>io</artifactId>
-            <version>7.0.8</version>
+            <version>8.0.4</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.itextpdf</groupId>
             <artifactId>layout</artifactId>
-            <version>7.0.8</version>
+            <version>8.0.4</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.itextpdf</groupId>
             <artifactId>font-asian</artifactId>
-            <version>7.0.8</version>
+            <version>8.0.4</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

@@ -356,6 +356,10 @@ public class TemplateAttributes {
      */
     public static final String NO_WHITE_BORDER = "no-white-border";
     /**
+     * 缓存
+     */
+    public static final String CACHE = "cache";
+    /**
      * 前景色
      */
     public static final String ON_COLOR = "on-color";
