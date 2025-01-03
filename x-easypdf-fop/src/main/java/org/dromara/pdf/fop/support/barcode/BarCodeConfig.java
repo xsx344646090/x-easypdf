@@ -120,6 +120,10 @@ public class BarCodeConfig {
      */
     private Boolean isNoWhiteBorder;
     /**
+     * 是否缓存
+     */
+    private Boolean isCache;
+    /**
      * 编码设置
      */
     private final Map<EncodeHintType, Object> encodeHints = new HashMap<>(8);
@@ -216,6 +220,8 @@ public class BarCodeConfig {
         this.radians = this.resolveValue(attributes, TemplateAttributes.RADIANS, "0", Double::parseDouble);
         // 初始化是否无白边
         this.isNoWhiteBorder = this.resolveValue(attributes, TemplateAttributes.NO_WHITE_BORDER, "false", Boolean::parseBoolean);
+        // 初始化是否缓存
+        this.isCache = this.resolveValue(attributes, TemplateAttributes.CACHE, "false", Boolean::parseBoolean);
     }
 
     /**
@@ -314,6 +320,6 @@ public class BarCodeConfig {
      */
     @SneakyThrows
     private int parseUnit(String unit) {
-        return (int) (UnitConv.convert(unit) / 1000 * this.scaleRate);
+        return (int) (UnitConv.convert(unit) / 1000D * this.scaleRate);
     }
 }

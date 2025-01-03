@@ -28,7 +28,7 @@ import java.util.concurrent.CompletableFuture;
  * </p>
  */
 public class BarcodeTest extends BaseTest {
-
+    
     @Test
     public void barcodeForXMLTest() {
         this.test(() -> {
@@ -42,7 +42,7 @@ public class BarcodeTest extends BaseTest {
                     .transform(outputPath);
         });
     }
-
+    
     @Test
     public void barcodeForXMLTest2() {
         this.test(() -> {
@@ -59,7 +59,7 @@ public class BarcodeTest extends BaseTest {
             }
         });
     }
-
+    
     @Test
     public void barcodeForXMLTest3() {
         this.test(() -> {
@@ -78,8 +78,8 @@ public class BarcodeTest extends BaseTest {
                         CompletableFuture.runAsync(
                                 // 构建pdf模板
                                 () -> TemplateHandler.Template.build()
-                                        .setDataSource(TemplateHandler.DataSource.Thymeleaf.build().setTemplatePath(templatePath))
-                                        .transform(outputPath + "barcode" + index + ".pdf")
+                                              .setDataSource(TemplateHandler.DataSource.Thymeleaf.build().setTemplatePath(templatePath))
+                                              .transform(outputPath + "barcode" + index + ".pdf")
                         )
                 );
             }
@@ -87,7 +87,7 @@ public class BarcodeTest extends BaseTest {
             CompletableFuture.allOf(tasks.toArray(new CompletableFuture[0])).join();
         });
     }
-
+    
     @Test
     public void barcodeForDocumentTest() {
         this.test(() -> {
@@ -99,30 +99,32 @@ public class BarcodeTest extends BaseTest {
             Page page = TemplateHandler.Page.build();
             // 创建条形码
             Barcode codabar = TemplateHandler.Barcode.build()
-                    // 设置类型
-                    .setType("codabar")
-                    // 设置宽度
-                    .setWidth("150px")
-                    // 设置高度
-                    .setHeight("50px")
-                    // 设置内容
-                    .setContent("11223344")
-                    // 设置水平居中
-                    .setHorizontalStyle("center");
+                                      // 设置类型
+                                      .setType("codabar")
+                                      // 设置宽度
+                                      .setWidth("150px")
+                                      // 设置高度
+                                      .setHeight("50px")
+                                      // 设置内容
+                                      .setContent("11223344")
+                                      // 设置水平居中
+                                      .setHorizontalStyle("center");
             // 创建二维码
             Barcode qrCode = TemplateHandler.Barcode.build()
-                    // 设置类型
-                    .setType("qr_code")
-                    // 设置宽度
-                    .setWidth("150px")
-                    // 设置高度
-                    .setHeight("150px")
-                    // 设置内容
-                    .setContent("https://www.x-easypdf.cn")
-                    // 设置显示文本
-                    .setWords("https://www.x-easypdf.cn")
-                    // 设置水平居中
-                    .setHorizontalStyle("center");
+                                     // 设置类型
+                                     .setType("qr_code")
+                                     // 设置宽度
+                                     .setWidth("150px")
+                                     // 设置高度
+                                     .setHeight("150px")
+                                     // 设置内容
+                                     .setContent("https://www.x-easypdf.cn")
+                                     // 设置显示文本
+                                     .setWords("https://www.x-easypdf.cn")
+                                     // 设置水平居中
+                                     .setHorizontalStyle("center")
+                                     // 开启缓存
+                                     .enableCache();
             // 添加条码
             page.addBodyComponent(codabar, qrCode);
             // 添加页面

@@ -456,6 +456,26 @@ public class Barcode implements Component {
         this.param.setHasBorder(Boolean.TRUE);
         return this;
     }
+    
+    /**
+     * 开启无白边
+     *
+     * @return 返回条形码组件
+     */
+    public Barcode enableNoWhiteBorder() {
+        this.param.setIsNoWhiteBorder("true");
+        return this;
+    }
+    
+    /**
+     * 开启缓存
+     *
+     * @return 返回条形码组件
+     */
+    public Barcode enableCache() {
+        this.param.setIsCache("true");
+        return this;
+    }
 
     /**
      * 创建元素
@@ -528,6 +548,10 @@ public class Barcode implements Component {
         Optional.ofNullable(this.param.getWordsOffsetX()).ifPresent(v -> barcode.setAttribute(TemplateAttributes.WORDS_OFFSET_X, v.intern().toLowerCase()));
         // 设置条形码文字偏移量-Y轴
         Optional.ofNullable(this.param.getWordsOffsetY()).ifPresent(v -> barcode.setAttribute(TemplateAttributes.WORDS_OFFSET_Y, v.intern().toLowerCase()));
+        // 设置条形码无白边
+        Optional.ofNullable(this.param.getIsNoWhiteBorder()).ifPresent(v -> barcode.setAttribute(TemplateAttributes.NO_WHITE_BORDER, v.intern().toLowerCase()));
+        // 设置条形码缓存
+        Optional.ofNullable(this.param.getIsCache()).ifPresent(v -> barcode.setAttribute(TemplateAttributes.CACHE, v.intern().toLowerCase()));
         // 添加barcode元素
         foreignObject.appendChild(barcode);
         // 返回foreignObject元素
