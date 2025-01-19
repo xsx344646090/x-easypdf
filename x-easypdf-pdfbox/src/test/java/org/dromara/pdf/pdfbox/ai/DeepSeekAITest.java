@@ -2,8 +2,8 @@ package org.dromara.pdf.pdfbox.ai;
 
 import org.dromara.pdf.pdfbox.base.BaseTest;
 import org.dromara.pdf.pdfbox.core.base.Document;
-import org.dromara.pdf.pdfbox.core.ext.ai.AIParseInfo;
-import org.dromara.pdf.pdfbox.core.ext.ai.DeepSeekAIParser;
+import org.dromara.pdf.pdfbox.core.ext.parser.ai.AIParseInfo;
+import org.dromara.pdf.pdfbox.core.ext.parser.ai.DeepSeekAIParser;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.junit.Test;
 
@@ -24,7 +24,7 @@ import org.junit.Test;
  * </p>
  */
 public class DeepSeekAITest extends BaseTest {
-    
+
     /**
      * 页面文本测试
      */
@@ -40,7 +40,7 @@ public class DeepSeekAITest extends BaseTest {
             document.close();
         });
     }
-    
+
     /**
      * 文档文本测试
      */

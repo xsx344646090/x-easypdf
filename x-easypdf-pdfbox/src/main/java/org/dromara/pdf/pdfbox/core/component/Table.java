@@ -255,7 +255,7 @@ public class Table extends AbstractComponent {
             this.isPagingBorder = Boolean.FALSE;
         }
         // 重置Y轴相对坐标
-        if (!this.isCustomPosition && this.relativeBeginY == 0F) {
+        if (!this.isCustomY && this.relativeBeginY == 0F) {
             this.relativeBeginY = this.getFirstRowHeight();
         }
         // 初始化内容上边距

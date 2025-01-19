@@ -69,6 +69,22 @@ public class Container extends AbstractComponent {
      */
     protected Boolean isPagingBorder;
     /**
+     * 内容上边距
+     */
+    protected Float contentMarginTop;
+    /**
+     * 内容下边距
+     */
+    protected Float contentMarginBottom;
+    /**
+     * 内容左边距
+     */
+    protected Float contentMarginLeft;
+    /**
+     * 内容右边距
+     */
+    protected Float contentMarginRight;
+    /**
      * 内容水平对齐方式
      */
     protected HorizontalAlignment contentHorizontalAlignment;
@@ -84,6 +100,18 @@ public class Container extends AbstractComponent {
      */
     public Container(Page page) {
         super(page);
+    }
+    
+    /**
+     * 设置内容边距（上下左右）
+     *
+     * @param margin 边距
+     */
+    public void setContentMargin(float margin) {
+        this.contentMarginTop = margin;
+        this.contentMarginBottom = margin;
+        this.contentMarginLeft = margin;
+        this.contentMarginRight = margin;
     }
     
     /**
@@ -183,6 +211,26 @@ public class Container extends AbstractComponent {
         Objects.requireNonNull(this.height, "the height can not be null");
         // 初始化
         super.init();
+        // 初始化背景颜色
+        if (Objects.isNull(this.backgroundColor)) {
+            this.backgroundColor = this.getPage().getBackgroundColor();
+        }
+        // 初始化内容上边距
+        if (Objects.isNull(this.contentMarginTop)) {
+            this.contentMarginTop = 0F;
+        }
+        // 初始化内容下边距
+        if (Objects.isNull(this.contentMarginBottom)) {
+            this.contentMarginBottom = 0F;
+        }
+        // 初始化内容左边距
+        if (Objects.isNull(this.contentMarginLeft)) {
+            this.contentMarginLeft = 0F;
+        }
+        // 初始化内容右边距
+        if (Objects.isNull(this.contentMarginRight)) {
+            this.contentMarginRight = 0F;
+        }
         // 初始化分页事件
         this.pagingEvent = new DefaultContainerPagingEvent();
         // 初始化是否整体换行
@@ -239,6 +287,16 @@ public class Container extends AbstractComponent {
     }
     
     /**
+     * 是否需要换行
+     *
+     * @return 返回布尔值，true为是，false为否
+     */
+    @Override
+    protected boolean isNeedWrap() {
+        return this.getContext().getWrapWidth() - (this.getBeginX() - this.getContext().getWrapBeginX()) < this.getMinWidth();
+    }
+    
+    /**
      * 写入内容
      */
     @Override
@@ -247,6 +305,8 @@ public class Container extends AbstractComponent {
         float beginX = this.getBeginX() + this.getRelativeBeginX();
         // 获取起始Y坐标
         float beginY = this.getBeginY() + this.getRelativeBeginY();
+        // 获取换行宽度
+        float wrapWidth = this.getWidth() - this.getContentMarginLeft() - this.getContentMarginRight();
         // 获取边框信息
         BorderInfo borderInfo = this.getContext().getBorderInfo();
         // 获取页面
@@ -270,13 +330,13 @@ public class Container extends AbstractComponent {
             // 设置高度
             context.setHeight(this.getHeight());
             // 重置光标位置
-            context.getCursor().reset(beginX, beginY);
+            context.getCursor().reset(beginX + this.getContentMarginLeft(), beginY - this.getContentMarginTop());
             // 遍历组件
             for (Component component : this.getComponents()) {
                 // 设置换行X轴起始坐标
-                context.setWrapBeginX(beginX);
+                context.setWrapBeginX(beginX + this.getContentMarginLeft());
                 // 设置换行宽度
-                context.setWrapWidth(this.getWidth());
+                context.setWrapWidth(wrapWidth);
                 // 设置水平对齐方式
                 component.setHorizontalAlignment(this.getContentHorizontalAlignment());
                 // 设置垂直对齐方式
@@ -287,7 +347,7 @@ public class Container extends AbstractComponent {
         }
         // 设置页面
         context.setPage(tempPage);
-        // 重置光标Y
+        // 重置光标
         context.resetCursorY(tempY);
     }
     
@@ -296,9 +356,10 @@ public class Container extends AbstractComponent {
      */
     @Override
     protected void reset() {
-        float x = this.getPage().getMarginLeft();
+        float x = this.getContext().getPage().getMarginLeft();
         float y = this.getContext().getCursor().getY();
         super.reset(this.getType(), x, y);
+        // 重置换行起始坐标
         this.getContext().resetWrapWidth(null);
         this.getContext().resetHeight(null);
     }

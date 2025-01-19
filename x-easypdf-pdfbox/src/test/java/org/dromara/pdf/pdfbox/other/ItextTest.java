@@ -67,7 +67,6 @@ public class ItextTest extends BaseTest {
             // Closing the document
             doc.close();
             System.out.println("Table created successfully..");
-
         } catch (Exception e) {
             e.printStackTrace();
         }
