@@ -98,6 +98,7 @@ public class ContainerTest extends BaseTest {
             Container container = new Container(document.getCurrentPage());
             container.setWidth(100F);
             container.setHeight(100F);
+            container.setContentMargin(10F);
             container.setIsBorder(true);
 
             Textarea textarea1 = new Textarea(container.getPage());
@@ -153,7 +154,7 @@ public class ContainerTest extends BaseTest {
             Boolean isAlreadyPaging = container.getContext().getIsAlreadyPaging();
             if (isAlreadyPaging) {
                 Float width = container.getWidth();
-                container = new Container(container.getPage().getFirstParentPage());
+                container = new Container(container.getPage());
                 container.setBeginX(beginX + width);
                 container.setWidth(100F);
                 container.setHeight(100F);
@@ -164,7 +165,6 @@ public class ContainerTest extends BaseTest {
                 textarea2.setText("world1111111111111");
                 container.setComponents(Arrays.asList(textarea1, textarea2));
                 container.render();
-                container.close();
             }
 
             document.appendPage(page);

@@ -625,22 +625,4 @@ public class FontMapperImpl implements FontMapper {
             return Double.compare(match.score, this.score);
         }
     }
-
-    /**
-     * For debugging. Prints all matches and returns the best match.
-     */
-    private FontMatch printMatches(PriorityQueue<FontMatch> queue) {
-        FontMatch bestMatch = queue.peek();
-        System.out.println("-------");
-        while (!queue.isEmpty()) {
-            FontMatch match = queue.poll();
-            FontInfo info = match.info;
-            System.out.println(match.score + " | " + info.getMacStyle() + " " +
-                    info.getFamilyClass() + " " + info.getPanose() + " " +
-                    info.getCIDSystemInfo() + " " + info.getPostScriptName() + " " +
-                    info.getFormat());
-        }
-        System.out.println("-------");
-        return bestMatch;
-    }
 }
