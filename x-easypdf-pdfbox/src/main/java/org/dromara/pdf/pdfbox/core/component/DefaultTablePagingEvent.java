@@ -27,7 +27,7 @@ import java.util.Objects;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class DefaultTablePagingEvent extends AbstractPagingEvent {
-    
+
     /**
      * 分页之前
      *
@@ -35,9 +35,9 @@ public class DefaultTablePagingEvent extends AbstractPagingEvent {
      */
     @Override
     public void before(Component component) {
-    
+
     }
-    
+
     /**
      * 分页之后
      *
@@ -50,9 +50,11 @@ public class DefaultTablePagingEvent extends AbstractPagingEvent {
         // 获取边框信息
         BorderInfo borderInfo = context.getBorderInfo();
         // 设置边框的起始Y坐标
-        borderInfo.setBeginY(borderInfo.getBeginY() - this.processTableHeader(context, component));
+        if (Objects.nonNull(borderInfo)) {
+            borderInfo.setBeginY(borderInfo.getBeginY() - this.processTableHeader(context, component));
+        }
     }
-    
+
     /**
      * 处理表头
      *

@@ -496,6 +496,7 @@ public class Textarea extends AbstractComponent {
             this.textList.forEach(text -> tempTextList.addAll(this.processText(text)));
         } else {
             this.textList = Collections.emptyList();
+            this.infoList = Collections.emptyList();
             return;
         }
         // 初始化文本列表
