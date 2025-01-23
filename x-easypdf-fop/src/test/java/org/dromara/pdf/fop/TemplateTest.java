@@ -83,7 +83,7 @@ public class TemplateTest extends BaseTest {
             String configPath = "C:\\Users\\xsx\\Downloads\\fop.xconf";
             // 定义xsl-fo模板路径
             // String templatePath = "org/dromara/pdf/fop/thymeleaf/template2.html";
-            String templatePath = "org/dromara/pdf/fop/jte/templste.fo";
+            String templatePath = "org/dromara/pdf/fop/freemarker/template3.ftl";
             // 定义pdf输出路径
             String outputPath = "E:\\PDF\\fop\\Thymeleaf.pdf";
             // 定义数据map
@@ -337,7 +337,7 @@ public class TemplateTest extends BaseTest {
                     .setConfigPath(configPath)
                     .setDataSource(
                             TemplateHandler.DataSource.Freemarker.build()
-                                    .setTemplateName("template.fo")
+                                    .setTemplateName("template3.ftl")
                                     .setTemplateData(data)
                     ).getTotalPage();
             log.info("Total page: " + totalPage);

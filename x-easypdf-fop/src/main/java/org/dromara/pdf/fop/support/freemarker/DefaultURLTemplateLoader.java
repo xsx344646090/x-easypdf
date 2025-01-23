@@ -75,7 +75,7 @@ public class DefaultURLTemplateLoader extends URLTemplateLoader {
      * 是否无效
      *
      * @param fullPath 完整路径
-     * @return
+     * @return 返回布尔值，true为是，false为否
      */
     private boolean isInvalid(String fullPath) {
         int i = 0;
