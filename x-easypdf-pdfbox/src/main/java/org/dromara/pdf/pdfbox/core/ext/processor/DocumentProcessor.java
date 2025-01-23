@@ -2,8 +2,6 @@ package org.dromara.pdf.pdfbox.core.ext.processor;
 
 import lombok.EqualsAndHashCode;
 import org.dromara.pdf.pdfbox.core.base.Document;
-import org.dromara.pdf.pdfbox.core.ext.comparator.ImageComparator;
-import org.dromara.pdf.pdfbox.core.ext.comparator.TextComparator;
 import org.dromara.pdf.pdfbox.core.ext.processor.form.FormProcessor;
 import org.dromara.pdf.pdfbox.core.ext.processor.sign.SignProcessor;
 
@@ -144,25 +142,7 @@ public class DocumentProcessor extends AbstractProcessor {
     public SignProcessor getSignProcessor() {
         return new SignProcessor(this.document);
     }
-    
-    /**
-     * 获取文本比较器
-     *
-     * @return 返回文本比较器
-     */
-    public TextComparator getTextComparator() {
-        return new TextComparator(this.document);
-    }
-    
-    /**
-     * 获取图像比较器
-     *
-     * @return 返回图像比较器
-     */
-    public ImageComparator getImageComparator() {
-        return new ImageComparator(this.document);
-    }
-    
+
     /**
      * 获取图像处理器
      *
@@ -170,5 +150,14 @@ public class DocumentProcessor extends AbstractProcessor {
      */
     public ImageProcessor getImageProcessor() {
         return new ImageProcessor(this.document);
+    }
+
+    /**
+     * 获取附件处理器
+     *
+     * @return 返回附件处理器
+     */
+    public AttachmentProcessor getAttachmentProcessor() {
+        return new AttachmentProcessor(this.document);
     }
 }

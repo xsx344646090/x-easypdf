@@ -28,7 +28,7 @@ import java.util.*;
  * </p>
  */
 public class ImageComparator extends AbstractComparator {
-    
+
     /**
      * 有参构造
      *
@@ -36,13 +36,14 @@ public class ImageComparator extends AbstractComparator {
      */
     public ImageComparator(Document document) {
         super(document);
-        
+
     }
-    
+
     /**
      * 比较
      *
-     * @param other 文档
+     * @param other       文档
+     * @param pageIndexes 页面索引
      */
     public Map<Integer, List<ImageCompareInfo>> compareTo(Document other, int... pageIndexes) {
         // 定义结果
@@ -64,7 +65,7 @@ public class ImageComparator extends AbstractComparator {
         // 返回结果
         return result;
     }
-    
+
     /**
      * 比较图像
      *
@@ -100,7 +101,7 @@ public class ImageComparator extends AbstractComparator {
         // 返回结果
         return results;
     }
-    
+
     /**
      * 比较图像
      *
@@ -129,7 +130,7 @@ public class ImageComparator extends AbstractComparator {
         // 如果所有像素点的RGB值都相等，则返回true
         return true;
     }
-    
+
     /**
      * 处理页面图像
      *

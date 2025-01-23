@@ -75,14 +75,29 @@ public class FontStyleUtil {
             this.awtStyle = awtStyle;
         }
 
+        /**
+         * 获取字重
+         *
+         * @return 返回字重
+         */
         public int getWeight() {
             return this.isBold() ? Font.WEIGHT_BOLD : Font.WEIGHT_NORMAL;
         }
 
+        /**
+         * 是否为粗体
+         *
+         * @return 返回布尔值，true为是，false为否
+         */
         public boolean isBold() {
             return this == BOLD || this == BOLD_ITALIC;
         }
 
+        /**
+         * 是否为斜体
+         *
+         * @return 返回布尔值，true为是，false为否
+         */
         public boolean isItalic() {
             return this == ITALIC || this == BOLD_ITALIC;
         }
