@@ -120,9 +120,11 @@ public class BarcodeTest extends BaseTest {
             // 设置条形码内容为 "123456789"
             barcode.setContent("123456789");
             // 设置条形码下方的文字
-            barcode.setWords("123456789");
+            barcode.setWords("测试");
             // 设置条形码下方文字的大小
             barcode.setWordsSize(36);
+            // 设置条形码下方的文字字体名称
+            barcode.setWordsFontName("黑体");
             // 设置条形码下方文字的 Y 轴偏移量为 30
             barcode.setWordsOffsetY(30);
             // 设置条形码周围是否有边框

@@ -1,11 +1,6 @@
 package org.dromara.pdf.pdfbox.core.ext.comparator;
 
 import org.dromara.pdf.pdfbox.core.base.Document;
-import org.dromara.pdf.pdfbox.core.info.ImageCompareInfo;
-import org.dromara.pdf.pdfbox.core.info.TextCompareInfo;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * 文档比较器
@@ -26,7 +21,7 @@ import java.util.Map;
  * </p>
  */
 public class DocumentComparator extends AbstractComparator {
-    
+
     /**
      * 有参构造
      *
@@ -35,22 +30,22 @@ public class DocumentComparator extends AbstractComparator {
     public DocumentComparator(Document document) {
         super(document);
     }
-    
+
     /**
-     * 比较文本
+     * 获取文本比较器
      *
-     * @param other 文档
+     * @return 返回文本比较器
      */
-    public Map<Integer, List<TextCompareInfo>> compareToText(Document other, int... pageIndexes) {
-        return new TextComparator(this.document).compareTo(other, pageIndexes);
+    public TextComparator getTextComparator() {
+        return new TextComparator(this.document);
     }
-    
+
     /**
-     * 比较图像
+     * 获取图像比较器
      *
-     * @param other 文档
+     * @return 返回图像比较器
      */
-    public Map<Integer, List<ImageCompareInfo>> compareToImage(Document other, int... pageIndexes) {
-        return new ImageComparator(this.document).compareTo(other, pageIndexes);
+    public ImageComparator getImageComparator() {
+        return new ImageComparator(this.document);
     }
 }

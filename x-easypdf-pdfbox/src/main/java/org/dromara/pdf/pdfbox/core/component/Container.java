@@ -39,7 +39,7 @@ import java.util.concurrent.atomic.AtomicReference;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class Container extends AbstractComponent {
-    
+
     /**
      * 背景颜色
      */
@@ -92,7 +92,7 @@ public class Container extends AbstractComponent {
      * 内容垂直对齐方式
      */
     protected VerticalAlignment contentVerticalAlignment;
-    
+
     /**
      * 有参构造
      *
@@ -101,7 +101,7 @@ public class Container extends AbstractComponent {
     public Container(Page page) {
         super(page);
     }
-    
+
     /**
      * 设置内容边距（上下左右）
      *
@@ -113,7 +113,7 @@ public class Container extends AbstractComponent {
         this.contentMarginLeft = margin;
         this.contentMarginRight = margin;
     }
-    
+
     /**
      * 设置宽度
      *
@@ -125,7 +125,7 @@ public class Container extends AbstractComponent {
         }
         this.width = width;
     }
-    
+
     /**
      * 设置高度
      *
@@ -137,7 +137,7 @@ public class Container extends AbstractComponent {
         }
         this.height = height;
     }
-    
+
     /**
      * 设置组件
      *
@@ -147,7 +147,7 @@ public class Container extends AbstractComponent {
     public void setComponents(List<Component> components) {
         this.components = components;
     }
-    
+
     /**
      * 设置
      *
@@ -160,7 +160,7 @@ public class Container extends AbstractComponent {
             this.components = null;
         }
     }
-    
+
     /**
      * 添加组件
      *
@@ -175,7 +175,7 @@ public class Container extends AbstractComponent {
             }
         }
     }
-    
+
     /**
      * 添加组件
      *
@@ -189,7 +189,7 @@ public class Container extends AbstractComponent {
             Collections.addAll(this.components, components);
         }
     }
-    
+
     /**
      * 获取类型
      *
@@ -199,7 +199,7 @@ public class Container extends AbstractComponent {
     public ComponentType getType() {
         return ComponentType.CONTAINER;
     }
-    
+
     /**
      * 初始化
      */
@@ -275,7 +275,7 @@ public class Container extends AbstractComponent {
                 )
         );
     }
-    
+
     /**
      * 获取最小宽度
      *
@@ -285,7 +285,7 @@ public class Container extends AbstractComponent {
     protected float getMinWidth() {
         return this.getWidth();
     }
-    
+
     /**
      * 是否需要换行
      *
@@ -295,7 +295,7 @@ public class Container extends AbstractComponent {
     protected boolean isNeedWrap() {
         return this.getContext().getWrapWidth() - (this.getBeginX() - this.getContext().getWrapBeginX()) < this.getMinWidth();
     }
-    
+
     /**
      * 写入内容
      */
@@ -305,6 +305,8 @@ public class Container extends AbstractComponent {
         float beginX = this.getBeginX() + this.getRelativeBeginX();
         // 获取起始Y坐标
         float beginY = this.getBeginY() + this.getRelativeBeginY();
+        // 获取换行起始X坐标
+        float wrapBeginX = beginX + this.getContentMarginLeft();
         // 获取换行宽度
         float wrapWidth = this.getWidth() - this.getContentMarginLeft() - this.getContentMarginRight();
         // 获取边框信息
@@ -334,7 +336,7 @@ public class Container extends AbstractComponent {
             // 遍历组件
             for (Component component : this.getComponents()) {
                 // 设置换行X轴起始坐标
-                context.setWrapBeginX(beginX + this.getContentMarginLeft());
+                context.setWrapBeginX(wrapBeginX);
                 // 设置换行宽度
                 context.setWrapWidth(wrapWidth);
                 // 设置水平对齐方式
@@ -350,7 +352,7 @@ public class Container extends AbstractComponent {
         // 重置光标
         context.resetCursorY(tempY);
     }
-    
+
     /**
      * 重置
      */
@@ -363,7 +365,7 @@ public class Container extends AbstractComponent {
         this.getContext().resetWrapWidth(null);
         this.getContext().resetHeight(null);
     }
-    
+
     /**
      * 执行分页
      */
@@ -394,7 +396,7 @@ public class Container extends AbstractComponent {
         // 返回分页结果
         return page.get();
     }
-    
+
     /**
      * 添加边框
      *

@@ -15,12 +15,14 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.dromara.pdf.pdfbox.core.base.BorderData;
 import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.enums.*;
+import org.dromara.pdf.pdfbox.handler.FontHandler;
 import org.dromara.pdf.pdfbox.util.BorderUtil;
 import org.dromara.pdf.pdfbox.util.CommonUtil;
 import org.dromara.pdf.pdfbox.util.ImageUtil;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,7 +51,7 @@ import java.util.concurrent.locks.ReentrantLock;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class Barcode extends AbstractComponent {
-    
+
     /**
      * 缓存
      */
@@ -142,7 +144,7 @@ public class Barcode extends AbstractComponent {
      * 是否缓存
      */
     protected Boolean isCache;
-    
+
     /**
      * 有参构造
      *
@@ -151,7 +153,7 @@ public class Barcode extends AbstractComponent {
     public Barcode(Page page) {
         super(page);
     }
-    
+
     /**
      * 设置宽度（显示）
      *
@@ -163,7 +165,7 @@ public class Barcode extends AbstractComponent {
         }
         this.width = width;
     }
-    
+
     /**
      * 设置高度（显示）
      *
@@ -175,7 +177,7 @@ public class Barcode extends AbstractComponent {
         }
         this.height = height;
     }
-    
+
     /**
      * 设置图像宽度（生成）
      *
@@ -187,7 +189,7 @@ public class Barcode extends AbstractComponent {
         }
         this.imageWidth = width;
     }
-    
+
     /**
      * 设置图像高度（生成）
      *
@@ -199,7 +201,7 @@ public class Barcode extends AbstractComponent {
         }
         this.imageHeight = height;
     }
-    
+
     /**
      * 设置条形码边距
      *
@@ -212,7 +214,7 @@ public class Barcode extends AbstractComponent {
         // 设置边距
         this.encodeHints.put(EncodeHintType.MARGIN, margin);
     }
-    
+
     /**
      * 设置纠错级别
      *
@@ -223,7 +225,7 @@ public class Barcode extends AbstractComponent {
             this.encodeHints.put(EncodeHintType.ERROR_CORRECTION, level.getLevel());
         }
     }
-    
+
     /**
      * 设置二维码版本（仅二维码有效）
      *
@@ -238,7 +240,7 @@ public class Barcode extends AbstractComponent {
             throw new IllegalArgumentException("the version must be between 1 and 40");
         }
     }
-    
+
     /**
      * 设置二维码掩码模式（仅二维码有效）
      *
@@ -250,7 +252,7 @@ public class Barcode extends AbstractComponent {
         }
         this.encodeHints.put(EncodeHintType.QR_MASK_PATTERN, pattern);
     }
-    
+
     /**
      * 设置二维码紧凑模式（仅二维码有效）
      *
@@ -259,7 +261,7 @@ public class Barcode extends AbstractComponent {
     public void setQrCompact(boolean isCompact) {
         this.encodeHints.put(EncodeHintType.QR_COMPACT, isCompact);
     }
-    
+
     /**
      * 设置编码提示
      *
@@ -269,7 +271,7 @@ public class Barcode extends AbstractComponent {
     public void setEncodeHints(EncodeHintType type, Object value) {
         this.encodeHints.put(type, value);
     }
-    
+
     /**
      * 获取类型
      *
@@ -279,7 +281,7 @@ public class Barcode extends AbstractComponent {
     public ComponentType getType() {
         return ComponentType.BARCODE;
     }
-    
+
     /**
      * 获取最小宽度
      *
@@ -289,7 +291,7 @@ public class Barcode extends AbstractComponent {
     protected float getMinWidth() {
         return this.getWidth();
     }
-    
+
     /**
      * 初始化
      */
@@ -336,7 +338,7 @@ public class Barcode extends AbstractComponent {
         // 初始化起始XY轴坐标
         this.initBeginXY(this.width, this.height);
     }
-    
+
     /**
      * 初始化宽度与高度
      */
@@ -360,7 +362,7 @@ public class Barcode extends AbstractComponent {
             this.imageHeight = this.height;
         }
     }
-    
+
     /**
      * 初始化纠错级别
      */
@@ -379,7 +381,7 @@ public class Barcode extends AbstractComponent {
                 // 重置纠错级别
                 this.encodeHints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M);
             }
-            
+
         } else {
             // 类型转换
             ErrorCorrectionLevel level = (ErrorCorrectionLevel) errorLevel;
@@ -390,7 +392,7 @@ public class Barcode extends AbstractComponent {
             }
         }
     }
-    
+
     /**
      * 写入内容
      */
@@ -416,7 +418,7 @@ public class Barcode extends AbstractComponent {
             contentStream.close();
         }
     }
-    
+
     /**
      * 重置
      */
@@ -429,7 +431,7 @@ public class Barcode extends AbstractComponent {
         // 重置
         super.reset(this.getType(), x, y);
     }
-    
+
     /**
      * 获取图像对象
      *
@@ -443,7 +445,7 @@ public class Barcode extends AbstractComponent {
                 ImageType.PNG.getType()
         );
     }
-    
+
     /**
      * 获取条形码图像
      *
@@ -485,7 +487,7 @@ public class Barcode extends AbstractComponent {
         // 返回图像
         return this.createBarcodeImage();
     }
-    
+
     /**
      * 创建条形码图像
      *
@@ -511,7 +513,7 @@ public class Barcode extends AbstractComponent {
         // 返回图像
         return bufferedImage;
     }
-    
+
     /**
      * 转图像
      *
@@ -553,7 +555,7 @@ public class Barcode extends AbstractComponent {
         // 返回图像
         return image;
     }
-    
+
     /**
      * 移除白边
      *
@@ -583,13 +585,14 @@ public class Barcode extends AbstractComponent {
         // 返回BitMatrix对象
         return bitMatrix;
     }
-    
+
     /**
      * 添加图像文字
      *
      * @param image 图像
      * @return 返回添加文字后的图像
      */
+    @SneakyThrows
     @SuppressWarnings("all")
     protected BufferedImage addImageWords(BufferedImage image) {
         // 获取图像宽度
@@ -599,7 +602,7 @@ public class Barcode extends AbstractComponent {
         // 获取文字
         String words = Optional.ofNullable(this.getWords()).orElse(this.getContent());
         // 获取文字字体名称
-        String wordsFontName = this.getWordsFontName();
+        String wordsFontName = Optional.ofNullable(this.getWordsFontName()).orElse(this.getPage().getFontName());
         // 获取文字颜色
         Color wordsColor = Optional.ofNullable(this.getWordsColor()).orElse(Color.BLACK);
         // 获取文字大小
@@ -612,34 +615,37 @@ public class Barcode extends AbstractComponent {
         int wordsOffsetY = Optional.ofNullable(this.getWordsOffsetY()).orElse(0);
         // 总高度
         int totalHeight = height + wordsSize;
-        // 定义转换图像
-        BufferedImage out = new BufferedImage(width, totalHeight, BufferedImage.TYPE_INT_RGB);
-        // 创建图像图形
-        Graphics2D graphics = ImageUtil.createGraphics(out);
-        // 填充矩形
-        graphics.fillRect(0, 0, width, totalHeight);
-        // 设置文字颜色
-        graphics.setColor(wordsColor);
-        // 设置图像
-        graphics.drawImage(image, 0, 0, width, height, null);
-        // 设置字体
-        graphics.setFont(new Font(wordsFontName, wordsStyle, wordsSize));
-        // 文字长度
-        int strWidth = graphics.getFontMetrics().stringWidth(words);
-        // 定义X轴开始坐标（居中显示）
-        int beginX = (width - strWidth) / 2 + wordsOffsetX;
-        // 定义Y轴开始坐标
-        int beginY = height + wordsOffsetY;
-        // 设置文字
-        graphics.drawString(words, beginX, beginY);
-        // 资源释放
-        graphics.dispose();
-        // 刷新图像
-        image.flush();
-        // 返回图像
-        return out;
+        // 获取字体输入流
+        try (InputStream inputStream = FontHandler.getInstance().getTrueTypeFont(wordsFontName).getOriginalData()) {
+            // 定义转换图像
+            BufferedImage out = new BufferedImage(width, totalHeight, BufferedImage.TYPE_INT_RGB);
+            // 创建图像图形
+            Graphics2D graphics = ImageUtil.createGraphics(out);
+            // 填充矩形
+            graphics.fillRect(0, 0, width, totalHeight);
+            // 设置文字颜色
+            graphics.setColor(wordsColor);
+            // 设置图像
+            graphics.drawImage(image, 0, 0, width, height, null);
+            // 设置字体
+            graphics.setFont(Font.createFont(Font.TRUETYPE_FONT, inputStream).deriveFont(wordsStyle, wordsSize));
+            // 文字长度
+            int strWidth = graphics.getFontMetrics().stringWidth(words);
+            // 定义X轴开始坐标（居中显示）
+            int beginX = (width - strWidth) / 2 + wordsOffsetX;
+            // 定义Y轴开始坐标
+            int beginY = height + wordsOffsetY;
+            // 设置文字
+            graphics.drawString(words, beginX, beginY);
+            // 资源释放
+            graphics.dispose();
+            // 刷新图像
+            image.flush();
+            // 返回图像
+            return out;
+        }
     }
-    
+
     /**
      * 缓存key
      *

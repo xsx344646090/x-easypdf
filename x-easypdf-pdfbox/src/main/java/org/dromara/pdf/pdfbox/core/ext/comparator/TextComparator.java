@@ -26,7 +26,7 @@ import java.util.*;
  * </p>
  */
 public class TextComparator extends AbstractComparator {
-    
+
     /**
      * 有参构造
      *
@@ -35,11 +35,12 @@ public class TextComparator extends AbstractComparator {
     public TextComparator(Document document) {
         super(document);
     }
-    
+
     /**
      * 比较
      *
-     * @param other 文档
+     * @param other       文档
+     * @param pageIndexes 页面索引
      */
     public Map<Integer, List<TextCompareInfo>> compareTo(Document other, int... pageIndexes) {
         // 定义结果
@@ -61,7 +62,7 @@ public class TextComparator extends AbstractComparator {
         // 返回结果
         return result;
     }
-    
+
     /**
      * 比较文本
      *
@@ -97,7 +98,7 @@ public class TextComparator extends AbstractComparator {
         // 返回结果
         return results;
     }
-    
+
     /**
      * 处理页面文本
      *
