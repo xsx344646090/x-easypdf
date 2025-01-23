@@ -7,6 +7,7 @@ import org.dromara.pdf.fop.core.base.TemplateAttributes;
 import org.dromara.pdf.fop.core.doc.page.PageRectangle;
 import org.dromara.pdf.fop.util.FileUtil;
 import org.dromara.pdf.fop.util.FontStyleUtil;
+import org.dromara.pdf.fop.util.FontUtil;
 import org.dromara.pdf.fop.util.ImageUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -425,7 +426,7 @@ public class Watermark implements WatermarkComponent {
         // 设置文字颜色
         graphics.setColor(new Color(fontColor.getRed(), fontColor.getGreen(), fontColor.getBlue(), fontAlpha));
         // 设置字体
-        graphics.setFont(new Font(this.param.getFontFamily(), FontStyleUtil.getStyle(this.param.getFontStyle()), fontSize));
+        graphics.setFont(FontUtil.createAWTFont(this.param.getFontFamily(), FontStyleUtil.FontStyle.NORMAL, fontSize));
         // 获取文本列表
         List<String> texts = this.param.getTexts();
         // 定义Y轴开始坐标（居中显示）

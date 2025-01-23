@@ -14,6 +14,7 @@ import org.apache.fop.render.pdf.PDFEncryptionOption;
 import org.apache.xmlgraphics.io.Resource;
 import org.apache.xmlgraphics.io.ResourceResolver;
 import org.dromara.pdf.fop.core.datasource.DataSource;
+import org.dromara.pdf.fop.support.event.DefaultAreaTreeHandler;
 import org.dromara.pdf.fop.support.layout.ExpandLayoutManagerMaker;
 import org.dromara.pdf.fop.support.layout.LayoutManagerMapping;
 
@@ -49,7 +50,7 @@ import java.util.Objects;
  */
 @Data
 class TemplateParam {
-    
+
     /**
      * 配置路径
      */
@@ -158,11 +159,12 @@ class TemplateParam {
      * 是否禁止填写表单
      */
     private Boolean isNoFillForm = Boolean.FALSE;
-    
+
     /**
      * 初始化参数
      */
-    void initParams() {
+    @SneakyThrows
+    void initParams(OutputStream outputStream) {
         // 如果配置路径未初始化，则初始化为默认配置
         if (Objects.isNull(this.configPath)) {
             // 初始化默认配置
@@ -190,8 +192,10 @@ class TemplateParam {
         }
         // 初始化布局管理器
         this.layoutManagerMaker.initialize(this.userAgent);
+        // 重置事件助手
+        this.userAgent.setFOEventHandlerOverride(new DefaultAreaTreeHandler(this.userAgent, outputStream));
     }
-    
+
     /**
      * 初始化fop工厂
      *
@@ -228,7 +232,7 @@ class TemplateParam {
             }
         }
     }
-    
+
     /**
      * 初始化用户代理
      *
@@ -271,7 +275,7 @@ class TemplateParam {
         // 返回代理
         return userAgent;
     }
-    
+
     /**
      * 初始化资源
      *
@@ -313,7 +317,7 @@ class TemplateParam {
         // 返回资源字典
         return resource;
     }
-    
+
     /**
      * 初始化配置
      *
@@ -337,7 +341,7 @@ class TemplateParam {
         // 返回配置
         return configuration;
     }
-    
+
     /**
      * 初始化权限
      *
@@ -359,17 +363,17 @@ class TemplateParam {
         encryption.setAllowFillInForms(!this.isNoFillForm);
         userAgent.getRendererOptions().put(PDFEncryptionOption.ENCRYPTION_PARAMS, encryption);
     }
-    
+
     /**
      * 字体资源解析器
      */
     public static final class FontResourceResolver implements ResourceResolver {
-        
+
         /**
          * 资源字体
          */
         private final Map<String, String> resources;
-        
+
         /**
          * 有参构造
          *
@@ -378,7 +382,7 @@ class TemplateParam {
         public FontResourceResolver(Map<String, String> resources) {
             this.resources = resources;
         }
-        
+
         /**
          * 获取资源
          *
@@ -403,7 +407,7 @@ class TemplateParam {
             // 返回资源
             return new Resource(inputStream);
         }
-        
+
         /**
          * 获取输出流
          *
@@ -417,12 +421,12 @@ class TemplateParam {
             return uri.toURL().openConnection().getOutputStream();
         }
     }
-    
+
     /**
      * 图像资源解析器
      */
     public static final class ImageResourceResolver implements ResourceResolver {
-        
+
         /**
          * 类型
          */
@@ -431,7 +435,7 @@ class TemplateParam {
          * 基础索引
          */
         private final Integer baseIndexOf;
-        
+
         /**
          * 有参构造
          *
@@ -441,7 +445,7 @@ class TemplateParam {
         public ImageResourceResolver(URI baseUri) {
             this.baseIndexOf = Paths.get(baseUri).toRealPath().toUri().getPath().length();
         }
-        
+
         /**
          * 获取资源
          *
@@ -469,7 +473,7 @@ class TemplateParam {
             // 返回资源
             return new Resource(inputStream);
         }
-        
+
         /**
          * 获取输出流
          *

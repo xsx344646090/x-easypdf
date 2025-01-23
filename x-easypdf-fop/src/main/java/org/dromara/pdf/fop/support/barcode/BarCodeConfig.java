@@ -6,6 +6,7 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import lombok.Data;
 import lombok.SneakyThrows;
 import lombok.experimental.Accessors;
+import org.apache.fop.fonts.Font;
 import org.apache.fop.util.ColorUtil;
 import org.apache.xmlgraphics.util.UnitConv;
 import org.dromara.pdf.fop.core.base.TemplateAttributes;
@@ -98,7 +99,7 @@ public class BarCodeConfig {
      * <p>斜体：Font.ITALIC</p>
      * <p>粗体斜体：Font.BOLD|Font.ITALIC</p>
      */
-    private Integer wordsStyle;
+    private FontStyleUtil.FontStyle wordsStyle;
     /**
      * 条形码文字大小
      */
@@ -207,7 +208,7 @@ public class BarCodeConfig {
         // 初始化文字颜色
         this.wordsColor = this.resolveValue(attributes, TemplateAttributes.WORDS_COLOR, "BLACK", this::parseColor);
         // 初始化文字名称
-        this.wordsFamily = Optional.ofNullable(attributes.getNamedItem(TemplateAttributes.WORDS_FAMILY)).map(Node::getNodeValue).orElse(null);
+        this.wordsFamily = Optional.ofNullable(attributes.getNamedItem(TemplateAttributes.WORDS_FAMILY)).map(Node::getNodeValue).orElse(Font.DEFAULT_FONT.getName());
         // 初始化文字样式
         this.wordsStyle = this.resolveValue(attributes, TemplateAttributes.WORDS_STYLE, "NORMAL", FontStyleUtil::getStyle);
         // 初始化文字大小
