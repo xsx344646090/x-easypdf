@@ -45,26 +45,37 @@ public class FontUtil {
     @SuppressWarnings("all")
     @SneakyThrows
     public static Font createAWTFont(String name, FontStyleUtil.FontStyle style, int size) {
+        // 初始化输入流为null
         InputStream inputStream = null;
         try {
+            // 获取字体信息
             FontInfo fontInfo = FontInfoHelper.get();
+            // 根据字体名称和样式查找合适的字体三元组
             FontTriplet triplet = fontInfo.findAdjustWeight(name, style.getStyle(), style.getWeight());
+            // 获取字体实例
             org.apache.fop.fonts.Font font = fontInfo.getFontInstance(triplet, size);
+            // 如果获取的字体是默认字体，则返回一个默认的AWT字体
             if (font.getFontTriplet().equals(org.apache.fop.fonts.Font.DEFAULT_FONT)) {
                 return new Font(null, style.getAwtStyle(), size);
             }
-            URI uri = font.getFontMetrics().getFontURI();
             try {
+                // 获取字体的URI
+                URI uri = font.getFontMetrics().getFontURI();
+                // 尝试从当前线程的上下文类加载器中获取字体文件输入流
                 inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(uri.getPath());
+                // 如果输入流为null，则尝试从文件系统中获取字体文件输入流
                 if (Objects.isNull(inputStream)) {
                     inputStream = Files.newInputStream(Paths.get(uri));
                 }
             } catch (Exception e) {
+                // 如果获取字体文件失败，则记录警告日志并返回默认字体
                 log.warn("the font['" + name + "'] can not be found, use default font");
                 return new Font(null, style.getAwtStyle(), size);
             }
+            // 创建并返回一个新的AWT字体实例
             return Font.createFont(Font.TRUETYPE_FONT, inputStream).deriveFont(style.getAwtStyle(), size);
         } finally {
+            // 确保在finally块中关闭输入流，避免资源泄漏
             if (Objects.nonNull(inputStream)) {
                 inputStream.close();
             }
