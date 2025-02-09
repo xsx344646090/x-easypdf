@@ -2,7 +2,7 @@ package org.dromara.pdf.pdfbox.processor;
 
 import org.dromara.pdf.pdfbox.base.BaseTest;
 import org.dromara.pdf.pdfbox.core.base.Document;
-import org.dromara.pdf.pdfbox.core.ext.comparator.DocumentComparator;
+import org.dromara.pdf.pdfbox.core.ext.comparator.ImageComparator;
 import org.dromara.pdf.pdfbox.core.info.ImageCompareInfo;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.junit.Test;
@@ -38,9 +38,9 @@ public class ImageComparatorTest extends BaseTest {
                     Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\hello-world.pdf");
                     Document document2 = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\allTest.pdf")
             ) {
-                DocumentComparator comparator = PdfHandler.getDocumentComparator(document2);
-                Map<Integer, List<ImageCompareInfo>> map = comparator.compareToImage(document);
-                System.out.println("map = " + map);
+                ImageComparator comparator = PdfHandler.getDocumentComparator(document2).getImageComparator();
+                Map<Integer, List<ImageCompareInfo>> map = comparator.compareTo(document);
+                log.info("map = " + map);
             }
         });
     }

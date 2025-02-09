@@ -1,6 +1,7 @@
 package org.dromara.pdf.fop.core.doc.watermark;
 
 import lombok.SneakyThrows;
+import org.apache.fop.fonts.Font;
 import org.apache.fop.util.ColorUtil;
 import org.apache.xmlgraphics.util.UnitConv;
 import org.dromara.pdf.fop.core.base.TemplateAttributes;
@@ -401,6 +402,8 @@ public class Watermark implements WatermarkComponent {
         int width = this.parseUnit(this.param.getWidth());
         // 获取高度
         int height = this.parseUnit(this.param.getHeight());
+        // 获取字体名称
+        String fontName = Optional.ofNullable(this.param.getFontFamily()).orElse(Font.DEFAULT_FONT.getName());
         // 获取字体大小
         int fontSize = this.parseUnit(this.param.getFontSize());
         // 获取字体颜色
@@ -426,7 +429,7 @@ public class Watermark implements WatermarkComponent {
         // 设置文字颜色
         graphics.setColor(new Color(fontColor.getRed(), fontColor.getGreen(), fontColor.getBlue(), fontAlpha));
         // 设置字体
-        graphics.setFont(FontUtil.createAWTFont(this.param.getFontFamily(), FontStyleUtil.FontStyle.NORMAL, fontSize));
+        graphics.setFont(FontUtil.createAWTFont(fontName, FontStyleUtil.FontStyle.NORMAL, fontSize));
         // 获取文本列表
         List<String> texts = this.param.getTexts();
         // 定义Y轴开始坐标（居中显示）

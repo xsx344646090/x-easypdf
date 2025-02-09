@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--根标签-->
-<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format"  fo:noNamespaceSchemaLocation="xsl-fo-schema.xsd">
+<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
     <!--页面模板-->
     <fo:layout-master-set>
         <!--单页面模板-->

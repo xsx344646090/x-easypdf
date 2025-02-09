@@ -3,6 +3,8 @@ package org.dromara.pdf.pdfbox.core.ext.processor.form;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import org.apache.pdfbox.cos.COSDictionary;
+import org.apache.pdfbox.cos.COSInteger;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
@@ -15,6 +17,7 @@ import org.apache.pdfbox.pdmodel.interactive.form.*;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.enums.ImageType;
 import org.dromara.pdf.pdfbox.core.ext.processor.AbstractProcessor;
+import org.dromara.pdf.pdfbox.handler.FontHandler;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.dromara.pdf.pdfbox.util.ColorUtil;
 import org.dromara.pdf.pdfbox.util.ImageUtil;
@@ -69,7 +72,7 @@ public class FormProcessor extends AbstractProcessor {
      * @param document 文档
      */
     public FormProcessor(Document document) {
-        this(document, false, true);
+        this(document, false, false);
     }
     
     /**
@@ -117,7 +120,6 @@ public class FormProcessor extends AbstractProcessor {
         for (AbstractFormFieldBuilder builder : builders) {
             fields.add(builder.build(this.form));
         }
-        this.reset();
     }
     
     /**
@@ -136,8 +138,6 @@ public class FormProcessor extends AbstractProcessor {
                 field.setMappingName(value);
             }
         });
-        // 重置表单
-        this.reset();
     }
     
     /**
@@ -167,8 +167,6 @@ public class FormProcessor extends AbstractProcessor {
             // 重置字段
             this.form.setFields(new ArrayList<>(0));
         }
-        // 重置表单
-        this.reset();
     }
     
     /**
@@ -197,10 +195,17 @@ public class FormProcessor extends AbstractProcessor {
                     // 添加外观
                     if (this.isAddAppearance()) {
                         // 初始化字体
-                        font = PdfHandler.getFontHandler().getPDFont(this.getDocument(), this.fontName, true);
+                        if (Objects.isNull(font)) {
+                            // 初始化字体
+                            font = PdfHandler.getFontHandler().getPDFont(this.getDocument(), this.fontName, true);
+                            // 添加字体
+                            this.form.getDefaultResources().put(COSName.getPDFName(font.getName()), font);
+                        }
                         // 重置外观
                         textField.setDefaultAppearance(this.createDefaultAppearance(font));
                     }
+                    // 嵌入文本
+                    FontHandler.getInstance().addToSubset(this.getDocument(), font, entry.getValue());
                     // 设置新值
                     textField.setValue(entry.getValue());
                 } else {
@@ -212,15 +217,6 @@ public class FormProcessor extends AbstractProcessor {
                 log.warn("the field['" + entry.getKey() + "'] is not exist, will be ignored");
             }
         }
-        // 嵌入字体
-        if (Objects.nonNull(font)) {
-            // 添加字体
-            this.form.getDefaultResources().put(COSName.getPDFName(font.getName()), font);
-            // 嵌入字体
-            font.subset();
-        }
-        // 重置表单
-        this.reset();
     }
     
     /**
@@ -246,28 +242,42 @@ public class FormProcessor extends AbstractProcessor {
                     List<PDAnnotationWidget> widgets = field.getWidgets();
                     // 非空
                     if (!widgets.isEmpty()) {
+                        // 获取小部件
+                        PDAnnotationWidget widget = field.getWidgets().get(0);
                         // 获取外观
-                        PDAppearanceCharacteristicsDictionary appearanceCharacteristics = field.getWidgets().get(0).getAppearanceCharacteristics();
-                        // 非空
-                        if (Objects.nonNull(appearanceCharacteristics)) {
-                            // 获取图像
-                            BufferedImage image = entry.getValue();
-                            // 非空
-                            if (Objects.nonNull(image)) {
-                                // 设置图像
-                                appearanceCharacteristics.getCOSObject().setItem(
-                                        COSName.I,
-                                        PDImageXObject.createFromByteArray(
-                                                this.getDocument(),
-                                                ImageUtil.toBytes(image, ImageType.PNG.getType()),
-                                                ImageType.PNG.getType()
-                                        ).getCOSObject()
-                                );
-                            } else {
-                                // 清空图像
-                                appearanceCharacteristics.getCOSObject().setItem(COSName.I, null);
-                            }
+                        PDAppearanceCharacteristicsDictionary appearanceCharacteristics = widget.getAppearanceCharacteristics();
+                        // 初始化外观
+                        if (Objects.isNull(appearanceCharacteristics)) {
+                            appearanceCharacteristics = new PDAppearanceCharacteristicsDictionary(new COSDictionary());
                         }
+                        // 获取图像
+                        BufferedImage image = entry.getValue();
+                        // 非空
+                        if (Objects.nonNull(image)) {
+                            // 获取字典
+                            COSDictionary dictionary = appearanceCharacteristics.getCOSObject();
+                            // 设置图像
+                            dictionary.setItem(
+                                    COSName.I,
+                                    PDImageXObject.createFromByteArray(
+                                            this.getDocument(),
+                                            ImageUtil.toBytes(image, ImageType.PNG.getType()),
+                                            ImageType.PNG.getType()
+                                    ).getCOSObject().getCOSObject()
+                            );
+                            // 图标位置
+                            COSName tp = COSName.getPDFName("TP");
+                            // 不包含
+                            if (!dictionary.containsKey(tp)) {
+                                // 设置仅图标
+                                dictionary.setItem(tp, COSInteger.ONE);
+                            }
+                        } else {
+                            // 清空图像
+                            appearanceCharacteristics.getCOSObject().setItem(COSName.I, null);
+                        }
+                        // 设置外观
+                        widget.setAppearanceCharacteristics(appearanceCharacteristics);
                     }
                 } else {
                     // 提示信息
@@ -278,8 +288,6 @@ public class FormProcessor extends AbstractProcessor {
                 log.warn("the field['" + entry.getKey() + "'] is not exist, will be ignored");
             }
         }
-        // 重置表单
-        this.reset();
     }
     
     /**
@@ -311,8 +319,6 @@ public class FormProcessor extends AbstractProcessor {
             // 提示信息
             log.warn("the field['" + key + "'] is not exist, will be ignored");
         }
-        // 重置表单
-        this.reset();
     }
     
     /**
@@ -346,8 +352,6 @@ public class FormProcessor extends AbstractProcessor {
                 log.warn("the field['" + key + "'] is not exist, will be ignored");
             }
         }
-        // 重置表单
-        this.reset();
     }
     
     /**
@@ -380,8 +384,6 @@ public class FormProcessor extends AbstractProcessor {
         }
         // 扁平化
         this.form.flatten(fields, refreshAppearances);
-        // 重置表单
-        this.reset();
     }
     
     /**
@@ -407,13 +409,16 @@ public class FormProcessor extends AbstractProcessor {
             }
         } else {
             // 遍历字段
-            this.getFields().forEach(field -> {
-                // 设置只读
-                field.setReadOnly(true);
-            });
+            this.getFields().forEach(field -> field.setReadOnly(true));
         }
-        // 重置表单
-        this.reset();
+    }
+    
+    /**
+     * 刷新
+     */
+    @SneakyThrows
+    public void flush() {
+        this.getDocument().getDocumentCatalog().setAcroForm(this.form);
     }
     
     /**
@@ -445,7 +450,7 @@ public class FormProcessor extends AbstractProcessor {
         // 设置外观
         acroForm.setNeedAppearances(isNeedAppearance);
         // 设置缓存
-        acroForm.setCacheFields(true);
+        acroForm.setCacheFields(false);
         // 返回表单
         return acroForm;
     }
@@ -475,12 +480,5 @@ public class FormProcessor extends AbstractProcessor {
         }
         // 返回外观
         return String.format("/%s %d Tf %s", font.getName(), fontSize.intValue(), ColorUtil.toPDColorString(fontColor));
-    }
-    
-    /**
-     * 重置表单
-     */
-    protected void reset() {
-        this.getDocument().getDocumentCatalog().setAcroForm(this.form);
     }
 }
