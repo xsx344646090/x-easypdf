@@ -56,7 +56,7 @@
 - ##### 全功能模块（pdfbox + fop）
 ```maven
 <dependency>
-    <groupId>org.dromara.x-easypdf</groupId>
+    <groupId>org.dromara</groupId>
     <artifactId>x-easypdf</artifactId>
     <version>3.3.0</version>
 </dependency>
@@ -65,7 +65,7 @@
 - ##### pdfbox模块
 ```maven
 <dependency>
-    <groupId>org.dromara.x-easypdf</groupId>
+    <groupId>org.dromara</groupId>
     <artifactId>x-easypdf-pdfbox</artifactId>
     <version>3.3.0</version>
 </dependency>
@@ -74,7 +74,7 @@
 - ##### fop模块
 ```maven
 <dependency>
-    <groupId>org.dromara.x-easypdf</groupId>
+    <groupId>org.dromara</groupId>
     <artifactId>x-easypdf-fop</artifactId>
     <version>3.3.0</version>
 </dependency>
