@@ -152,13 +152,21 @@ public class DocumentProcessorTest extends BaseTest {
     @Test
     public void replaceTest2() {
         this.test(() -> {
-            try (Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\allTest.pdf")) {
+            // try (Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\allTest.pdf")) {
+            // try (Document document = PdfHandler.getDocumentHandler().load("C:\\Users\\Administrator\\Downloads\\费用结算单-5.pdf")) {
+            try (Document document = PdfHandler.getDocumentHandler().load("C:\\Users\\Administrator\\Downloads\\文字文稿2.pdf")) {
                 ReplaceProcessor processor = PdfHandler.getDocumentProcessor(document).getReplaceProcessor();
                 PDFont font = document.getContext().getFont("仿宋");
                 Map<String, String> map = new HashMap<>();
-                map.put("水印", "");
+                map.put("贵阳", "遵义");
+                map.put("{code}", "yY全中文Ss测试,Hello");
+                map.put("${xword}", "测试,Y是y中");
+                map.put("${xword2}", "测试2");
+                map.put("${xword3}", "22测yy试22");
+                map.put("测试替换", "替换测试导出");
+                map.put("导出时间", "2024-12-11 00:00:00");
                 processor.replaceText(font, map, 0);
-                document.save("E:\\PDF\\pdfbox\\processor\\replaceTest.pdf");
+                document.save("C:\\Users\\Administrator\\Downloads\\文字文稿4-replace.pdf");
             }
         });
     }

@@ -32,7 +32,7 @@ import java.util.*;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public abstract class AbstractComponent extends AbstractBase implements Component, Closeable {
-    
+
     /**
      * 边距配置
      */
@@ -74,9 +74,13 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
      */
     protected Boolean isBreak;
     /**
-     * 是否自定义坐标
+     * 是否自定义X坐标
      */
-    protected Boolean isCustomPosition;
+    protected Boolean isCustomX;
+    /**
+     * 是否自定义Y坐标
+     */
+    protected Boolean isCustomY;
     /**
      * 水平对齐方式
      */
@@ -85,14 +89,14 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
      * 垂直对齐方式
      */
     protected VerticalAlignment verticalAlignment;
-    
+
     /**
      * 无参构造
      */
     protected AbstractComponent() {
-    
+
     }
-    
+
     /**
      * 有参构造
      *
@@ -106,24 +110,24 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
         this.borderConfiguration = new BorderConfiguration();
         this.pagingEvents = new LinkedHashSet<>();
     }
-    
+
     /**
      * 获取最小宽度
      *
      * @return 返回最小宽度
      */
     protected abstract float getMinWidth();
-    
+
     /**
      * 写入内容
      */
     protected abstract void writeContents();
-    
+
     /**
      * 重置
      */
     protected abstract void reset();
-    
+
     /**
      * 设置自定义起始X轴坐标
      *
@@ -132,7 +136,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     public void setBeginX(Float x) {
         this.setBeginX(x, true);
     }
-    
+
     /**
      * 设置自定义起始Y轴坐标
      *
@@ -141,7 +145,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     public void setBeginY(Float y) {
         this.setBeginY(y, true);
     }
-    
+
     /**
      * 设置边距（上下左右）
      *
@@ -153,7 +157,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
         this.setMarginLeft(margin);
         this.setMarginRight(margin);
     }
-    
+
     /**
      * 设置边框颜色（上下左右）
      *
@@ -162,7 +166,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     public void setBorderColor(Color color) {
         this.borderConfiguration.setBorderColor(color);
     }
-    
+
     /**
      * 设置是否边框（上下左右）
      *
@@ -171,7 +175,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     public void setIsBorder(boolean flag) {
         this.borderConfiguration.setIsBorder(flag);
     }
-    
+
     /**
      * 获取上边距
      *
@@ -180,7 +184,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     public Float getMarginTop() {
         return this.marginConfiguration.getMarginTop();
     }
-    
+
     /**
      * 设置上边距
      *
@@ -190,7 +194,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
         // 设置上边距
         this.marginConfiguration.setMarginTop(margin);
     }
-    
+
     /**
      * 获取下边距
      *
@@ -199,7 +203,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     public Float getMarginBottom() {
         return this.marginConfiguration.getMarginBottom();
     }
-    
+
     /**
      * 设置下边距
      *
@@ -208,7 +212,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     public void setMarginBottom(float margin) {
         this.marginConfiguration.setMarginBottom(margin);
     }
-    
+
     /**
      * 获取左边距
      *
@@ -217,7 +221,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     public Float getMarginLeft() {
         return this.marginConfiguration.getMarginLeft();
     }
-    
+
     /**
      * 设置左边距
      *
@@ -227,7 +231,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
         // 重置左边距
         this.marginConfiguration.setMarginLeft(margin);
     }
-    
+
     /**
      * 获取右边距
      *
@@ -236,7 +240,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     public Float getMarginRight() {
         return this.marginConfiguration.getMarginRight();
     }
-    
+
     /**
      * 设置右边距
      *
@@ -245,7 +249,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     public void setMarginRight(float margin) {
         this.marginConfiguration.setMarginRight(margin);
     }
-    
+
     /**
      * 获取边框样式
      *
@@ -254,7 +258,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     public LineStyle getBorderLineStyle() {
         return this.borderConfiguration.getBorderLineStyle();
     }
-    
+
     /**
      * 设置边框样式
      *
@@ -263,7 +267,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     public void setBorderLineStyle(LineStyle style) {
         this.borderConfiguration.setBorderLineStyle(style);
     }
-    
+
     /**
      * 获取线帽样式
      *
@@ -272,7 +276,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     public LineCapStyle getBorderLineCapStyle() {
         return this.borderConfiguration.getBorderLineCapStyle();
     }
-    
+
     /**
      * 设置线帽样式
      *
@@ -281,7 +285,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     public void setBorderLineCapStyle(LineCapStyle style) {
         this.borderConfiguration.setBorderLineCapStyle(style);
     }
-    
+
     /**
      * 获取边框线长
      *
@@ -290,7 +294,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     public Float getBorderLineLength() {
         return this.borderConfiguration.getBorderLineLength();
     }
-    
+
     /**
      * 设置边框线长
      *
@@ -299,7 +303,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     public void setBorderLineLength(float length) {
         this.borderConfiguration.setBorderLineLength(length);
     }
-    
+
     /**
      * 获取边框线宽
      *
@@ -308,7 +312,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     public Float getBorderLineWidth() {
         return this.borderConfiguration.getBorderLineWidth();
     }
-    
+
     /**
      * 设置边框线宽
      *
@@ -317,7 +321,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     public void setBorderLineWidth(float width) {
         this.borderConfiguration.setBorderLineWidth(width);
     }
-    
+
     /**
      * 获取边框点线间隔
      *
@@ -326,7 +330,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     public Float getBorderDottedSpacing() {
         return this.borderConfiguration.getBorderDottedSpacing();
     }
-    
+
     /**
      * 设置边框点线间隔
      *
@@ -335,7 +339,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     public void setBorderDottedSpacing(float spacing) {
         this.borderConfiguration.setBorderDottedSpacing(spacing);
     }
-    
+
     /**
      * 获取上边框颜色
      *
@@ -344,7 +348,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     public Color getBorderTopColor() {
         return this.borderConfiguration.getBorderTopColor();
     }
-    
+
     /**
      * 设置上边框颜色
      *
@@ -353,7 +357,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     public void setBorderTopColor(Color color) {
         this.borderConfiguration.setBorderTopColor(color);
     }
-    
+
     /**
      * 获取下边框颜色
      *
@@ -362,7 +366,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     public Color getBorderBottomColor() {
         return this.borderConfiguration.getBorderBottomColor();
     }
-    
+
     /**
      * 设置下边框颜色
      *
@@ -371,7 +375,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     public void setBorderBottomColor(Color color) {
         this.borderConfiguration.setBorderBottomColor(color);
     }
-    
+
     /**
      * 获取左边框颜色
      *
@@ -380,7 +384,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     public Color getBorderLeftColor() {
         return this.borderConfiguration.getBorderLeftColor();
     }
-    
+
     /**
      * 设置左边框颜色
      *
@@ -389,7 +393,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     public void setBorderLeftColor(Color color) {
         this.borderConfiguration.setBorderLeftColor(color);
     }
-    
+
     /**
      * 获取右边框颜色
      *
@@ -398,7 +402,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     public Color getBorderRightColor() {
         return this.borderConfiguration.getBorderRightColor();
     }
-    
+
     /**
      * 设置右边框颜色
      *
@@ -407,7 +411,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     public void setBorderRightColor(Color color) {
         this.borderConfiguration.setBorderRightColor(color);
     }
-    
+
     /**
      * 设置是否上边框
      *
@@ -416,7 +420,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     public void setBorderRightColor(boolean flag) {
         this.borderConfiguration.setIsBorderTop(flag);
     }
-    
+
     /**
      * 获取是否上边框
      *
@@ -425,7 +429,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     public Boolean getIsBorderTop() {
         return this.borderConfiguration.getIsBorderTop();
     }
-    
+
     /**
      * 设置是否上边框
      *
@@ -434,7 +438,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     public void setIsBorderTop(boolean flag) {
         this.borderConfiguration.setIsBorderTop(flag);
     }
-    
+
     /**
      * 获取是否下边框
      *
@@ -443,7 +447,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     public Boolean getIsBorderBottom() {
         return this.borderConfiguration.getIsBorderBottom();
     }
-    
+
     /**
      * 设置是否下边框
      *
@@ -452,7 +456,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     public void setIsBorderBottom(boolean flag) {
         this.borderConfiguration.setIsBorderBottom(flag);
     }
-    
+
     /**
      * 获取是否左边框
      *
@@ -461,7 +465,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     public Boolean getIsBorderLeft() {
         return this.borderConfiguration.getIsBorderLeft();
     }
-    
+
     /**
      * 设置是否左边框
      *
@@ -470,7 +474,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     public void setIsBorderLeft(boolean flag) {
         this.borderConfiguration.setIsBorderLeft(flag);
     }
-    
+
     /**
      * 获取是否右边框
      *
@@ -479,7 +483,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     public Boolean getIsBorderRight() {
         return this.borderConfiguration.getIsBorderRight();
     }
-    
+
     /**
      * 设置是否右边框
      *
@@ -488,7 +492,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     public void setIsBorderRight(boolean flag) {
         this.borderConfiguration.setIsBorderRight(flag);
     }
-    
+
     /**
      * 获取基类
      *
@@ -498,7 +502,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     public AbstractBase getBase() {
         return this;
     }
-    
+
     /**
      * 获取页面
      *
@@ -507,7 +511,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     public Page getPage() {
         return this.getContext().getPage();
     }
-    
+
     /**
      * 获取下边距
      *
@@ -516,7 +520,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     public float getBottom() {
         return this.getMarginBottom() + this.getContext().getPageFooterHeight() + this.getPage().getMarginBottom();
     }
-    
+
     /**
      * 添加分页事件
      *
@@ -525,7 +529,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     public void addPagingEvent(PagingEvent event) {
         this.pagingEvents.add(event);
     }
-    
+
     /**
      * 虚拟渲染
      */
@@ -540,7 +544,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
         // 重置
         this.reset();
     }
-    
+
     /**
      * 渲染
      */
@@ -555,7 +559,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
         // 重置
         this.reset();
     }
-    
+
     /**
      * 关闭
      */
@@ -563,7 +567,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     public void close() {
         super.setContext(null);
     }
-    
+
     /**
      * 初始化
      */
@@ -603,9 +607,13 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
         if (Objects.isNull(this.isBreak)) {
             this.isBreak = Boolean.FALSE;
         }
-        // 初始化是否自定义坐标
-        if (Objects.isNull(this.isCustomPosition)) {
-            this.isCustomPosition = Boolean.FALSE;
+        // 初始化是否自定义X坐标
+        if (Objects.isNull(this.isCustomX)) {
+            this.isCustomX = Boolean.FALSE;
+        }
+        // 初始化是否自定义Y坐标
+        if (Objects.isNull(this.isCustomY)) {
+            this.isCustomY = Boolean.FALSE;
         }
         // 初始化相对起始X轴坐标
         if (Objects.isNull(this.relativeBeginX)) {
@@ -616,7 +624,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
             this.relativeBeginY = 0F;
         }
     }
-    
+
     /**
      * 初始化起始X轴坐标
      *
@@ -653,7 +661,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
             }
         }
     }
-    
+
     /**
      * 初始化起始Y轴坐标
      *
@@ -688,9 +696,9 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
             }
         }
         // 设置起始Y轴坐标
-        this.setBeginY(this.getBeginY() - offset, this.getIsCustomPosition());
+        this.setBeginY(this.getBeginY() - offset, this.getIsCustomY());
     }
-    
+
     /**
      * 初始化起始Y轴坐标
      *
@@ -700,9 +708,9 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
         this.initBeginY(height);
         float offsetY = this.getBeginY() + (height - this.getContext().getOffsetY());
         float maxBeginY = this.getContext().getMaxBeginY() - height;
-        this.setBeginY(Math.min(maxBeginY, offsetY), this.getIsCustomPosition());
+        this.setBeginY(Math.min(maxBeginY, offsetY), this.getIsCustomY());
     }
-    
+
     /**
      * 初始化起始XY轴坐标
      *
@@ -723,46 +731,53 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
         // 初始化起始X轴坐标
         this.initBeginX(width);
     }
-    
+
     /**
      * 检查换行
      */
     protected void checkWrap(float wrapHeight) {
-        if (Objects.isNull(this.getIsCustomPosition())) {
-            this.setIsCustomPosition(Boolean.FALSE);
+        if (Objects.isNull(this.getIsCustomX())) {
+            this.setIsCustomX(Boolean.FALSE);
         }
-        if (!this.getIsCustomPosition()) {
+        if (Objects.isNull(this.getIsCustomY())) {
+            this.setIsCustomY(Boolean.FALSE);
+        }
+        if (!this.getIsCustomY()) {
             this.wrap(wrapHeight);
         } else {
             if (Objects.isNull(this.getBeginX())) {
-                this.setBeginX(this.getContext().getCursor().getX() + this.getMarginLeft(), this.getIsCustomPosition());
+                this.setBeginX(this.getContext().getCursor().getX() + this.getMarginLeft(), this.getIsCustomX());
             }
             if (Objects.isNull(this.getBeginY())) {
-                this.setBeginY(this.getContext().getCursor().getY() - this.getMarginTop(), this.getIsCustomPosition());
+                this.setBeginY(this.getContext().getCursor().getY() - this.getMarginTop(), this.getIsCustomY());
             }
         }
     }
-    
+
     /**
      * 换行
      *
      * @param wrapHeight 换行高度
      */
     protected void wrap(float wrapHeight) {
-        this.setBeginX(this.getContext().getCursor().getX() + this.getMarginLeft(), this.getIsCustomPosition());
+        if (Objects.isNull(this.getBeginX())) {
+            this.setBeginX(this.getContext().getCursor().getX() + this.getMarginLeft(), this.getIsCustomX());
+        }
         if (this.isWrap()) {
             this.setIsWrap(false);
             this.getContext().resetCursor(
                     Optional.ofNullable(this.getContext().getWrapBeginX()).orElse(this.getPage().getMarginLeft()) + this.getMarginLeft(),
                     this.getContext().getCursor().getY() - wrapHeight - this.getMarginTop()
             );
-            this.setBeginX(this.getContext().getCursor().getX(), this.getIsCustomPosition());
-            this.setBeginY(this.getContext().getCursor().getY(), this.getIsCustomPosition());
+            if (!this.getIsCustomX()) {
+                this.setBeginX(this.getContext().getCursor().getX(), false);
+            }
+            this.setBeginY(this.getContext().getCursor().getY(), this.getIsCustomY());
         } else {
-            this.setBeginY(this.getContext().getCursor().getY() - this.getMarginTop(), this.getIsCustomPosition());
+            this.setBeginY(this.getContext().getCursor().getY() - this.getMarginTop(), this.getIsCustomY());
         }
     }
-    
+
     /**
      * 是否换行
      *
@@ -771,17 +786,17 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     protected boolean isWrap() {
         return this.getIsWrap() || this.isNeedWrap();
     }
-    
+
     /**
      * 是否需要换行
      *
      * @return 返回布尔值，true为是，false为否
      */
     protected boolean isNeedWrap() {
-        boolean flag = this.getContext().getWrapWidth() - (this.getBeginX() - this.getContext().getPage().getMarginLeft()) < this.getMinWidth();
+        boolean flag = this.getContext().getWrapWidth() - (this.getBeginX() - this.getContext().getWrapBeginX()) < this.getMinWidth();
         return this.getContext().getIsFirstComponent() || flag;
     }
-    
+
     /**
      * 是否分页
      *
@@ -799,19 +814,19 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
         // 返回分页标识
         return flag;
     }
-    
+
     /**
      * 检查分页
      */
     protected boolean checkPaging() {
         // 非自定义坐标
-        if (!this.getIsCustomPosition()) {
+        if (!(this.getIsCustomX() || this.getIsCustomY())) {
             // 检查分页
             return this.isPaging(this, this.getBeginY());
         }
         return false;
     }
-    
+
     /**
      * 检查分页
      *
@@ -827,7 +842,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
                                 .orElse(false)
         ) && this.isPagingComponent();
     }
-    
+
     /**
      * 检查分页
      *
@@ -841,7 +856,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
         }
         return false;
     }
-    
+
     /**
      * 是否分页组件
      *
@@ -849,10 +864,10 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
      */
     protected boolean isPagingComponent() {
         return Optional.ofNullable(this.getContext().getExecutingComponentType())
-                       .map(ComponentType::isNotPageHeaderOrFooter)
-                       .orElse(Boolean.FALSE);
+                .map(ComponentType::isNotPageHeaderOrFooter)
+                .orElse(Boolean.FALSE);
     }
-    
+
     /**
      * 处理分页
      */
@@ -861,7 +876,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
         this.executeBreak();
         Optional.ofNullable(this.pagingEvents).ifPresent(events -> events.forEach(event -> Optional.ofNullable(event).ifPresent(v -> v.after(this))));
     }
-    
+
     /**
      * 执行分页
      */
@@ -879,7 +894,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
         this.resetXY();
         return subPage;
     }
-    
+
     /**
      * 重置
      *
@@ -901,20 +916,22 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
         // 重置是否第一个组件
         context.setIsFirstComponent(Boolean.FALSE);
     }
-    
+
     /**
      * 重置起始XY轴坐标
      */
     protected void resetXY() {
         this.beginX = null;
         this.beginY = null;
-        this.isCustomPosition = null;
-        if (this.getContext().getExecutingComponentType().isNotPageHeaderOrFooter()) {
+        this.isCustomX = null;
+        this.isCustomY = null;
+        ComponentType type = this.getContext().getExecutingComponentType();
+        if (Objects.nonNull(type) && type.isNotPageHeaderOrFooter()) {
             this.relativeBeginX = 0F;
             this.relativeBeginY = 0F;
         }
     }
-    
+
     /**
      * 设置自定义起始X轴坐标
      *
@@ -923,9 +940,9 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
      */
     protected void setBeginX(Float x, Boolean isCustomPosition) {
         this.beginX = x;
-        this.isCustomPosition = Optional.ofNullable(isCustomPosition).orElse(Boolean.FALSE);
+        this.isCustomX = Optional.ofNullable(isCustomPosition).orElse(Boolean.FALSE);
     }
-    
+
     /**
      * 设置自定义起始Y轴坐标
      *
@@ -934,6 +951,6 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
      */
     protected void setBeginY(Float y, Boolean isCustomPosition) {
         this.beginY = y;
-        this.isCustomPosition = Optional.ofNullable(isCustomPosition).orElse(Boolean.FALSE);
+        this.isCustomY = Optional.ofNullable(isCustomPosition).orElse(Boolean.FALSE);
     }
 }

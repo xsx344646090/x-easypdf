@@ -23,7 +23,7 @@ import java.util.concurrent.CompletableFuture;
  * </p>
  */
 public class TemplateTest extends BaseTest {
-
+    
     @Test
     public void testFont() {
         this.test(() -> {
@@ -40,7 +40,7 @@ public class TemplateTest extends BaseTest {
                     .transform();
         });
     }
-
+    
     @Test
     public void testThymeleaf() {
         this.test(() -> {
@@ -49,7 +49,7 @@ public class TemplateTest extends BaseTest {
             }
         });
     }
-
+    
     @Test
     public void testThymeleaf2() {
         this.test(() -> {
@@ -75,7 +75,7 @@ public class TemplateTest extends BaseTest {
                     .transform(outputPath);
         });
     }
-
+    
     @Test
     public void testThymeleaf3() {
         this.test(() -> {
@@ -83,7 +83,7 @@ public class TemplateTest extends BaseTest {
             String configPath = "C:\\Users\\xsx\\Downloads\\fop.xconf";
             // 定义xsl-fo模板路径
             // String templatePath = "org/dromara/pdf/fop/thymeleaf/template2.html";
-            String templatePath = "org/dromara/pdf/fop/jte/templste.fo";
+            String templatePath = "org/dromara/pdf/fop/freemarker/template3.ftl";
             // 定义pdf输出路径
             String outputPath = "E:\\PDF\\fop\\Thymeleaf.pdf";
             // 定义数据map
@@ -97,11 +97,11 @@ public class TemplateTest extends BaseTest {
             TemplateHandler.Template.build().setDataSource(
                     TemplateHandler.DataSource.Thymeleaf.build()
                             .setTemplatePath(templatePath)
-                            // .setTemplateData(data)
+                    // .setTemplateData(data)
             ).transform(outputPath);
         });
     }
-
+    
     @Test
     public void testThymeleafTotalPage() {
         this.test(() -> {
@@ -125,7 +125,7 @@ public class TemplateTest extends BaseTest {
             log.info("Total page: " + totalPage);
         });
     }
-
+    
     @Test
     public void testXml() {
         this.test(() -> {
@@ -133,9 +133,9 @@ public class TemplateTest extends BaseTest {
                 this.testXml2();
             }
         });
-
+        
     }
-
+    
     @Test
     public void testXml2() {
         this.test(() -> {
@@ -161,7 +161,7 @@ public class TemplateTest extends BaseTest {
                     .transform(outputPath);
         });
     }
-
+    
     @Test
     public void testXmlTotalPage() {
         this.test(() -> {
@@ -175,20 +175,20 @@ public class TemplateTest extends BaseTest {
             String outputPath = "E:\\PDF\\fop\\XML.pdf";
             // 获取总页数
             Integer totalPage = TemplateHandler.Template.build()
-                    // 设置配置文件
-                    .setConfigPath(configPath)
-                    // 设置XML数据源
-                    .setDataSource(
-                            TemplateHandler.DataSource.XML.build()
-                                    .setTemplatePath(templatePath)
-                                    .setXmlPath(xmlPath)
-                    )
-                    // 获取总页数
-                    .getTotalPage();
+                                        // 设置配置文件
+                                        .setConfigPath(configPath)
+                                        // 设置XML数据源
+                                        .setDataSource(
+                                                TemplateHandler.DataSource.XML.build()
+                                                        .setTemplatePath(templatePath)
+                                                        .setXmlPath(xmlPath)
+                                        )
+                                        // 获取总页数
+                                        .getTotalPage();
             log.info("Total page: " + totalPage);
         });
     }
-
+    
     @Test
     public void testJte() {
         this.test(() -> {
@@ -217,17 +217,17 @@ public class TemplateTest extends BaseTest {
                         CompletableFuture.runAsync(
                                 // 转换pdf
                                 () -> TemplateHandler.Template.build()
-                                        .setConfigPath(configPath)
-                                        .setDataSource(
-                                                TemplateHandler.DataSource.Jte.build().setTemplatePath(index % 2 == 0 ? templatePath1 : templatePath2).setTemplateData(data)
-                                        ).transform(outputPath + index)
+                                              .setConfigPath(configPath)
+                                              .setDataSource(
+                                                      TemplateHandler.DataSource.Jte.build().setTemplatePath(index % 2 == 0 ? templatePath1 : templatePath2).setTemplateData(data)
+                                              ).transform(outputPath + index)
                         )
                 );
             }
             CompletableFuture.allOf(tasks.toArray(new CompletableFuture[0])).join();
         });
     }
-
+    
     @Test
     public void testJte2() {
         this.test(() -> {
@@ -254,7 +254,7 @@ public class TemplateTest extends BaseTest {
                     ).transform(outputPath);
         });
     }
-
+    
     @Test
     public void testJteTotalPage() {
         this.test(() -> {
@@ -273,16 +273,16 @@ public class TemplateTest extends BaseTest {
             data.put("list", list);
             data.put("str", "hello world");
             Integer totalPage = TemplateHandler.Template.build()
-                    .setConfigPath(configPath)
-                    .setDataSource(
-                            TemplateHandler.DataSource.Jte.build()
-                                    .setTemplatePath(templatePath)
-                                    .setTemplateData(data)
-                    ).getTotalPage();
+                                        .setConfigPath(configPath)
+                                        .setDataSource(
+                                                TemplateHandler.DataSource.Jte.build()
+                                                        .setTemplatePath(templatePath)
+                                                        .setTemplateData(data)
+                                        ).getTotalPage();
             log.info("Total page: " + totalPage);
         });
     }
-
+    
     @Test
     public void testFreemarker() {
         this.test(() -> {
@@ -312,7 +312,7 @@ public class TemplateTest extends BaseTest {
                     ).transform(outputPath);
         });
     }
-
+    
     @Test
     public void testFreemarkerTotalPage() {
         this.test(() -> {
@@ -334,12 +334,12 @@ public class TemplateTest extends BaseTest {
             data.put("list", list);
             data.put("str", "hello world");
             Integer totalPage = TemplateHandler.Template.build()
-                    .setConfigPath(configPath)
-                    .setDataSource(
-                            TemplateHandler.DataSource.Freemarker.build()
-                                    .setTemplateName("template.fo")
-                                    .setTemplateData(data)
-                    ).getTotalPage();
+                                        .setConfigPath(configPath)
+                                        .setDataSource(
+                                                TemplateHandler.DataSource.Freemarker.build()
+                                                        .setTemplateName("template.fo")
+                                                        .setTemplateData(data)
+                                        ).getTotalPage();
             log.info("Total page: " + totalPage);
         });
     }

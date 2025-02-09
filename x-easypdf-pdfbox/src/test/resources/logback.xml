@@ -8,12 +8,12 @@
         </encoder>
     </appender>
 
-    <logger name="org.dromara.pdf.pdfbox" level="DEBUG" additivity="false">
+    <logger name="org.dromara.pdf.pdfbox" level="debug" additivity="false">
         <appender-ref ref="Console" />
     </logger>
 
     <!-- 日志输出级别 -->
-    <root level="INFO">
+    <root level="info">
         <appender-ref ref="Console" />
     </root>
 

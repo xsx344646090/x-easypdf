@@ -38,9 +38,9 @@ public class TextComparatorTest extends BaseTest {
                     Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\hello-world.pdf");
                     Document document2 = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\allTest.pdf")
             ) {
-                TextComparator comparator = new TextComparator(document);
+                TextComparator comparator = PdfHandler.getDocumentComparator(document).getTextComparator();
                 Map<Integer, List<TextCompareInfo>> map = comparator.compareTo(document2);
-                System.out.println("map = " + map);
+                log.info("map = " + map);
             }
         });
     }

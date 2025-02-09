@@ -7,6 +7,7 @@ import lombok.SneakyThrows;
 import org.apache.xmlgraphics.image.loader.ImageContext;
 import org.apache.xmlgraphics.image.loader.ImageInfo;
 import org.apache.xmlgraphics.image.loader.impl.AbstractImagePreloader;
+import org.dromara.pdf.fop.util.FontUtil;
 import org.dromara.pdf.fop.util.ImageUtil;
 import org.w3c.dom.Node;
 
@@ -47,6 +48,20 @@ public class BarcodePreloader extends AbstractImagePreloader {
      * 缓存锁
      */
     private static final ReentrantLock LOCK = new ReentrantLock();
+    /**
+     * md5
+     */
+    private static final MessageDigest MD5 = initMD5();
+
+    /**
+     * 初始化
+     *
+     * @return
+     */
+    @SneakyThrows
+    private static MessageDigest initMD5() {
+        return MessageDigest.getInstance("MD5");
+    }
 
     /**
      * 预加载图像
@@ -71,7 +86,7 @@ public class BarcodePreloader extends AbstractImagePreloader {
                 // 初始化条形码配置
                 BarCodeConfig config = BarCodeConfig.init(barcode.getAttributes());
                 // 生成条形码uri
-                String uri = new String(MessageDigest.getInstance("MD5").digest(config.toString().getBytes())).intern();
+                String uri = new String(MD5.digest(config.toString().getBytes())).intern();
                 // 创建图像信息
                 ImageInfo imageInfo = new ImageInfo(uri, BarcodeImageHandler.MIME_TYPE);
                 // 添加条形码图像
@@ -92,29 +107,34 @@ public class BarcodePreloader extends AbstractImagePreloader {
      * @return 返回图像
      */
     private BufferedImage getImage(String uri, BarCodeConfig config) {
-        // 获取图像
-        BufferedImage barcodeImage = CACHE.get(uri);
-        // 如果图像为空，则创建图像
-        if (barcodeImage == null) {
-            try {
-                // 加锁
-                LOCK.lock();
-                // 再次获取图像
-                barcodeImage = CACHE.get(uri);
-                // 如果图像为空，则创建图像
-                if (barcodeImage == null) {
-                    // 创建图像
-                    barcodeImage = this.createBarCodeImage(config);
-                    // 添加缓存
-                    CACHE.put(uri, barcodeImage);
+        // 是否缓存
+        if (config.getIsCache()) {
+            // 获取图像
+            BufferedImage barcodeImage = CACHE.get(uri);
+            // 如果图像为空，则创建图像
+            if (barcodeImage == null) {
+                try {
+                    // 加锁
+                    LOCK.lock();
+                    // 再次获取图像
+                    barcodeImage = CACHE.get(uri);
+                    // 如果图像为空，则创建图像
+                    if (barcodeImage == null) {
+                        // 创建图像
+                        barcodeImage = this.createBarCodeImage(config);
+                        // 添加缓存
+                        CACHE.put(uri, barcodeImage);
+                    }
+                } finally {
+                    // 解锁
+                    LOCK.unlock();
                 }
-            } finally {
-                // 解锁
-                LOCK.unlock();
             }
+            // 返回图像
+            return barcodeImage;
         }
         // 返回图像
-        return barcodeImage;
+        return this.createBarCodeImage(config);
     }
 
     /**
@@ -158,6 +178,10 @@ public class BarcodePreloader extends AbstractImagePreloader {
      * @return 返回条形码图像
      */
     private BufferedImage getBarCodeImage(BitMatrix matrix, BarCodeConfig config) {
+        // 移除白边
+        if (config.getIsNoWhiteBorder()) {
+            matrix = this.removeWhiteBorder(matrix);
+        }
         // 获取前景色
         final int onColor = config.getOnColor().getRGB();
         // 获取背景色
@@ -186,6 +210,36 @@ public class BarcodePreloader extends AbstractImagePreloader {
         }
         // 返回图片
         return image;
+    }
+
+    /**
+     * 移除白边
+     *
+     * @param matrix 矩阵
+     * @return 返回矩阵
+     */
+    private BitMatrix removeWhiteBorder(BitMatrix matrix) {
+        // 获取矩阵的外接矩形
+        int[] rectangle = matrix.getEnclosingRectangle();
+        // 获取矩形的宽度
+        int width = rectangle[2] + 1;
+        // 获取矩形的高度
+        int height = rectangle[3] + 1;
+        // 创建一个BitMatrix对象，宽度为width，高度为height
+        BitMatrix bitMatrix = new BitMatrix(width, height);
+        // 清空BitMatrix对象
+        bitMatrix.clear();
+        // 遍历矩阵中的每个元素
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                // 如果矩阵中的元素为true，则在BitMatrix对象中设置对应的元素为true
+                if (matrix.get(i + rectangle[0], j + rectangle[1])) {
+                    bitMatrix.set(i, j);
+                }
+            }
+        }
+        // 返回BitMatrix对象
+        return bitMatrix;
     }
 
     /**
@@ -223,7 +277,7 @@ public class BarcodePreloader extends AbstractImagePreloader {
         // 设置图像
         graphics.drawImage(image, 0, 0, width, height, null);
         // 设置字体
-        graphics.setFont(new Font(config.getWordsFamily(), config.getWordsStyle(), config.getWordsSize()));
+        graphics.setFont(FontUtil.createAWTFont(config.getWordsFamily(), config.getWordsStyle(), config.getWordsSize()));
         // 文字长度
         int strWidth = graphics.getFontMetrics().stringWidth(config.getWords());
         // 定义X轴开始坐标（居中显示）

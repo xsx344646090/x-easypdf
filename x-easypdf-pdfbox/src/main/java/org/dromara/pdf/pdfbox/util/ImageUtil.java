@@ -1,9 +1,6 @@
 package org.dromara.pdf.pdfbox.util;
 
 import lombok.SneakyThrows;
-import org.apache.batik.transcoder.TranscoderInput;
-import org.apache.batik.transcoder.TranscoderOutput;
-import org.apache.batik.transcoder.image.PNGTranscoder;
 import org.apache.pdfbox.tools.imageio.ImageIOUtil;
 import org.dromara.pdf.pdfbox.core.enums.ImageType;
 
@@ -12,6 +9,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Files;
+import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
 
@@ -144,7 +142,7 @@ public class ImageUtil {
         Objects.requireNonNull(bytes, "the bytes can not be null");
         // 定义字节数组
         byte[] byteArray = bytes;
-        // 如果svg格式
+        // svg格式
         if (isSvgImage(byteArray)) {
             try (
                     // 定义输入流
@@ -153,7 +151,20 @@ public class ImageUtil {
                     ByteArrayOutputStream outputStream = new ByteArrayOutputStream(8192)
             ) {
                 // 解析svg
-                new PNGTranscoder().transcode(new TranscoderInput(inputStream), new TranscoderOutput(outputStream));
+                new org.apache.batik.transcoder.image.PNGTranscoder().transcode(new org.apache.batik.transcoder.TranscoderInput(inputStream), new org.apache.batik.transcoder.TranscoderOutput(outputStream));
+                // 重置字节数组
+                byteArray = outputStream.toByteArray();
+            }
+            // jpeg2000格式
+        } else if (isJ2kImage(byteArray)) {
+            try (
+                    // 定义输入流
+                    InputStream inputStream = new BufferedInputStream(new ByteArrayInputStream(bytes));
+                    // 定义输出流
+                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream(8192)
+            ) {
+                // 解析jpeg2000
+                org.dromara.pdf.pdfbox.support.image.J2kImageHandler.parse(inputStream, outputStream, ImageType.PNG);
                 // 重置字节数组
                 byteArray = outputStream.toByteArray();
             }
@@ -182,6 +193,22 @@ public class ImageUtil {
             // 返回字节数组
             return outputStream.toByteArray();
         }
+    }
+
+    /**
+     * 转为base64
+     *
+     * @param sourceImage 源图片
+     * @param imageType   图片类型
+     * @return 返回base64
+     */
+    public static String toBase64(BufferedImage sourceImage, String imageType) {
+        // 如果源图片为空，则提示错误信息
+        Objects.requireNonNull(sourceImage, "the source image can not be null");
+        // 如果图片类型为空，则提示错误信息
+        Objects.requireNonNull(imageType, "the image type can not be null");
+        // 返回base64
+        return Base64.getEncoder().encodeToString(toBytes(sourceImage, imageType));
     }
 
     /**
@@ -336,6 +363,31 @@ public class ImageUtil {
         }
         // 返回是否svg图像
         return index == length;
+    }
+
+    /**
+     * 是否jpeg2000图像
+     *
+     * @param bytes 字节数组
+     * @return 返回布尔值，是为true，否为false
+     */
+    public static boolean isJ2kImage(byte[] bytes) {
+        // 定义结果
+        boolean result = true;
+        // 定义jpeg2000字节码
+        byte[] j2kBytes = new byte[]{0x00, 0x00, 0x00, 0x0c, 0x6a, 0x50, 0x20, 0x20};
+        // 遍历字节数组
+        for (int i = 0; i < j2kBytes.length; i++) {
+            // 字节码不一致
+            if (j2kBytes[i] != bytes[i]) {
+                // 重置结果
+                result = false;
+                // 结束循环
+                break;
+            }
+        }
+        // 返回结果
+        return result;
     }
 
     /**

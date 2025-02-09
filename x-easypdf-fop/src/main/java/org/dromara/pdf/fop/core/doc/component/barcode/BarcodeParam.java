@@ -125,4 +125,12 @@ class BarcodeParam extends ComponentParam {
      * 条形码文字偏移量-Y轴
      */
     private String wordsOffsetY;
+    /**
+     * 是否无白边
+     */
+    private String isNoWhiteBorder;
+    /**
+     * 是否缓存
+     */
+    private String isCache;
 }

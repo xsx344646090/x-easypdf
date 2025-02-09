@@ -13,7 +13,7 @@ import java.awt.*;
 import java.util.Objects;
 
 /**
- * 线条组件
+ * 对角线组件
  *
  * @author xsx
  * @date 2023/11/6

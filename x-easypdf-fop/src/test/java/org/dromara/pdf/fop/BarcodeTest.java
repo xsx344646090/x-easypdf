@@ -120,9 +120,17 @@ public class BarcodeTest extends BaseTest {
                     // 设置内容
                     .setContent("https://www.x-easypdf.cn")
                     // 设置显示文本
-                    .setWords("https://www.x-easypdf.cn")
+                    .setWords("测试")
+                    // 设置文本字体名称
+                    .setWordsFamily("思源宋体")
+                    // 设置文本字体样式
+                    .setWordsStyle("normal")
+                    // 设置字体大小
+                    .setWordsSize("14pt")
                     // 设置水平居中
-                    .setHorizontalStyle("center");
+                    .setHorizontalStyle("center")
+                    // 开启缓存
+                    .enableCache();
             // 添加条码
             page.addBodyComponent(codabar, qrCode);
             // 添加页面

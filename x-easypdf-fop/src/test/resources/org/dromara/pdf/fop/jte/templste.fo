@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--根标签-->
+<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
+   <fo:layout-master-set>  
+        <fo:simple-page-master master-name="A4-portrait" page-width="21cm" page-height="29.7cm">  
+            <fo:region-body margin-top="2cm" margin-bottom="2cm" margin-left="2cm" margin-right="2cm"/>  
+            <fo:region-before extent="2cm"/>  
+            <fo:region-after extent="2cm"/>  
+        </fo:simple-page-master>  
+        <!-- 如果需要横向打印，可以调整width和height的值，并设置writing-mode为lr-tb -->  
+        <fo:simple-page-master master-name="A4-landscape" page-width="29.7cm" page-height="21cm" writing-mode="lr-tb">  
+            <fo:region-body margin-top="0.5cm" margin-bottom="0.5cm" margin-left="0.5cm" margin-right="0.5cm"/>  
+            <fo:region-before extent="0.5cm"/>  
+            <fo:region-after extent="0.5cm"/>  
+        </fo:simple-page-master>  
+    </fo:layout-master-set>  
+    <fo:page-sequence master-reference="A4-landscape">
+       <fo:flow flow-name="xsl-region-body"> 
+            <fo:table table-layout="fixed" width="100%" border-collapse="collapse">
+                 <fo:table-column column-width="80%"/>
+                 <fo:table-column column-width="20%"/>
+                 <fo:table-body>
+                   <fo:table-row>
+                      <fo:table-cell  border="1pt solid black" padding="5pt" text-align="center">  
+                            <fo:block font-family="SimSun" font-weight="bold" font-size="16pt">办公用品需求审批表</fo:block>  
+                        </fo:table-cell>
+                        <fo:table-cell border="1pt solid black" padding="5pt" text-align="center" display-align="center">  
+                            <fo:block font-family="SimSun"  font-size="9pt">编号: 2024年-09日-（BGS）</fo:block>  
+                        </fo:table-cell>
+                   </fo:table-row>
+                </fo:table-body>
+            </fo:table>
+             <fo:table table-layout="fixed" width="100%" border-collapse="collapse">
+                 <fo:table-column column-width="15%"/>
+                 <fo:table-column column-width="15%"/>
+                 <fo:table-column column-width="15%"/>
+                 <fo:table-column column-width="15%"/>
+                 <fo:table-column column-width="15%"/>
+                 <fo:table-column column-width="25%"/>
+                 <fo:table-body>
+                   <fo:table-row>
+                      <fo:table-cell  border="1pt solid black" padding="5pt" text-align="center">  
+                            <fo:block font-family="SimSun" font-weight="bold" font-size="9pt">物资需求部门</fo:block>  
+                        </fo:table-cell>
+                        <fo:table-cell border="1pt solid black" padding="5pt" text-align="center">  
+                            <fo:block font-family="SimSun"  font-size="9pt">项目管理中心</fo:block>  
+                        </fo:table-cell>
+                         <fo:table-cell border="1pt solid black" padding="5pt" text-align="center">  
+                            <fo:block font-family="SimSun"  font-size="9pt">需求提报申请人</fo:block>  
+                        </fo:table-cell>
+                         <fo:table-cell border="1pt solid black" padding="5pt" text-align="center">  
+                            <fo:block font-family="SimSun"  font-size="9pt">张智慧</fo:block>  
+                        </fo:table-cell>
+                         <fo:table-cell border="1pt solid black" padding="5pt" text-align="center">  
+                            <fo:block font-family="SimSun"  font-size="9pt">联系电话</fo:block>  
+                        </fo:table-cell>
+                          <fo:table-cell border="1pt solid black" padding="5pt" text-align="center">  
+                            <fo:block font-family="SimSun"  font-size="9pt">18135678898</fo:block>  
+                        </fo:table-cell>
+                   </fo:table-row>
+                </fo:table-body>
+            </fo:table>
+             <fo:table table-layout="fixed" width="100%" border-collapse="collapse">
+                 <fo:table-column column-width="15%"/>
+                 <fo:table-column column-width="15%"/>	
+                 <fo:table-column column-width="15%"/>
+                 <fo:table-column column-width="55%"/>
+                 <fo:table-body>
+                   <fo:table-row>
+                      <fo:table-cell  border="1pt solid black" padding="5pt" text-align="center" display-align="center">  
+                            <fo:block font-family="SimSun" font-weight="bold" font-size="9pt">项目编号（ABS）</fo:block>  
+                        </fo:table-cell>
+                        <fo:table-cell border="1pt solid black" padding="5pt" text-align="center" display-align="center">  
+                            <fo:block font-family="SimSun"  font-size="9pt">C3092324N28Y</fo:block>  
+                        </fo:table-cell>
+                         <fo:table-cell border="1pt solid black" padding="5pt" text-align="center">  
+                            <fo:block font-family="SimSun"  font-size="9pt">项目名称</fo:block>  
+                        </fo:table-cell>
+                         <fo:table-cell border="1pt solid black" padding="5pt" text-align="center">  
+                            <fo:block font-family="SimSun"  font-size="9pt">项目名称测试</fo:block>  
+                        </fo:table-cell>
+                   </fo:table-row>
+                </fo:table-body>
+            </fo:table>
+            <fo:table table-layout="fixed" width="100%" border-collapse="collapse">
+                 <fo:table-column column-width="15%"/>
+                 <fo:table-column column-width="15%"/>
+                 <fo:table-column column-width="15%"/>
+                 <fo:table-column column-width="15%"/>
+                 <fo:table-column column-width="15%"/>
+                 <fo:table-column column-width="25%"/>
+                 <fo:table-body>
+                   <fo:table-row>
+                      <fo:table-cell  border="1pt solid black" padding="5pt" text-align="center">  
+                            <fo:block font-family="SimSun" font-weight="bold" font-size="9pt">成本中心（成本类需填）</fo:block>  
+                        </fo:table-cell>
+                        <fo:table-cell border="1pt solid black" padding="5pt" text-align="center">  
+                            <fo:block font-family="SimSun"  font-size="9pt">测试</fo:block>  
+                        </fo:table-cell>
+                         <fo:table-cell border="1pt solid black" padding="5pt" text-align="center">  
+                            <fo:block font-family="SimSun"  font-size="9pt">总账科目（成本类需填）</fo:block>  
+                        </fo:table-cell>
+                         <fo:table-cell border="1pt solid black" padding="5pt" text-align="center">  
+                            <fo:block font-family="SimSun"  font-size="9pt">测试</fo:block>  
+                        </fo:table-cell>
+                         <fo:table-cell border="1pt solid black" padding="5pt" text-align="center">  
+                            <fo:block font-family="SimSun"  font-size="9pt">内部订单号（成本类需填）</fo:block>  
+                        </fo:table-cell>
+                          <fo:table-cell border="1pt solid black" padding="5pt" text-align="center">  
+                            <fo:block font-family="SimSun"  font-size="9pt">B23435454646-43</fo:block>  
+                        </fo:table-cell>
+                   </fo:table-row>
+                </fo:table-body>
+            </fo:table>
+            <fo:table table-layout="fixed" width="100%" border-collapse="collapse">
+                 <fo:table-column column-width="15%"/>
+                 <fo:table-column column-width="15%"/>
+                 <fo:table-column column-width="15%"/>
+                 <fo:table-column column-width="15%"/>
+                 <fo:table-column column-width="15%"/>
+                 <fo:table-column column-width="25%"/>
+                 <fo:table-body>
+                   <fo:table-row>
+                      <fo:table-cell  border="1pt solid black" padding="5pt" text-align="center">  
+                            <fo:block font-family="SimSun" font-weight="bold" font-size="9pt">物资需求时间</fo:block>  
+                        </fo:table-cell>
+                        <fo:table-cell border="1pt solid black" padding="5pt" text-align="center">  
+                            <fo:block font-family="SimSun"  font-size="9pt">2024-10-12</fo:block>  
+                        </fo:table-cell>
+                         <fo:table-cell border="1pt solid black" padding="5pt" text-align="center">  
+                            <fo:block font-family="SimSun"  font-size="9pt">送货联系人</fo:block>  
+                        </fo:table-cell>
+                         <fo:table-cell border="1pt solid black" padding="5pt" text-align="center">  
+                            <fo:block font-family="SimSun"  font-size="9pt">弦通-孙掌财</fo:block>  
+                        </fo:table-cell>
+                         <fo:table-cell border="1pt solid black" padding="5pt" text-align="center">  
+                            <fo:block font-family="SimSun"  font-size="9pt">送货地址</fo:block>  
+                        </fo:table-cell>
+                          <fo:table-cell border="1pt solid black" padding="5pt" text-align="center">  
+                            <fo:block font-family="SimSun"  font-size="9pt">XXX路XX号</fo:block>  
+                        </fo:table-cell>
+                   </fo:table-row>
+                </fo:table-body>
+            </fo:table>
+            <fo:table table-layout="fixed" width="100%" border-collapse="collapse">  
+                 <fo:table-column column-width="5%"/>
+                 <fo:table-column column-width="9%"/>
+                 <fo:table-column column-width="10%"/>
+                 <fo:table-column column-width="5%"/>
+                 <fo:table-column column-width="5%"/>
+                 <fo:table-column column-width="10%"/>
+                 <fo:table-column column-width="10%"/>
+                 <fo:table-column column-width="10%"/>
+                 <fo:table-column column-width="8%"/>
+                 <fo:table-column column-width="8%"/>
+                 <fo:table-column column-width="10%"/>
+                 <fo:table-column column-width="10%"/>
+
+                <fo:table-header>  
+                    <fo:table-row >  
+                       <fo:table-cell  border="1pt solid black" padding="5pt" text-align="center" >  
+                            <fo:block font-family="SimSun" font-weight="bold" font-size="8pt">序号</fo:block>  
+                        </fo:table-cell> 
+                        <fo:table-cell  border="1pt solid black" padding="5pt" text-align="center">  
+                            <fo:block font-family="SimSun" font-weight="bold" font-size="8pt">电商物料号</fo:block>  
+                        </fo:table-cell>
+                        <fo:table-cell  border="1pt solid black" padding="5pt" text-align="center">  
+                            <fo:block font-family="SimSun" font-weight="bold" font-size="8pt">电商平台物料描述</fo:block>  
+                        </fo:table-cell> 
+                        <fo:table-cell  border="1pt solid black" padding="5pt" text-align="center">  
+                            <fo:block font-family="SimSun" font-weight="bold" font-size="8pt">单位</fo:block>  
+                        </fo:table-cell> 
+                        <fo:table-cell  border="1pt solid black" padding="5pt" text-align="center">  
+                            <fo:block font-family="SimSun" font-weight="bold" font-size="8pt">数量</fo:block>  
+                        </fo:table-cell> 
+                        <fo:table-cell  border="1pt solid black" padding="5pt" text-align="center">  
+                            <fo:block font-family="SimSun" font-weight="bold" font-size="8pt">预算单价（含税）</fo:block>  
+                        </fo:table-cell> 
+                        <fo:table-cell  border="1pt solid black" padding="5pt" text-align="center">  
+                            <fo:block font-family="SimSun" font-weight="bold" font-size="8pt">预算总价（含税）</fo:block>  
+                        </fo:table-cell>
+                         <fo:table-cell  border="1pt solid black" padding="5pt" text-align="center">  
+                            <fo:block font-family="SimSun" font-weight="bold" font-size="8pt">拟匹配平台商</fo:block>  
+                        </fo:table-cell>
+                         <fo:table-cell  border="1pt solid black" padding="5pt" text-align="center">  
+                            <fo:block font-family="SimSun" font-weight="bold" font-size="8pt">电商商品号</fo:block>  
+                        </fo:table-cell>
+                         <fo:table-cell  border="1pt solid black" padding="5pt" text-align="center">  
+                            <fo:block font-family="SimSun" font-weight="bold" font-size="8pt">电商商品描述</fo:block>  
+                        </fo:table-cell> 
+                        <fo:table-cell  border="1pt solid black" padding="5pt" text-align="center">  
+                            <fo:block font-family="SimSun" font-weight="bold" font-size="8pt">单价（含税）</fo:block>  
+                        </fo:table-cell>  
+                         <fo:table-cell  border="1pt solid black" padding="5pt" text-align="center">  
+                            <fo:block font-family="SimSun" font-weight="bold" font-size="8pt">总价（含税）</fo:block>  
+                        </fo:table-cell>  
+                    </fo:table-row>
+                 </fo:table-header> 
+                <fo:table-body>
+                     <fo:table-row>
+                           <fo:table-cell border="1pt solid black"  text-align="center" display-align="center" >  
+                             <fo:block font-family="SimSun" font-weight="bold" font-size="8pt">${MatDetail.serialNumber}</fo:block>  
+                           </fo:table-cell> 
+                           <fo:table-cell border="1pt solid black"  text-align="center" display-align="center" >  
+                             <fo:block font-family="SimSun" font-weight="bold" font-size="8pt">${MatDetail.matCode}</fo:block>  
+                           </fo:table-cell>
+                           <fo:table-cell border="1pt solid black" text-align="center" display-align="center" >  
+                             <fo:block font-family="SimSun" font-weight="bold" font-size="8pt">${MatDetail.matDesc}</fo:block>  
+                           </fo:table-cell>
+                           <fo:table-cell border="1pt solid black"  text-align="center" display-align="center" >  
+                             <fo:block font-family="SimSun" font-weight="bold" font-size="8pt">${MatDetail.unit}</fo:block>  
+                           </fo:table-cell>
+                           <fo:table-cell border="1pt solid black"  text-align="center" display-align="center" >  
+                             <fo:block font-family="SimSun" font-weight="bold" font-size="8pt">${MatDetail.number}</fo:block>  
+                           </fo:table-cell>
+                           <fo:table-cell border="1pt solid black"  text-align="center" display-align="center" >  
+                             <fo:block font-family="SimSun" font-weight="bold" font-size="8pt">${MatDetail.budgetUnitPrice}</fo:block>  
+                           </fo:table-cell>
+                           <fo:table-cell border="1pt solid black"  text-align="center" display-align="center" >  
+                             <fo:block font-family="SimSun" font-weight="bold" font-size="8pt">${MatDetail.budgetTotalPrice}</fo:block>  
+                           </fo:table-cell>
+                           <fo:table-cell border="1pt solid black"  text-align="center" display-align="center" >  
+                             <fo:block font-family="SimSun" font-weight="bold" font-size="8pt">${MatDetail.matchPlatformVendors}</fo:block>  
+                           </fo:table-cell>
+                           <fo:table-cell border="1pt solid black"  text-align="center" display-align="center" >  
+                             <fo:block font-family="SimSun" font-weight="bold" font-size="8pt">${MatDetail.goodsId}</fo:block>  
+                           </fo:table-cell>
+                           <fo:table-cell border="1pt solid black"  text-align="left" display-align="center" >  
+                             <fo:block font-family="SimSun" font-weight="bold" font-size="8pt">${MatDetail.goodsName}</fo:block>  
+                           </fo:table-cell>
+                           <fo:table-cell border="1pt solid black"  text-align="center" display-align="center" >  
+                             <fo:block font-family="SimSun" font-weight="bold" font-size="8pt">${MatDetail.unitPrice}</fo:block>  
+                           </fo:table-cell>
+                           <fo:table-cell border="1pt solid black"  text-align="center" display-align="center" >  
+                             <fo:block font-family="SimSun" font-weight="bold" font-size="8pt">${MatDetail.totalPrice}</fo:block>  
+                           </fo:table-cell>
+                   </fo:table-row>
+                </fo:table-body>
+            </fo:table>
+			            <fo:table table-layout="fixed" width="100%" border-collapse="collapse">
+                 <fo:table-column column-width="14%"/>
+                 <fo:table-column column-width="15%"/>
+                 <fo:table-column column-width="5%"/>
+                 <fo:table-column column-width="20%"/>
+                 <fo:table-column column-width="18%"/>
+                 <fo:table-column column-width="8%"/>
+                 <fo:table-column column-width="10%"/>
+                 <fo:table-column column-width="10%"/>
+                 <fo:table-body>
+                   <fo:table-row>
+                      <fo:table-cell  border="1pt solid black" padding="5pt" text-align="center" display-align="center" >  
+                            <fo:block font-family="SimSun" font-weight="bold" font-size="9pt">选购理由（项目、运维、办公及劳保等需求）</fo:block>  
+                        </fo:table-cell>
+						<fo:table-cell border="1pt solid black" padding="5pt" text-align="center" display-align="center" >  
+                            <fo:block font-family="SimSun"  font-size="9pt">选购理由很好</fo:block>  
+                        </fo:table-cell>
+                         <fo:table-cell border="1pt solid black" padding="5pt" text-align="center" display-align="center" >  
+                            <fo:block font-family="SimSun"  font-size="9pt">设计人员确认签字：</fo:block>  
+                        </fo:table-cell>
+                       <fo:table-cell border="1pt solid black" padding="5pt" text-align="center" display-align="center" >  
+                            <fo:block font-family="SimSun"  font-size="9pt">56789</fo:block>  
+                        </fo:table-cell>
+                        <fo:table-cell border="1pt solid black" padding="5pt" text-align="center" display-align="center" >  
+                            <fo:block font-family="SimSun"  font-size="9pt">匹配理由（质量、价格、服务等）</fo:block>  
+						</fo:table-cell>
+						<fo:table-cell border="1pt solid black" padding="5pt" text-align="center" display-align="center" >  
+                            <fo:block font-family="SimSun"  font-size="9pt">匹配理由很好</fo:block>  
+                        </fo:table-cell>
+                          <fo:table-cell border="1pt solid black" padding="5pt" text-align="center" display-align="center" >  
+                            <fo:block font-family="SimSun"  font-size="9pt">需求总价合计</fo:block>  
+                        </fo:table-cell>
+                        <fo:table-cell border="1pt solid black" padding="5pt" text-align="center" display-align="center" >  
+                            <fo:block font-family="SimSun"  font-size="9pt">56789</fo:block>  
+                        </fo:table-cell>
+                   </fo:table-row>
+                </fo:table-body>
+            </fo:table>
+            <fo:table table-layout="fixed" width="100%" border-collapse="collapse">
+                 <fo:table-column column-width="14%"/>
+                 <fo:table-column column-width="15%"/>
+                 <fo:table-column column-width="5%"/>
+                 <fo:table-column column-width="20%"/>
+                 <fo:table-column column-width="18%"/>
+                 <fo:table-column column-width="8%"/>
+                 <fo:table-column column-width="10%"/>
+                 <fo:table-column column-width="10%"/>
+                 <fo:table-body>
+                   <fo:table-row>
+                      <fo:table-cell  border="1pt solid black" padding="5pt" text-align="center" display-align="center" >  
+                            <fo:block font-family="SimSun" font-weight="bold" font-size="9pt">需求提报申请人签字：</fo:block>  
+                        </fo:table-cell>
+                        <fo:table-cell border="1pt solid black" padding="5pt" text-align="center" display-align="center" >  
+                            <fo:block font-family="SimSun"  font-size="9pt">2024-10-12</fo:block>  
+                        </fo:table-cell>
+                         <fo:table-cell border="1pt solid black" padding="5pt" text-align="center" display-align="center" >  
+                            <fo:block font-family="SimSun"  font-size="9pt">日期</fo:block>  
+                        </fo:table-cell>
+                         <fo:table-cell border="1pt solid black" padding="5pt" text-align="center" display-align="center" >  
+                            <fo:block font-family="SimSun"  font-size="9pt">2024-10-12</fo:block>  
+                        </fo:table-cell>
+                         <fo:table-cell border="1pt solid black" padding="5pt" text-align="center" display-align="center" >  
+                            <fo:block font-family="SimSun"  font-size="9pt">系统匹配操作人签字：</fo:block>  
+                        </fo:table-cell>
+                          <fo:table-cell border="1pt solid black" padding="5pt" text-align="center" display-align="center" >  
+                            <fo:block font-family="SimSun"  font-size="9pt">2024-10-12</fo:block>  
+                        </fo:table-cell>
+                          <fo:table-cell border="1pt solid black" padding="5pt" text-align="center" display-align="center" >  
+                            <fo:block font-family="SimSun"  font-size="9pt">日期</fo:block>  
+                        </fo:table-cell>
+                        <fo:table-cell border="1pt solid black" padding="5pt" text-align="center" display-align="center" >  
+                            <fo:block font-family="SimSun"  font-size="9pt">2024-10-12</fo:block>  
+                        </fo:table-cell>
+                   </fo:table-row>
+                </fo:table-body>
+            </fo:table>
+	   </fo:flow>
+    </fo:page-sequence>
+
+</fo:root>

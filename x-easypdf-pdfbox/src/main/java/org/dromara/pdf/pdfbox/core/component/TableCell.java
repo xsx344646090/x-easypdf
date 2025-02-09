@@ -146,7 +146,7 @@ public class TableCell extends BorderData {
     }
     
     /**
-     * 设置
+     * 设置组件
      *
      * @param components 组件
      */

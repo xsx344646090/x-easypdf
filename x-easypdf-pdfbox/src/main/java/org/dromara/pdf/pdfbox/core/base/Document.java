@@ -25,9 +25,11 @@ import org.dromara.pdf.pdfbox.core.ext.processor.PageProcessor;
 import org.dromara.pdf.pdfbox.core.info.CatalogInfo;
 import org.dromara.pdf.pdfbox.support.Constants;
 import org.dromara.pdf.pdfbox.support.DefaultResourceCache;
+import org.dromara.pdf.pdfbox.support.linearizer.Linearizer;
 import org.dromara.pdf.pdfbox.util.FileUtil;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -71,6 +73,10 @@ public class Document extends AbstractBase implements Closeable {
      */
     protected Color backgroundColor;
     /**
+     * 背景图片
+     */
+    protected BufferedImage backgroundImage;
+    /**
      * 任务文档
      */
     protected PDDocument target;
@@ -94,6 +100,10 @@ public class Document extends AbstractBase implements Closeable {
      * 是否刷新元数据
      */
     protected Boolean isFlushMetadata;
+    /**
+     * 是否线性化
+     */
+    protected Boolean isLinearization;
     
     /**
      * 无参构造
@@ -193,6 +203,15 @@ public class Document extends AbstractBase implements Closeable {
      */
     public void setIsFlushMetadata(boolean isFlushMetadata) {
         this.isFlushMetadata = isFlushMetadata;
+    }
+    
+    /**
+     * 设置是否线性化
+     *
+     * @param isLinearization 是否线性化
+     */
+    public void setIsLinearization(boolean isLinearization) {
+        this.isLinearization = isLinearization;
     }
     
     /**
@@ -630,6 +649,31 @@ public class Document extends AbstractBase implements Closeable {
     }
     
     /**
+     * 获取字节数组
+     *
+     * @return 返回字节数组
+     */
+    @SneakyThrows
+    public byte[] getBytes() {
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream(8192)) {
+            this.save(outputStream);
+            return outputStream.toByteArray();
+        }
+    }
+    
+    /**
+     * 获取临时文件
+     *
+     * @return 返回字节数组
+     */
+    @SneakyThrows
+    public File getTempFile() {
+        File temp = new File(Constants.TEMP_FILE_PATH, UUID.randomUUID() + ".pdf");
+        this.save(temp);
+        return temp;
+    }
+    
+    /**
      * 保存文档
      *
      * @param file 文件
@@ -702,7 +746,11 @@ public class Document extends AbstractBase implements Closeable {
         // 设置文档版本
         this.getTarget().setVersion(this.getVersion());
         // 保存文档
-        this.getTarget().save(outputStream, new CompressParameters(number));
+        if (this.getIsLinearization()) {
+            this.linearize(outputStream);
+        } else {
+            this.getTarget().save(outputStream, new CompressParameters(number));
+        }
     }
     
     /**
@@ -875,7 +923,20 @@ public class Document extends AbstractBase implements Closeable {
         this.version = this.target.getVersion();
         // 初始化是否刷新元数据
         this.isFlushMetadata = Boolean.TRUE;
+        // 初始化是否线性化
+        this.isLinearization = Boolean.FALSE;
         // 初始化背景颜色
         this.backgroundColor = Color.WHITE;
+    }
+    
+    /**
+     * 线性化
+     *
+     * @param outputStream 输出流
+     */
+    protected void linearize(OutputStream outputStream) {
+        Linearizer linearizer = new Linearizer(this.getTarget());
+        linearizer.linearize().write(outputStream);
+        linearizer.close();
     }
 }

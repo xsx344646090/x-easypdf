@@ -6,6 +6,7 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import lombok.Data;
 import lombok.SneakyThrows;
 import lombok.experimental.Accessors;
+import org.apache.fop.fonts.Font;
 import org.apache.fop.util.ColorUtil;
 import org.apache.xmlgraphics.util.UnitConv;
 import org.dromara.pdf.fop.core.base.TemplateAttributes;
@@ -98,7 +99,7 @@ public class BarCodeConfig {
      * <p>斜体：Font.ITALIC</p>
      * <p>粗体斜体：Font.BOLD|Font.ITALIC</p>
      */
-    private Integer wordsStyle;
+    private FontStyleUtil.FontStyle wordsStyle;
     /**
      * 条形码文字大小
      */
@@ -115,6 +116,14 @@ public class BarCodeConfig {
      * 旋转弧度
      */
     private Double radians;
+    /**
+     * 是否无白边
+     */
+    private Boolean isNoWhiteBorder;
+    /**
+     * 是否缓存
+     */
+    private Boolean isCache;
     /**
      * 编码设置
      */
@@ -199,7 +208,7 @@ public class BarCodeConfig {
         // 初始化文字颜色
         this.wordsColor = this.resolveValue(attributes, TemplateAttributes.WORDS_COLOR, "BLACK", this::parseColor);
         // 初始化文字名称
-        this.wordsFamily = Optional.ofNullable(attributes.getNamedItem(TemplateAttributes.WORDS_FAMILY)).map(Node::getNodeValue).orElse(null);
+        this.wordsFamily = Optional.ofNullable(attributes.getNamedItem(TemplateAttributes.WORDS_FAMILY)).map(Node::getNodeValue).orElse(Font.DEFAULT_FONT.getName());
         // 初始化文字样式
         this.wordsStyle = this.resolveValue(attributes, TemplateAttributes.WORDS_STYLE, "NORMAL", FontStyleUtil::getStyle);
         // 初始化文字大小
@@ -210,6 +219,10 @@ public class BarCodeConfig {
         this.wordsOffsetY = this.resolveValue(attributes, TemplateAttributes.WORDS_OFFSET_Y, "2pt", this::parseUnit);
         // 初始化旋转弧度
         this.radians = this.resolveValue(attributes, TemplateAttributes.RADIANS, "0", Double::parseDouble);
+        // 初始化是否无白边
+        this.isNoWhiteBorder = this.resolveValue(attributes, TemplateAttributes.NO_WHITE_BORDER, "false", Boolean::parseBoolean);
+        // 初始化是否缓存
+        this.isCache = this.resolveValue(attributes, TemplateAttributes.CACHE, "false", Boolean::parseBoolean);
     }
 
     /**
@@ -308,6 +321,6 @@ public class BarCodeConfig {
      */
     @SneakyThrows
     private int parseUnit(String unit) {
-        return (int) (UnitConv.convert(unit) / 1000 * this.scaleRate);
+        return (int) (UnitConv.convert(unit) / 1000D * this.scaleRate);
     }
 }

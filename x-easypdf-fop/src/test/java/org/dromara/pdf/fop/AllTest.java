@@ -20,7 +20,7 @@ public class AllTest extends BaseTest {
             // 定义pdf输出路径
             String outputPath = "E:\\PDF\\fop\\document.pdf";
             // 定义配置文件路径
-            String configPath = "test/fop.xconf";
+            String configPath = "org/dromara/pdf/fop/test/fop.xconf";
             // 创建文档对象
             Document document = TemplateHandler.Document.build();
             // 设置配置文件路径

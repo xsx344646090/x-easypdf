@@ -1,6 +1,8 @@
 package org.dromara.pdf.fop.util;
 
-import java.awt.*;
+
+import lombok.Getter;
+import org.apache.fop.fonts.Font;
 
 /**
  * 文字样式工具
@@ -28,42 +30,76 @@ public class FontStyleUtil {
      * @param name 名称
      * @return 返回样式
      */
-    public static int getStyle(String name) {
-        return FontStyle.valueOf(name.toUpperCase()).style;
+    public static FontStyle getStyle(String name) {
+        return FontStyle.valueOf(name.toUpperCase());
     }
 
     /**
      * 文字样式
      */
-    private enum FontStyle {
+    @Getter
+    public enum FontStyle {
         /**
          * 正常
          */
-        NORMAL(Font.PLAIN),
+        NORMAL(Font.STYLE_NORMAL, java.awt.Font.PLAIN),
         /**
          * 粗体
          */
-        BOLD(Font.BOLD),
+        BOLD(Font.STYLE_NORMAL, java.awt.Font.BOLD),
         /**
          * 粗体斜体
          */
-        BOLD_ITALIC(Font.BOLD | Font.ITALIC),
+        BOLD_ITALIC(Font.STYLE_ITALIC, java.awt.Font.BOLD | java.awt.Font.ITALIC),
         /**
          * 斜体
          */
-        ITALIC(Font.ITALIC);
+        ITALIC(Font.STYLE_ITALIC, java.awt.Font.ITALIC);
         /**
          * 样式
          */
-        private final int style;
+        private final String style;
+        /**
+         * awt样式
+         */
+        private final int awtStyle;
 
         /**
          * 有参构造
          *
-         * @param style 样式
+         * @param style    样式
+         * @param awtStyle awt样式
          */
-        FontStyle(int style) {
+        FontStyle(String style, int awtStyle) {
             this.style = style;
+            this.awtStyle = awtStyle;
+        }
+
+        /**
+         * 获取字重
+         *
+         * @return 返回字重
+         */
+        public int getWeight() {
+            return this.isBold() ? Font.WEIGHT_BOLD : Font.WEIGHT_NORMAL;
+        }
+
+        /**
+         * 是否为粗体
+         *
+         * @return 返回布尔值，true为是，false为否
+         */
+        public boolean isBold() {
+            return this == BOLD || this == BOLD_ITALIC;
+        }
+
+        /**
+         * 是否为斜体
+         *
+         * @return 返回布尔值，true为是，false为否
+         */
+        public boolean isItalic() {
+            return this == ITALIC || this == BOLD_ITALIC;
         }
     }
 }

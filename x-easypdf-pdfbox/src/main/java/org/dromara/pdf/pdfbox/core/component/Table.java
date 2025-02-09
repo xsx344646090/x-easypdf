@@ -34,7 +34,7 @@ import java.util.*;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class Table extends AbstractComponent {
-    
+
     /**
      * 背景颜色
      */
@@ -91,7 +91,7 @@ public class Table extends AbstractComponent {
      * 内容垂直对齐方式
      */
     protected VerticalAlignment contentVerticalAlignment;
-    
+
     /**
      * 有参构造
      *
@@ -100,7 +100,7 @@ public class Table extends AbstractComponent {
     public Table(Page page) {
         super(page);
     }
-    
+
     /**
      * 设置内容边距（上下左右）
      *
@@ -112,7 +112,7 @@ public class Table extends AbstractComponent {
         this.contentMarginLeft = margin;
         this.contentMarginRight = margin;
     }
-    
+
     /**
      * 设置列宽
      *
@@ -134,7 +134,7 @@ public class Table extends AbstractComponent {
             this.cellWidths = null;
         }
     }
-    
+
     /**
      * 设置列宽
      *
@@ -147,7 +147,7 @@ public class Table extends AbstractComponent {
             this.cellWidths = null;
         }
     }
-    
+
     /**
      * 设置行
      *
@@ -157,7 +157,7 @@ public class Table extends AbstractComponent {
     public void setRows(List<TableRow> rows) {
         this.rows = rows;
     }
-    
+
     /**
      * 设置行
      *
@@ -171,7 +171,7 @@ public class Table extends AbstractComponent {
             this.rows = null;
         }
     }
-    
+
     /**
      * 添加行
      *
@@ -186,7 +186,7 @@ public class Table extends AbstractComponent {
             }
         }
     }
-    
+
     /**
      * 添加行
      *
@@ -200,7 +200,7 @@ public class Table extends AbstractComponent {
             Collections.addAll(this.rows, rows);
         }
     }
-    
+
     /**
      * 获取宽度
      *
@@ -212,7 +212,7 @@ public class Table extends AbstractComponent {
         }
         return (float) this.cellWidths.stream().mapToDouble(Float::doubleValue).sum();
     }
-    
+
     /**
      * 获取高度
      *
@@ -224,7 +224,7 @@ public class Table extends AbstractComponent {
         }
         return (float) this.rows.stream().mapToDouble(TableRow::getHeight).sum();
     }
-    
+
     /**
      * 获取类型
      *
@@ -234,7 +234,7 @@ public class Table extends AbstractComponent {
     public ComponentType getType() {
         return ComponentType.TABLE;
     }
-    
+
     /**
      * 初始化
      */
@@ -255,7 +255,7 @@ public class Table extends AbstractComponent {
             this.isPagingBorder = Boolean.FALSE;
         }
         // 重置Y轴相对坐标
-        if (!this.isCustomPosition && this.relativeBeginY == 0F) {
+        if (!this.isCustomY && this.relativeBeginY == 0F) {
             this.relativeBeginY = this.getFirstRowHeight();
         }
         // 初始化内容上边距
@@ -298,7 +298,7 @@ public class Table extends AbstractComponent {
         // 初始化起始Y轴坐标
         this.initBeginY(this.getHeight());
     }
-    
+
     /**
      * 初始化行
      */
@@ -324,7 +324,7 @@ public class Table extends AbstractComponent {
             }
         }
     }
-    
+
     /**
      * 获取最小宽度
      *
@@ -334,7 +334,7 @@ public class Table extends AbstractComponent {
     protected float getMinWidth() {
         return this.getWidth();
     }
-    
+
     /**
      * 写入内容
      */
@@ -357,7 +357,6 @@ public class Table extends AbstractComponent {
             // 渲染表头并重置起始Y轴坐标
             beginY = this.getHeader().render(page, beginX, beginY);
         }
-        // todo 判断表尾
         // 判断是否有行
         if (Objects.nonNull(this.getRows())) {
             // 遍历行
@@ -393,11 +392,13 @@ public class Table extends AbstractComponent {
                     beginY = beginY - tableRow.getHeight();
                 }
             }
+            // 获取X坐标
+            beginX = this.getContext().getCursor().getX();
         }
         // 重置
         this.reset(beginX, beginY);
     }
-    
+
     /**
      * 执行分页
      */
@@ -424,7 +425,7 @@ public class Table extends AbstractComponent {
         // 返回分页结果
         return page;
     }
-    
+
     /**
      * 获取第一行行高
      *
@@ -436,7 +437,7 @@ public class Table extends AbstractComponent {
         }
         return Optional.ofNullable(this.rows).map(rows -> rows.get(0).getHeight()).orElse(0F);
     }
-    
+
     /**
      * 获取最终高度
      *
@@ -459,7 +460,7 @@ public class Table extends AbstractComponent {
         // 递归
         return this.getLastHeight(beginY, height, top, bottom);
     }
-    
+
     /**
      * 重置
      */
@@ -467,8 +468,9 @@ public class Table extends AbstractComponent {
     protected void reset() {
         this.getContext().resetWrapWidth(null);
         this.getContext().resetHeight(null);
+        this.getContext().setBorderInfo(null);
     }
-    
+
     /**
      * 重置
      *

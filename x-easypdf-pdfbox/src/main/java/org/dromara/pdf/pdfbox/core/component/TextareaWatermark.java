@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * 文本域水印
@@ -45,7 +46,7 @@ import java.util.Objects;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class TextareaWatermark extends AbstractBase implements Watermark {
-    
+
     /**
      * 字体配置
      */
@@ -86,7 +87,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
      * 旋转角度
      */
     protected Float angle;
-    
+
     /**
      * 有参构造
      *
@@ -100,7 +101,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
         this.setFontAlpha(0.5F);
         this.setFontColor(Color.GRAY);
     }
-    
+
     /**
      * 设置文本助手
      *
@@ -110,7 +111,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
         Objects.requireNonNull(handler, "the handler can not be null");
         this.textHandler = handler;
     }
-    
+
     /**
      * 设置制表符大小（空格数）
      *
@@ -122,7 +123,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
         }
         this.tabSize = size;
     }
-    
+
     /**
      * 设置文本
      *
@@ -134,7 +135,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
             Collections.addAll(this.textList, texts);
         }
     }
-    
+
     /**
      * 获取类型
      *
@@ -144,7 +145,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
     public ComponentType getType() {
         return ComponentType.WATERMARK;
     }
-    
+
     /**
      * 获取页面
      *
@@ -153,7 +154,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
     public Page getPage() {
         return this.getContext().getPage();
     }
-    
+
     /**
      * 获取字体
      *
@@ -162,7 +163,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
     public PDFont getFont() {
         return this.getContext().getFont(this.fontConfiguration.getFontName());
     }
-    
+
     /**
      * 获取字体名称
      *
@@ -171,7 +172,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
     public String getFontName() {
         return this.fontConfiguration.getFontName();
     }
-    
+
     /**
      * 设置字体名称
      *
@@ -181,7 +182,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
         this.fontConfiguration.setFontName(fontName);
         this.getContext().addFontCache(fontName);
     }
-    
+
     /**
      * 获取特殊字体名称
      *
@@ -190,7 +191,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
     public List<String> getSpecialFontNames() {
         return this.fontConfiguration.getSpecialFontNames();
     }
-    
+
     /**
      * 设置特殊字体名称
      *
@@ -200,7 +201,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
         this.getContext().addFontCache(fontNames);
         Collections.addAll(this.fontConfiguration.getSpecialFontNames(), fontNames);
     }
-    
+
     /**
      * 获取字体大小
      *
@@ -209,7 +210,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
     public Float getFontSize() {
         return this.fontConfiguration.getFontSize();
     }
-    
+
     /**
      * 设置字体大小
      *
@@ -218,7 +219,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
     public void setFontSize(float size) {
         this.fontConfiguration.setFontSize(size);
     }
-    
+
     /**
      * 获取字体颜色
      *
@@ -227,7 +228,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
     public Color getFontColor() {
         return this.fontConfiguration.getFontColor();
     }
-    
+
     /**
      * 设置字体颜色
      *
@@ -236,7 +237,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
     public void setFontColor(Color color) {
         this.fontConfiguration.setFontColor(color);
     }
-    
+
     /**
      * 获取字体描边颜色
      *
@@ -245,7 +246,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
     public Color getStrokColor() {
         return this.fontConfiguration.getStrokColor();
     }
-    
+
     /**
      * 设置字体描边颜色
      *
@@ -254,7 +255,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
     public void setStrokColor(Color color) {
         this.fontConfiguration.setStrokColor(color);
     }
-    
+
     /**
      * 获取字体透明度
      *
@@ -263,7 +264,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
     public Float getFontAlpha() {
         return this.fontConfiguration.getFontAlpha();
     }
-    
+
     /**
      * 设置字体透明度
      *
@@ -272,7 +273,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
     public void setFontAlpha(float alpha) {
         this.fontConfiguration.setFontAlpha(alpha);
     }
-    
+
     /**
      * 获取字体样式
      *
@@ -281,7 +282,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
     public FontStyle getFontStyle() {
         return this.fontConfiguration.getFontStyle();
     }
-    
+
     /**
      * 设置字体样式
      *
@@ -293,7 +294,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
             this.setFontSlope(Constants.DEFAULT_FONT_ITALIC_SLOPE);
         }
     }
-    
+
     /**
      * 获取字体斜率（斜体字）
      *
@@ -302,7 +303,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
     public Float getFontSlope() {
         return this.fontConfiguration.getFontSlope();
     }
-    
+
     /**
      * 设置字体斜率（斜体字）
      *
@@ -311,7 +312,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
     public void setFontSlope(float slope) {
         this.fontConfiguration.setFontSlope(slope);
     }
-    
+
     /**
      * 获取字符间距
      *
@@ -320,7 +321,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
     public Float getCharacterSpacing() {
         return this.fontConfiguration.getCharacterSpacing();
     }
-    
+
     /**
      * 设置字符间距
      *
@@ -329,7 +330,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
     public void setCharacterSpacing(float spacing) {
         this.fontConfiguration.setCharacterSpacing(spacing);
     }
-    
+
     /**
      * 获取行间距
      *
@@ -338,7 +339,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
     public Float getLeading() {
         return this.fontConfiguration.getLeading();
     }
-    
+
     /**
      * 设置行间距
      *
@@ -347,7 +348,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
     public void setLeading(float leading) {
         this.fontConfiguration.setLeading(leading);
     }
-    
+
     /**
      * 渲染
      *
@@ -362,7 +363,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
         // 渲染文本
         this.renderText(page);
     }
-    
+
     /**
      * 渲染
      *
@@ -375,7 +376,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
         // 渲染文本
         document.getPages().forEach(this::render);
     }
-    
+
     /**
      * 初始化
      *
@@ -406,6 +407,12 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
         if (Objects.isNull(this.spacingOfLine)) {
             this.spacingOfLine = 100F;
         }
+        // 初始化制表符大小
+        if (Objects.isNull(this.tabSize)) {
+            this.tabSize = 2;
+        }
+        // 初始化文本列表
+        this.textList = this.textList.stream().map(t -> TextUtil.replaceTab(t, this.tabSize)).collect(Collectors.toList());
         // 初始化每行文本数
         if (Objects.isNull(this.countOfLine)) {
             int length = this.textList.get(0).length();
@@ -420,10 +427,6 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
             float textHeight = count * this.getFontSize() + leadingCount * this.getLeading();
             this.lines = (int) Math.ceil(this.getPage().getHeight() / textHeight);
         }
-        // 初始化制表符大小
-        if (Objects.isNull(this.tabSize)) {
-            this.tabSize = 2;
-        }
         // 初始化旋转角度
         if (Objects.isNull(this.angle)) {
             this.angle = 45F;
@@ -437,7 +440,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
             this.beginY = page.getHeight() - this.getFontSize();
         }
     }
-    
+
     /**
      * 渲染文本
      *
@@ -501,7 +504,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
         // 关闭流
         stream.close();
     }
-    
+
     /**
      * 初始化内容流
      *
@@ -531,7 +534,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
         // 返回内容流
         return contentStream;
     }
-    
+
     /**
      * 初始化位置
      *

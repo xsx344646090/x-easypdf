@@ -16,15 +16,15 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.common.PDStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.dromara.pdf.pdfbox.core.base.config.FontConfiguration;
 import org.dromara.pdf.pdfbox.core.base.config.MarginConfiguration;
-import org.dromara.pdf.pdfbox.core.enums.FontStyle;
-import org.dromara.pdf.pdfbox.core.enums.HorizontalAlignment;
-import org.dromara.pdf.pdfbox.core.enums.RotationAngle;
-import org.dromara.pdf.pdfbox.core.enums.VerticalAlignment;
+import org.dromara.pdf.pdfbox.core.enums.*;
 import org.dromara.pdf.pdfbox.support.Constants;
+import org.dromara.pdf.pdfbox.util.ImageUtil;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.Closeable;
 import java.io.OutputStream;
 import java.util.List;
@@ -64,6 +64,10 @@ public class Page extends AbstractBase implements Closeable {
      * 背景颜色
      */
     protected Color backgroundColor;
+    /**
+     * 背景图片
+     */
+    protected BufferedImage backgroundImage;
     /**
      * id
      */
@@ -120,7 +124,7 @@ public class Page extends AbstractBase implements Closeable {
         if (Objects.isNull(pageSize)) {
             pageSize = PageSize.A4;
         }
-        this.init(new PDPage(pageSize.getSize()), document, document.getMarginConfiguration(), document.getFontConfiguration(), document.getBackgroundColor());
+        this.init(new PDPage(pageSize.getSize()), document, document.getMarginConfiguration(), document.getFontConfiguration(), document.getBackgroundColor(), document.getBackgroundImage());
     }
     
     /**
@@ -130,7 +134,7 @@ public class Page extends AbstractBase implements Closeable {
      * @param target   任务页面
      */
     public Page(Document document, PDPage target) {
-        this.init(target, document, document.getMarginConfiguration(), document.getFontConfiguration(), document.getBackgroundColor());
+        this.init(target, document, document.getMarginConfiguration(), document.getFontConfiguration(), document.getBackgroundColor(), document.getBackgroundImage());
     }
     
     /**
@@ -139,7 +143,7 @@ public class Page extends AbstractBase implements Closeable {
      * @param page 页面
      */
     protected Page(Page page) {
-        this.init(new PDPage(page.getPageSize().getSize()), page, page.getMarginConfiguration(), page.getFontConfiguration(), page.getBackgroundColor());
+        this.init(new PDPage(page.getPageSize().getSize()), page, page.getMarginConfiguration(), page.getFontConfiguration(), page.getBackgroundColor(), page.getBackgroundImage());
         this.setIsContentBorder(page.getIsContentBorder());
         this.parentPage = page;
         page.setSubPage(this);
@@ -168,6 +172,18 @@ public class Page extends AbstractBase implements Closeable {
         if (!Objects.equals(this.backgroundColor, color)) {
             this.backgroundColor = color;
             this.initBackgroundColor();
+        }
+    }
+    
+    /**
+     * 设置背景图片
+     *
+     * @param image 图片
+     */
+    public void setBackgroundImage(BufferedImage image) {
+        this.backgroundImage = image;
+        if (Objects.nonNull(image)) {
+            this.initBackgroundImage();
         }
     }
     
@@ -702,8 +718,9 @@ public class Page extends AbstractBase implements Closeable {
      * @param marginConfiguration 边距配置
      * @param fontConfiguration   字体配置
      * @param backgroundColor     背景颜色
+     * @param backgroundImage     背景图片
      */
-    protected void init(PDPage target, AbstractBase base, MarginConfiguration marginConfiguration, FontConfiguration fontConfiguration, Color backgroundColor) {
+    protected void init(PDPage target, AbstractBase base, MarginConfiguration marginConfiguration, FontConfiguration fontConfiguration, Color backgroundColor, BufferedImage backgroundImage) {
         // 初始化id
         this.id = UUID.randomUUID().toString();
         // 初始化任务页面
@@ -716,6 +733,8 @@ public class Page extends AbstractBase implements Closeable {
         this.fontConfiguration = new FontConfiguration(fontConfiguration);
         // 初始化背景颜色
         this.backgroundColor = backgroundColor;
+        // 初始化背景图片
+        this.backgroundImage = backgroundImage;
         // 初始化水平对齐方式
         this.horizontalAlignment = HorizontalAlignment.LEFT;
         // 初始化垂直对齐方式
@@ -739,6 +758,10 @@ public class Page extends AbstractBase implements Closeable {
         // 初始化背景颜色
         if (!Objects.equals(this.backgroundColor, Color.WHITE)) {
             this.initBackgroundColor();
+        }
+        // 初始化背景图片
+        if (Objects.nonNull(this.backgroundImage)) {
+            this.initBackgroundImage();
         }
         // 初始化页眉
         if (context.hasPageHeader()) {
@@ -769,6 +792,39 @@ public class Page extends AbstractBase implements Closeable {
         contentStream.setNonStrokingColor(this.getBackgroundColor());
         // 填充矩形（背景矩形）
         contentStream.fill();
+        // 关闭内容流
+        contentStream.close();
+    }
+    
+    /**
+     * 初始化背景图片
+     */
+    @SneakyThrows
+    protected void initBackgroundImage() {
+        // 初始化图像
+        PDImageXObject image = PDImageXObject.createFromByteArray(
+                this.getContext().getTargetDocument(),
+                ImageUtil.resetBytes(ImageUtil.toBytes(this.getBackgroundImage(), ImageType.PNG.getType())),
+                "unknown"
+        );
+        // 获取宽度
+        float width = Math.min(image.getWidth(), this.getWithoutMarginWidth());
+        // 获取高度
+        float height = Math.min(image.getHeight(), this.getWithoutMarginHeight());
+        // X轴坐标
+        float x = Math.max(this.getMarginLeft(), (this.getWithoutMarginWidth() - width) / 2);
+        // Y轴坐标
+        float y = Math.max(this.getMarginBottom(), (this.getWithoutMarginHeight() - height) / 2);
+        // 新建内容流
+        PDPageContentStream contentStream = new PDPageContentStream(
+                this.getContext().getTargetDocument(),
+                this.getTarget(),
+                PDPageContentStream.AppendMode.APPEND,
+                true,
+                this.getIsResetContentStream()
+        );
+        // 添加图像
+        contentStream.drawImage(image, x, y, width, height);
         // 关闭内容流
         contentStream.close();
     }

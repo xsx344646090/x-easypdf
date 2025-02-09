@@ -6,7 +6,9 @@ import org.dromara.pdf.pdfbox.core.base.Banner;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.ext.analyzer.DocumentAnalyzer;
 import org.dromara.pdf.pdfbox.core.ext.comparator.DocumentComparator;
+import org.dromara.pdf.pdfbox.core.ext.convertor.DocumentConvertor;
 import org.dromara.pdf.pdfbox.core.ext.extractor.DocumentExtractor;
+import org.dromara.pdf.pdfbox.core.ext.parser.ai.DocumentAIParser;
 import org.dromara.pdf.pdfbox.core.ext.processor.DocumentProcessor;
 import org.dromara.pdf.pdfbox.support.Constants;
 
@@ -86,6 +88,26 @@ public class PdfHandler {
      */
     public static DocumentComparator getDocumentComparator(Document document) {
         return new DocumentComparator(document);
+    }
+    
+    /**
+     * 获取文档AI解析器
+     *
+     * @param document 文档
+     * @return 返回文档AI解析器
+     */
+    public static DocumentAIParser getDocumentAIParser(Document document) {
+        return new DocumentAIParser(document);
+    }
+    
+    /**
+     * 获取文档转换器
+     *
+     * @param document 文档
+     * @return 返回文档转换器
+     */
+    public static DocumentConvertor getDocumentConvertor(Document document) {
+        return new DocumentConvertor(document);
     }
     
     /**

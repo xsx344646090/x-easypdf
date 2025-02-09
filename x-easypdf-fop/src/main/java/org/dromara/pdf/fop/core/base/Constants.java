@@ -52,4 +52,8 @@ public final class Constants {
      * freemarker模板路径key
      */
     public static final String FREEMARKER_TEMPLATE_PATH_KEY = "x-easypdf.freemarker.dir";
+    /**
+     * 格式类型
+     */
+    public static final String MIME_TYPE = "application/pdf";
 }

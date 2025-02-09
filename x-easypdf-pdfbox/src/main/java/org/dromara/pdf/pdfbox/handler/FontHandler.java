@@ -37,21 +37,21 @@ import java.util.*;
  * </p>
  */
 public class FontHandler {
-    
+
     static {
         Banner.print();
     }
-    
+
     /**
      * 日志
      */
     private static final Log log = LogFactory.getLog(FontHandler.class);
-    
+
     /**
      * 助手实例
      */
     private static final FontHandler INSTANCE = new FontHandler();
-    
+
     /**
      * 无参构造
      */
@@ -62,7 +62,7 @@ public class FontHandler {
                 FontType.TTF
         );
     }
-    
+
     /**
      * 获取实例
      *
@@ -71,7 +71,7 @@ public class FontHandler {
     public static FontHandler getInstance() {
         return INSTANCE;
     }
-    
+
     /**
      * 获取加载的字体名称
      *
@@ -80,7 +80,7 @@ public class FontHandler {
     public List<String> getFontNames() {
         return new ArrayList<>(FontMapperImpl.getInstance().getFontInfoByName().keySet());
     }
-    
+
     /**
      * 获取所有字体
      *
@@ -89,7 +89,7 @@ public class FontHandler {
     public List<? extends FontInfo> getFontInfos() {
         return FontMapperImpl.getInstance().getProvider().getFontInfo();
     }
-    
+
     /**
      * 获取pdfbox字体
      *
@@ -106,7 +106,7 @@ public class FontHandler {
         }
         return PDType0Font.load(document, this.getTrueTypeFont(fontName), embedSubset);
     }
-    
+
     /**
      * 获取pdfbox字体
      *
@@ -118,7 +118,7 @@ public class FontHandler {
     public PDFont getPDFont(PDDocument document, String fontName) {
         return this.getPDFont(document, fontName, true);
     }
-    
+
     /**
      * 获取字体
      *
@@ -128,7 +128,7 @@ public class FontHandler {
     public TrueTypeFont getTrueTypeFont(String fontName) {
         return FontMapperImpl.getInstance().getTrueTypeFont(fontName, null).getFont();
     }
-    
+
     /**
      * 添加自定义字体
      * <p>注：添加一次即可</p>
@@ -145,7 +145,7 @@ public class FontHandler {
             FontMapperImpl.getInstance().resetFontInfoByName();
         }
     }
-    
+
     /**
      * 添加自定义字体
      * <p>注：添加一次即可</p>
@@ -163,7 +163,7 @@ public class FontHandler {
             FontMapperImpl.getInstance().resetFontInfoByName();
         }
     }
-    
+
     /**
      * 添加自定义字体
      * <p>注：添加一次即可</p>
@@ -181,7 +181,7 @@ public class FontHandler {
             FontMapperImpl.getInstance().resetFontInfoByName();
         }
     }
-    
+
     /**
      * 添加自定义字体
      * <p>注：添加一次即可</p>
@@ -197,14 +197,13 @@ public class FontHandler {
         }
         FontMapperImpl.getInstance().resetFontInfoByName();
     }
-    
+
     /**
      * 添加文本关联
      *
      * @param font pdfbox字体
      * @param text 文本
      */
-    @SuppressWarnings("unchecked")
     @SneakyThrows
     public void addToSubset(PDDocument document, PDFont font, String text) {
         // 如果字体不为空且字体为子集，则添加文本到子集

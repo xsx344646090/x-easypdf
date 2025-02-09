@@ -51,19 +51,15 @@ public abstract class PDAbstractContentStream implements Closeable {
     
     protected final OutputStream outputStream;
     protected final PDResources resources;
-    
-    protected boolean inTextMode = false;
     protected final Deque<PDFont> fontStack = new ArrayDeque<>();
-    
     protected final Deque<PDColorSpace> nonStrokingColorSpaceStack = new ArrayDeque<>();
     protected final Deque<PDColorSpace> strokingColorSpaceStack = new ArrayDeque<>();
-    
+    protected final Map<PDType0Font, GsubWorker> gsubWorkers = new HashMap<>();
     // number format
     private final NumberFormat formatDecimal = NumberFormat.getNumberInstance(Locale.US);
     private final byte[] formatBuffer = new byte[32];
-    
-    protected final Map<PDType0Font, GsubWorker> gsubWorkers = new HashMap<>();
     private final GsubWorkerFactory gsubWorkerFactory = new GsubWorkerFactory();
+    protected boolean inTextMode = false;
     
     /**
      * Create a new appearance stream.
@@ -140,11 +136,12 @@ public abstract class PDAbstractContentStream implements Closeable {
             if (document != null) {
                 document.getFontsToSubset().add(font);
             } else {
-                LOG.warn("Using the subsetted font '" + font.getName() +
-                                 "' without a PDDocument context; call subset() before saving");
+                LOG.warn("Using the subsetted font '" + font.getName() + "' without a PDDocument context; call subset() before saving");
             }
         } else if (!font.isEmbedded() && !font.isStandard14()) {
-            LOG.warn("attempting to use font '" + font.getName() + "' that isn't embedded");
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("attempting to use font '" + font.getName() + "' that isn't embedded");
+            }
         }
         
         // complex text layout
@@ -152,8 +149,7 @@ public abstract class PDAbstractContentStream implements Closeable {
             PDType0Font pdType0Font = (PDType0Font) font;
             GsubData gsubData = pdType0Font.getGsubData();
             if (gsubData != GsubData.NO_DATA_FOUND) {
-                GsubWorker gsubWorker = gsubWorkerFactory.getGsubWorker(pdType0Font.getCmapLookup(),
-                        gsubData);
+                GsubWorker gsubWorker = gsubWorkerFactory.getGsubWorker(pdType0Font.getCmapLookup(), gsubData);
                 gsubWorkers.put((PDType0Font) font, gsubWorker);
             } else {
                 if (LOG.isDebugEnabled()) {
@@ -576,9 +572,7 @@ public abstract class PDAbstractContentStream implements Closeable {
     }
     
     protected COSName getName(PDColorSpace colorSpace) {
-        if (colorSpace instanceof PDDeviceGray ||
-                    colorSpace instanceof PDDeviceRGB ||
-                    colorSpace instanceof PDDeviceCMYK) {
+        if (colorSpace instanceof PDDeviceGray || colorSpace instanceof PDDeviceRGB || colorSpace instanceof PDDeviceCMYK) {
             return COSName.getPDFName(colorSpace.getName());
         } else {
             return resources.add(colorSpace);
@@ -592,8 +586,7 @@ public abstract class PDAbstractContentStream implements Closeable {
      * @throws IOException If an IO error occurs while writing to the stream.
      */
     public void setStrokingColor(PDColor color) throws IOException {
-        if (strokingColorSpaceStack.isEmpty() ||
-                    strokingColorSpaceStack.peek() != color.getColorSpace()) {
+        if (strokingColorSpaceStack.isEmpty() || strokingColorSpaceStack.peek() != color.getColorSpace()) {
             writeOperand(getName(color.getColorSpace()));
             writeOperator(OperatorName.STROKING_COLORSPACE);
             setStrokingColorSpaceStack(color.getColorSpace());
@@ -607,10 +600,7 @@ public abstract class PDAbstractContentStream implements Closeable {
             writeOperand(color.getPatternName());
         }
         
-        if (color.getColorSpace() instanceof PDPattern ||
-                    color.getColorSpace() instanceof PDSeparation ||
-                    color.getColorSpace() instanceof PDDeviceN ||
-                    color.getColorSpace() instanceof PDICCBased) {
+        if (color.getColorSpace() instanceof PDPattern || color.getColorSpace() instanceof PDSeparation || color.getColorSpace() instanceof PDDeviceN || color.getColorSpace() instanceof PDICCBased) {
             writeOperator(OperatorName.STROKING_COLOR_N);
         } else {
             writeOperator(OperatorName.STROKING_COLOR);
@@ -624,8 +614,7 @@ public abstract class PDAbstractContentStream implements Closeable {
      * @throws IOException If an IO error occurs while writing to the stream.
      */
     public void setStrokingColor(Color color) throws IOException {
-        float[] components = new float[]{
-                color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f};
+        float[] components = new float[]{color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f};
         PDColor pdColor = new PDColor(components, PDDeviceRGB.INSTANCE);
         setStrokingColor(pdColor);
     }
@@ -641,8 +630,7 @@ public abstract class PDAbstractContentStream implements Closeable {
      */
     public void setStrokingColor(float r, float g, float b) throws IOException {
         if (isOutsideOneInterval(r) || isOutsideOneInterval(g) || isOutsideOneInterval(b)) {
-            throw new IllegalArgumentException("Parameters must be within 0..1, but are "
-                                                       + String.format("(%.2f,%.2f,%.2f)", r, g, b));
+            throw new IllegalArgumentException("Parameters must be within 0..1, but are " + String.format("(%.2f,%.2f,%.2f)", r, g, b));
         }
         writeOperand(r);
         writeOperand(g);
@@ -663,8 +651,7 @@ public abstract class PDAbstractContentStream implements Closeable {
      */
     public void setStrokingColor(float c, float m, float y, float k) throws IOException {
         if (isOutsideOneInterval(c) || isOutsideOneInterval(m) || isOutsideOneInterval(y) || isOutsideOneInterval(k)) {
-            throw new IllegalArgumentException("Parameters must be within 0..1, but are "
-                                                       + String.format("(%.2f,%.2f,%.2f,%.2f)", c, m, y, k));
+            throw new IllegalArgumentException("Parameters must be within 0..1, but are " + String.format("(%.2f,%.2f,%.2f,%.2f)", c, m, y, k));
         }
         writeOperand(c);
         writeOperand(m);
@@ -697,8 +684,7 @@ public abstract class PDAbstractContentStream implements Closeable {
      * @throws IOException If an IO error occurs while writing to the stream.
      */
     public void setNonStrokingColor(PDColor color) throws IOException {
-        if (nonStrokingColorSpaceStack.isEmpty() ||
-                    nonStrokingColorSpaceStack.peek() != color.getColorSpace()) {
+        if (nonStrokingColorSpaceStack.isEmpty() || nonStrokingColorSpaceStack.peek() != color.getColorSpace()) {
             writeOperand(getName(color.getColorSpace()));
             writeOperator(OperatorName.NON_STROKING_COLORSPACE);
             setNonStrokingColorSpaceStack(color.getColorSpace());
@@ -712,10 +698,7 @@ public abstract class PDAbstractContentStream implements Closeable {
             writeOperand(color.getPatternName());
         }
         
-        if (color.getColorSpace() instanceof PDPattern ||
-                    color.getColorSpace() instanceof PDSeparation ||
-                    color.getColorSpace() instanceof PDDeviceN ||
-                    color.getColorSpace() instanceof PDICCBased) {
+        if (color.getColorSpace() instanceof PDPattern || color.getColorSpace() instanceof PDSeparation || color.getColorSpace() instanceof PDDeviceN || color.getColorSpace() instanceof PDICCBased) {
             writeOperator(OperatorName.NON_STROKING_COLOR_N);
         } else {
             writeOperator(OperatorName.NON_STROKING_COLOR);
@@ -729,8 +712,7 @@ public abstract class PDAbstractContentStream implements Closeable {
      * @throws IOException If an IO error occurs while writing to the stream.
      */
     public void setNonStrokingColor(Color color) throws IOException {
-        float[] components = new float[]{
-                color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f};
+        float[] components = new float[]{color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f};
         PDColor pdColor = new PDColor(components, PDDeviceRGB.INSTANCE);
         setNonStrokingColor(pdColor);
     }
@@ -746,8 +728,7 @@ public abstract class PDAbstractContentStream implements Closeable {
      */
     public void setNonStrokingColor(float r, float g, float b) throws IOException {
         if (isOutsideOneInterval(r) || isOutsideOneInterval(g) || isOutsideOneInterval(b)) {
-            throw new IllegalArgumentException("Parameters must be within 0..1, but are "
-                                                       + String.format("(%.2f,%.2f,%.2f)", r, g, b));
+            throw new IllegalArgumentException("Parameters must be within 0..1, but are " + String.format("(%.2f,%.2f,%.2f)", r, g, b));
         }
         writeOperand(r);
         writeOperand(g);
@@ -767,8 +748,7 @@ public abstract class PDAbstractContentStream implements Closeable {
      */
     public void setNonStrokingColor(float c, float m, float y, float k) throws IOException {
         if (isOutsideOneInterval(c) || isOutsideOneInterval(m) || isOutsideOneInterval(y) || isOutsideOneInterval(k)) {
-            throw new IllegalArgumentException("Parameters must be within 0..1, but are "
-                                                       + String.format("(%.2f,%.2f,%.2f,%.2f)", c, m, y, k));
+            throw new IllegalArgumentException("Parameters must be within 0..1, but are " + String.format("(%.2f,%.2f,%.2f,%.2f)", c, m, y, k));
         }
         writeOperand(c);
         writeOperand(m);
@@ -1444,11 +1424,8 @@ public abstract class PDAbstractContentStream implements Closeable {
      * @throws IOException If the content stream could not be written.
      */
     public void setRenderingMode(RenderingMode rm) throws IOException {
-        float defaultWeight = 0.31543F;
         writeOperand(rm.intValue());
         writeOperand(OperatorName.SET_TEXT_RENDERINGMODE);
-        writeOperand(defaultWeight);
-        writeOperator(OperatorName.SET_LINE_WIDTH);
     }
     
     /**
@@ -1464,12 +1441,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         writeOperator(OperatorName.SET_TEXT_RISE);
     }
     
-    protected byte[] encodeForGsub(
-            GsubWorker gsubWorker,
-            Set<Integer> glyphIds,
-            PDType0Font font,
-            String text
-    ) throws IOException {
+    protected byte[] encodeForGsub(GsubWorker gsubWorker, Set<Integer> glyphIds, PDType0Font font, String text) throws IOException {
         // break the entire chunk of text into words by splitting it with space
         List<String> words = new CompoundCharacterTokenizer(StringUtil.PATTERN_SPACE).tokenize(text);
         
@@ -1495,8 +1467,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         for (char unicodeChar : charArray) {
             int glyphId = cmapLookup.getGlyphId(unicodeChar);
             if (glyphId <= 0) {
-                throw new IllegalStateException(
-                        "could not find the glyphId for the character: " + unicodeChar);
+                throw new IllegalStateException("could not find the glyphId for the character: " + unicodeChar);
             }
             originalGlyphIds.add(glyphId);
         }
@@ -1511,12 +1482,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         
     }
     
-    protected byte[] encodeForGsub(
-            GsubWorker gsubWorker,
-            Set<Integer> glyphIds,
-            PDType0Font font,
-            Character character
-    ) throws IOException {
+    protected byte[] encodeForGsub(GsubWorker gsubWorker, Set<Integer> glyphIds, PDType0Font font, Character character) throws IOException {
         ByteArrayOutputStream out = new ByteArrayOutputStream(4096);
         if (character == ' ') {
             glyphIds.addAll(applyGSUBRules(gsubWorker, out, font, character));
@@ -1532,8 +1498,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         
         int glyphId = cmapLookup.getGlyphId(unicodeChar);
         if (glyphId <= 0) {
-            throw new IllegalStateException(
-                    "could not find the glyphId for the character: " + unicodeChar);
+            throw new IllegalStateException("could not find the glyphId for the character: " + unicodeChar);
         }
         originalGlyphIds.add(glyphId);
         
