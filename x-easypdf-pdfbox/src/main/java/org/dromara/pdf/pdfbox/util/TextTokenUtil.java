@@ -136,102 +136,49 @@ public class TextTokenUtil {
         // 定义结果
         boolean result = false;
         boolean processFlag = false;
-        // 定义空白字符串
-        final String blank = " ";
         // 获取信息列表
         List<TextTokenInfo> infoList = initTextTokenInfoListForString(resources, tokens);
         // 遍历信息列表
         for (TextTokenInfo info : infoList) {
-            // 定义子集
-            List<TextTokenInfo.TextValue> children = new ArrayList<>(info.getTokens().size());
-            // 定义字符串构建器
-            StringBuilder builder = new StringBuilder();
-            // 定义起始文本
-            TextTokenInfo.TextValue beginValue = null;
-            // 遍历文本标记
-            for (TextTokenInfo.TextValue textValue : info.getTokens()) {
-                // 构建器为空
-                if (builder.length() == 0) {
-                    // 重置起始文本
-                    beginValue = textValue;
-                } else {
-                    // 设置未被替换
-                    textValue.setIsReplaced(false);
-                    // 添加子集
-                    children.add(textValue);
-                }
-                // 获取文本
-                String value = textValue.getValue();
-                // 非空文本
-                if (Objects.nonNull(value)) {
-                    // 起始文本非空且非空白字符串
-                    if (Objects.nonNull(beginValue) && Objects.equals(value, blank)) {
-                        // 设置替换值
-                        beginValue.setReplaceValue(builder.toString());
-                        // 设置子集
-                        beginValue.setChildren(children);
-                        // 设置替换标记
-                        beginValue.setIsReplaced(true);
-                        // 重置构建器
-                        builder = new StringBuilder();
-                        // 重置子集
-                        children = new ArrayList<>();
-                        // 重置结果
-                        processFlag = true;
-                    } else {
-                        // 添加文本
-                        builder.append(value);
-                    }
-                }
-            }
-            // 结果为单文本
-            if (!processFlag) {
-                // 遍历标记
-                for (TextTokenInfo.TextValue textValue : info.getTokens()) {
-                    // 设置替换标记
-                    textValue.setIsReplaced(true);
-                }
-            }
-            // 重置结果
-            processFlag = false;
             // 遍历标记
             for (TextTokenInfo.TextValue textValue : info.getTokens()) {
-                // 替换标记为true
-                if (textValue.isReplaced()) {
-                    // 获取完整文本
-                    String allText = textValue.getReplaceValue();
-                    // 定义待替换文本
-                    String replaceText = allText;
-                    // 遍历替换字典
-                    for (Map.Entry<String, String> entry : replaceMap.entrySet()) {
-                        // 替换文本包含待替换文本
-                        if (replaceText.contains(entry.getKey())) {
-                            // 替换文本
-                            replaceText = replaceText.replace(entry.getKey(), entry.getValue());
-                            // 处理替换文本
-                            processReplaceText(document, resources, font, textValue.getToken(), replaceText);
-                            // 设置已嵌入子集
-                            textValue.setIsEmbedSubset(true);
-                            // 子集非空
-                            if (Objects.nonNull(textValue.getChildren())) {
-                                // 遍历子集
-                                for (TextTokenInfo.TextValue child : textValue.getChildren()) {
-                                    // 处理替换文本
-                                    processReplaceText(document, resources, font, child.getToken(), "");
-                                    // 设置已嵌入子集
-                                    child.setIsEmbedSubset(true);
-                                }
+                // 获取原始文本
+                String originalText = textValue.getReplaceValue();
+                // 跳过空文本
+                if (Objects.isNull(originalText)) {
+                    continue;
+                }
+                // 定义待替换文本
+                String replaceText = originalText;
+                // 遍历替换字典
+                for (Map.Entry<String, String> entry : replaceMap.entrySet()) {
+                    // 替换文本包含待替换文本
+                    if (replaceText.contains(entry.getKey())) {
+                        // 替换文本
+                        replaceText = replaceText.replace(entry.getKey(), entry.getValue());
+                        // 处理替换文本
+                        processReplaceText(document, resources, font, textValue.getToken(), replaceText);
+                        // 设置已嵌入子集
+                        textValue.setIsEmbedSubset(true);
+                        // 子集非空
+                        if (Objects.nonNull(textValue.getChildren())) {
+                            // 遍历子集
+                            for (TextTokenInfo.TextValue child : textValue.getChildren()) {
+                                // 处理替换文本
+                                processReplaceText(document, resources, font, child.getToken(), "");
+                                // 设置已嵌入子集
+                                child.setIsEmbedSubset(true);
                             }
-                            // 重置结果
-                            result = true;
-                            processFlag = true;
-                            // 打印日志
-                            if (log.isDebugEnabled()) {
-                                log.debug("Replaced normal text: original [\"" + allText + "\"], now [\"" + replaceText + "\"]");
-                            }
-                            // 结束
-                            break;
                         }
+                        // 重置结果
+                        result = true;
+                        processFlag = true;
+                        // 打印日志
+                        if (log.isDebugEnabled()) {
+                            log.debug("Replaced normal text: original [\"" + originalText + "\"], now [\"" + replaceText + "\"]");
+                        }
+                        // 结束
+                        break;
                     }
                 }
             }

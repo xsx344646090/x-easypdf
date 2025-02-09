@@ -34,8 +34,8 @@ public class ZhiPuAIParser extends AbstractAIParser {
     public ZhiPuAIParser(Document document, String ak, String sk, boolean isJsonResponse) {
         super(document, ak, sk, isJsonResponse);
         this.config.setImageUrl("https://open.bigmodel.cn/api/paas/v4/chat/completions");
-        this.config.setImageModel("glm-4v-plus");
+        this.config.setImageModel("glm-4v-flash");
         this.config.setTextUrl("https://open.bigmodel.cn/api/paas/v4/chat/completions");
-        this.config.setTextModel("glm-4-plus");
+        this.config.setTextModel("glm-4-flash");
     }
 }

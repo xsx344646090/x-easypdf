@@ -453,9 +453,9 @@ public class Barcode extends AbstractComponent {
      */
     @SuppressWarnings("all")
     @SneakyThrows
-    protected BufferedImage getBarcodeImage() {
+    public BufferedImage getBarcodeImage() {
         // 是否缓存
-        if (this.getIsCache()) {
+        if (Optional.ofNullable(this.getIsCache()).orElse(Boolean.FALSE)) {
             // 获取图像
             BufferedImage bufferedImage = CACHE.get(this.cacheKey());
             // 图像不存在
@@ -495,6 +495,8 @@ public class Barcode extends AbstractComponent {
      */
     @SneakyThrows
     protected BufferedImage createBarcodeImage() {
+        // 初始化宽高
+        this.initWidthAndHeight();
         // 获取图像
         BufferedImage bufferedImage = this.toBufferedImage(
                 new MultiFormatWriter().encode(
@@ -506,7 +508,7 @@ public class Barcode extends AbstractComponent {
                 )
         );
         // 如果显示文字，则添加图像文字
-        if (this.getIsShowWords()) {
+        if (Optional.ofNullable(this.getIsShowWords()).orElse(Boolean.FALSE)) {
             // 添加图像文字
             bufferedImage = this.addImageWords(bufferedImage);
         }
@@ -523,13 +525,13 @@ public class Barcode extends AbstractComponent {
     @SneakyThrows
     protected BufferedImage toBufferedImage(BitMatrix matrix) {
         // 移除白边
-        if (this.getIsNoWhiteBorder()) {
+        if (Optional.ofNullable(this.getIsNoWhiteBorder()).orElse(Boolean.FALSE)) {
             matrix = this.removeWhiteBorder(matrix);
         }
         // 获取前景色
-        final int onColor = this.getOnColor().getRGB();
+        final int onColor = Optional.ofNullable(this.getOnColor()).orElse(Color.BLACK).getRGB();
         // 获取背景色
-        final int offColor = this.getOffColor().getRGB();
+        final int offColor = Optional.ofNullable(this.getOffColor()).orElse(this.getPage().getBackgroundColor()).getRGB();
         // 获取宽度
         int width = matrix.getWidth();
         // 获取高度
