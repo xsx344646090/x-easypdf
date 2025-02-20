@@ -50,6 +50,10 @@ public class FontUtil {
         try {
             // 获取字体信息
             FontInfo fontInfo = FontInfoHelper.get();
+            // 返回一个默认的AWT字体
+            if(Objects.isNull(fontInfo)) {
+                return new Font(name, style.getAwtStyle(), size);
+            }
             // 根据字体名称和样式查找合适的字体三元组
             FontTriplet triplet = fontInfo.findAdjustWeight(name, style.getStyle(), style.getWeight());
             // 获取字体实例
