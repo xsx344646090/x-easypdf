@@ -38,58 +38,6 @@ import java.util.List;
  */
 public class TableTest extends BaseTest {
 
-    public static void main(String[] args) {
-        // 创建文档
-        Document document = PdfHandler.getDocumentHandler().create();
-        // 创建页面
-        Page page = new Page(document);
-        // 定义每列宽度
-        float width = 120F;
-        // 定义行高
-        float height = 70F;
-
-        // 创建表格
-        Table table = new Table(document.getCurrentPage());
-        // 设置列宽（4列）
-        table.setCellWidths(width, width, width, width);
-        // 设置显示边框
-        table.setIsBorder(true);
-        table.setMargin(20);
-        // 添加行
-        for (int i = 0; i < 3; i++) {
-            // 创建行
-            TableRow tableRow = new TableRow(table);
-            // 设置行高
-            tableRow.setHeight(height);
-
-            // 添加列
-            for (int j = 0; j < 4; j++) {
-
-                // 创建文本域
-                Textarea textarea = new Textarea(table.getPage());
-                // 设置文本
-                textarea.setText( i + "行"  + j + "列");
-
-                Textarea textarea2 = new Textarea(table.getPage());
-                textarea2.setText(i + "-"  + j +"红色");
-                textarea2.setFontColor(Color.RED);
-                // 创建单元格
-                TableCell cell = new TableCell(tableRow);
-                // 添加组件
-                cell.addComponents(textarea2, textarea);
-                // 添加单元格
-                tableRow.addCells(cell);
-            }
-            // 添加行
-            table.addRows(tableRow);
-        }
-        // 绘制
-        table.render();
-        // 添加页面
-        document.appendPage(page);
-        document.saveAndClose("E:\\PDF\\pdfbox\\table\\test.pdf");
-    }
-
     /**
      * 表格测试
      */

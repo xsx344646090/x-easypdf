@@ -33,6 +33,15 @@ import java.util.Objects;
  * </p>
  */
 public class ImageUtil {
+    /**
+     * SVG字节码
+     */
+    protected static final byte[] SVG_BYTES1 = new byte[]{0x3c, 0x3f, 0x78, 0x6d, 0x6c, 0x20};
+    protected static final byte[] SVG_BYTES2 = new byte[]{0x3c, 0x73, 0x76, 0x67};
+    /**
+     * jpeg2000字节码
+     */
+    protected static final byte[] J2K_BYTES2 = new byte[]{0x00, 0x00, 0x00, 0x0c, 0x6a, 0x50, 0x20, 0x20};
 
     /**
      * 读取文件
@@ -171,6 +180,10 @@ public class ImageUtil {
         }
         // 返回字节数组
         return byteArray;
+    }
+
+    public static void svgToPng(InputStream inputStream, OutputStream outputStream) {
+
     }
 
     /**
@@ -338,8 +351,17 @@ public class ImageUtil {
      * @return 返回布尔值，是为true，否为false
      */
     public static boolean isSvgImage(byte[] bytes) {
-        // 定义svg字节码
-        final byte[] svgBytes = new byte[]{0x3c, 0x3f, 0x78, 0x6d, 0x6c, 0x20};
+        return isSvgImage1(bytes) || isSvgImage2(bytes);
+    }
+
+    /**
+     * 是否svg图像
+     * <p>注：判断是否为xml</p>
+     *
+     * @param bytes 字节数组
+     * @return 返回布尔值，是为true，否为false
+     */
+    public static boolean isSvgImage1(byte[] bytes) {
         // 定义长度
         int length = 5;
         // 定义最大长度
@@ -347,7 +369,7 @@ public class ImageUtil {
         // 定义索引
         int index = 0;
         // 定义标记字节
-        byte flag = svgBytes[index];
+        byte flag = SVG_BYTES1[index];
         // 遍历字节数组
         for (int idx = 0; idx < bytes.length; idx++) {
             // 到达指定长度
@@ -358,11 +380,35 @@ public class ImageUtil {
             // 当前字节与标记字节相等
             if (bytes[idx] == flag) {
                 // 重置标记
-                flag = svgBytes[++index];
+                flag = SVG_BYTES1[++index];
             }
         }
         // 返回是否svg图像
         return index == length;
+    }
+
+    /**
+     * 是否svg图像
+     * <p>注：判断是否为xml</p>
+     *
+     * @param bytes 字节数组
+     * @return 返回布尔值，是为true，否为false
+     */
+    public static boolean isSvgImage2(byte[] bytes) {
+        // 定义标记字节
+        boolean flag = true;
+        // 遍历字节数组
+        for (int idx = 0; idx < SVG_BYTES2.length; idx++) {
+            // 当前字节与标记字节相等
+            if (bytes[idx] != SVG_BYTES2[idx]) {
+                // 重置标记
+                flag = false;
+                // 结束
+                break;
+            }
+        }
+        // 返回是否svg图像
+        return flag;
     }
 
     /**
@@ -374,12 +420,10 @@ public class ImageUtil {
     public static boolean isJ2kImage(byte[] bytes) {
         // 定义结果
         boolean result = true;
-        // 定义jpeg2000字节码
-        byte[] j2kBytes = new byte[]{0x00, 0x00, 0x00, 0x0c, 0x6a, 0x50, 0x20, 0x20};
         // 遍历字节数组
-        for (int i = 0; i < j2kBytes.length; i++) {
+        for (int i = 0; i < J2K_BYTES2.length; i++) {
             // 字节码不一致
-            if (j2kBytes[i] != bytes[i]) {
+            if (J2K_BYTES2[i] != bytes[i]) {
                 // 重置结果
                 result = false;
                 // 结束循环
