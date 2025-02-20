@@ -231,8 +231,7 @@ public class MetadataProcessor extends AbstractProcessor {
         if (Objects.isNull(this.adobeSchema)) {
             this.adobeSchema = this.xmpMetadata.createAndAddAdobePDFSchema();
         }
-        this.adobeSchema.setProducer(String.valueOf(version));
-
+        this.adobeSchema.setPDFVersion(String.valueOf(version));
     }
 
     /**
@@ -428,7 +427,7 @@ public class MetadataProcessor extends AbstractProcessor {
     @SneakyThrows
     protected void initMetadata() {
         // 获取文档的元数据，如果为空则创建一个新的PDMetadata对象
-        this.metadata = Optional.ofNullable(this.getDocument().getDocumentCatalog().getMetadata()).orElse(new PDMetadata(this.document.getTarget()));
+        this.metadata = Optional.ofNullable(this.getDocument().getDocumentCatalog().getMetadata()).orElse(new PDMetadata(this.getDocument()));
         // 尝试解析元数据，如果解析失败则创建一个新的XMPMetadata对象
         try {
             this.xmpMetadata = new DomXmpParser().parse(this.metadata.exportXMPMetadata());
@@ -460,9 +459,7 @@ public class MetadataProcessor extends AbstractProcessor {
             this.adobeSchema.setProducer(Constants.PRODUCER);
         }
         // 初始化pdf版本
-        if (Objects.isNull(this.adobeSchema.getPDFVersion())) {
-            this.adobeSchema.setPDFVersion(String.valueOf(this.document.getVersion()));
-        }
+        this.adobeSchema.setPDFVersion(String.valueOf(this.document.getVersion()));
     }
 
     /**
