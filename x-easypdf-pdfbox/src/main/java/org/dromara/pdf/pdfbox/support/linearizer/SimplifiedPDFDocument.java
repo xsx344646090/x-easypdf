@@ -31,7 +31,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -143,16 +144,16 @@ public class SimplifiedPDFDocument extends COSDocument implements Closeable {
             this.setTrailer(createDocumentTrailer());
         }
 
-        final COSObject root = (COSObject) this.getTrailer().getItem(COSName.ROOT);
-        final COSDictionary pages = ((COSDictionary) root.getObject()).getCOSDictionary(COSName.PAGES);
-        final COSArray pagesKids = (COSArray) pages.getItem(COSName.KIDS);
+        final COSDictionary root = this.getTrailer().getCOSDictionary(COSName.ROOT);
+        final COSDictionary pages = root.getCOSDictionary(COSName.PAGES);
+        final COSArray pagesKids = pages.getCOSArray(COSName.KIDS);
 
-        final COSObject docRoot = (COSObject) doc.getTrailer().getItem(COSName.ROOT);
-        final PageIterator iter = new PageIterator(((COSDictionary) docRoot.getObject()).getCOSObject(COSName.PAGES));
         int pagesCount = 0;
-
-        for (final COSObject page : iter) {
-            ((COSDictionary) page.getObject()).setItem(COSName.PARENT, pages);
+        final COSDictionary docRoot = doc.getTrailer().getCOSDictionary(COSName.ROOT);
+        final COSDictionary docPages = docRoot.getCOSDictionary(COSName.PAGES);
+        COSArray docPageArray = docPages.getCOSArray(COSName.KIDS);
+        for (COSBase page : docPageArray) {
+            ((COSDictionary) ((COSObject) page).getObject()).setItem(COSName.PARENT, pages);
             pagesKids.add(page);
             pagesCount++;
         }
@@ -200,7 +201,7 @@ public class SimplifiedPDFDocument extends COSDocument implements Closeable {
 
         // algorithm says to use time/path/size/values in doc to generate the id.
         // we don't have path or size, so do the best we can
-        md5.update((Long.toString(System.currentTimeMillis()) + "PDF_BOX_SALT_STRING" + this.hashCode()).getBytes(StandardCharsets.ISO_8859_1));
+        md5.update((System.currentTimeMillis() + "PDF_BOX_SALT_STRING" + this.hashCode()).getBytes(StandardCharsets.ISO_8859_1));
 
         final COSDictionary info = (COSDictionary) trailer.getDictionaryObject(COSName.INFO);
 
@@ -212,74 +213,6 @@ public class SimplifiedPDFDocument extends COSDocument implements Closeable {
         final COSArray idArray = new COSArray();
 
         idArray.add(firstID);
-        idArray.add(firstID);
         trailer.setItem(COSName.ID, idArray);
     }
-
-    //~ Inner Classes ---------------------------------------------------------------------------------------------------------------------------------
-
-    /**
-     * Iterator which walks all pages in the tree, in order.
-     *
-     * @author JRA
-     * @version $Id$
-     */
-    private static final class PageIterator implements Iterator<COSObject>, Iterable<COSObject> {
-        //~ Instance members ---------------------------------------------------------------------------------------------------------------------------
-
-        private final Queue<COSObject> queue = new ArrayDeque<>();
-
-        //~ Constructors -------------------------------------------------------------------------------------------------------------------------------
-
-        /**
-         * [!CONSTR_DESCIRPTION_FOR_PageIterator!]
-         *
-         * @param node [!PARA_DESCRIPTION!]
-         */
-        private PageIterator(final COSObject node) {
-            enqueueKids(node);
-        }
-
-        //~ Methods ------------------------------------------------------------------------------------------------------------------------------------
-
-        private void enqueueKids(final COSObject node) {
-            if (isPageTreeNode(node)) {
-                final List<COSObject> kids = getKids(node);
-
-                kids.forEach(kid -> enqueueKids(kid));
-            } else {
-                queue.add(node);
-            }
-        }
-
-
-        @Override
-        public boolean hasNext() {
-            return !queue.isEmpty();
-        }
-
-
-        @Override
-        public COSObject next() {
-            final COSObject next = queue.poll();
-
-            return next;
-        }
-
-
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException();
-        }
-
-
-        @Override
-        public Iterator<COSObject> iterator() {
-            return this;
-        }
-    }
-
-    /**
-     * * end pages Enumeration ***************************
-     */
 }
