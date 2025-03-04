@@ -45,9 +45,8 @@ public class TextareaWatermarkTest extends BaseTest {
             watermark.setLines(1);
             watermark.setCountOfLine(1);
             watermark.setLeading(50F);
+            watermark.setMultiLeading(20F);
             watermark.render(document);
-
-
 
             document.save("E:\\PDF\\pdfbox\\watermark\\textarea\\documentTest.pdf");
             document.close();
