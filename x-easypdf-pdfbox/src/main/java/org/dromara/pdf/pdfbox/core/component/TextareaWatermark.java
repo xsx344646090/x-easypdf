@@ -87,6 +87,10 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
      * 旋转角度
      */
     protected Float angle;
+    /**
+     * 多行间距
+     */
+    protected Float multiLeading;
 
     /**
      * 有参构造
@@ -431,6 +435,10 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
         if (Objects.isNull(this.angle)) {
             this.angle = 45F;
         }
+        // 初始化多行间距
+        if (Objects.isNull(this.multiLeading)) {
+            this.multiLeading = 2F;
+        }
         // 初始化自定义起始X轴坐标
         if (Objects.isNull(this.beginX)) {
             this.beginX = 0F;
@@ -479,7 +487,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
                     // 结束写入
                     stream.endText();
                     // 重置Y轴起始坐标
-                    beginY = beginY - this.getFontSize();
+                    beginY = beginY - this.getFontSize() - this.getMultiLeading();
                     // 重置最大宽度
                     if (initFlag) {
                         // 重置最大宽度
