@@ -952,6 +952,8 @@ public class BlockContainer implements Component {
         Optional.ofNullable(this.param.getBorderWidth()).ifPresent(v -> blockContainer.setAttribute(TemplateAttributes.BORDER_WIDTH, v.intern().toLowerCase()));
         // 设置边框折叠
         Optional.ofNullable(this.param.getBorderCollapse()).ifPresent(v -> blockContainer.setAttribute(TemplateAttributes.BORDER_COLLAPSE, v.intern().toLowerCase()));
+        // 设置边框半径
+        Optional.ofNullable(this.param.getBorderRadius()).ifPresent(v -> blockContainer.setAttribute(TemplateAttributes.BORDER_RADIUS, v.intern().toLowerCase()));
         // 设置上边框
         Optional.ofNullable(this.param.getBorderTop()).ifPresent(v -> blockContainer.setAttribute(TemplateAttributes.BORDER_TOP, v.intern().toLowerCase()));
         // 设置上边框样式

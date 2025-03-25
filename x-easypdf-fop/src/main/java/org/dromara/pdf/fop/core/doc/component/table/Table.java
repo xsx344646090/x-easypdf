@@ -268,6 +268,17 @@ public class Table implements Component {
     }
 
     /**
+     * 设置边框半径
+     *
+     * @param borderRadius 边框半径
+     * @return 返回表格组件
+     */
+    public Table setBorderRadius(String borderRadius) {
+        this.param.setBorderRadius(borderRadius);
+        return this;
+    }
+
+    /**
      * 设置文本语言
      *
      * @param language 语言
@@ -605,6 +616,8 @@ public class Table implements Component {
         Optional.ofNullable(this.param.getBorderCollapse()).ifPresent(v -> table.setAttribute(TemplateAttributes.BORDER_COLLAPSE, v.intern().toLowerCase()));
         // 设置边框间距
         Optional.ofNullable(this.param.getBorderSpacing()).ifPresent(v -> table.setAttribute(TemplateAttributes.BORDER_SPACING, v.intern().toLowerCase()));
+        // 设置边框半径
+        Optional.ofNullable(this.param.getBorderRadius()).ifPresent(v -> table.setAttribute(TemplateAttributes.BORDER_RADIUS, v.intern().toLowerCase()));
         // 设置文本语言
         Optional.ofNullable(this.param.getLanguage()).ifPresent(v -> table.setAttribute(TemplateAttributes.LANGUAGE, v.intern().toLowerCase()));
         // 设置字体名称

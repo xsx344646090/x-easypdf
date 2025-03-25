@@ -85,6 +85,10 @@ class BlockContainerParam extends ComponentParam {
      */
     private String borderCollapse;
     /**
+     * 边框半径
+     */
+    private String borderRadius;
+    /**
      * 上边框
      */
     private String borderTop;
