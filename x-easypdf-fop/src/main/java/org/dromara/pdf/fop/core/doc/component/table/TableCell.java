@@ -720,6 +720,8 @@ public class TableCell {
         Optional.ofNullable(this.param.getBorderColor()).ifPresent(v -> tableCell.setAttribute(TemplateAttributes.BORDER_COLOR, v.intern().toLowerCase()));
         // 设置边框宽度
         Optional.ofNullable(this.param.getBorderWidth()).ifPresent(v -> tableCell.setAttribute(TemplateAttributes.BORDER_WIDTH, v.intern().toLowerCase()));
+        // 设置边框半径
+        Optional.ofNullable(this.param.getBorderRadius()).ifPresent(v -> tableCell.setAttribute(TemplateAttributes.BORDER_RADIUS, v.intern().toLowerCase()));
         // 设置上边框
         Optional.ofNullable(this.param.getBorderTop()).ifPresent(v -> tableCell.setAttribute(TemplateAttributes.BORDER_TOP, v.intern().toLowerCase()));
         // 设置上边框样式

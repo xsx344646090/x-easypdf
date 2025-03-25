@@ -39,12 +39,12 @@ import java.util.Optional;
  */
 @Slf4j
 public class Document implements DocumentComponent {
-    
+
     /**
      * pdf模板文档参数
      */
     private final DocumentParam param = new DocumentParam();
-    
+
     /**
      * 设置配置文件路径（fop配置文件路径）
      *
@@ -55,7 +55,7 @@ public class Document implements DocumentComponent {
         this.param.setConfigPath(configPath);
         return this;
     }
-    
+
     /**
      * 设置加密长度
      * <p>注：长度仅为40、128、256</p>
@@ -67,7 +67,7 @@ public class Document implements DocumentComponent {
         this.param.setEncryptionLength(length);
         return this;
     }
-    
+
     /**
      * 设置拥有者密码
      *
@@ -78,7 +78,7 @@ public class Document implements DocumentComponent {
         this.param.setOwnerPassword(password);
         return this;
     }
-    
+
     /**
      * 设置用户密码
      *
@@ -89,7 +89,17 @@ public class Document implements DocumentComponent {
         this.param.setUserPassword(password);
         return this;
     }
-    
+
+    /**
+     * 设置是否新布局
+     *
+     * @return 返回pdf模板-文档
+     */
+    public Document setIsNewLayout(boolean flag) {
+        this.param.setIsNewLayout(flag);
+        return this;
+    }
+
     /**
      * 设置是否禁止打印
      *
@@ -100,7 +110,7 @@ public class Document implements DocumentComponent {
         this.param.setIsNoPrint(flag);
         return this;
     }
-    
+
     /**
      * 设置是否禁止编辑
      *
@@ -111,7 +121,7 @@ public class Document implements DocumentComponent {
         this.param.setIsNoEdit(flag);
         return this;
     }
-    
+
     /**
      * 设置是否禁止文档组合
      *
@@ -122,7 +132,7 @@ public class Document implements DocumentComponent {
         this.param.setIsNoAssembleDoc(flag);
         return this;
     }
-    
+
     /**
      * 设置是否禁止复制
      *
@@ -133,7 +143,7 @@ public class Document implements DocumentComponent {
         this.param.setIsNoCopy(flag);
         return this;
     }
-    
+
     /**
      * 设置是否禁止复制内容用于辅助工具
      *
@@ -144,7 +154,7 @@ public class Document implements DocumentComponent {
         this.param.setIsNoAccessContent(flag);
         return this;
     }
-    
+
     /**
      * 设置是否禁止页面提取
      *
@@ -155,7 +165,7 @@ public class Document implements DocumentComponent {
         this.param.setIsNoPrintHQ(flag);
         return this;
     }
-    
+
     /**
      * 设置是否禁止注释
      *
@@ -166,7 +176,7 @@ public class Document implements DocumentComponent {
         this.param.setIsNoAnnotations(flag);
         return this;
     }
-    
+
     /**
      * 设置是否禁止填写表单
      *
@@ -177,7 +187,7 @@ public class Document implements DocumentComponent {
         this.param.setIsNoFillForm(flag);
         return this;
     }
-    
+
     /**
      * 设置标题
      *
@@ -188,7 +198,7 @@ public class Document implements DocumentComponent {
         this.param.setTitle(title);
         return this;
     }
-    
+
     /**
      * 设置作者
      *
@@ -199,7 +209,7 @@ public class Document implements DocumentComponent {
         this.param.setAuthor(author);
         return this;
     }
-    
+
     /**
      * 设置主题
      *
@@ -210,7 +220,7 @@ public class Document implements DocumentComponent {
         this.param.setSubject(subject);
         return this;
     }
-    
+
     /**
      * 设置关键词
      *
@@ -221,7 +231,7 @@ public class Document implements DocumentComponent {
         this.param.setKeywords(keywords);
         return this;
     }
-    
+
     /**
      * 设置创建者
      *
@@ -232,7 +242,7 @@ public class Document implements DocumentComponent {
         this.param.setCreator(creator);
         return this;
     }
-    
+
     /**
      * 设置创建时间
      *
@@ -243,7 +253,7 @@ public class Document implements DocumentComponent {
         this.param.setCreationDate(date);
         return this;
     }
-    
+
     /**
      * 添加页面组件
      * <p>注：不推荐添加多个页面，会影响总页码的准确性</p>
@@ -255,7 +265,7 @@ public class Document implements DocumentComponent {
         Optional.ofNullable(pages).ifPresent(v -> Collections.addAll(this.param.getPageList(), v));
         return this;
     }
-    
+
     /**
      * 添加书签组件
      *
@@ -266,7 +276,7 @@ public class Document implements DocumentComponent {
         Optional.ofNullable(bookmarks).ifPresent(v -> Collections.addAll(this.param.getBookmarkList(), v));
         return this;
     }
-    
+
     /**
      * 添加书签组件
      *
@@ -277,7 +287,7 @@ public class Document implements DocumentComponent {
         Optional.ofNullable(bookmarks).ifPresent(this.param.getBookmarkList()::addAll);
         return this;
     }
-    
+
     /**
      * 保存模板
      *
@@ -291,7 +301,7 @@ public class Document implements DocumentComponent {
             this.save(outputStream);
         }
     }
-    
+
     /**
      * 保存模板
      *
@@ -309,7 +319,7 @@ public class Document implements DocumentComponent {
         // 写入内容
         outputStream.write(content.getBytes());
     }
-    
+
     /**
      * 转换
      *
@@ -319,7 +329,7 @@ public class Document implements DocumentComponent {
     public org.dromara.pdf.pdfbox.core.base.Document transform() {
         return this.initTemplate().transform();
     }
-    
+
     /**
      * 转换
      *
@@ -330,7 +340,7 @@ public class Document implements DocumentComponent {
     public void transform(OutputStream outputStream) {
         this.initTemplate().transform(outputStream);
     }
-    
+
     /**
      * 获取xsl-fo文档
      *
@@ -348,7 +358,7 @@ public class Document implements DocumentComponent {
         // 返回文档
         return document;
     }
-    
+
     /**
      * 获取xsl-fo文档内容
      *
@@ -358,7 +368,7 @@ public class Document implements DocumentComponent {
     public String getContent() {
         return TemplateHandler.DataSource.Document.build().setDocument(this).getDocumentContent();
     }
-    
+
     /**
      * 获取总页数
      *
@@ -367,7 +377,7 @@ public class Document implements DocumentComponent {
     public Integer getTotalPage() {
         return this.initTemplate().getTotalPage();
     }
-    
+
     /**
      * 初始化模板
      *
@@ -375,27 +385,28 @@ public class Document implements DocumentComponent {
      */
     private Template initTemplate() {
         return TemplateHandler.Template.build()
-                       .setConfigPath(this.param.getConfigPath())
-                       .setEncryptionLength(this.param.getEncryptionLength())
-                       .setOwnerPassword(this.param.getOwnerPassword())
-                       .setUserPassword(this.param.getUserPassword())
-                       .setIsNoPrint(this.param.getIsNoPrint())
-                       .setIsNoEdit(this.param.getIsNoEdit())
-                       .setIsNoAssembleDoc(this.param.getIsNoAssembleDoc())
-                       .setIsNoCopy(this.param.getIsNoCopy())
-                       .setIsNoAccessContent(this.param.getIsNoAccessContent())
-                       .setIsNoPrintHQ(this.param.getIsNoPrintHQ())
-                       .setIsNoAnnotations(this.param.getIsNoAnnotations())
-                       .setIsNoFillForm(this.param.getIsNoFillForm())
-                       .setTitle(this.param.getTitle())
-                       .setAuthor(this.param.getAuthor())
-                       .setSubject(this.param.getSubject())
-                       .setKeywords(this.param.getKeywords())
-                       .setCreator(this.param.getCreator())
-                       .setCreationDate(this.param.getCreationDate())
-                       .setDataSource(TemplateHandler.DataSource.Document.build().setDocument(this));
+                .setConfigPath(this.param.getConfigPath())
+                .setEncryptionLength(this.param.getEncryptionLength())
+                .setOwnerPassword(this.param.getOwnerPassword())
+                .setUserPassword(this.param.getUserPassword())
+                .setIsNewLayout(this.param.getIsNewLayout())
+                .setIsNoPrint(this.param.getIsNoPrint())
+                .setIsNoEdit(this.param.getIsNoEdit())
+                .setIsNoAssembleDoc(this.param.getIsNoAssembleDoc())
+                .setIsNoCopy(this.param.getIsNoCopy())
+                .setIsNoAccessContent(this.param.getIsNoAccessContent())
+                .setIsNoPrintHQ(this.param.getIsNoPrintHQ())
+                .setIsNoAnnotations(this.param.getIsNoAnnotations())
+                .setIsNoFillForm(this.param.getIsNoFillForm())
+                .setTitle(this.param.getTitle())
+                .setAuthor(this.param.getAuthor())
+                .setSubject(this.param.getSubject())
+                .setKeywords(this.param.getKeywords())
+                .setCreator(this.param.getCreator())
+                .setCreationDate(this.param.getCreationDate())
+                .setDataSource(TemplateHandler.DataSource.Document.build().setDocument(this));
     }
-    
+
     /**
      * 添加页面
      *
@@ -414,7 +425,7 @@ public class Document implements DocumentComponent {
             root.appendChild(page.createElement(++index, document, this.createBookmark(document, index)));
         }
     }
-    
+
     /**
      * 创建书签元素
      *

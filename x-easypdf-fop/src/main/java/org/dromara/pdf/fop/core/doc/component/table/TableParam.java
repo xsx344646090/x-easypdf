@@ -75,6 +75,10 @@ class TableParam extends ComponentParam {
      */
     protected String borderSpacing;
     /**
+     * 边框半径
+     */
+    private String borderRadius;
+    /**
      * 最小列宽
      */
     protected String minColumnWidth;

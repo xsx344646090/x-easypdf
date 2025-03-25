@@ -47,6 +47,10 @@ class DocumentParam {
      */
     private String userPassword;
     /**
+     * 是否开启新布局
+     */
+    private Boolean isNewLayout;
+    /**
      * 是否禁止打印
      */
     private Boolean isNoPrint;

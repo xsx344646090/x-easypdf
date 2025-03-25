@@ -352,6 +352,8 @@ public class TableRow {
         Optional.ofNullable(this.param.getBorder()).ifPresent(v -> tableRow.setAttribute(TemplateAttributes.BORDER, v.intern().toLowerCase()));
         // 设置边框样式
         Optional.ofNullable(this.param.getBorderStyle()).ifPresent(v -> tableRow.setAttribute(TemplateAttributes.BORDER_STYLE, v.intern().toLowerCase()));
+        // 设置边框半径
+        Optional.ofNullable(this.param.getBorderRadius()).ifPresent(v -> tableRow.setAttribute(TemplateAttributes.BORDER_RADIUS, v.intern().toLowerCase()));
         // 设置水平样式
         Optional.ofNullable(this.param.getHorizontalStyle()).ifPresent(v -> tableRow.setAttribute(TemplateAttributes.TEXT_ALIGN, v.intern().toLowerCase()));
         // 设置垂直样式
