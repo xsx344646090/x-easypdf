@@ -22,22 +22,21 @@ import org.dromara.pdf.pdfbox.core.base.Document;
  * </p>
  */
 public class XunFeiAIParser extends AbstractAIParser {
-    
+
     /**
      * 有参构造
      *
      * @param document       文档
-     * @param ak             api密钥
-     * @param sk             密钥
+     * @param apiKey         api密钥
      * @param isJsonResponse 是否json响应
      */
-    public XunFeiAIParser(Document document, String ak, String sk, boolean isJsonResponse) {
-        super(document, ak, sk, isJsonResponse);
+    public XunFeiAIParser(Document document, String apiKey, boolean isJsonResponse) {
+        super(document, apiKey, isJsonResponse);
         this.taskIdKey = "sid";
         this.config.setTextUrl("https://spark-api-open.xf-yun.com/v1/chat/completions");
         this.config.setTextModel("generalv3");
     }
-    
+
     /**
      * 解析页面（整个页面）
      * <p>注：访问大模型超时时间为1分钟</p>
@@ -50,7 +49,7 @@ public class XunFeiAIParser extends AbstractAIParser {
     public AIParseInfo parsePageWithImage(String prompt, int pageIndex) {
         throw new UnsupportedOperationException();
     }
-    
+
     /**
      * 解析图像（页面中的图像）
      * <p>注：访问大模型超时时间为1分钟</p>

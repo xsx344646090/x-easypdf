@@ -28,25 +28,24 @@ import java.util.List;
  * </p>
  */
 public class KunLunWanWeiAIParser extends AbstractAIParser {
-    
+
     /**
      * 摘要
      */
     private static final MessageDigest DIGEST = initDigest();
-    
+
     /**
      * 有参构造
      *
      * @param document       文档
-     * @param ak             api密钥
-     * @param sk             密钥
+     * @param apiKey         api密钥
      * @param isJsonResponse 是否json响应
      */
-    public KunLunWanWeiAIParser(Document document, String ak, String sk, boolean isJsonResponse) {
-        super(document, ak, sk, isJsonResponse);
+    public KunLunWanWeiAIParser(Document document, String apiKey, boolean isJsonResponse) {
+        super(document, apiKey, isJsonResponse);
         this.config.setTextUrl("https://api-maas.singularity-ai.com/sky-work/api/v1/chat");
     }
-    
+
     /**
      * 初始化摘要
      *
@@ -56,7 +55,7 @@ public class KunLunWanWeiAIParser extends AbstractAIParser {
     private static MessageDigest initDigest() {
         return MessageDigest.getInstance("MD5");
     }
-    
+
     /**
      * 解析页面（整个页面）
      * <p>注：访问大模型超时时间为1分钟</p>
@@ -69,7 +68,7 @@ public class KunLunWanWeiAIParser extends AbstractAIParser {
     public AIParseInfo parsePageWithImage(String prompt, int pageIndex) {
         throw new UnsupportedOperationException();
     }
-    
+
     /**
      * 解析图像（页面中的图像）
      * <p>注：访问大模型超时时间为1分钟</p>
@@ -83,7 +82,7 @@ public class KunLunWanWeiAIParser extends AbstractAIParser {
     public AIParseInfo parseImageWithPage(String prompt, int pageIndex, int imageIndex) {
         throw new UnsupportedOperationException();
     }
-    
+
     /**
      * 获取请求头
      *
@@ -92,9 +91,9 @@ public class KunLunWanWeiAIParser extends AbstractAIParser {
     @Override
     protected Headers getRequestHeaders() {
         long timestamp = System.currentTimeMillis() / 1000;
-        return new Headers.Builder().add("app_key", this.config.getAk()).add("sign", this.getSign(timestamp)).add("timestamp", String.valueOf(timestamp)).build();
+        return new Headers.Builder().add("app_key", this.config.getApiKey()).add("sign", this.getSign(timestamp)).add("timestamp", String.valueOf(timestamp)).build();
     }
-    
+
     /**
      * 获取请求体
      *
@@ -108,7 +107,7 @@ public class KunLunWanWeiAIParser extends AbstractAIParser {
         }
         return jsonBody;
     }
-    
+
     /**
      * 获取响应
      *
@@ -123,7 +122,7 @@ public class KunLunWanWeiAIParser extends AbstractAIParser {
         }
         return response;
     }
-    
+
     /**
      * 获取签名
      *
@@ -132,7 +131,7 @@ public class KunLunWanWeiAIParser extends AbstractAIParser {
      */
     @SneakyThrows
     protected String getSign(long timestamp) {
-        String data = this.config.getAk() + this.config.getSk() + timestamp;
+        String data = this.config.getApiKey() + timestamp;
         byte[] messageDigest = DIGEST.digest(data.getBytes());
         StringBuilder sb = new StringBuilder();
         for (byte b : messageDigest) {

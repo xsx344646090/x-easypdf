@@ -52,6 +52,24 @@ public class AttachmentProcessor extends AbstractProcessor {
     }
 
     /**
+     * 是否包含文件
+     *
+     * @return 返回布尔值，true为是，false为否
+     */
+    public boolean isContainFile() {
+        return !this.fileMap.isEmpty();
+    }
+
+    /**
+     * 获取文件数量
+     *
+     * @return 返回文件数量
+     */
+    public int getFileCount() {
+        return this.fileMap.size();
+    }
+
+    /**
      * 添加或替换文件
      *
      * @param files 文件
