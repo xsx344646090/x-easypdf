@@ -66,6 +66,41 @@ public class DocumentAnalyzer extends AbstractAnalyzer implements Closeable {
     }
 
     /**
+     * 获取字符数
+     *
+     * @param pageIndexes 页面索引
+     * @return 返回字符数
+     */
+    @SneakyThrows
+    public int getCharacterCount(int... pageIndexes) {
+        // 初始化分析器
+        if (Objects.isNull(this.textAnalyzer)) {
+            this.textAnalyzer = new TextAnalyzer(this.document);
+        }
+        // 定义字符数
+        int count = 0;
+        // 如果给定页面索引为空，则处理文档所有页面
+        if (Objects.isNull(pageIndexes) || pageIndexes.length == 0) {
+            // 获取文档总页数
+            int total = this.getDocument().getNumberOfPages();
+            // 遍历页面索引
+            for (int index = 0; index < total; index++) {
+                count = count + this.textAnalyzer.getCharacterCount(index);
+            }
+        } else {
+            // 遍历页面索引
+            for (int index : pageIndexes) {
+                // 如果页面索引大于等于0，则计算字符数
+                if (index >= 0) {
+                    count = count + this.textAnalyzer.getCharacterCount(index);
+                }
+            }
+        }
+        // 返回字符数
+        return count;
+    }
+
+    /**
      * 分析文本
      *
      * @param pageIndexes 页面索引

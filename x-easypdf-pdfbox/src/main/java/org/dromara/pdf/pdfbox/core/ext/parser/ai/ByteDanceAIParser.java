@@ -22,17 +22,16 @@ import org.dromara.pdf.pdfbox.core.base.Document;
  * </p>
  */
 public class ByteDanceAIParser extends AbstractAIParser {
-    
+
     /**
      * 有参构造
      *
      * @param document       文档
-     * @param ak             api密钥
-     * @param sk             密钥
+     * @param apiKey         api密钥
      * @param isJsonResponse 是否json响应
      */
-    public ByteDanceAIParser(Document document, String ak, String sk, boolean isJsonResponse) {
-        super(document, ak, sk, isJsonResponse);
+    public ByteDanceAIParser(Document document, String apiKey, boolean isJsonResponse) {
+        super(document, apiKey, isJsonResponse);
         this.config.setImageUrl("https://ark.cn-beijing.volces.com/api/v3/chat/completions");
         this.config.setTextUrl("https://ark.cn-beijing.volces.com/api/v3/chat/completions");
     }

@@ -22,17 +22,16 @@ import org.dromara.pdf.pdfbox.core.base.Document;
  * </p>
  */
 public class ALiAIParser extends AbstractAIParser {
-    
+
     /**
      * 有参构造
      *
      * @param document       文档
-     * @param ak             api密钥
-     * @param sk             密钥
+     * @param apiKey         api密钥
      * @param isJsonResponse 是否json响应
      */
-    public ALiAIParser(Document document, String ak, String sk, boolean isJsonResponse) {
-        super(document, ak, sk, isJsonResponse);
+    public ALiAIParser(Document document, String apiKey, boolean isJsonResponse) {
+        super(document, apiKey, isJsonResponse);
         this.config.setImageUrl("https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions");
         this.config.setImageModel("qwen-vl-plus");
         this.config.setTextUrl("https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions");

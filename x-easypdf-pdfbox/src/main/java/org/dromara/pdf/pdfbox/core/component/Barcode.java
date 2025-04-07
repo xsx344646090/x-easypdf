@@ -473,7 +473,7 @@ public class Barcode extends AbstractComponent {
                         CACHE.put(this.cacheKey(), bufferedImage);
                         // 日志打印
                         if (log.isDebugEnabled()) {
-                            log.debug("Added barcode image: " + this.cacheKey());
+                            log.debug("Added barcode image cache key: " + this.cacheKey());
                         }
                     }
                 } finally {

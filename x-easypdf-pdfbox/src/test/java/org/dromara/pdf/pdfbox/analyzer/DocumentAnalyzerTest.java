@@ -38,7 +38,7 @@ public class DocumentAnalyzerTest extends BaseTest {
                     DocumentAnalyzer analyzer = new DocumentAnalyzer(document);
             ) {
                 Set<TextInfo> infoSet = analyzer.analyzeText();
-                infoSet.forEach(log::info);
+                infoSet.forEach(System.out::println);
             }
         });
     }
@@ -50,10 +50,10 @@ public class DocumentAnalyzerTest extends BaseTest {
     public void characterTest() {
         this.test(() -> {
             try (
-                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\analyzer\\simpleTableTest.pdf");
+                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\analyzer\\hello-world1.pdf");
             ) {
                 DocumentAnalyzer analyzer = new DocumentAnalyzer(document);
-                int characterCount = analyzer.getTextAnalyzer().getCharacterCount(0);
+                int characterCount = analyzer.getCharacterCount(0);
                 log.info("Character count: " + characterCount);
             }
         });

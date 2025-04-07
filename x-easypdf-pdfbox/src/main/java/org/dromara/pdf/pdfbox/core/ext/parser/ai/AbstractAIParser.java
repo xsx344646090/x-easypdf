@@ -44,7 +44,7 @@ import java.util.stream.Collectors;
  * </p>
  */
 public abstract class AbstractAIParser extends AbstractParser {
-    
+
     /**
      * 内容json路径
      */
@@ -61,27 +61,25 @@ public abstract class AbstractAIParser extends AbstractParser {
      * ai解析配置
      */
     protected AIParserConfig config;
-    
+
     /**
      * 有参构造
      *
      * @param document       文档
-     * @param ak             api密钥
-     * @param sk             密钥
+     * @param apiKey         api密钥
      * @param isJsonResponse 是否json响应
      */
-    public AbstractAIParser(Document document, String ak, String sk, boolean isJsonResponse) {
+    public AbstractAIParser(Document document, String apiKey, boolean isJsonResponse) {
         super(document);
         this.config = new AIParserConfig(
-                ak,
-                sk,
+                apiKey,
                 "你是一个图像分析与数据提取专家，能够根据所给的信息准确地回答用户提出的问题",
                 "你是一个数据分析与提取专家，能够根据所给的信息准确地回答用户提出的问题",
                 isJsonResponse,
                 HttpUtil.CLIENT
         );
     }
-    
+
     /**
      * 设置http客户端
      *
@@ -91,7 +89,7 @@ public abstract class AbstractAIParser extends AbstractParser {
         Objects.requireNonNull(client, "the http client can not be null");
         this.config.setClient(client);
     }
-    
+
     /**
      * 设置图像模型
      *
@@ -101,7 +99,7 @@ public abstract class AbstractAIParser extends AbstractParser {
         Objects.requireNonNull(model, "the model can not be null");
         this.config.setImageModel(model);
     }
-    
+
     /**
      * 设置图像系统提示词
      *
@@ -110,7 +108,7 @@ public abstract class AbstractAIParser extends AbstractParser {
     public void setImageSystemPrompt(String prompt) {
         this.config.setImageSystemPrompt(prompt);
     }
-    
+
     /**
      * 设置文本模型
      *
@@ -120,7 +118,7 @@ public abstract class AbstractAIParser extends AbstractParser {
         Objects.requireNonNull(model, "the model can not be null");
         this.config.setTextModel(model);
     }
-    
+
     /**
      * 设置文本系统提示词
      *
@@ -129,7 +127,7 @@ public abstract class AbstractAIParser extends AbstractParser {
     public void setTextSystemPrompt(String prompt) {
         this.config.setTextSystemPrompt(prompt);
     }
-    
+
     /**
      * 是否json响应
      *
@@ -138,7 +136,7 @@ public abstract class AbstractAIParser extends AbstractParser {
     public void setIsJsonResponse(boolean flag) {
         this.config.setJsonResponse(flag);
     }
-    
+
     /**
      * 解析页面（整个页面）
      * <p>注：访问大模型超时时间为1分钟</p>
@@ -150,7 +148,7 @@ public abstract class AbstractAIParser extends AbstractParser {
     public AIParseInfo parsePageWithImage(String prompt, int pageIndex) {
         return this.parseImageInfo(this.createImageMessages(prompt, this.getPageImage(pageIndex)));
     }
-    
+
     /**
      * 解析图像（页面中的图像）
      * <p>注：访问大模型超时时间为1分钟</p>
@@ -163,7 +161,7 @@ public abstract class AbstractAIParser extends AbstractParser {
     public AIParseInfo parseImageWithPage(String prompt, int pageIndex, int imageIndex) {
         return this.parseImageInfo(this.createImageMessages(prompt, this.getPageImage(pageIndex, imageIndex)));
     }
-    
+
     /**
      * 解析文本（文档）
      * <p>注：访问大模型超时时间为1分钟</p>
@@ -174,7 +172,7 @@ public abstract class AbstractAIParser extends AbstractParser {
     public AIParseInfo parseTextWithDocument(String prompt) {
         return this.parseTextWithPage(prompt, -1, -1);
     }
-    
+
     /**
      * 解析文本（页面）
      * <p>注：访问大模型超时时间为1分钟</p>
@@ -188,7 +186,7 @@ public abstract class AbstractAIParser extends AbstractParser {
     public AIParseInfo parseTextWithPage(String prompt, int beginPageIndex, int endPageIndex) {
         return this.parseTexInfo(this.createTextMessages(prompt, this.getPageText(beginPageIndex, endPageIndex)));
     }
-    
+
     /**
      * 解析图像信息
      *
@@ -199,7 +197,7 @@ public abstract class AbstractAIParser extends AbstractParser {
         // 返回解析信息
         return this.parseInfo(this.config.getImageUrl(), this.config.getImageModel(), messages);
     }
-    
+
     /**
      * 解析文本信息
      *
@@ -210,7 +208,7 @@ public abstract class AbstractAIParser extends AbstractParser {
         // 返回解析信息
         return this.parseInfo(this.config.getTextUrl(), this.config.getTextModel(), messages);
     }
-    
+
     /**
      * 解析
      *
@@ -223,7 +221,7 @@ public abstract class AbstractAIParser extends AbstractParser {
         // 返回解析信息
         return this.getParseInfo(this.getResponse(url, model, messages));
     }
-    
+
     /**
      * 创建图像消息
      *
@@ -242,7 +240,7 @@ public abstract class AbstractAIParser extends AbstractParser {
         // 返回消息
         return messages;
     }
-    
+
     /**
      * 创建图像消息内容
      *
@@ -259,7 +257,7 @@ public abstract class AbstractAIParser extends AbstractParser {
         // 返回内容列表
         return contents;
     }
-    
+
     /**
      * 创建消息
      *
@@ -279,16 +277,16 @@ public abstract class AbstractAIParser extends AbstractParser {
         // 返回消息
         return messages;
     }
-    
+
     /**
      * 获取授权
      *
      * @return 返回授权
      */
     protected String getAuthorization() {
-        return "Bearer " + this.config.getAk() + this.config.getSk();
+        return "Bearer " + this.config.getApiKey();
     }
-    
+
     /**
      * 获取请求头
      *
@@ -297,7 +295,7 @@ public abstract class AbstractAIParser extends AbstractParser {
     protected Headers getRequestHeaders() {
         return new Headers.Builder().add("Authorization", this.getAuthorization()).build();
     }
-    
+
     /**
      * 获取请求体
      *
@@ -312,7 +310,7 @@ public abstract class AbstractAIParser extends AbstractParser {
         }
         return jsonBody;
     }
-    
+
     /**
      * 获取响应
      *
@@ -329,7 +327,7 @@ public abstract class AbstractAIParser extends AbstractParser {
         }
         return response;
     }
-    
+
     /**
      * 获取解析信息
      *
@@ -340,7 +338,7 @@ public abstract class AbstractAIParser extends AbstractParser {
         // 返回解析信息
         return new AIParseInfo(response.getString(this.taskIdKey), String.valueOf(response.getByPath(CONTENT_JSON_PATH)), String.valueOf(response.getByPath(TOKEN_JSON_PATH)));
     }
-    
+
     /**
      * 获取页面图像
      * <p>注：页面转图像</p>
@@ -353,7 +351,7 @@ public abstract class AbstractAIParser extends AbstractParser {
         processor.setDpi(300F);
         return processor.image(ImageType.PNG, pageIndex);
     }
-    
+
     /**
      * 获取页面图像
      * <p>注：页面中指定索引的图像</p>
@@ -370,7 +368,7 @@ public abstract class AbstractAIParser extends AbstractParser {
             throw new IllegalArgumentException("the image index['" + imageIndex + "'] is error");
         }
     }
-    
+
     /**
      * 获取页面文本
      *
@@ -389,7 +387,7 @@ public abstract class AbstractAIParser extends AbstractParser {
         }
         return "阅读下面文章，并根据文章内容回答问题，不要复述问题，直接开始回答\n\n" + stripper.getText(this.getDocument());
     }
-    
+
     /**
      * 消息
      */
@@ -406,7 +404,7 @@ public abstract class AbstractAIParser extends AbstractParser {
          */
         protected Object content;
     }
-    
+
     /**
      * 文本消息内容
      */
@@ -421,7 +419,7 @@ public abstract class AbstractAIParser extends AbstractParser {
          * 文本
          */
         protected String text;
-        
+
         /**
          * 有参构造
          *
@@ -431,7 +429,7 @@ public abstract class AbstractAIParser extends AbstractParser {
             this.text = text;
         }
     }
-    
+
     /**
      * 图像消息内容
      */
@@ -446,7 +444,7 @@ public abstract class AbstractAIParser extends AbstractParser {
          * 图像地址
          */
         protected ZhiPuAIParser.ImageUrl image_url;
-        
+
         /**
          * 有参构造
          *
@@ -456,7 +454,7 @@ public abstract class AbstractAIParser extends AbstractParser {
             this.image_url = new ZhiPuAIParser.ImageUrl(url);
         }
     }
-    
+
     /**
      * 图像地址
      */
@@ -467,7 +465,7 @@ public abstract class AbstractAIParser extends AbstractParser {
          * base64
          */
         protected String url;
-        
+
         /**
          * 有参构造
          *

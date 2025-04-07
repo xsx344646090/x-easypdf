@@ -22,17 +22,16 @@ import org.dromara.pdf.pdfbox.core.base.Document;
  * </p>
  */
 public class ZhiPuAIParser extends AbstractAIParser {
-    
+
     /**
      * 有参构造
      *
      * @param document       文档
-     * @param ak             api密钥
-     * @param sk             密钥
+     * @param apiKey         api密钥
      * @param isJsonResponse 是否json响应
      */
-    public ZhiPuAIParser(Document document, String ak, String sk, boolean isJsonResponse) {
-        super(document, ak, sk, isJsonResponse);
+    public ZhiPuAIParser(Document document, String apiKey, boolean isJsonResponse) {
+        super(document, apiKey, isJsonResponse);
         this.config.setImageUrl("https://open.bigmodel.cn/api/paas/v4/chat/completions");
         this.config.setImageModel("glm-4v-flash");
         this.config.setTextUrl("https://open.bigmodel.cn/api/paas/v4/chat/completions");

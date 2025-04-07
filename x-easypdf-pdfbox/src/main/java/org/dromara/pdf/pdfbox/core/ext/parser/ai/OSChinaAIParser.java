@@ -22,21 +22,20 @@ import org.dromara.pdf.pdfbox.core.base.Document;
  * </p>
  */
 public class OSChinaAIParser extends AbstractAIParser {
-    
+
     /**
      * 有参构造
      *
      * @param document       文档
-     * @param ak             api密钥
-     * @param sk             密钥
+     * @param apiKey         api密钥
      * @param isJsonResponse 是否json响应
      */
-    public OSChinaAIParser(Document document, String ak, String sk, boolean isJsonResponse) {
-        super(document, ak, sk, isJsonResponse);
+    public OSChinaAIParser(Document document, String apiKey, boolean isJsonResponse) {
+        super(document, apiKey, isJsonResponse);
         this.config.setTextUrl("https://ai.gitee.com/v1/chat/completions");
         this.config.setTextModel("glm-4-9b-chat");
     }
-    
+
     /**
      * 解析页面（整个页面）
      * <p>注：访问大模型超时时间为1分钟</p>
@@ -49,7 +48,7 @@ public class OSChinaAIParser extends AbstractAIParser {
     public AIParseInfo parsePageWithImage(String prompt, int pageIndex) {
         throw new UnsupportedOperationException();
     }
-    
+
     /**
      * 解析图像（页面中的图像）
      * <p>注：访问大模型超时时间为1分钟</p>
