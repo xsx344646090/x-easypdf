@@ -21,15 +21,17 @@ import org.dromara.pdf.pdfbox.core.enums.FontStyle;
 import org.dromara.pdf.pdfbox.core.enums.HighlightMode;
 import org.dromara.pdf.pdfbox.core.enums.VerticalAlignment;
 import org.dromara.pdf.pdfbox.core.ext.handler.AbstractTextHandler;
+import org.dromara.pdf.pdfbox.core.ext.handler.tokenizer.AbstractTokenizer;
 import org.dromara.pdf.pdfbox.core.info.CatalogInfo;
 import org.dromara.pdf.pdfbox.support.Constants;
 import org.dromara.pdf.pdfbox.util.BorderUtil;
 import org.dromara.pdf.pdfbox.util.CommonUtil;
+import org.dromara.pdf.pdfbox.util.IdUtil;
 import org.dromara.pdf.pdfbox.util.TextUtil;
 
 import java.awt.*;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 
 /**
  * 文本域组件
@@ -65,6 +67,10 @@ public class Textarea extends AbstractComponent {
      * 文本助手
      */
     protected AbstractTextHandler textHandler;
+    /**
+     * 分词器
+     */
+    protected AbstractTokenizer tokenizer;
     /**
      * 制表符大小
      */
@@ -144,6 +150,20 @@ public class Textarea extends AbstractComponent {
     public void setTextHandler(AbstractTextHandler handler) {
         Objects.requireNonNull(handler, "the handler can not be null");
         this.textHandler = handler;
+    }
+
+    /**
+     * 设置分词器
+     * <p>1. 标准分词器（默认）：{@link org.dromara.pdf.pdfbox.core.ext.handler.tokenizer.StandardTokenizer}</p>
+     * <p>2. 单词分词器（仅英文）：{@link org.dromara.pdf.pdfbox.core.ext.handler.tokenizer.WordsTokenizer}</p>
+     * <p>3. 字符分词器：{@link org.dromara.pdf.pdfbox.core.ext.handler.tokenizer.CharacterTokenizer}</p>
+     *
+     * @param tokenizer 分词器
+     */
+    public void setTokenizer(AbstractTokenizer tokenizer) {
+        Objects.requireNonNull(tokenizer, "the tokenizer can not be null");
+        this.tokenizer = tokenizer;
+        this.tokenizer.setContext(this.getContext());
     }
 
     /**
@@ -410,6 +430,10 @@ public class Textarea extends AbstractComponent {
         if (Objects.isNull(this.textHandler)) {
             this.textHandler = this.getContext().getTextHandler();
         }
+        // 初始化分词器
+        if (Objects.nonNull(this.tokenizer)) {
+            this.textHandler.setTokenizer(this.tokenizer);
+        }
         // 初始化制表符大小
         if (Objects.isNull(this.tabSize)) {
             this.tabSize = 4;
@@ -544,7 +568,7 @@ public class Textarea extends AbstractComponent {
         // 首行文本不为空
         if (Objects.nonNull(text)) {
             // 获取首行
-            TextLineInfo firstContent = context.getTextHandler().splitText(this.getFontConfiguration(), text, firstWidth);
+            TextLineInfo firstContent = this.textHandler.splitText(this.getFontConfiguration(), text, firstWidth);
             // 首行内容为空
             if (Objects.isNull(firstContent)) {
                 // 重置起始X轴坐标
@@ -552,14 +576,14 @@ public class Textarea extends AbstractComponent {
                 // 重置起始Y轴坐标
                 this.setBeginY(this.getContext().getCursor().getY() - this.getFontSize() - this.getLeading());
                 // 添加文本
-                this.infoList.addAll(context.getTextHandler().splitLines(this.getFontConfiguration(), text, newWidth));
+                this.infoList.addAll(this.textHandler.splitLines(this.getFontConfiguration(), text, newWidth));
             } else {
                 // 添加首行文本
                 this.infoList.add(firstContent);
                 // 首行内容长度小于首行文本长度
                 if (firstContent.getText().length() < text.length()) {
                     // 添加剩余文本
-                    this.infoList.addAll(context.getTextHandler().splitLines(this.getFontConfiguration(), text.substring(firstContent.getText().length()), newWidth));
+                    this.infoList.addAll(this.textHandler.splitLines(this.getFontConfiguration(), text.substring(firstContent.getText().length()), newWidth));
                 }
             }
         }
@@ -567,7 +591,7 @@ public class Textarea extends AbstractComponent {
         for (int i = 1, count = tempTextList.size(); i < count; i++) {
             String str = tempTextList.get(i);
             if (Objects.nonNull(str)) {
-                this.infoList.addAll(context.getTextHandler().splitLines(this.getFontConfiguration(), str, newWidth));
+                this.infoList.addAll(this.textHandler.splitLines(this.getFontConfiguration(), str, newWidth));
             }
         }
     }
@@ -967,7 +991,7 @@ public class Textarea extends AbstractComponent {
         // 创建链接
         PDAnnotationLink link = new PDAnnotationLink();
         // 设置名称
-        link.setAnnotationName(Optional.ofNullable(name).orElse(UUID.randomUUID().toString()));
+        link.setAnnotationName(Optional.ofNullable(name).orElse(IdUtil.get()));
         // 设置高亮模式
         Optional.ofNullable(mode).map(HighlightMode::getMode).ifPresent(link::setHighlightMode);
         // 设置动作

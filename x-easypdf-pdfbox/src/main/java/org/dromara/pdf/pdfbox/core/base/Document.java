@@ -18,8 +18,6 @@ import org.dromara.pdf.pdfbox.core.base.config.FontConfiguration;
 import org.dromara.pdf.pdfbox.core.base.config.MarginConfiguration;
 import org.dromara.pdf.pdfbox.core.enums.FontStyle;
 import org.dromara.pdf.pdfbox.core.enums.PWLength;
-import org.dromara.pdf.pdfbox.core.ext.handler.AbstractTextHandler;
-import org.dromara.pdf.pdfbox.core.ext.handler.TextHandler;
 import org.dromara.pdf.pdfbox.core.ext.processor.MetadataProcessor;
 import org.dromara.pdf.pdfbox.core.ext.processor.PageProcessor;
 import org.dromara.pdf.pdfbox.core.info.CatalogInfo;
@@ -27,6 +25,7 @@ import org.dromara.pdf.pdfbox.support.Constants;
 import org.dromara.pdf.pdfbox.support.DefaultResourceCache;
 import org.dromara.pdf.pdfbox.support.linearizer.Linearizer;
 import org.dromara.pdf.pdfbox.util.FileUtil;
+import org.dromara.pdf.pdfbox.util.IdUtil;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -35,8 +34,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 
 /**
  * 文档
@@ -221,15 +220,6 @@ public class Document extends AbstractBase implements Closeable {
      */
     public void setMargin(float margin) {
         this.marginConfiguration.setMargin(margin);
-    }
-
-    /**
-     * 设置文本助手
-     *
-     * @param handler 助手
-     */
-    public void setTextHandler(AbstractTextHandler handler) {
-        this.context.setTextHandler(handler);
     }
 
     /**
@@ -668,7 +658,7 @@ public class Document extends AbstractBase implements Closeable {
      */
     @SneakyThrows
     public File getTempFile() {
-        File temp = new File(Constants.TEMP_FILE_PATH, UUID.randomUUID() + ".pdf");
+        File temp = new File(Constants.TEMP_FILE_PATH, IdUtil.get() + ".pdf");
         this.save(temp);
         return temp;
     }
@@ -915,8 +905,6 @@ public class Document extends AbstractBase implements Closeable {
     protected void initOtherParams() {
         // 添加字体缓存
         this.context.addFontCache(this.fontConfiguration.getFontName());
-        // 设置文本助手
-        this.context.setTextHandler(new TextHandler(this));
         // 初始化文档访问权限
         this.accessPermission = this.target.getCurrentAccessPermission();
         // 初始化文档版本
