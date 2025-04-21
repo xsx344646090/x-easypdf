@@ -3,6 +3,7 @@ package org.dromara.pdf.pdfbox.core.ext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.dromara.pdf.pdfbox.core.base.Context;
 import org.dromara.pdf.pdfbox.core.base.Document;
 
 /**
@@ -43,12 +44,12 @@ public abstract class AbstractExpander {
     public AbstractExpander(Document document) {
         this.document = document;
     }
-    
+
     /**
      * 无参构造
      */
     protected AbstractExpander() {
-    
+
     }
 
     /**
@@ -58,5 +59,14 @@ public abstract class AbstractExpander {
      */
     protected PDDocument getDocument() {
         return this.document.getTarget();
+    }
+
+    /**
+     * 获取上下文
+     *
+     * @return 返回上下文
+     */
+    protected Context getContext() {
+        return this.document.getContext();
     }
 }

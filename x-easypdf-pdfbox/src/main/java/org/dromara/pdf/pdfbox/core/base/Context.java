@@ -7,6 +7,7 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.dromara.pdf.pdfbox.core.component.BorderInfo;
 import org.dromara.pdf.pdfbox.core.enums.ComponentType;
 import org.dromara.pdf.pdfbox.core.ext.handler.AbstractTextHandler;
+import org.dromara.pdf.pdfbox.core.ext.handler.TextHandler;
 import org.dromara.pdf.pdfbox.core.info.CatalogInfo;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 
@@ -109,10 +110,6 @@ public class Context {
      * 字体字典
      */
     protected Map<String, PDFont> fontMap;
-    /**
-     * 文本助手
-     */
-    protected AbstractTextHandler textHandler;
 
     /**
      * 有参构造
@@ -133,16 +130,6 @@ public class Context {
     }
 
     /**
-     * 设置文本助手
-     *
-     * @param handler 助手
-     */
-    public void setTextHandler(AbstractTextHandler handler) {
-        Objects.requireNonNull(handler, "the handler can not be null");
-        this.textHandler = handler;
-    }
-
-    /**
      * 获取任务文档
      *
      * @return 返回任务文档
@@ -158,6 +145,15 @@ public class Context {
      */
     public PDPage getTargetPage() {
         return this.page.getTarget();
+    }
+
+    /**
+     * 获取文本助手
+     *
+     * @return 返回文本助手
+     */
+    public AbstractTextHandler getTextHandler() {
+        return new TextHandler(this.document);
     }
 
     /**
@@ -246,9 +242,8 @@ public class Context {
     public void addFontCache(String... fontNames) {
         Objects.requireNonNull(fontNames, "the font names can not be null");
         for (String fontName : fontNames) {
-            if (!this.fontMap.containsKey(fontName)) {
-                this.fontMap.put(fontName, PdfHandler.getFontHandler().getPDFont(this.getTargetDocument(), fontName, true));
-            }
+            this.fontMap.putIfAbsent(fontName, PdfHandler.getFontHandler().getPDFont(this.getTargetDocument(), fontName, true));
+            PdfHandler.getFontHandler().initCharacterMap(fontName);
         }
     }
 

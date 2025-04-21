@@ -10,6 +10,7 @@ import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.base.PageSize;
 import org.dromara.pdf.pdfbox.core.enums.PageJoinType;
 import org.dromara.pdf.pdfbox.core.enums.RotationAngle;
+import org.dromara.pdf.pdfbox.util.IdUtil;
 
 import java.awt.geom.AffineTransform;
 import java.util.*;
@@ -34,7 +35,7 @@ import java.util.*;
  */
 @EqualsAndHashCode(callSuper = true)
 public class PageProcessor extends AbstractProcessor {
-    
+
     /**
      * 有参构造
      *
@@ -43,7 +44,7 @@ public class PageProcessor extends AbstractProcessor {
     public PageProcessor(Document document) {
         super(document);
     }
-    
+
     /**
      * 获取页面
      *
@@ -52,7 +53,7 @@ public class PageProcessor extends AbstractProcessor {
     public List<Page> getPages() {
         return this.document.getPages();
     }
-    
+
     /**
      * 插入页面
      *
@@ -83,7 +84,7 @@ public class PageProcessor extends AbstractProcessor {
             log.warn("the index['" + index + "'] is invalid, will be ignored");
         }
     }
-    
+
     /**
      * 追加页面
      *
@@ -106,7 +107,7 @@ public class PageProcessor extends AbstractProcessor {
             this.document.getPages().add(page);
         }
     }
-    
+
     /**
      * 设置页面（替换）
      *
@@ -137,7 +138,7 @@ public class PageProcessor extends AbstractProcessor {
             log.warn("the index['" + index + "'] is invalid, will be ignored");
         }
     }
-    
+
     /**
      * 移除页面
      *
@@ -159,7 +160,7 @@ public class PageProcessor extends AbstractProcessor {
             }
         }
     }
-    
+
     /**
      * 拼接页面
      *
@@ -176,7 +177,7 @@ public class PageProcessor extends AbstractProcessor {
         // 拼接页面
         this.join(type, null, null, newPage, pages);
     }
-    
+
     /**
      * 拼接页面
      *
@@ -204,7 +205,7 @@ public class PageProcessor extends AbstractProcessor {
             // 定义页面
             PDFormXObject form = layer.importPageAsForm(page.getContext().getTargetDocument(), page.getTarget());
             // 添加页面
-            layer.appendFormAsLayer(newPage.getTarget(), form, AffineTransform.getTranslateInstance(x, y), UUID.randomUUID().toString());
+            layer.appendFormAsLayer(newPage.getTarget(), form, AffineTransform.getTranslateInstance(x, y), IdUtil.get());
             // 水平拼接
             if (type == PageJoinType.HORIZONTAL) {
                 // x轴坐标+页面宽度
@@ -216,7 +217,7 @@ public class PageProcessor extends AbstractProcessor {
             this.document.getPages().add(newPage);
         }
     }
-    
+
     /**
      * 重组页面
      *
@@ -242,7 +243,7 @@ public class PageProcessor extends AbstractProcessor {
         // 重置页面列表
         this.document.setPages(newPages);
     }
-    
+
     /**
      * 重排序页面
      *
@@ -270,7 +271,7 @@ public class PageProcessor extends AbstractProcessor {
         // 重置页面列表
         this.document.setPages(orderPages);
     }
-    
+
     /**
      * 旋转页面
      *
@@ -301,7 +302,7 @@ public class PageProcessor extends AbstractProcessor {
             }
         }
     }
-    
+
     /**
      * 缩放页面
      *
@@ -332,7 +333,7 @@ public class PageProcessor extends AbstractProcessor {
             }
         }
     }
-    
+
     /**
      * 裁剪页面
      *
@@ -363,14 +364,14 @@ public class PageProcessor extends AbstractProcessor {
             }
         }
     }
-    
+
     /**
      * 重置尺寸（恢复原有尺寸）
      */
     public void resetSize() {
         this.document.getPages().forEach(Page::resetRectangle);
     }
-    
+
     /**
      * 刷新页面
      */

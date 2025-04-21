@@ -6,6 +6,7 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.base.config.FontConfiguration;
 import org.dromara.pdf.pdfbox.core.component.TextLineInfo;
+import org.dromara.pdf.pdfbox.core.ext.handler.tokenizer.StandardTokenizer;
 import org.dromara.pdf.pdfbox.support.Constants;
 
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.Objects;
  * @date 2024/9/25
  * @since 1.8
  * <p>
- * Copyright (c) 2020-2024 xsx All Rights Reserved.
+ * Copyright (c) 2020 xsx All Rights Reserved.
  * x-easypdf-pdfbox is licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
@@ -30,7 +31,7 @@ import java.util.Objects;
  * </p>
  */
 public class TextHandler extends AbstractTextHandler {
-    
+
     /**
      * 有参构造
      *
@@ -38,8 +39,10 @@ public class TextHandler extends AbstractTextHandler {
      */
     public TextHandler(Document document) {
         super(document);
+        this.tokenizer = new StandardTokenizer();
+        this.tokenizer.setContext(this.getContext());
     }
-    
+
     /**
      * 写入文本
      *
@@ -93,7 +96,7 @@ public class TextHandler extends AbstractTextHandler {
             }
         }
     }
-    
+
     /**
      * 处理单字符
      *
@@ -137,7 +140,7 @@ public class TextHandler extends AbstractTextHandler {
         // 返回标记
         return flag;
     }
-    
+
     /**
      * 处理双字符
      *

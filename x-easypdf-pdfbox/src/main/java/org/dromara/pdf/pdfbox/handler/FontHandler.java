@@ -17,6 +17,7 @@ import org.dromara.pdf.pdfbox.support.fonts.FontMapperImpl;
 import java.io.File;
 import java.io.InputStream;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 字体助手
@@ -38,19 +39,22 @@ import java.util.*;
  */
 public class FontHandler {
 
-    static {
-        Banner.print();
-    }
-
     /**
      * 日志
      */
     private static final Log log = LogFactory.getLog(FontHandler.class);
-
     /**
      * 助手实例
      */
     private static final FontHandler INSTANCE = new FontHandler();
+    /**
+     * 字符宽度字典
+     */
+    private final Map<String, Map<Character, Float>> characterWidthMap = new ConcurrentHashMap<>(16);
+
+    static {
+        Banner.print();
+    }
 
     /**
      * 无参构造
@@ -70,6 +74,26 @@ public class FontHandler {
      */
     public static FontHandler getInstance() {
         return INSTANCE;
+    }
+
+    /**
+     * 初始化字符字典
+     *
+     * @param fontName 字体名称
+     */
+    public void initCharacterMap(String fontName) {
+        FontInfo fontInfo = FontMapperImpl.getInstance().getFontInfoByName().get(fontName);
+        this.characterWidthMap.putIfAbsent(fontInfo.getPostScriptName(), new HashMap<>(4096));
+    }
+
+    /**
+     * 获取字符宽度字典
+     *
+     * @param fontName 字体名称
+     * @return 返回字符宽度字典
+     */
+    public Map<Character, Float> getCharacterWidthMap(String fontName) {
+        return this.characterWidthMap.get(fontName);
     }
 
     /**
