@@ -2,8 +2,7 @@ package org.dromara.pdf.pdfbox.core.component;
 
 import lombok.EqualsAndHashCode;
 import org.dromara.pdf.pdfbox.core.base.PagingEvent;
-
-import java.util.UUID;
+import org.dromara.pdf.pdfbox.util.IdUtil;
 
 /**
  * 抽象分页事件
@@ -29,7 +28,7 @@ public abstract class AbstractPagingEvent implements PagingEvent {
     /**
      * 唯一标识
      */
-    protected final String id = UUID.randomUUID().toString();
+    protected final String id = IdUtil.get();
 
     /**
      * 分页之前
