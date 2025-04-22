@@ -166,7 +166,6 @@ public class FontHandler {
             if (log.isDebugEnabled()) {
                 log.debug("Added font ['" + alias + "']");
             }
-            FontMapperImpl.getInstance().resetFontInfoByName();
         }
     }
 
@@ -184,7 +183,6 @@ public class FontHandler {
                     log.debug("Added font ['" + fontName + "']");
                 }
             });
-            FontMapperImpl.getInstance().resetFontInfoByName();
         }
     }
 
@@ -202,7 +200,6 @@ public class FontHandler {
                     log.debug("Added font ['" + fontName + "']");
                 }
             });
-            FontMapperImpl.getInstance().resetFontInfoByName();
         }
     }
 
@@ -219,7 +216,6 @@ public class FontHandler {
         if (log.isDebugEnabled()) {
             log.debug("Added font ['" + fontName + "']");
         }
-        FontMapperImpl.getInstance().resetFontInfoByName();
     }
 
     /**

@@ -3,7 +3,7 @@ package org.dromara.pdf.pdfbox.support;
 import org.dromara.pdf.pdfbox.core.enums.FontStyle;
 
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -57,11 +57,11 @@ public final class Constants {
     /**
      * 默认字体
      */
-    public static final String DEFAULT_FONT_NAME = "HarmonyOS Sans SC";
+    public static final String DEFAULT_FONT_NAME = "HarmonyOS_Sans_SC";
     /**
      * 默认特殊字体
      */
-    public static final List<String> DEFAULT_FONT_SPECIAL_NAMES = new ArrayList<>();
+    public static final List<String> DEFAULT_FONT_SPECIAL_NAMES = new LinkedList<>();
     /**
      * 默认字体路径
      */
