@@ -25,8 +25,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 1.8
  */
 public abstract class PDFont implements COSObjectable, PDFontLike {
-    private static final Log LOG = LogFactory.getLog(PDFont.class);
     protected static final Matrix DEFAULT_FONT_MATRIX = new Matrix(0.001f, 0, 0, 0.001f, 0, 0);
+    private static final Log LOG = LogFactory.getLog(PDFont.class);
     protected final COSDictionary dict;
     private final CMap toUnicodeCMap;
     /**

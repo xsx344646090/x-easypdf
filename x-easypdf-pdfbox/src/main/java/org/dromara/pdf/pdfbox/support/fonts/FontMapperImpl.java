@@ -5,16 +5,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.fontbox.FontBoxFont;
 import org.apache.fontbox.ttf.OpenTypeFont;
-import org.apache.fontbox.ttf.TTFParser;
 import org.apache.fontbox.ttf.TrueTypeFont;
 import org.apache.fontbox.type1.Type1Font;
-import org.apache.pdfbox.io.RandomAccessReadBuffer;
 import org.apache.pdfbox.pdmodel.font.*;
 import org.dromara.pdf.pdfbox.support.Constants;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -26,15 +21,12 @@ public class FontMapperImpl implements FontMapper {
     private static final Log LOG = LogFactory.getLog(FontMapperImpl.class);
 
     private static final FontCache fontCache = new FontCache(); // todo: static cache isn't ideal
-    private FontProvider fontProvider;
-    private Map<String, FontInfo> fontInfoByName;
-    private final TrueTypeFont lastResortFont;
-
+    private static final FontMapperImpl INSTANCE = new FontMapperImpl();
     /**
      * Map of PostScript name substitutes, in priority order.
      */
     private final Map<String, List<String>> substitutes = new HashMap<>();
-    private static final FontMapperImpl INSTANCE = new FontMapperImpl();
+    private FontProvider fontProvider;
 
     @SneakyThrows
     private FontMapperImpl() {
@@ -105,14 +97,14 @@ public class FontMapperImpl implements FontMapper {
             });
         }
 
-        String resourceName = Constants.DEFAULT_FONT_RESOURCE_PATH;
-        InputStream resourceAsStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourceName);
-        if (resourceAsStream == null) {
-            throw new IOException("resource '" + resourceName + "' not found");
-        }
-
-        TTFParser ttfParser = new TTFParser();
-        lastResortFont = ttfParser.parse(new RandomAccessReadBuffer(new BufferedInputStream(resourceAsStream)));
+        // String resourceName = Constants.DEFAULT_FONT_RESOURCE_PATH;
+        // InputStream resourceAsStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourceName);
+        // if (resourceAsStream == null) {
+        //     throw new IOException("resource '" + resourceName + "' not found");
+        // }
+        //
+        // TTFParser ttfParser = new TTFParser();
+        // lastResortFont = ttfParser.parse(new RandomAccessReadBuffer(new BufferedInputStream(resourceAsStream)));
 
         FontMappers.set(this);
     }
@@ -122,19 +114,6 @@ public class FontMapperImpl implements FontMapper {
      */
     public static FontMapperImpl getInstance() {
         return INSTANCE;
-    }
-
-    // lazy thread safe singleton
-    private static class DefaultFontProvider {
-        private static final FileSystemFontProvider INSTANCE = new FileSystemFontProvider(fontCache);
-    }
-
-    /**
-     * Sets the font service provider.
-     */
-    public synchronized void setProvider(FontProvider fontProvider) {
-        this.fontInfoByName = createFontInfoByName(fontProvider.getFontInfo());
-        this.fontProvider = fontProvider;
     }
 
     /**
@@ -148,6 +127,13 @@ public class FontMapperImpl implements FontMapper {
     }
 
     /**
+     * Sets the font service provider.
+     */
+    public synchronized void setProvider(FontProvider fontProvider) {
+        this.fontProvider = fontProvider;
+    }
+
+    /**
      * Returns the font cache associated with this FontMapper. This method is needed by
      * FontProvider subclasses.
      */
@@ -155,18 +141,8 @@ public class FontMapperImpl implements FontMapper {
         return fontCache;
     }
 
-    
     public Map<String, FontInfo> getFontInfoByName() {
-        return fontInfoByName;
-    }
-
-    public void resetFontInfoByName() {
-        List<? extends FontInfo> list = fontProvider.getFontInfo();
-        if (!list.isEmpty()) {
-            List<FontInfo> tempList = new ArrayList<>(1);
-            tempList.add(list.get(list.size() - 1));
-            fontInfoByName.putAll(this.createFontInfoByName(tempList));
-        }
+        return this.fontProvider.getFontInfoByName();
     }
 
     private Map<String, FontInfo> createFontInfoByName(List<? extends FontInfo> fontInfoList) {
@@ -293,7 +269,7 @@ public class FontMapperImpl implements FontMapper {
             ttf = (TrueTypeFont) findFont(FontFormat.TTF, fontName);
             if (ttf == null) {
                 // we have to return something here as TTFs aren't strictly required on the system
-                ttf = lastResortFont;
+                ttf = (TrueTypeFont) getDefaultFont();
             }
             if (LOG.isWarnEnabled()) {
                 LOG.warn("the font ['" + baseFont + "'] can not be found, will be used default font ['" + fontName + "']");
@@ -319,7 +295,7 @@ public class FontMapperImpl implements FontMapper {
             font = findFontBoxFont(fallbackName);
             if (font == null) {
                 // we have to return something here as TTFs aren't strictly required on the system
-                font = lastResortFont;
+                font = getDefaultFont();
             }
             return new FontMapping<>(font, true);
         }
@@ -415,7 +391,7 @@ public class FontMapperImpl implements FontMapper {
         //         LOG.debug(String.format("getFont('%s','%s') returns %s", format, postScriptName, info));
         //     }
         // }
-        return fontInfoByName.get(postScriptName);
+        return this.fontProvider.getFontInfoByName().get(postScriptName);
     }
 
     /**
@@ -475,7 +451,11 @@ public class FontMapperImpl implements FontMapper {
         }
 
         // last-resort fallback
-        return new CIDFontMapping(null, lastResortFont, true);
+        return new CIDFontMapping(null, getDefaultFont(), true);
+    }
+
+    private FontBoxFont getDefaultFont() {
+        return this.fontProvider.getFontInfoByName().get(Constants.DEFAULT_FONT_NAME).getFont();
     }
 
     /**
@@ -487,8 +467,8 @@ public class FontMapperImpl implements FontMapper {
      */
     private PriorityQueue<FontMatch> getFontMatches(PDFontDescriptor fontDescriptor, PDCIDSystemInfo cidSystemInfo) {
         PriorityQueue<FontMatch> queue = new PriorityQueue<>(20);
-
-        for (FontInfo info : fontInfoByName.values()) {
+        Collection<FontInfo> infos = this.fontProvider.getFontInfoByName().values();
+        for (FontInfo info : infos) {
             // filter by CIDSystemInfo, if given
             if (cidSystemInfo != null && !isCharSetMatch(cidSystemInfo, info)) {
                 continue;
@@ -609,12 +589,17 @@ public class FontMapperImpl implements FontMapper {
         }
     }
 
+    // lazy thread safe singleton
+    private static class DefaultFontProvider {
+        private static final FileSystemFontProvider INSTANCE = new FileSystemFontProvider(fontCache);
+    }
+
     /**
      * A potential match for a font substitution.
      */
     private static class FontMatch implements Comparable<FontMatch> {
-        double score;
         final FontInfo info;
+        double score;
 
         FontMatch(FontInfo info) {
             this.info = info;
