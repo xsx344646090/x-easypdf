@@ -46,21 +46,35 @@ import java.util.*;
  */
 public abstract class PDAbstractContentStream implements Closeable {
     protected final Log LOG = LogFactory.getLog(this.getClass());
-    
+
     protected final PDDocument document; // may be null
-    
+
     protected final OutputStream outputStream;
-    protected final PDResources resources;
+    protected PDResources resources;
     protected final Deque<PDFont> fontStack = new ArrayDeque<>();
     protected final Deque<PDColorSpace> nonStrokingColorSpaceStack = new ArrayDeque<>();
     protected final Deque<PDColorSpace> strokingColorSpaceStack = new ArrayDeque<>();
     protected final Map<PDType0Font, GsubWorker> gsubWorkers = new HashMap<>();
     // number format
-    private final NumberFormat formatDecimal = NumberFormat.getNumberInstance(Locale.US);
+    protected final NumberFormat formatDecimal = NumberFormat.getNumberInstance(Locale.US);
     private final byte[] formatBuffer = new byte[32];
     private final GsubWorkerFactory gsubWorkerFactory = new GsubWorkerFactory();
     protected boolean inTextMode = false;
-    
+
+    /**
+     * Create a new appearance stream.
+     *
+     * @param document     may be null
+     * @param outputStream The appearances output stream to write to.
+     */
+    PDAbstractContentStream(PDDocument document, OutputStream outputStream) {
+        this.document = document;
+        this.outputStream = outputStream;
+
+        formatDecimal.setMaximumFractionDigits(4);
+        formatDecimal.setGroupingUsed(false);
+    }
+
     /**
      * Create a new appearance stream.
      *
@@ -69,14 +83,10 @@ public abstract class PDAbstractContentStream implements Closeable {
      * @param resources    The resources to use
      */
     PDAbstractContentStream(PDDocument document, OutputStream outputStream, PDResources resources) {
-        this.document = document;
-        this.outputStream = outputStream;
+        this(document, outputStream);
         this.resources = resources;
-        
-        formatDecimal.setMaximumFractionDigits(4);
-        formatDecimal.setGroupingUsed(false);
     }
-    
+
     /**
      * Sets the maximum number of digits allowed for fractional numbers.
      *
@@ -86,7 +96,7 @@ public abstract class PDAbstractContentStream implements Closeable {
     protected void setMaximumFractionDigits(int fractionDigitsNumber) {
         formatDecimal.setMaximumFractionDigits(fractionDigitsNumber);
     }
-    
+
     /**
      * Begin some text operations.
      *
@@ -101,7 +111,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         writeOperator(OperatorName.BEGIN_TEXT);
         inTextMode = true;
     }
-    
+
     /**
      * End some text operations.
      *
@@ -116,7 +126,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         writeOperator(OperatorName.END_TEXT);
         inTextMode = false;
     }
-    
+
     /**
      * Set the font and font size to draw text with.
      *
@@ -143,7 +153,7 @@ public abstract class PDAbstractContentStream implements Closeable {
                 LOG.debug("attempting to use font '" + font.getName() + "' that isn't embedded");
             }
         }
-        
+
         // complex text layout
         if (font instanceof PDType0Font) {
             PDType0Font pdType0Font = (PDType0Font) font;
@@ -161,7 +171,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         writeOperand(fontSize);
         writeOperator(OperatorName.SET_FONT_AND_SIZE);
     }
-    
+
     /**
      * Shows the given text at the location specified by the current text matrix with the given
      * interspersed positioning. This allows the user to efficiently position each glyph or sequence
@@ -188,7 +198,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         write("] ");
         writeOperator(OperatorName.SHOW_TEXT_ADJUSTED);
     }
-    
+
     /**
      * Shows the given text at the location specified by the current text matrix.
      *
@@ -200,7 +210,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         showTextInternal(text);
         endTextInternal();
     }
-    
+
     /**
      * Shows the given text at the location specified by the current text matrix.
      *
@@ -212,7 +222,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         showCharacterInternal(character);
         endTextInternal();
     }
-    
+
     /**
      * Outputs a string using the correct encoding and subsetting as required.
      *
@@ -223,20 +233,20 @@ public abstract class PDAbstractContentStream implements Closeable {
         if (!inTextMode) {
             throw new IllegalStateException("Must call beginText() before showText()");
         }
-        
+
         if (fontStack.isEmpty()) {
             throw new IllegalStateException("Must call setFont() before showText()");
         }
         PDFont font = fontStack.peek();
-        
+
         // Unicode code points to keep when subsetting
         if (font.willBeSubset()) {
             font.addToSubset(character);
         }
-        
+
         COSWriter.writeString(font.encode(character), outputStream);
     }
-    
+
     /**
      * end show character.
      *
@@ -246,7 +256,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         write(" ");
         writeOperator(OperatorName.SHOW_TEXT);
     }
-    
+
     /**
      * Outputs a string using the correct encoding and subsetting as required.
      *
@@ -257,17 +267,17 @@ public abstract class PDAbstractContentStream implements Closeable {
         if (!inTextMode) {
             throw new IllegalStateException("Must call beginText() before showText()");
         }
-        
+
         if (fontStack.isEmpty()) {
             throw new IllegalStateException("Must call setFont() before showText()");
         }
-        
+
         PDFont font = fontStack.peek();
-        
+
         // complex text layout
         byte[] encodedText = null;
         if (font instanceof PDType0Font) {
-            
+
             GsubWorker gsubWorker = gsubWorkers.get(font);
             if (gsubWorker != null) {
                 PDType0Font pdType0Font = (PDType0Font) font;
@@ -278,11 +288,11 @@ public abstract class PDAbstractContentStream implements Closeable {
                 }
             }
         }
-        
+
         if (encodedText == null) {
             encodedText = font.encode(text);
         }
-        
+
         // Unicode code points to keep when subsetting
         if (font.willBeSubset()) {
             int offset = 0;
@@ -292,10 +302,10 @@ public abstract class PDAbstractContentStream implements Closeable {
                 offset += Character.charCount(codePoint);
             }
         }
-        
+
         COSWriter.writeString(encodedText, outputStream);
     }
-    
+
     /**
      * Sets the text leading.
      *
@@ -306,7 +316,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         writeOperand(leading);
         writeOperator(OperatorName.SET_TEXT_LEADING);
     }
-    
+
     /**
      * Move to the start of the next line of text. Requires the leading (see {@link #setLeading})
      * to have been set.
@@ -319,7 +329,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         }
         writeOperator(OperatorName.NEXT_LINE);
     }
-    
+
     /**
      * The Td operator.
      * Move to the start of the next line, offset from the start of the current line by (tx, ty).
@@ -337,7 +347,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         writeOperand(ty);
         writeOperator(OperatorName.MOVE_TEXT);
     }
-    
+
     /**
      * The Tm operator. Sets the text matrix to the given values.
      * A current text matrix will be replaced with the new one.
@@ -353,7 +363,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         writeAffineTransform(matrix.createAffineTransform());
         writeOperator(OperatorName.SET_MATRIX);
     }
-    
+
     /**
      * Draw an image at the x,y coordinates, with the default size of the image.
      *
@@ -365,7 +375,7 @@ public abstract class PDAbstractContentStream implements Closeable {
     public void drawImage(PDImageXObject image, float x, float y) throws IOException {
         drawImage(image, x, y, image.getWidth(), image.getHeight());
     }
-    
+
     /**
      * Draw an image at the x,y coordinates, with the given size.
      *
@@ -381,18 +391,18 @@ public abstract class PDAbstractContentStream implements Closeable {
         if (inTextMode) {
             throw new IllegalStateException("Error: drawImage is not allowed within a text block.");
         }
-        
+
         saveGraphicsState();
-        
+
         AffineTransform transform = new AffineTransform(width, 0, 0, height, x, y);
         transform(new Matrix(transform));
-        
+
         writeOperand(resources.add(image));
         writeOperator(OperatorName.DRAW_OBJECT);
-        
+
         restoreGraphicsState();
     }
-    
+
     /**
      * Draw an image at the origin with the given transformation matrix.
      *
@@ -405,18 +415,18 @@ public abstract class PDAbstractContentStream implements Closeable {
         if (inTextMode) {
             throw new IllegalStateException("Error: drawImage is not allowed within a text block.");
         }
-        
+
         saveGraphicsState();
-        
+
         AffineTransform transform = matrix.createAffineTransform();
         transform(new Matrix(transform));
-        
+
         writeOperand(resources.add(image));
         writeOperator(OperatorName.DRAW_OBJECT);
-        
+
         restoreGraphicsState();
     }
-    
+
     /**
      * Draw an inline image at the x,y coordinates, with the default size of the image.
      *
@@ -428,7 +438,7 @@ public abstract class PDAbstractContentStream implements Closeable {
     public void drawImage(PDInlineImage inlineImage, float x, float y) throws IOException {
         drawImage(inlineImage, x, y, inlineImage.getWidth(), inlineImage.getHeight());
     }
-    
+
     /**
      * Draw an inline image at the x,y coordinates and a certain width and height.
      *
@@ -444,24 +454,24 @@ public abstract class PDAbstractContentStream implements Closeable {
         if (inTextMode) {
             throw new IllegalStateException("Error: drawImage is not allowed within a text block.");
         }
-        
+
         saveGraphicsState();
         transform(new Matrix(width, 0, 0, height, x, y));
-        
+
         // create the image dictionary
         StringBuilder sb = new StringBuilder();
         sb.append(OperatorName.BEGIN_INLINE_IMAGE);
-        
+
         sb.append("\n /W ");
         sb.append(inlineImage.getWidth());
-        
+
         sb.append("\n /H ");
         sb.append(inlineImage.getHeight());
-        
+
         sb.append("\n /CS ");
         sb.append('/');
         sb.append(inlineImage.getColorSpace().getName());
-        
+
         COSArray decodeArray = inlineImage.getDecode();
         if (decodeArray != null && decodeArray.size() > 0) {
             sb.append("\n /D ");
@@ -472,27 +482,27 @@ public abstract class PDAbstractContentStream implements Closeable {
             }
             sb.append(']');
         }
-        
+
         if (inlineImage.isStencil()) {
             sb.append("\n /IM true");
         }
-        
+
         sb.append("\n /BPC ");
         sb.append(inlineImage.getBitsPerComponent());
-        
+
         // image dictionary
         write(sb.toString());
         writeLine();
-        
+
         // binary data
         writeOperator(OperatorName.BEGIN_INLINE_IMAGE_DATA);
         writeBytes(inlineImage.getData());
         writeLine();
         writeOperator(OperatorName.END_INLINE_IMAGE);
-        
+
         restoreGraphicsState();
     }
-    
+
     /**
      * Draws the given Form XObject at the current location.
      *
@@ -504,11 +514,11 @@ public abstract class PDAbstractContentStream implements Closeable {
         if (inTextMode) {
             throw new IllegalStateException("Error: drawForm is not allowed within a text block.");
         }
-        
+
         writeOperand(resources.add(form));
         writeOperator(OperatorName.DRAW_OBJECT);
     }
-    
+
     /**
      * The cm operator. Concatenates the given matrix with the current transformation matrix (CTM),
      * which maps user space coordinates used within a PDF content stream into output device
@@ -522,11 +532,11 @@ public abstract class PDAbstractContentStream implements Closeable {
         if (inTextMode) {
             throw new IllegalStateException("Error: Modifying the current transformation matrix is not allowed within text objects.");
         }
-        
+
         writeAffineTransform(matrix.createAffineTransform());
         writeOperator(OperatorName.CONCAT);
     }
-    
+
     /**
      * q operator. Saves the current graphics state.
      *
@@ -536,7 +546,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         if (inTextMode) {
             throw new IllegalStateException("Error: Saving the graphics state is not allowed within text objects.");
         }
-        
+
         if (!fontStack.isEmpty()) {
             fontStack.push(fontStack.peek());
         }
@@ -548,7 +558,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         }
         writeOperator(OperatorName.SAVE);
     }
-    
+
     /**
      * Q operator. Restores the current graphics state.
      *
@@ -558,7 +568,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         if (inTextMode) {
             throw new IllegalStateException("Error: Restoring the graphics state is not allowed within text objects.");
         }
-        
+
         if (!fontStack.isEmpty()) {
             fontStack.pop();
         }
@@ -570,7 +580,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         }
         writeOperator(OperatorName.RESTORE);
     }
-    
+
     protected COSName getName(PDColorSpace colorSpace) {
         if (colorSpace instanceof PDDeviceGray || colorSpace instanceof PDDeviceRGB || colorSpace instanceof PDDeviceCMYK) {
             return COSName.getPDFName(colorSpace.getName());
@@ -578,7 +588,7 @@ public abstract class PDAbstractContentStream implements Closeable {
             return resources.add(colorSpace);
         }
     }
-    
+
     /**
      * Sets the stroking color and, if necessary, the stroking color space.
      *
@@ -591,22 +601,22 @@ public abstract class PDAbstractContentStream implements Closeable {
             writeOperator(OperatorName.STROKING_COLORSPACE);
             setStrokingColorSpaceStack(color.getColorSpace());
         }
-        
+
         for (float value : color.getComponents()) {
             writeOperand(value);
         }
-        
+
         if (color.getColorSpace() instanceof PDPattern) {
             writeOperand(color.getPatternName());
         }
-        
+
         if (color.getColorSpace() instanceof PDPattern || color.getColorSpace() instanceof PDSeparation || color.getColorSpace() instanceof PDDeviceN || color.getColorSpace() instanceof PDICCBased) {
             writeOperator(OperatorName.STROKING_COLOR_N);
         } else {
             writeOperator(OperatorName.STROKING_COLOR);
         }
     }
-    
+
     /**
      * Set the stroking color using an AWT color. Conversion uses the default sRGB color space.
      *
@@ -618,7 +628,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         PDColor pdColor = new PDColor(components, PDDeviceRGB.INSTANCE);
         setStrokingColor(pdColor);
     }
-    
+
     /**
      * Set the stroking color in the DeviceRGB color space. Range is 0..1.
      *
@@ -638,7 +648,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         writeOperator(OperatorName.STROKING_COLOR_RGB);
         setStrokingColorSpaceStack(PDDeviceRGB.INSTANCE);
     }
-    
+
     /**
      * Set the stroking color in the DeviceCMYK color space. Range is 0..1
      *
@@ -660,7 +670,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         writeOperator(OperatorName.STROKING_COLOR_CMYK);
         setStrokingColorSpaceStack(PDDeviceCMYK.INSTANCE);
     }
-    
+
     /**
      * Set the stroking color in the DeviceGray color space. Range is 0..1.
      *
@@ -676,7 +686,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         writeOperator(OperatorName.STROKING_COLOR_GRAY);
         setStrokingColorSpaceStack(PDDeviceGray.INSTANCE);
     }
-    
+
     /**
      * Sets the non-stroking color and, if necessary, the non-stroking color space.
      *
@@ -689,22 +699,22 @@ public abstract class PDAbstractContentStream implements Closeable {
             writeOperator(OperatorName.NON_STROKING_COLORSPACE);
             setNonStrokingColorSpaceStack(color.getColorSpace());
         }
-        
+
         for (float value : color.getComponents()) {
             writeOperand(value);
         }
-        
+
         if (color.getColorSpace() instanceof PDPattern) {
             writeOperand(color.getPatternName());
         }
-        
+
         if (color.getColorSpace() instanceof PDPattern || color.getColorSpace() instanceof PDSeparation || color.getColorSpace() instanceof PDDeviceN || color.getColorSpace() instanceof PDICCBased) {
             writeOperator(OperatorName.NON_STROKING_COLOR_N);
         } else {
             writeOperator(OperatorName.NON_STROKING_COLOR);
         }
     }
-    
+
     /**
      * Set the non-stroking color using an AWT color. Conversion uses the default sRGB color space.
      *
@@ -716,7 +726,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         PDColor pdColor = new PDColor(components, PDDeviceRGB.INSTANCE);
         setNonStrokingColor(pdColor);
     }
-    
+
     /**
      * Set the non-stroking color in the DeviceRGB color space. Range is 0..1.
      *
@@ -736,7 +746,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         writeOperator(OperatorName.NON_STROKING_RGB);
         setNonStrokingColorSpaceStack(PDDeviceRGB.INSTANCE);
     }
-    
+
     /**
      * Set the non-stroking color in the DeviceCMYK color space. Range is 0..1.
      *
@@ -757,7 +767,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         writeOperator(OperatorName.NON_STROKING_CMYK);
         setNonStrokingColorSpaceStack(PDDeviceCMYK.INSTANCE);
     }
-    
+
     /**
      * Set the non-stroking color in the DeviceGray color space. Range is 0..1.
      *
@@ -773,7 +783,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         writeOperator(OperatorName.NON_STROKING_GRAY);
         setNonStrokingColorSpaceStack(PDDeviceGray.INSTANCE);
     }
-    
+
     /**
      * Add a rectangle to the current path.
      *
@@ -794,7 +804,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         writeOperand(height);
         writeOperator(OperatorName.APPEND_RECT);
     }
-    
+
     /**
      * Add a rectangle to give the current rectangle.
      *
@@ -812,7 +822,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         writeOperand(rectangle.getHeight());
         writeOperator(OperatorName.APPEND_RECT);
     }
-    
+
     /**
      * Append a cubic Bézier curve to the current path. The curve extends from the current point to
      * the point (x3, y3), using (x1, y1) and (x2, y2) as the Bézier control points.
@@ -838,7 +848,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         writeOperand(y3);
         writeOperator(OperatorName.CURVE_TO);
     }
-    
+
     /**
      * Append a cubic Bézier curve to the current path. The curve extends from the current point to
      * the point (x3, y3), using the current point and (x2, y2) as the Bézier control points.
@@ -860,7 +870,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         writeOperand(y3);
         writeOperator(OperatorName.CURVE_TO_REPLICATE_INITIAL_POINT);
     }
-    
+
     /**
      * Append a cubic Bézier curve to the current path. The curve extends from the current point to
      * the point (x3, y3), using (x1, y1) and (x3, y3) as the Bézier control points.
@@ -882,7 +892,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         writeOperand(y3);
         writeOperator(OperatorName.CURVE_TO_REPLICATE_FINAL_POINT);
     }
-    
+
     /**
      * Move the current position to the given coordinates.
      *
@@ -899,7 +909,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         writeOperand(y);
         writeOperator(OperatorName.MOVE_TO);
     }
-    
+
     /**
      * Draw a line from the current position to the given coordinates.
      *
@@ -916,7 +926,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         writeOperand(y);
         writeOperator(OperatorName.LINE_TO);
     }
-    
+
     /**
      * Stroke the path.
      *
@@ -929,7 +939,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         }
         writeOperator(OperatorName.STROKE_PATH);
     }
-    
+
     /**
      * Close and stroke the path.
      *
@@ -942,7 +952,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         }
         writeOperator(OperatorName.CLOSE_AND_STROKE);
     }
-    
+
     /**
      * Fills the path using the nonzero winding number rule.
      *
@@ -955,7 +965,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         }
         writeOperator(OperatorName.FILL_NON_ZERO);
     }
-    
+
     /**
      * Fills the path using the even-odd winding rule.
      *
@@ -968,7 +978,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         }
         writeOperator(OperatorName.FILL_EVEN_ODD);
     }
-    
+
     /**
      * Fill and then stroke the path, using the nonzero winding number rule to determine the region
      * to fill. This shall produce the same result as constructing two identical path objects,
@@ -983,7 +993,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         }
         writeOperator(OperatorName.FILL_NON_ZERO_AND_STROKE);
     }
-    
+
     /**
      * Fill and then stroke the path, using the even-odd rule to determine the region to
      * fill. This shall produce the same result as constructing two identical path objects, painting
@@ -998,7 +1008,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         }
         writeOperator(OperatorName.FILL_EVEN_ODD_AND_STROKE);
     }
-    
+
     /**
      * Close, fill, and then stroke the path, using the nonzero winding number rule to determine the
      * region to fill. This shall have the same effect as the sequence {@link #closePath() }
@@ -1013,7 +1023,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         }
         writeOperator(OperatorName.CLOSE_FILL_NON_ZERO_AND_STROKE);
     }
-    
+
     /**
      * Close, fill, and then stroke the path, using the even-odd rule to determine the region to
      * fill. This shall have the same effect as the sequence {@link #closePath() }
@@ -1028,7 +1038,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         }
         writeOperator(OperatorName.CLOSE_FILL_EVEN_ODD_AND_STROKE);
     }
-    
+
     /**
      * Fills the clipping area with the given shading.
      *
@@ -1040,11 +1050,11 @@ public abstract class PDAbstractContentStream implements Closeable {
         if (inTextMode) {
             throw new IllegalStateException("Error: shadingFill is not allowed within a text block.");
         }
-        
+
         writeOperand(resources.add(shading));
         writeOperator(OperatorName.SHADING_FILL);
     }
-    
+
     /**
      * Closes the current subpath.
      *
@@ -1057,7 +1067,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         }
         writeOperator(OperatorName.CLOSE_PATH);
     }
-    
+
     /**
      * Intersects the current clipping path with the current path, using the nonzero rule.
      *
@@ -1069,11 +1079,11 @@ public abstract class PDAbstractContentStream implements Closeable {
             throw new IllegalStateException("Error: clip is not allowed within a text block.");
         }
         writeOperator(OperatorName.CLIP_NON_ZERO);
-        
+
         // end path without filling or stroking
         writeOperator(OperatorName.ENDPATH);
     }
-    
+
     /**
      * Intersects the current clipping path with the current path, using the even-odd rule.
      *
@@ -1085,11 +1095,11 @@ public abstract class PDAbstractContentStream implements Closeable {
             throw new IllegalStateException("Error: clipEvenOdd is not allowed within a text block.");
         }
         writeOperator(OperatorName.CLIP_EVEN_ODD);
-        
+
         // end path without filling or stroking
         writeOperator(OperatorName.ENDPATH);
     }
-    
+
     /**
      * Set line width to the given value.
      *
@@ -1100,7 +1110,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         writeOperand(lineWidth);
         writeOperator(OperatorName.SET_LINE_WIDTH);
     }
-    
+
     /**
      * Set the line join style.
      *
@@ -1116,7 +1126,7 @@ public abstract class PDAbstractContentStream implements Closeable {
             throw new IllegalArgumentException("Error: unknown value for line join style");
         }
     }
-    
+
     /**
      * Set the line cap style.
      *
@@ -1132,7 +1142,7 @@ public abstract class PDAbstractContentStream implements Closeable {
             throw new IllegalArgumentException("Error: unknown value for line cap style");
         }
     }
-    
+
     /**
      * Set the line dash pattern.
      *
@@ -1149,7 +1159,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         writeOperand(phase);
         writeOperator(OperatorName.SET_LINE_DASHPATTERN);
     }
-    
+
     /**
      * Set the miter limit.
      *
@@ -1164,7 +1174,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         writeOperand(miterLimit);
         writeOperator(OperatorName.SET_LINE_MITERLIMIT);
     }
-    
+
     /**
      * Begin a marked content sequence.
      *
@@ -1175,7 +1185,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         writeOperand(tag);
         writeOperator(OperatorName.BEGIN_MARKED_CONTENT);
     }
-    
+
     /**
      * Begin a marked content sequence with a reference to an entry in the page resources' Properties dictionary.
      *
@@ -1188,7 +1198,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         writeOperand(resources.add(propertyList));
         writeOperator(OperatorName.BEGIN_MARKED_CONTENT_SEQ);
     }
-    
+
     /**
      * End a marked content sequence.
      *
@@ -1197,7 +1207,7 @@ public abstract class PDAbstractContentStream implements Closeable {
     public void endMarkedContent() throws IOException {
         writeOperator(OperatorName.END_MARKED_CONTENT);
     }
-    
+
     /**
      * Set an extended graphics state.
      *
@@ -1208,7 +1218,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         writeOperand(resources.add(state));
         writeOperator(OperatorName.SET_GRAPHICS_STATE_PARAMS);
     }
-    
+
     /**
      * Write a comment line.
      *
@@ -1225,7 +1235,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         outputStream.write(comment.getBytes(StandardCharsets.US_ASCII));
         outputStream.write('\n');
     }
-    
+
     /**
      * Writes a real number to the content stream.
      *
@@ -1238,7 +1248,7 @@ public abstract class PDAbstractContentStream implements Closeable {
             throw new IllegalArgumentException(real + " is not a finite number");
         }
         int byteCount = NumberFormatUtil.formatFloatFast(real, formatDecimal.getMaximumFractionDigits(), formatBuffer);
-        
+
         if (byteCount == -1) {
             // Fast formatting failed
             write(formatDecimal.format(real));
@@ -1247,7 +1257,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         }
         outputStream.write(' ');
     }
-    
+
     /**
      * Writes an integer number to the content stream.
      *
@@ -1258,7 +1268,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         write(formatDecimal.format(integer));
         outputStream.write(' ');
     }
-    
+
     /**
      * Writes a COSName to the content stream.
      *
@@ -1269,7 +1279,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         name.writePDF(outputStream);
         outputStream.write(' ');
     }
-    
+
     /**
      * Writes a COSName to the content stream.
      *
@@ -1280,7 +1290,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         write(text);
         outputStream.write(' ');
     }
-    
+
     /**
      * Writes a string to the content stream as ASCII.
      *
@@ -1291,7 +1301,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         write(text);
         writeLine();
     }
-    
+
     /**
      * Writes a string to the content stream as ASCII.
      *
@@ -1301,7 +1311,7 @@ public abstract class PDAbstractContentStream implements Closeable {
     protected void write(String text) throws IOException {
         writeBytes(text.getBytes(StandardCharsets.US_ASCII));
     }
-    
+
     /**
      * Writes a newline to the content stream as ASCII.
      *
@@ -1310,7 +1320,7 @@ public abstract class PDAbstractContentStream implements Closeable {
     protected void writeLine() throws IOException {
         outputStream.write('\n');
     }
-    
+
     /**
      * Writes binary data to the content stream.
      *
@@ -1320,7 +1330,7 @@ public abstract class PDAbstractContentStream implements Closeable {
     protected void writeBytes(byte[] data) throws IOException {
         outputStream.write(data);
     }
-    
+
     /**
      * Writes an AffineTransform to the content stream as an array.
      *
@@ -1334,7 +1344,7 @@ public abstract class PDAbstractContentStream implements Closeable {
             writeOperand((float) v);
         }
     }
-    
+
     /**
      * Close the content stream.  This must be called when you are done with this object.
      *
@@ -1347,15 +1357,15 @@ public abstract class PDAbstractContentStream implements Closeable {
         }
         outputStream.close();
     }
-    
+
     protected boolean isOutside255Interval(int val) {
         return val < 0 || val > 255;
     }
-    
+
     private boolean isOutsideOneInterval(double val) {
         return val < 0 || val > 1;
     }
-    
+
     protected void setStrokingColorSpaceStack(PDColorSpace colorSpace) {
         if (strokingColorSpaceStack.isEmpty()) {
             strokingColorSpaceStack.add(colorSpace);
@@ -1364,7 +1374,7 @@ public abstract class PDAbstractContentStream implements Closeable {
             strokingColorSpaceStack.push(colorSpace);
         }
     }
-    
+
     protected void setNonStrokingColorSpaceStack(PDColorSpace colorSpace) {
         if (nonStrokingColorSpaceStack.isEmpty()) {
             nonStrokingColorSpaceStack.add(colorSpace);
@@ -1373,7 +1383,7 @@ public abstract class PDAbstractContentStream implements Closeable {
             nonStrokingColorSpaceStack.push(colorSpace);
         }
     }
-    
+
     /**
      * Set the character spacing. The value shall be added to the horizontal or vertical component
      * of the glyph's displacement, depending on the writing mode.
@@ -1385,7 +1395,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         writeOperand(spacing);
         writeOperator(OperatorName.SET_CHAR_SPACING);
     }
-    
+
     /**
      * Set the word spacing. The value shall be added to the horizontal or vertical component of the
      * ASCII SPACE character, depending on the writing mode.
@@ -1403,7 +1413,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         writeOperand(spacing);
         writeOperator(OperatorName.SET_WORD_SPACING);
     }
-    
+
     /**
      * Set the horizontal scaling to scale / 100.
      *
@@ -1415,7 +1425,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         writeOperand(scale);
         writeOperator(OperatorName.SET_TEXT_HORIZONTAL_SCALING);
     }
-    
+
     /**
      * Set the text rendering mode. This determines whether showing text shall cause glyph outlines
      * to be stroked, filled, used as a clipping boundary, or some combination of the three.
@@ -1427,7 +1437,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         writeOperand(rm.intValue());
         writeOperand(OperatorName.SET_TEXT_RENDERINGMODE);
     }
-    
+
     /**
      * Set the text rise value, i.e. move the baseline up or down. This is useful for drawing superscripts or
      * subscripts.
@@ -1440,13 +1450,13 @@ public abstract class PDAbstractContentStream implements Closeable {
         writeOperand(rise);
         writeOperator(OperatorName.SET_TEXT_RISE);
     }
-    
+
     protected byte[] encodeForGsub(GsubWorker gsubWorker, Set<Integer> glyphIds, PDType0Font font, String text) throws IOException {
         // break the entire chunk of text into words by splitting it with space
         List<String> words = new CompoundCharacterTokenizer(StringUtil.PATTERN_SPACE).tokenize(text);
-        
+
         ByteArrayOutputStream out = new ByteArrayOutputStream(4096);
-        
+
         for (String word : words) {
             if (StringUtil.PATTERN_SPACE.matcher(word).matches()) {
                 out.write(font.encode(word));
@@ -1454,15 +1464,15 @@ public abstract class PDAbstractContentStream implements Closeable {
                 glyphIds.addAll(applyGSUBRules(gsubWorker, out, font, word));
             }
         }
-        
+
         return out.toByteArray();
     }
-    
+
     protected List<Integer> applyGSUBRules(GsubWorker gsubWorker, ByteArrayOutputStream out, PDType0Font font, String word) throws IOException {
         char[] charArray = word.toCharArray();
         List<Integer> originalGlyphIds = new ArrayList<>(charArray.length);
         CmapLookup cmapLookup = font.getCmapLookup();
-        
+
         // convert characters into glyphIds
         for (char unicodeChar : charArray) {
             int glyphId = cmapLookup.getGlyphId(unicodeChar);
@@ -1471,17 +1481,17 @@ public abstract class PDAbstractContentStream implements Closeable {
             }
             originalGlyphIds.add(glyphId);
         }
-        
+
         List<Integer> glyphIdsAfterGsub = gsubWorker.applyTransforms(originalGlyphIds);
-        
+
         for (Integer glyphId : glyphIdsAfterGsub) {
             out.write(font.encodeGlyphId(glyphId));
         }
-        
+
         return glyphIdsAfterGsub;
-        
+
     }
-    
+
     protected byte[] encodeForGsub(GsubWorker gsubWorker, Set<Integer> glyphIds, PDType0Font font, Character character) throws IOException {
         ByteArrayOutputStream out = new ByteArrayOutputStream(4096);
         if (character == ' ') {
@@ -1491,24 +1501,24 @@ public abstract class PDAbstractContentStream implements Closeable {
         }
         return out.toByteArray();
     }
-    
+
     protected List<Integer> applyGSUBRules(GsubWorker gsubWorker, ByteArrayOutputStream out, PDType0Font font, Character unicodeChar) throws IOException {
         List<Integer> originalGlyphIds = new ArrayList<>(1);
         CmapLookup cmapLookup = font.getCmapLookup();
-        
+
         int glyphId = cmapLookup.getGlyphId(unicodeChar);
         if (glyphId <= 0) {
             throw new IllegalStateException("could not find the glyphId for the character: " + unicodeChar);
         }
         originalGlyphIds.add(glyphId);
-        
+
         List<Integer> glyphIdsAfterGsub = gsubWorker.applyTransforms(originalGlyphIds);
-        
+
         for (Integer id : glyphIdsAfterGsub) {
             out.write(font.encodeGlyphId(id));
         }
-        
+
         return glyphIdsAfterGsub;
-        
+
     }
 }
