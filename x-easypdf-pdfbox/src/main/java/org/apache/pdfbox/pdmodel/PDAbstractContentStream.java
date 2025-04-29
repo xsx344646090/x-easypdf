@@ -218,7 +218,7 @@ public abstract class PDAbstractContentStream implements Closeable {
      * @throws IOException              If an io exception occurs.
      * @throws IllegalArgumentException if a character isn't supported by the current font
      */
-    public void showCharacter(Character character) throws IOException {
+    public void showCharacter(char character) throws IOException {
         showCharacterInternal(character);
         endTextInternal();
     }
@@ -229,7 +229,7 @@ public abstract class PDAbstractContentStream implements Closeable {
      * @param character The Unicode character to show.
      * @throws IOException If an io exception occurs.
      */
-    public void showCharacterInternal(Character character) throws IOException {
+    public void showCharacterInternal(char character) throws IOException {
         if (!inTextMode) {
             throw new IllegalStateException("Must call beginText() before showText()");
         }

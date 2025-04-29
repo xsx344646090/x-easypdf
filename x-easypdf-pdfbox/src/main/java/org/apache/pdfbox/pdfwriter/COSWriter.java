@@ -140,9 +140,9 @@ public class COSWriter implements ICOSVisitor {
     // these are used for indirect references in other objects
     // A hashtable is used on purpose over a hashmap
     // so that null entries will not get added.
-    @SuppressWarnings({"squid:S1149"})
+    // @SuppressWarnings({"squid:S1149"})
     // private final Map<COSBase, COSObjectKey> objectKeys = new HashMap<>(102400);
-    protected final Map<COSObjectKey, COSBase> keyObject = new HashMap<>(10240);
+    // protected final Map<COSObjectKey, COSBase> keyObject = new HashMap<>(10240);
     // the list of x ref entries to be made so far
     private final List<XReferenceEntry> xRefEntries = new ArrayList<>();
     // A list of objects to write.
@@ -339,7 +339,8 @@ public class COSWriter implements ICOSVisitor {
                     // FIXME see PDFBOX-4997: objectKeys is (theoretically) risky because a COSName in
                     // different objects would appear only once. Rev 1092855 considered this
                     // but only for COSNumber.
-                    keyObject.put(cosObjectKey, object);
+                    // keyObject.put(cosObjectKey, object);
+                    object.setVisit(true);
                 }
             }
         }
@@ -434,23 +435,25 @@ public class COSWriter implements ICOSVisitor {
             List<COSObjectKey> objectStreamObjects = compressionPool.getObjectStreamObjects();
             // Append object stream entries to document.
             for (COSObjectKey key : objectStreamObjects) {
-                COSBase object = compressionPool.getObject(key);
-                keyObject.put(key, object);
+                // COSBase object = compressionPool.getObject(key);
+                // keyObject.put(key, object);
+                compressionPool.getObject(key).setVisit(true);
             }
             List<COSObjectKey> topLevelObjects = compressionPool.getTopLevelObjects();
             // Append top level objects to document.
             for (COSObjectKey key : topLevelObjects) {
-                COSBase object = compressionPool.getObject(key);
-                keyObject.put(key, object);
+                // COSBase object = compressionPool.getObject(key);
+                // keyObject.put(key, object);
+                compressionPool.getObject(key).setVisit(true);
             }
             for (COSObjectKey key : topLevelObjects) {
                 currentObjectKey = key;
-                doWriteObject(key, keyObject.get(key));
+                // doWriteObject(key, keyObject.get(key));
+                doWriteObject(key, compressionPool.getObject(key));
             }
             topLevelObjects.clear();
 
             List<COSWriterObjectStream> objectStreams = compressionPool.createObjectStreams();
-            objectStreamObjects.clear();
             // Append object streams to document.
             for (COSWriterObjectStream finalizedObjectStream : objectStreams) {
                 // Create new COSObject for object stream.
@@ -471,11 +474,13 @@ public class COSWriter implements ICOSVisitor {
                 doWriteObject(objectStreamKey, objectStream);
             }
             objectStreams.clear();
+            objectStreamObjects.clear();
             willEncrypt = false;
             if (encrypt != null) {
                 COSObjectKey encryptKey = new COSObjectKey(++number, 0);
                 currentObjectKey = encryptKey;
-                keyObject.put(encryptKey, encrypt);
+                // keyObject.put(encryptKey, encrypt);
+                encrypt.setVisit(true);
 
                 doWriteObject(encryptKey, encrypt);
             }
@@ -937,7 +942,8 @@ public class COSWriter implements ICOSVisitor {
                 if (key == null) {
                     key = new COSObjectKey(++number, 0);
                 }
-                keyObject.put(key, obj);
+                // keyObject.put(key, obj);
+                obj.setVisit(true);
                 return key;
             }
         } else {
@@ -945,14 +951,15 @@ public class COSWriter implements ICOSVisitor {
         }
         // COSObjectKey actualKey = objectKeys.computeIfAbsent(actual, k -> new COSObjectKey(++number, 0));
         // check if the returned key and the origin key of the given object are the same
-        if (key == null || !keyObject.values().contains(actual)) {
+        if (key == null || !actual.isVisit()) {
             // update the object key given object/referenced object
             key = new COSObjectKey(++number, 0);
             actual.setKey(key);
             if (obj instanceof COSObject) {
                 // update the object key of the indirect object
                 obj.setKey(key);
-                keyObject.put(key, obj);
+                // keyObject.put(key, obj);
+                obj.setVisit(true);
             }
         }
         return key;

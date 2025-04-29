@@ -375,18 +375,18 @@ public class TextTokenUtil {
                                     if (EN_CHARACTERS.containsKey(chars)) {
                                         // 英文
                                         if (isEnglish) {
-                                            minX = lastX + font.getCharacterWidth(chars) * info.getFontSize() / 1000F;
+                                            minX = lastX + font.getCharacterWidth(String.valueOf(chars)) * info.getFontSize() / 1000F;
                                         } else {
-                                            minX = lastX + font.getCharacterWidth(chars) * info.getFontSize() / 500F;
+                                            minX = lastX + font.getCharacterWidth(String.valueOf(chars)) * info.getFontSize() / 500F;
                                         }
                                         // 重置英文标记
                                         isEnglish = true;
                                     } else {
                                         // 英文
                                         if (isEnglish) {
-                                            minX = lastX + font.getCharacterWidth(chars) * info.getFontSize() / 2000F;
+                                            minX = lastX + font.getCharacterWidth(String.valueOf(chars)) * info.getFontSize() / 2000F;
                                         } else {
-                                            minX = lastX + font.getCharacterWidth(chars) * info.getFontSize() / 1000F;
+                                            minX = lastX + font.getCharacterWidth(String.valueOf(chars)) * info.getFontSize() / 1000F;
                                         }
                                         // 重置英文标记
                                         isEnglish = false;

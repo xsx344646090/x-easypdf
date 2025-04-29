@@ -50,12 +50,14 @@ public class StandardTokenizer extends AbstractTokenizer {
         float lastWidth = 0F;
         // 定义宽度
         float width = 0F;
-        // 获取字符数组
-        char[] chars = text.toCharArray();
+        // 获取文本长度
+        int length = text.length();
         // 定义词组
         List<Character> words = new ArrayList<>();
         // 遍历文本
-        for (char c : chars) {
+        for (int i = 0; i < length; i++) {
+            // 获取字符
+            Character c = text.charAt(i);
             // 英文字符
             if (TextUtil.isEnglishCharacter(c)) {
                 // 添加字符
@@ -126,12 +128,14 @@ public class StandardTokenizer extends AbstractTokenizer {
         float lastWidth = 0F;
         // 定义宽度
         float width = 0F;
-        // 获取字符数组
-        char[] chars = text.toCharArray();
+        // 获取文本长度
+        int length = text.length();
         // 定义词组
         List<Character> words = new ArrayList<>();
         // 遍历文本
-        for (char c : chars) {
+        for (int i = 0; i < length; i++) {
+            // 获取字符
+            Character c = text.charAt(i);
             // 英文字符
             if (TextUtil.isEnglishCharacter(c)) {
                 // 添加字符
