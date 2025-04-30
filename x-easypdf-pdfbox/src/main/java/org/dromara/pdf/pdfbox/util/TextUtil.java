@@ -56,12 +56,17 @@ public class TextUtil {
         float width = 0F;
         // 定义临时字符串
         String str;
-        char[] charArray = text.toCharArray();
-        for (int i = 0; i < charArray.length; i++) {
-            char character = charArray[i];
+        // 获取文本长度
+        int length = text.length();
+        // 遍历文本
+        for (int i = 0; i < length; i++) {
+            // 获取字符
+            char character = text.charAt(i);
+            // 重置字符串
+            str = String.valueOf(character);
             try {
                 // 计算文本宽度
-                width = width + font.getCharacterWidth(character);
+                width = width + font.getCharacterWidth(str);
             } catch (Exception e) {
                 // 定义异常标识
                 boolean flag = true;
@@ -71,7 +76,7 @@ public class TextUtil {
                     for (String specialFontName : specialFontNames) {
                         try {
                             // 再次计算文本宽度
-                            width = width + context.getFont(specialFontName).getCharacterWidth(character);
+                            width = width + context.getFont(specialFontName).getCharacterWidth(str);
                             // 重置异常标识
                             flag = false;
                             // 结束
@@ -83,9 +88,9 @@ public class TextUtil {
                     // 未解析成功
                     if (flag) {
                         // 有下一个字符
-                        if (i + 1 < charArray.length) {
+                        if (i + 1 < length) {
                             // 获取下一个字符
-                            char next = charArray[i + 1];
+                            char next = text.charAt(i + 1);
                             // 重置字符串
                             str = String.valueOf(new char[]{character, next});
                             // 遍历特殊字体
@@ -240,6 +245,7 @@ public class TextUtil {
 
     /**
      * 是否英文字符
+     *
      * @param character 字符
      * @return 返回布尔值，是为true，否为false
      */
@@ -252,7 +258,7 @@ public class TextUtil {
         if (character >= 'a' && character <= 'z') {
             return true;
         }
-        return character == ',' || character == '.' || character == '?' || character == '!'|| character == '-'|| character == '+'|| character == '*'|| character == '/';
+        return character == ',' || character == '.' || character == '?' || character == '!' || character == '-' || character == '+' || character == '*' || character == '/';
     }
 
     /**

@@ -25,12 +25,10 @@ package org.dromara.pdf.pdfbox.support.linearizer;
 
 
 import org.apache.pdfbox.cos.*;
+import org.dromara.pdf.pdfbox.util.IdUtil;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -190,26 +188,7 @@ public class SimplifiedPDFDocument extends COSDocument implements Closeable {
      * @param trailer The trailer to which the ID should be added
      */
     void addIDToTrailer(final COSDictionary trailer) {
-        final MessageDigest md5;
-
-        try {
-            md5 = MessageDigest.getInstance("MD5");
-        } catch (NoSuchAlgorithmException e) {
-            // should never happen
-            throw new RuntimeException(e);
-        }
-
-        // algorithm says to use time/path/size/values in doc to generate the id.
-        // we don't have path or size, so do the best we can
-        md5.update((System.currentTimeMillis() + "PDF_BOX_SALT_STRING" + this.hashCode()).getBytes(StandardCharsets.ISO_8859_1));
-
-        final COSDictionary info = (COSDictionary) trailer.getDictionaryObject(COSName.INFO);
-
-        if (info != null) {
-            info.getValues().forEach((cosBase) -> md5.update(cosBase.toString().getBytes(StandardCharsets.ISO_8859_1)));
-        }
-
-        final COSString firstID = new COSString(md5.digest());
+        final COSString firstID = new COSString(IdUtil.get());
         final COSArray idArray = new COSArray();
 
         idArray.add(firstID);

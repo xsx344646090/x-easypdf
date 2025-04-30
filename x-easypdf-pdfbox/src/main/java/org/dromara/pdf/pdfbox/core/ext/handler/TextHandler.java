@@ -84,7 +84,7 @@ public class TextHandler extends AbstractTextHandler {
                             // 重置字体
                             contentStream.setFont(this.getContext().getFont(Constants.DEFAULT_FONT_NAME), fontSize);
                             // 写入未知字符
-                            contentStream.showCharacter(Constants.DEFAULT_UNKNOWN_CHARACTER);
+                            contentStream.showCharacter(Constants.DEFAULT_UNKNOWN_CHARACTER.charAt(0));
                             // 重置字体
                             contentStream.setFont(font, fontSize);
                         } else {
@@ -110,7 +110,7 @@ public class TextHandler extends AbstractTextHandler {
     @SneakyThrows
     protected boolean processSingle(
             PDPageContentStream contentStream,
-            Character character,
+            char character,
             List<String> specialFontNames,
             PDFont font,
             Float fontSize
@@ -155,8 +155,8 @@ public class TextHandler extends AbstractTextHandler {
     @SneakyThrows
     protected boolean processDouble(
             PDPageContentStream contentStream,
-            Character character,
-            Character next,
+            char character,
+            char next,
             List<String> specialFontNames,
             PDFont font,
             Float fontSize

@@ -41,7 +41,7 @@ import java.util.Objects;
  * </p>
  */
 public class CommonUtil {
-    
+
     /**
      * 初始化字体颜色及透明度
      *
@@ -88,7 +88,7 @@ public class CommonUtil {
             state.setNonStrokingAlphaConstant(fontAlpha);
         }
     }
-    
+
     /**
      * 初始化矩阵
      *
@@ -138,7 +138,7 @@ public class CommonUtil {
         // 移动到左下角
         stream.transform(Matrix.getTranslateInstance(-offsetX, -offsetY));
     }
-    
+
     /**
      * 初始化线宽
      *
@@ -159,7 +159,7 @@ public class CommonUtil {
         // 返回线宽
         return lineWidth;
     }
-    
+
     /**
      * 提取图像
      *
@@ -172,7 +172,7 @@ public class CommonUtil {
         CommonUtil.extractImage(data, page.getResources());
         return data;
     }
-    
+
     /**
      * 提取图像
      *
@@ -197,7 +197,7 @@ public class CommonUtil {
             }
         }
     }
-    
+
     /**
      * 添加背景颜色
      *
@@ -229,7 +229,7 @@ public class CommonUtil {
             stream.close();
         }
     }
-    
+
     /**
      * 获取行尺寸
      *
@@ -243,7 +243,7 @@ public class CommonUtil {
         // 返回尺寸
         return new PDRectangle(beginX, beginY, width, height);
     }
-    
+
     /**
      * 获取行尺寸
      *
@@ -255,7 +255,7 @@ public class CommonUtil {
         // 返回尺寸
         return new PDRectangle(width, height);
     }
-    
+
     /**
      * 转基本整型数组
      *
@@ -265,7 +265,7 @@ public class CommonUtil {
     public static int[] toIntArray(List<Integer> list) {
         return list.stream().mapToInt(Integer::intValue).toArray();
     }
-    
+
     /**
      * 转基本浮点型数组
      *
@@ -279,7 +279,7 @@ public class CommonUtil {
         }
         return array;
     }
-    
+
     /**
      * 转基本双精度浮点型数组
      *
@@ -289,7 +289,21 @@ public class CommonUtil {
     public static double[] toDoubleArray(List<Double> list) {
         return list.stream().mapToDouble(Double::doubleValue).toArray();
     }
-    
+
+    /**
+     * 转字符型型数组
+     *
+     * @param text 文本
+     * @return 返回数组
+     */
+    public static Character[] toCharacterArray(String text) {
+        Character[] array = new Character[text.length()];
+        for (int i = 0; i < text.length(); i++) {
+            array[i] = text.charAt(i);
+        }
+        return array;
+    }
+
     /**
      * 转字符型列表
      *
@@ -303,7 +317,7 @@ public class CommonUtil {
         }
         return list;
     }
-    
+
     /**
      * 创建基本整型数组
      *

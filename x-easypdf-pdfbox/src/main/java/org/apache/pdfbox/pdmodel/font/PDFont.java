@@ -288,7 +288,7 @@ public abstract class PDFont implements COSObjectable, PDFontLike {
      * @throws IOException              If the text could not be encoded.
      * @throws IllegalArgumentException if a character isn't supported by the font.
      */
-    public final byte[] encode(Character character) throws IOException {
+    public final byte[] encode(char character) throws IOException {
         return encode(Character.codePointAt(new char[]{character}, 0, 1));
     }
 
@@ -317,7 +317,7 @@ public abstract class PDFont implements COSObjectable, PDFontLike {
         float width = 0;
         char[] chars = text.toCharArray();
         for (char c : chars) {
-            width += this.getCharacterWidth(c);
+            width += this.getCharacterWidth(String.valueOf(c));
         }
         return width;
     }
@@ -325,30 +325,31 @@ public abstract class PDFont implements COSObjectable, PDFontLike {
     /**
      * Returns the width of the given Unicode character.
      *
-     * @param character The character to get the width of.
+     * @param text The character to get the width of.
      * @return The width of the string in 1/1000 units of text space.
      * @throws IOException              If there is an error getting the width information.
      * @throws IllegalArgumentException if a character isn't supported by the font.
      */
-    public float getCharacterWidth(Character character) throws IOException {
+    public float getCharacterWidth(String text) throws IOException {
         if (Objects.isNull(this.fontName)) {
             this.fontName = this.getName();
         }
-        Map<Character, Float> widthMap = PdfHandler.getFontHandler().getCharacterWidthMap(this.fontName);
-        Float charWidth = widthMap.get(character);
+        Map<String, Float> widthMap = PdfHandler.getFontHandler().getCharacterWidthMap(this.fontName);
+        Float charWidth = widthMap.get(text);
         if (Objects.isNull(charWidth)) {
             synchronized (this) {
-                charWidth = widthMap.get(character);
+                charWidth = widthMap.get(text);
                 if (Objects.isNull(charWidth)) {
                     charWidth = 0F;
-                    byte[] bytes = this.encode(character);
+                    char c = text.charAt(0);
+                    byte[] bytes = this.encode(c);
                     ByteArrayInputStream in = new ByteArrayInputStream(bytes);
                     while (in.available() > 0) {
                         int code = readCode(in);
                         charWidth += getWidth(code);
                     }
                     in.close();
-                    widthMap.put(character, charWidth);
+                    widthMap.put(text, charWidth);
                 }
             }
         }

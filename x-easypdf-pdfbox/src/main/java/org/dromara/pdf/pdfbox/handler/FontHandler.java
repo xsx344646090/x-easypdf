@@ -50,7 +50,7 @@ public class FontHandler {
     /**
      * 字符宽度字典
      */
-    private final Map<String, Map<Character, Float>> characterWidthMap = new ConcurrentHashMap<>(16);
+    private final Map<String, Map<String, Float>> characterWidthMap = new ConcurrentHashMap<>(16);
 
     static {
         Banner.print();
@@ -92,7 +92,7 @@ public class FontHandler {
      * @param fontName 字体名称
      * @return 返回字符宽度字典
      */
-    public Map<Character, Float> getCharacterWidthMap(String fontName) {
+    public Map<String, Float> getCharacterWidthMap(String fontName) {
         return this.characterWidthMap.get(fontName);
     }
 
