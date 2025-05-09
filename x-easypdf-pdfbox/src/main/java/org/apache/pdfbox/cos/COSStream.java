@@ -119,8 +119,7 @@ public class COSStream extends COSDictionary implements Closeable {
                 randomAccessReadView.seek(0);
                 return new RandomAccessInputStream(randomAccessReadView);
             } else {
-                throw new IOException(
-                        "Create InputStream called without data being written before to stream.");
+                throw new IOException("Create InputStream called without data being written before to stream.");
             }
         } else {
             return new RandomAccessInputStream(randomAccess);
@@ -192,8 +191,7 @@ public class COSStream extends COSDictionary implements Closeable {
         else
             randomAccess = getStreamCache().createBuffer();
         OutputStream randomOut = new RandomAccessOutputStream(randomAccess);
-        OutputStream cosOut = new COSOutputStream(getFilterList(), this, randomOut,
-                getStreamCache());
+        OutputStream cosOut = new COSOutputStream(getFilterList(), this, randomOut, getStreamCache());
         isWriting = true;
         return new FilterOutputStream(cosOut) {
             @Override

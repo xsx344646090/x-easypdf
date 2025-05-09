@@ -21,7 +21,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.dromara.pdf.pdfbox.support.linearizer;
+package org.dromara.pdf.pdfbox.support.linearization;
 
 
 import org.apache.pdfbox.cos.*;

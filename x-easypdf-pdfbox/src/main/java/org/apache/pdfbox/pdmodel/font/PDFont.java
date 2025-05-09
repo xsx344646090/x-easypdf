@@ -10,14 +10,13 @@ import org.apache.pdfbox.pdmodel.common.COSObjectable;
 import org.apache.pdfbox.pdmodel.font.encoding.GlyphList;
 import org.apache.pdfbox.util.Matrix;
 import org.apache.pdfbox.util.Vector;
-import org.dromara.pdf.pdfbox.handler.PdfHandler;
+import org.dromara.pdf.pdfbox.handler.FontHandler;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author xsx
@@ -33,12 +32,12 @@ public abstract class PDFont implements COSObjectable, PDFontLike {
      * AFM for standard 14 fonts
      */
     private final FontMetrics afmStandard14;
-    private final Map<Integer, Float> codeToWidthMap;
     private PDFontDescriptor fontDescriptor;
     private List<Float> widths;
     private float avgFontWidth;
     private float fontWidthOfSpace = -1f;
-    private String fontName;
+    private Map<Character, Float> codeMap;
+    private final Map<Character, byte[]> encodeMap = new HashMap<>(4096);
 
     /**
      * Constructor for embedding.
@@ -49,7 +48,6 @@ public abstract class PDFont implements COSObjectable, PDFontLike {
         toUnicodeCMap = null;
         fontDescriptor = null;
         afmStandard14 = null;
-        codeToWidthMap = new HashMap<>();
     }
 
     /**
@@ -64,8 +62,6 @@ public abstract class PDFont implements COSObjectable, PDFontLike {
             throw new IllegalArgumentException("No AFM for font " + baseFont);
         }
         fontDescriptor = PDType1FontEmbedder.buildFontDescriptor(afmStandard14);
-        // standard 14 fonts may be accessed concurrently, as they are singletons
-        codeToWidthMap = new ConcurrentHashMap<>();
     }
 
     /**
@@ -75,7 +71,6 @@ public abstract class PDFont implements COSObjectable, PDFontLike {
      */
     protected PDFont(COSDictionary fontDictionary) {
         dict = fontDictionary;
-        codeToWidthMap = new HashMap<>();
 
         // standard 14 fonts use an AFM
         afmStandard14 = Standard14Fonts.getAFM(getName()); // may be null (it usually is)
@@ -193,17 +188,9 @@ public abstract class PDFont implements COSObjectable, PDFontLike {
         return new Vector(getWidth(code) / 1000, 0);
     }
 
-    public float getRealWidth(int code, float size) throws IOException {
-        return getWidth(code) * size / 1000;
-    }
-
     @Override
     public float getWidth(int code) throws IOException {
-        Float width = codeToWidthMap.get(code);
-        if (width != null) {
-            return width;
-        }
-
+        Float width;
         // Acrobat overrides the widths in the font program on the conforming reader's system with
         // the widths specified in the font dictionary." (Adobe Supplement to the ISO 32000)
         //
@@ -221,7 +208,6 @@ public abstract class PDFont implements COSObjectable, PDFontLike {
                 if (width == null) {
                     width = 0f;
                 }
-                codeToWidthMap.put(code, width);
                 return width;
             }
 
@@ -229,7 +215,6 @@ public abstract class PDFont implements COSObjectable, PDFontLike {
             if (fd != null) {
                 // get entry from /MissingWidth entry
                 width = fd.getMissingWidth();
-                codeToWidthMap.put(code, width);
                 return width;
             }
         }
@@ -237,13 +222,11 @@ public abstract class PDFont implements COSObjectable, PDFontLike {
         // standard 14 font widths are specified by an AFM
         if (isStandard14()) {
             width = getStandard14Width(code);
-            codeToWidthMap.put(code, width);
             return width;
         }
 
         // if there's nothing to override with, then obviously we fall back to the font
         width = getWidthFromFont(code);
-        codeToWidthMap.put(code, width);
         return width;
     }
 
@@ -289,7 +272,12 @@ public abstract class PDFont implements COSObjectable, PDFontLike {
      * @throws IllegalArgumentException if a character isn't supported by the font.
      */
     public final byte[] encode(char character) throws IOException {
-        return encode(Character.codePointAt(new char[]{character}, 0, 1));
+        byte[] bytes = this.encodeMap.get(character);
+        if (Objects.isNull(bytes)) {
+            bytes = encode(Character.codePointAt(new char[]{character}, 0, 1));
+            this.encodeMap.put(character, bytes);
+        }
+        return bytes;
     }
 
     /**
@@ -315,9 +303,8 @@ public abstract class PDFont implements COSObjectable, PDFontLike {
      */
     public float getStringWidth(String text) throws IOException {
         float width = 0;
-        char[] chars = text.toCharArray();
-        for (char c : chars) {
-            width += this.getCharacterWidth(String.valueOf(c));
+        for (int i = 0; i < text.length(); i++) {
+            width += this.getCharacterWidth(text.charAt(i));
         }
         return width;
     }
@@ -325,34 +312,27 @@ public abstract class PDFont implements COSObjectable, PDFontLike {
     /**
      * Returns the width of the given Unicode character.
      *
-     * @param text The character to get the width of.
+     * @param character The character to get the width of.
      * @return The width of the string in 1/1000 units of text space.
      * @throws IOException              If there is an error getting the width information.
      * @throws IllegalArgumentException if a character isn't supported by the font.
      */
-    public float getCharacterWidth(String text) throws IOException {
-        if (Objects.isNull(this.fontName)) {
-            this.fontName = this.getName();
+    public float getCharacterWidth(Character character) throws IOException {
+        if (Objects.isNull(this.codeMap)) {
+            this.codeMap = FontHandler.getInstance().getCodeMap(this.getName());
         }
-        Map<String, Float> widthMap = PdfHandler.getFontHandler().getCharacterWidthMap(this.fontName);
-        Float charWidth = widthMap.get(text);
-        if (Objects.isNull(charWidth)) {
-            synchronized (this) {
-                charWidth = widthMap.get(text);
-                if (Objects.isNull(charWidth)) {
-                    charWidth = 0F;
-                    char c = text.charAt(0);
-                    byte[] bytes = this.encode(c);
-                    ByteArrayInputStream in = new ByteArrayInputStream(bytes);
-                    while (in.available() > 0) {
-                        int code = readCode(in);
-                        charWidth += getWidth(code);
-                    }
-                    in.close();
-                    widthMap.put(text, charWidth);
-                }
+        Float charWidth = this.codeMap.get(character);
+        if (Objects.nonNull(charWidth)) {
+            return charWidth;
+        }
+        charWidth = 0F;
+        try (ByteArrayInputStream in = new ByteArrayInputStream(this.encode(character))) {
+            while (in.available() > 0) {
+                int code = readCode(in);
+                charWidth += getWidth(code);
             }
         }
+        this.codeMap.put(character, charWidth);
         return charWidth;
     }
 

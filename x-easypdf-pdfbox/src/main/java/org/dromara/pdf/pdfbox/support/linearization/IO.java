@@ -21,7 +21,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.dromara.pdf.pdfbox.support.linearizer;
+package org.dromara.pdf.pdfbox.support.linearization;
 
 
 /**
@@ -31,7 +31,7 @@ package org.dromara.pdf.pdfbox.support.linearizer;
  * @version $Id$
  */
 class IO {
-    
+
     /**
      * [!ONE_SENTENCE_SHORT_DESCRIPTION!].[!METHOD_DESCRIPTION!]
      *
@@ -41,9 +41,9 @@ class IO {
     static int nbits(final int val) {
         return 32 - Integer.numberOfLeadingZeros(val);
     }
-    
+
     static int nbits(final long val) {
         return 64 - Long.numberOfLeadingZeros(val);
     }
-    
+
 }

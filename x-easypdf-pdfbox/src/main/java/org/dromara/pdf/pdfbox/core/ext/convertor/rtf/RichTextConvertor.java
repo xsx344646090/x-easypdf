@@ -15,7 +15,7 @@ import java.io.OutputStream;
  * @since 1.8
  * <p>
  * Copyright (c) 2020 xsx All Rights Reserved.
- * x-easypdf is licensed under Mulan PSL v2.
+ * x-easypdf-pdfbox is licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  * http://license.coscl.org.cn/MulanPSL2
@@ -26,7 +26,7 @@ import java.io.OutputStream;
  * </p>
  */
 public class RichTextConvertor extends AbstractRichTextConvertor {
-    
+
     /**
      * 有参构造
      *
@@ -35,7 +35,7 @@ public class RichTextConvertor extends AbstractRichTextConvertor {
     public RichTextConvertor(Document document) {
         super(document);
     }
-    
+
     /**
      * 转pdf
      *
@@ -47,7 +47,7 @@ public class RichTextConvertor extends AbstractRichTextConvertor {
     public Document toPdf(InputStream source) {
         return super.toPdf(DocumentType.RTF, source);
     }
-    
+
     /**
      * 转rtf
      *

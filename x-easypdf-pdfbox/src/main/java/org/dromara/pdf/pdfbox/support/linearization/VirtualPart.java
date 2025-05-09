@@ -21,7 +21,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.dromara.pdf.pdfbox.support.linearizer;
+package org.dromara.pdf.pdfbox.support.linearization;
 
 
 import java.io.Serializable;
@@ -39,16 +39,16 @@ import java.util.List;
  */
 public class VirtualPart implements Serializable {
     //~ Static fields/initializers --------------------------------------------------------------------------------------------------------------------
-    
+
     private static final long serialVersionUID = 1L;
-    
+
     //~ Instance members ------------------------------------------------------------------------------------------------------------------------------
-    
+
     /**
      * The path to the referenced file. null if not a reference
      */
     final String reference;
-    
+
     /**
      * The offset the this part's content in the referenced file. -1 if not a
      * reference
@@ -68,9 +68,9 @@ public class VirtualPart implements Serializable {
      */
     long outBeginPos;
     private byte[] _referenceBytes = null;
-    
+
     //~ Constructors ----------------------------------------------------------------------------------------------------------------------------------
-    
+
     /**
      * Initializes a VirtualPart which represents a hard byte array.
      *
@@ -83,8 +83,8 @@ public class VirtualPart implements Serializable {
         this.referenceLength = -1;
         this.hardPart = hardPart;
     }
-    
-    
+
+
     /**
      * Initializes a VirtualPart which represents a hard byte array, including
      * infomation about its relation to the entire output file.
@@ -99,8 +99,8 @@ public class VirtualPart implements Serializable {
         this.referenceLength = -1;
         this.hardPart = hardPart;
     }
-    
-    
+
+
     /**
      * Initializes a VirtualPart which represents a reference.
      *
@@ -116,8 +116,8 @@ public class VirtualPart implements Serializable {
         this.hardPart = null;
         this.outBeginPos = -1;
     }
-    
-    
+
+
     /**
      * Initializes a VirtualPart which represents a reference, including
      * infomation about its relation to the entire output file.
@@ -136,9 +136,9 @@ public class VirtualPart implements Serializable {
         this.hardPart = null;
         this.outBeginPos = outBeginPos;
     }
-    
+
     //~ Methods ---------------------------------------------------------------------------------------------------------------------------------------
-    
+
     /**
      * Calculates the length of the given part in the expanded PDF file
      *
@@ -147,13 +147,13 @@ public class VirtualPart implements Serializable {
      */
     public static long calculateInflatedLength(final List<VirtualPart> parts) {
         long length = 0;
-        
+
         for (final VirtualPart entry : parts) {
             length += entry.getInflatedLength();
         }
         return length;
     }
-    
+
     /**
      * Calculates the length of the given parts in the deflated routing file
      *
@@ -162,24 +162,24 @@ public class VirtualPart implements Serializable {
      */
     static long calculateDeflatedLength(final List<VirtualPart> parts) {
         long length = 0;
-        
+
         for (final VirtualPart entry : parts) {
             length += entry.getDeflatedLength();
         }
         return length;
     }
-    
+
     boolean isReference() {
         return this.reference != null;
     }
-    
+
     byte[] getReferenceBytes() {
         if (this._referenceBytes == null) {
             this._referenceBytes = this.reference.getBytes(StandardCharsets.UTF_8);
         }
         return this._referenceBytes;
     }
-    
+
     /**
      * Calculates the length of this part in the inflated PDF file
      *
@@ -192,11 +192,11 @@ public class VirtualPart implements Serializable {
             return hardPart.length;
         }
     }
-    
+
     public void setOutBeginPos(final long offset) {
         this.outBeginPos = offset;
     }
-    
+
     /**
      * Calculates the length of this part in the deflated routing file
      *
@@ -209,7 +209,7 @@ public class VirtualPart implements Serializable {
             return hardPart.length + Byte.BYTES + Integer.BYTES;
         }
     }
-    
+
     /**
      * Returns the end position of this part in the referenced file.
      *
@@ -219,8 +219,8 @@ public class VirtualPart implements Serializable {
         assert this.refBeginPos >= 0 : "RefBeginPos of VirtualPart < 0";
         return this.refBeginPos + this.getInflatedLength();
     }
-    
-    
+
+
     /**
      * Returns the end position of this part in the virtualized PDF
      *

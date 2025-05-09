@@ -11,7 +11,7 @@ import lombok.Getter;
  * @since 1.8
  * <p>
  * Copyright (c) 2020 xsx All Rights Reserved.
- * x-easypdf is licensed under Mulan PSL v2.
+ * x-easypdf-pdfbox is licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  * http://license.coscl.org.cn/MulanPSL2
@@ -31,12 +31,12 @@ public enum HtmlType {
      * mhtml
      */
     MHTML(DocumentType.MHTML);
-    
+
     /**
      * 类型
      */
     private final DocumentType type;
-    
+
     /**
      * 有参构造
      *

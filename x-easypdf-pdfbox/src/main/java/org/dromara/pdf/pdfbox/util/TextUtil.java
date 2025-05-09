@@ -62,11 +62,9 @@ public class TextUtil {
         for (int i = 0; i < length; i++) {
             // 获取字符
             char character = text.charAt(i);
-            // 重置字符串
-            str = String.valueOf(character);
             try {
                 // 计算文本宽度
-                width = width + font.getCharacterWidth(str);
+                width = width + font.getCharacterWidth(character);
             } catch (Exception e) {
                 // 定义异常标识
                 boolean flag = true;
@@ -76,7 +74,7 @@ public class TextUtil {
                     for (String specialFontName : specialFontNames) {
                         try {
                             // 再次计算文本宽度
-                            width = width + context.getFont(specialFontName).getCharacterWidth(str);
+                            width = width + context.getFont(specialFontName).getCharacterWidth(character);
                             // 重置异常标识
                             flag = false;
                             // 结束
@@ -268,10 +266,9 @@ public class TextUtil {
      * @return 返回字符串
      */
     public static String spacing(int size) {
-        final char space = ' ';
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < size; i++) {
-            builder.append(space);
+            builder.append(Constants.SPACE_CHARACTER);
         }
         return builder.toString();
     }
@@ -284,8 +281,6 @@ public class TextUtil {
      * @return 返回字符串
      */
     public static String replaceTab(String text, int size) {
-        // 定义制表符
-        final char tab = '\t';
         // 获取文本字符数组
         char[] charArray = filterAll(text).toCharArray();
         // 定义文本构建器
@@ -295,7 +290,7 @@ public class TextUtil {
         // 遍历文本字符
         for (char c : charArray) {
             // 替换制表符
-            if (c == tab) {
+            if (c == Constants.TAB_CHARACTER) {
                 // 添加空格
                 temp.append(spacing(size));
             } else {

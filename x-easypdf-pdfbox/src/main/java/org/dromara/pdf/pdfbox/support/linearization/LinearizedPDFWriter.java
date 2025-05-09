@@ -21,7 +21,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.dromara.pdf.pdfbox.support.linearizer;
+package org.dromara.pdf.pdfbox.support.linearization;
 
 
 import org.apache.pdfbox.cos.*;
@@ -54,26 +54,26 @@ import static java.lang.Math.max;
  */
 class LinearizedPDFWriter extends COSWriter {
     //~ Static fields/initializers --------------------------------------------------------------------------------------------------------------------
-    
+
     /**
      * Comparator for XRef-entries
      */
     static final Comparator<XReferenceEntry> XREFCOMP = (XReferenceEntry lhs, XReferenceEntry rhs) -> {
         final long lhsInt = lhs.getReferencedKey().getNumber();
         final long rhsInt = rhs.getReferencedKey().getNumber();
-        
+
         return (int) (rhsInt - lhsInt);
     };
-    
+
     //~ Instance members ------------------------------------------------------------------------------------------------------------------------------
-    
+
     private List<VirtualPart> writtenParts;
-    
+
     private long lastLength = -1;
     private int lastCount = 0;
-    
+
     //~ Constructors ----------------------------------------------------------------------------------------------------------------------------------
-    
+
     /**
      * Default constructor
      *
@@ -87,14 +87,14 @@ class LinearizedPDFWriter extends COSWriter {
         }
         writtenParts = new ArrayList<>();
     }
-    
+
     //~ Methods ---------------------------------------------------------------------------------------------------------------------------------------
-    
+
     private XReferenceEntry getFakeEntry(final int i) {
         return new NormalXReference(ThreadLocalRandom.current().nextInt(), new COSObjectKey(i, 0), null);
     }
-    
-    
+
+
     /**
      * Writes a dummy version of the XRef-stream for the a range of objects
      * specified by the first object number to write and the number of objects to
@@ -116,31 +116,31 @@ class LinearizedPDFWriter extends COSWriter {
     void doWriteXrefRangeDummy(final COSDocument doc, final int xRefRangesStart, final long xRefLength, final COSDictionary trailer, final int xRefId, final long xRefOffset) throws IOException {
         final long startPos = this.getPos();
         final PDFXRefStream pdfxRefStream = new PDFXRefStream(doc);
-        
+
         for (int i = 0; i < (xRefLength + 1); ++i) {
             pdfxRefStream.addEntry(this.getFakeEntry(i + xRefRangesStart));
         }
-        
+
         // the size is the highest object number+1
         pdfxRefStream.addTrailerInfo(trailer);
         pdfxRefStream.setSize(trailer.getInt(COSName.SIZE));
-        
+
         final COSStream stream2 = pdfxRefStream.getStream();
-        
+
         this.getObjectKeys().put(stream2, new COSObjectKey(xRefId, 0));
         doWriteObject(stream2);
-        
+
         final long endPos = this.getPos();
         final long length = endPos - startPos;
-        
+
         // Take potential compressing overhead into account
         final long overflow = (long) max(ceil(length * 0.003), 11);
-        
+
         this.doWriteSpaces(overflow);
         writeEndXrefStream(xRefOffset);
     }
-    
-    
+
+
     private void writeEndXrefStream(final long xRefOffset) throws IOException {
         getStandardOutput().write(STARTXREF);
         getStandardOutput().writeEOL();
@@ -149,8 +149,8 @@ class LinearizedPDFWriter extends COSWriter {
         getStandardOutput().write(EOF);
         getStandardOutput().writeEOL();
     }
-    
-    
+
+
     /**
      * Write the xref-stream for the range of objects specified. This will write
      * the stream for the entries specified.
@@ -173,23 +173,23 @@ class LinearizedPDFWriter extends COSWriter {
             throw new ArithmeticException("xRefLength != entries.size()");
         }
         entries.sort(XREFCOMP);
-        
+
         final PDFXRefStream pdfxRefStream = new PDFXRefStream(doc);
-        
+
         for (int i = 0; i < xRefLength; i++) {
             pdfxRefStream.addEntry(entries.get(i));
         }
         pdfxRefStream.addTrailerInfo(trailer);
         pdfxRefStream.setSize(trailer.getInt(COSName.SIZE));
-        
+
         final COSStream stream = pdfxRefStream.getStream();
-        
+
         this.getObjectKeys().put(stream, new COSObjectKey(xRefId, 0));
         doWriteObject(stream);
         writeEndXrefStream(xRefOffset);
     }
-    
-    
+
+
     /**
      * Gets the position of the writer, incorporating the lengths of all objects
      * written since the last reset. The method will cache its results, this
@@ -206,7 +206,7 @@ class LinearizedPDFWriter extends COSWriter {
             lastLength = VirtualPart.calculateInflatedLength(writtenParts);
         } else {
             long length = 0;
-            
+
             for (int i = lastCount - 1; i < writtenParts.size(); i++) {
                 length += writtenParts.get(i).getInflatedLength();
             }
@@ -215,8 +215,8 @@ class LinearizedPDFWriter extends COSWriter {
         lastCount = writtenParts.size();
         return lastLength + getStandardOutput().getPos();
     }
-    
-    
+
+
     /**
      * Resets information that object was written before. This will not delete
      * the data written but the associated xref-entry. Needs to be called before
@@ -243,8 +243,8 @@ class LinearizedPDFWriter extends COSWriter {
             }
         }
     }
-    
-    
+
+
     /**
      * Writes the object specified but will coalesce the generated VirtualParts
      * until a size of 128kb is reached. Using this method significantly reduces
@@ -256,7 +256,7 @@ class LinearizedPDFWriter extends COSWriter {
      */
     long doWriteObjectInSequence(final COSBase obj) throws IOException {
         final long oldPos = this.getPos();
-        
+
         this.doWriteObject(obj);
         if (getStandardOutput().getPos() > (128 * 1024)) {
             getOutput().flush();
@@ -266,8 +266,8 @@ class LinearizedPDFWriter extends COSWriter {
         }
         return this.getPos() - oldPos;
     }
-    
-    
+
+
     /**
      * Wrapper around doWriteHeader()
      *
@@ -276,8 +276,8 @@ class LinearizedPDFWriter extends COSWriter {
     public void writeHeader() throws IOException {
         this.doWriteHeader(this.pdDocument.getDocument());
     }
-    
-    
+
+
     /**
      * Public accessor for protected getXRefEntries
      *
@@ -286,16 +286,16 @@ class LinearizedPDFWriter extends COSWriter {
     public List<XReferenceEntry> retrieveXRefEntries() {
         return this.getXRefEntries();
     }
-    
-    
+
+
     public void close() throws IOException {
         getOutput().flush();
         if (getStandardOutput().getPos() > 0) {
             writtenParts.add(new VirtualPart(((ByteArrayOutputStream) getOutput()).toByteArray()));
         }
     }
-    
-    
+
+
     /**
      * This will retrieve the parts written since the last reset and remove all
      * of them from the writer. This will not touch xref-entries nor
@@ -307,29 +307,29 @@ class LinearizedPDFWriter extends COSWriter {
      */
     List<VirtualPart> getAndResetParts() throws IOException {
         this.close();
-        
+
         final List<VirtualPart> retVal = writtenParts;
-        
+
         resetOutputs();
         writtenParts = new ArrayList<>();
         return retVal;
     }
-    
-    
+
+
     private void resetOutputs() {
         setOutput(new ByteArrayOutputStream());
         setStandardOutput(new COSStandardOutputStream(getOutput()));
     }
-    
-    
+
+
     private void doWriteSpaces(final long spacesCount) throws IOException {
         for (long i = 0; i < (spacesCount - 1); i++) {
             getStandardOutput().write(COMMENT);
         }
         getStandardOutput().writeLF();
     }
-    
-    
+
+
     /**
      * Fills current outputStream with % until the position given is reached.
      * This should be used when an object was written which was smaller than

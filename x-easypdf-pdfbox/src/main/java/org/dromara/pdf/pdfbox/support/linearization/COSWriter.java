@@ -1,4 +1,4 @@
-package org.dromara.pdf.pdfbox.support.linearizer;
+package org.dromara.pdf.pdfbox.support.linearization;
 
 import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.io.IOUtils;
@@ -54,7 +54,7 @@ public class COSWriter implements ICOSVisitor {
      * The start to a PDF comment.
      */
     public static final byte[] COMMENT = {'%'};
-    
+
     /**
      * The output version of the PDF.
      */
@@ -68,7 +68,7 @@ public class COSWriter implements ICOSVisitor {
      */
     public static final byte[] EOF = "%%EOF".getBytes(StandardCharsets.US_ASCII);
     // pdf tokens
-    
+
     /**
      * The reference token.
      */
@@ -117,10 +117,10 @@ public class COSWriter implements ICOSVisitor {
      * The close stream token.
      */
     public static final byte[] ENDSTREAM = "endstream".getBytes(StandardCharsets.US_ASCII);
-    
+
     private static final NumberFormat formatXrefOffset = new DecimalFormat("0000000000",
             DecimalFormatSymbols.getInstance(Locale.US));
-    
+
     // the decimal format for the xref object generation number data
     private static final NumberFormat formatXrefGeneration = new DecimalFormat("00000",
             DecimalFormatSymbols.getInstance(Locale.US));
@@ -170,7 +170,7 @@ public class COSWriter implements ICOSVisitor {
     private byte[] incrementPart;
     private COSArray byteRangeArray;
     private boolean blockAddingObject = false;
-    
+
     /**
      * COSWriter constructor.
      *
@@ -180,7 +180,7 @@ public class COSWriter implements ICOSVisitor {
     public COSWriter(OutputStream outputStream) {
         this(outputStream, (CompressParameters) null);
     }
-    
+
     /**
      * COSWriter constructor.
      *
@@ -192,7 +192,7 @@ public class COSWriter implements ICOSVisitor {
         setStandardOutput(new COSStandardOutputStream(output));
         this.compressParameters = compressParameters;
     }
-    
+
     /**
      * COSWriter constructor for incremental updates. There must be a path of objects that have
      * {@link COSUpdateInfo#isNeedToBeUpdated()} set, starting from the document catalog. For signatures this is taken
@@ -213,7 +213,7 @@ public class COSWriter implements ICOSVisitor {
         incrementalOutput = outputStream;
         incrementalUpdate = true;
     }
-    
+
     /**
      * Constructor for incremental updates with a list of objects to write. This allows to
      * include objects even if there is no path of objects that have
@@ -245,7 +245,7 @@ public class COSWriter implements ICOSVisitor {
         this(outputStream, inputData);
         this.objectsToWrite.addAll(objectsToWrite);
     }
-    
+
     /**
      * This will output the given byte getString as a PDF object.
      *
@@ -256,7 +256,7 @@ public class COSWriter implements ICOSVisitor {
     public static void writeString(COSString string, OutputStream output) throws IOException {
         writeString(string.getBytes(), string.getForceHexForm(), output);
     }
-    
+
     /**
      * This will output the given text/byte getString as a PDF object.
      *
@@ -267,7 +267,7 @@ public class COSWriter implements ICOSVisitor {
     public static void writeString(byte[] bytes, OutputStream output) throws IOException {
         writeString(bytes, false, output);
     }
-    
+
     /**
      * This will output the given text/byte string as a PDF object.
      *
@@ -292,7 +292,7 @@ public class COSWriter implements ICOSVisitor {
                 }
             }
         }
-        
+
         if (isASCII && !forceHex) {
             // write ASCII string
             output.write('(');
@@ -317,7 +317,7 @@ public class COSWriter implements ICOSVisitor {
             output.write('>');
         }
     }
-    
+
     /**
      * Returns true, if the resulting document shall be compressed.
      *
@@ -326,7 +326,7 @@ public class COSWriter implements ICOSVisitor {
     public boolean isCompress() {
         return compressParameters != null && compressParameters.isCompress();
     }
-    
+
     private void prepareIncrement() {
         COSDocument cosDoc = pdDocument.getDocument();
         Set<COSObjectKey> keySet = cosDoc.getXrefTable().keySet();
@@ -343,7 +343,7 @@ public class COSWriter implements ICOSVisitor {
             }
         }
     }
-    
+
     /**
      * add an entry in the x ref table for later dump.
      *
@@ -352,7 +352,7 @@ public class COSWriter implements ICOSVisitor {
     protected void addXRefEntry(XReferenceEntry entry) {
         getXRefEntries().add(entry);
     }
-    
+
     /**
      * This will get the output stream.
      *
@@ -361,7 +361,7 @@ public class COSWriter implements ICOSVisitor {
     protected OutputStream getOutput() {
         return output;
     }
-    
+
     /**
      * This will set the output stream.
      *
@@ -370,7 +370,7 @@ public class COSWriter implements ICOSVisitor {
     protected void setOutput(OutputStream newOutput) {
         output = newOutput;
     }
-    
+
     /**
      * This will get the standard output stream.
      *
@@ -379,7 +379,7 @@ public class COSWriter implements ICOSVisitor {
     protected COSStandardOutputStream getStandardOutput() {
         return standardOutput;
     }
-    
+
     /**
      * This will set the standard output stream.
      *
@@ -388,7 +388,7 @@ public class COSWriter implements ICOSVisitor {
     protected void setStandardOutput(COSStandardOutputStream newStandardOutput) {
         standardOutput = newStandardOutput;
     }
-    
+
     /**
      * This will get the current start xref.
      *
@@ -397,7 +397,7 @@ public class COSWriter implements ICOSVisitor {
     protected long getStartxref() {
         return startxref;
     }
-    
+
     /**
      * This will set the start xref.
      *
@@ -406,7 +406,7 @@ public class COSWriter implements ICOSVisitor {
     protected void setStartxref(long newStartxref) {
         startxref = newStartxref;
     }
-    
+
     /**
      * This will get the xref entries.
      *
@@ -415,7 +415,7 @@ public class COSWriter implements ICOSVisitor {
     protected List<XReferenceEntry> getXRefEntries() {
         return xRefEntries;
     }
-    
+
     /**
      * This will write the body of the document.
      *
@@ -439,10 +439,10 @@ public class COSWriter implements ICOSVisitor {
         if (encrypt != null) {
             addObjectToWrite(encrypt);
         }
-        
+
         doWriteObjects();
     }
-    
+
     /**
      * This will write the compressed body of the document.
      *
@@ -504,19 +504,19 @@ public class COSWriter implements ICOSVisitor {
                 writtenObjects.add(encrypt);
                 keyObject.put(encryptKey, encrypt);
                 objectKeys.put(encrypt, encryptKey);
-                
+
                 doWriteObject(encryptKey, encrypt);
             }
             blockAddingObject = false;
         }
     }
-    
+
     private void doWriteObjects() throws IOException {
         while (!objectsToWrite.isEmpty()) {
             doWriteObject(objectsToWrite.removeFirst());
         }
     }
-    
+
     private void addObjectToWrite(COSBase object) {
         if (blockAddingObject) {
             return;
@@ -525,13 +525,13 @@ public class COSWriter implements ICOSVisitor {
         if (actual instanceof COSObject) {
             actual = ((COSObject) actual).getObject();
         }
-        
+
         if (writtenObjects.contains(object) //
                     || actualsAdded.contains(actual) //
                     || objectsToWrite.contains(object)) {
             return;
         }
-        
+
         COSBase cosBase = null;
         COSObjectKey cosObjectKey = null;
         if (actual != null) {
@@ -548,7 +548,7 @@ public class COSWriter implements ICOSVisitor {
             actualsAdded.add(actual);
         }
     }
-    
+
     /**
      * This will write a COS object for a predefined key.
      *
@@ -577,7 +577,7 @@ public class COSWriter implements ICOSVisitor {
         getStandardOutput().write(ENDOBJ);
         getStandardOutput().writeEOL();
     }
-    
+
     /**
      * Convenience method, so that we get false for types that can't be updated.
      *
@@ -590,7 +590,7 @@ public class COSWriter implements ICOSVisitor {
         }
         return false;
     }
-    
+
     /**
      * This will write a COS object.
      *
@@ -603,7 +603,7 @@ public class COSWriter implements ICOSVisitor {
         currentObjectKey = getObjectKey(obj);
         doWriteObject(currentObjectKey, obj);
     }
-    
+
     /**
      * This will write the header to the PDF document.
      *
@@ -624,13 +624,13 @@ public class COSWriter implements ICOSVisitor {
             headerString = "%PDF-" + doc.getVersion();
         }
         getStandardOutput().write(headerString.getBytes(StandardCharsets.ISO_8859_1));
-        
+
         getStandardOutput().writeEOL();
         getStandardOutput().write(COMMENT);
         getStandardOutput().write(GARBAGE);
         getStandardOutput().writeEOL();
     }
-    
+
     /**
      * This will write the trailer to the PDF document.
      *
@@ -640,7 +640,7 @@ public class COSWriter implements ICOSVisitor {
     protected void doWriteTrailer(COSDocument doc) throws IOException {
         getStandardOutput().write(TRAILER);
         getStandardOutput().writeEOL();
-        
+
         COSDictionary trailer = doc.getTrailer();
         // sort xref, needed only if object keys not regenerated
         Collections.sort(getXRefEntries());
@@ -655,15 +655,15 @@ public class COSWriter implements ICOSVisitor {
         }
         // Remove a checksum if present
         trailer.removeItem(COSName.DOC_CHECKSUM);
-        
+
         COSArray idArray = trailer.getCOSArray(COSName.ID);
         if (idArray != null) {
             idArray.setDirect(true);
         }
-        
+
         trailer.accept(this);
     }
-    
+
     private void doWriteXRefInc(COSDocument doc) throws IOException {
         if (!doc.isXRefStream() || (doc.hasHybridXRef() && incrementalUpdate)) {
             COSDictionary trailer = doc.getTrailer();
@@ -674,13 +674,13 @@ public class COSWriter implements ICOSVisitor {
             // the file uses XrefStreams, so we need to update
             // it with an xref stream. We create a new one and fill it
             // with data available here
-            
+
             // create a new XRefStream object
             PDFXRefStream pdfxRefStream = new PDFXRefStream(doc);
-            
+
             // add all entries from the incremental update.
             getXRefEntries().forEach(pdfxRefStream::addEntry);
-            
+
             COSDictionary trailer = doc.getTrailer();
             if (incrementalUpdate) {
                 // use previous startXref value as new PREV value
@@ -692,13 +692,13 @@ public class COSWriter implements ICOSVisitor {
             // the size is the highest object number+1. we add one more
             // for the xref stream object we are going to write
             pdfxRefStream.setSize(number + 2);
-            
+
             setStartxref(getStandardOutput().getPos());
             COSStream stream2 = pdfxRefStream.getStream();
             doWriteObject(stream2);
         }
     }
-    
+
     // writes the "xref" table
     private void doWriteXRefTable() throws IOException {
         if (!incrementalUpdate) {
@@ -708,22 +708,22 @@ public class COSWriter implements ICOSVisitor {
             // add free entry with object number 0
             addXRefEntry(FreeXReference.NULL_ENTRY);
         }
-        
+
         // Filter for NormalXReferences and FreeXReferences
         // sort xref, needed only if object keys not regenerated
         List<XReferenceEntry> tmpXRefEntries = getXRefEntries().stream() //
                                                        .filter(e -> e instanceof NormalXReference || e instanceof FreeXReference) //
                                                        .sorted() //
                                                        .collect(Collectors.toList());
-        
+
         // remember the position where x ref was written
         setStartxref(getStandardOutput().getPos());
-        
+
         getStandardOutput().write(XREF);
         getStandardOutput().writeEOL();
         // write start object number and object count for this x ref section
         // we assume starting from scratch
-        
+
         Long[] xRefRanges = getXRefRanges(tmpXRefEntries);
         int xRefLength = xRefRanges.length;
         int x = 0;
@@ -732,7 +732,7 @@ public class COSWriter implements ICOSVisitor {
             while (x < xRefLength) {
                 long xRefRangeX1 = xRefRanges[x + 1];
                 writeXrefRange(xRefRanges[x], xRefRangeX1);
-                
+
                 for (int i = 0; i < xRefRangeX1; ++i) {
                     writeXrefEntry(tmpXRefEntries.get(j++));
                 }
@@ -740,7 +740,7 @@ public class COSWriter implements ICOSVisitor {
             }
         }
     }
-    
+
     private void fillGapsWithFreeEntries() {
         List<NormalXReference> normalXReferences = getXRefEntries().stream() //
                                                            .filter(e -> e instanceof NormalXReference) //
@@ -778,7 +778,7 @@ public class COSWriter implements ICOSVisitor {
             addXRefEntry(new FreeXReference(new COSObjectKey(0, 65535), firstObjectNumber));
         }
     }
-    
+
     /**
      * Write an incremental update for a non signature case. This can be used for e.g. augmenting
      * signatures.
@@ -793,34 +793,34 @@ public class COSWriter implements ICOSVisitor {
             incrementalOutput.write(((ByteArrayOutputStream) output).toByteArray());
         }
     }
-    
+
     private void doWriteSignature() throws IOException {
         // calculate the ByteRange values
         long inLength = incrementalInput.length();
         long beforeLength = signatureOffset;
         long afterOffset = signatureOffset + signatureLength;
         long afterLength = getStandardOutput().getPos() - (inLength + signatureLength) - (signatureOffset - inLength);
-        
+
         String byteRange = "0 " + beforeLength + " " + afterOffset + " " + afterLength + "]";
-        
+
         // Assign the values to the actual COSArray, so that the user can access it before closing
         byteRangeArray.set(0, COSInteger.ZERO);
         byteRangeArray.set(1, COSInteger.get(beforeLength));
         byteRangeArray.set(2, COSInteger.get(afterOffset));
         byteRangeArray.set(3, COSInteger.get(afterLength));
-        
+
         if (byteRange.length() > byteRangeLength) {
             throw new IOException("Can't write new byteRange '" + byteRange +
                                           "' not enough space: byteRange.length(): " + byteRange.length() +
                                           ", byteRangeLength: " + byteRangeLength +
                                           ", byteRangeOffset: " + byteRangeOffset);
         }
-        
+
         // copy the new incremental data into a buffer (e.g. signature dict, trailer)
         ByteArrayOutputStream byteOut = (ByteArrayOutputStream) output;
         byteOut.flush();
         incrementPart = byteOut.toByteArray();
-        
+
         // overwrite the reserve ByteRange in the buffer
         byte[] byteRangeBytes = byteRange.getBytes(StandardCharsets.ISO_8859_1);
         for (int i = 0; i < byteRangeLength; i++) {
@@ -830,18 +830,18 @@ public class COSWriter implements ICOSVisitor {
                 incrementPart[(int) (byteRangeOffset + i - inLength)] = byteRangeBytes[i];
             }
         }
-        
+
         if (signatureInterface != null) {
             // data to be signed
             final InputStream dataToSign = getDataToSign();
-            
+
             // sign the bytes
             byte[] signatureBytes = signatureInterface.sign(dataToSign);
             writeExternalSignature(signatureBytes);
         }
         // else signature should be created externally and set via writeSignature()
     }
-    
+
     /**
      * Return the stream of PDF data to be signed. Clients should use this method only to create
      * signatures externally. {@link #write(PDDocument)} method should have been called prior. The
@@ -867,12 +867,12 @@ public class COSWriter implements ICOSVisitor {
                         0, incPartSigOffset,
                         afterSigOffset, incrementPart.length - afterSigOffset
                 };
-        
+
         return new SequenceInputStream(
                 new RandomAccessInputStream(incrementalInput),
                 new COSFilterInputStream(incrementPart, range));
     }
-    
+
     /**
      * Write externally created signature of PDF data obtained via {@link #getDataToSign()} method.
      *
@@ -881,37 +881,37 @@ public class COSWriter implements ICOSVisitor {
      * @throws IOException           if source data stream is closed
      */
     public void writeExternalSignature(byte[] cmsSignature) throws IOException {
-        
+
         if (incrementPart == null || incrementalInput == null) {
             throw new IllegalStateException("PDF not prepared for setting signature");
         }
         byte[] signatureBytes = Hex.getBytes(cmsSignature);
-        
+
         // subtract 2 bytes because of the enclosing "<>"
         if (signatureBytes.length > signatureLength - 2) {
             throw new IOException("Can't write signature, not enough space; "
                                           + "adjust it with SignatureOptions.setPreferredSignatureSize");
         }
-        
+
         // overwrite the signature Contents in the buffer
         int incPartSigOffset = (int) (signatureOffset - incrementalInput.length());
         System.arraycopy(signatureBytes, 0, incrementPart, incPartSigOffset + 1, signatureBytes.length);
-        
+
         // write the data to the incremental output stream
         IOUtils.copy(new RandomAccessInputStream(incrementalInput), incrementalOutput);
         incrementalOutput.write(incrementPart);
-        
+
         // prevent further use
         incrementPart = null;
     }
-    
+
     private void writeXrefRange(long x, long y) throws IOException {
         getStandardOutput().write(String.valueOf(x).getBytes(StandardCharsets.ISO_8859_1));
         getStandardOutput().write(SPACE);
         getStandardOutput().write(String.valueOf(y).getBytes(StandardCharsets.ISO_8859_1));
         getStandardOutput().writeEOL();
     }
-    
+
     private void writeXrefEntry(XReferenceEntry entry) throws IOException {
         String offset = formatXrefOffset.format(entry.getSecondColumnValue());
         String generation = formatXrefGeneration.format(entry.getThirdColumnValue());
@@ -922,7 +922,7 @@ public class COSWriter implements ICOSVisitor {
         getStandardOutput().write(entry instanceof FreeXReference ? XREF_FREE : XREF_USED);
         getStandardOutput().writeCRLF();
     }
-    
+
     /**
      * check the xref entries and write out the ranges.  The format of the
      * returned array is exactly the same as the pdf specification.  See section
@@ -944,7 +944,7 @@ public class COSWriter implements ICOSVisitor {
     protected Long[] getXRefRanges(List<XReferenceEntry> xRefEntriesList) {
         long last = -2;
         long count = 1;
-        
+
         List<Long> list = new ArrayList<>();
         for (XReferenceEntry entry : xRefEntriesList) {
             long nr = entry.getReferencedKey().getNumber();
@@ -967,7 +967,7 @@ public class COSWriter implements ICOSVisitor {
         }
         return list.toArray(new Long[list.size()]);
     }
-    
+
     /**
      * This will get the object key for the object.
      *
@@ -1006,7 +1006,7 @@ public class COSWriter implements ICOSVisitor {
         }
         return key;
     }
-    
+
     @Override
     public void visitFromArray(COSArray array) throws IOException {
         int count = 0;
@@ -1037,7 +1037,7 @@ public class COSWriter implements ICOSVisitor {
         getStandardOutput().write(ARRAY_CLOSE);
         getStandardOutput().writeEOL();
     }
-    
+
     private void writeArray(COSArray array) throws IOException {
         if (array.isDirect()) {
             visitFromArray(array);
@@ -1046,7 +1046,7 @@ public class COSWriter implements ICOSVisitor {
             writeReference(array);
         }
     }
-    
+
     private void writeDictionary(COSDictionary dictionary) throws IOException {
         if (dictionary.isDirect()) {
             visitFromDictionary(dictionary);
@@ -1055,12 +1055,12 @@ public class COSWriter implements ICOSVisitor {
             writeReference(dictionary);
         }
     }
-    
+
     @Override
     public void visitFromBoolean(COSBoolean obj) throws IOException {
         obj.writePDF(getStandardOutput());
     }
-    
+
     @Override
     public void visitFromDictionary(COSDictionary obj) throws IOException {
         detectPossibleSignature(obj);
@@ -1073,7 +1073,7 @@ public class COSWriter implements ICOSVisitor {
                 getStandardOutput().write(SPACE);
                 if (value instanceof COSDictionary) {
                     COSDictionary dict = (COSDictionary) value;
-                    
+
                     if (!incrementalUpdate) {
                         // write all XObjects as direct objects, this will save some size
                         // PDFBOX-3684: but avoid dictionary that references itself
@@ -1110,7 +1110,7 @@ public class COSWriter implements ICOSVisitor {
                     }
                 }
                 getStandardOutput().writeEOL();
-                
+
             } else {
                 // then we won't write anything, there are a couple cases
                 // were the value of an entry in the COSDictionary will
@@ -1121,7 +1121,7 @@ public class COSWriter implements ICOSVisitor {
         getStandardOutput().write(DICT_CLOSE);
         getStandardOutput().writeEOL();
     }
-    
+
     private void detectPossibleSignature(COSDictionary obj) throws IOException {
         if (!reachedSignature && incrementalUpdate) {
             COSBase itemType = obj.getItem(COSName.TYPE);
@@ -1141,7 +1141,7 @@ public class COSWriter implements ICOSVisitor {
             }
         }
     }
-    
+
     @Override
     public void visitFromDocument(COSDocument doc) throws IOException {
         if (!incrementalUpdate) {
@@ -1153,20 +1153,20 @@ public class COSWriter implements ICOSVisitor {
             // the end of the file, an extra one won't hurt. PDFBOX-1051
             getStandardOutput().writeCRLF();
         }
-        
+
         if (isCompress()) {
             doWriteBodyCompressed(doc);
         } else {
             doWriteBody(doc);
         }
-        
+
         if (incrementalUpdate || doc.isXRefStream()) {
             doWriteXRefInc(doc);
         } else {
             doWriteXRefTable();
             doWriteTrailer(doc);
         }
-        
+
         // write endof
         getStandardOutput().write(STARTXREF);
         getStandardOutput().writeEOL();
@@ -1174,7 +1174,7 @@ public class COSWriter implements ICOSVisitor {
         getStandardOutput().writeEOL();
         getStandardOutput().write(EOF);
         getStandardOutput().writeEOL();
-        
+
         if (incrementalUpdate) {
             if (signatureOffset == 0 || byteRangeOffset == 0) {
                 doWriteIncrement();
@@ -1182,29 +1182,29 @@ public class COSWriter implements ICOSVisitor {
                 doWriteSignature();
             }
         }
-        
+
     }
-    
+
     @Override
     public void visitFromFloat(COSFloat obj) throws IOException {
         obj.writePDF(getStandardOutput());
     }
-    
+
     @Override
     public void visitFromInt(COSInteger obj) throws IOException {
         obj.writePDF(getStandardOutput());
     }
-    
+
     @Override
     public void visitFromName(COSName obj) throws IOException {
         obj.writePDF(getStandardOutput());
     }
-    
+
     @Override
     public void visitFromNull(COSNull obj) throws IOException {
         obj.writePDF(getStandardOutput());
     }
-    
+
     /**
      * visitFromObjRef method comment.
      *
@@ -1219,14 +1219,14 @@ public class COSWriter implements ICOSVisitor {
         getStandardOutput().write(SPACE);
         getStandardOutput().write(REFERENCE);
     }
-    
+
     @Override
     public void visitFromStream(COSStream obj) throws IOException {
         if (willEncrypt) {
             pdDocument.getEncryption().getSecurityHandler()
                     .encryptStream(obj, currentObjectKey.getNumber(), currentObjectKey.getGeneration());
         }
-        
+
         InputStream input = null;
         try {
             // write the stream content
@@ -1246,7 +1246,7 @@ public class COSWriter implements ICOSVisitor {
             }
         }
     }
-    
+
     @Override
     public void visitFromString(COSString obj) throws IOException {
         if (willEncrypt) {
@@ -1257,7 +1257,7 @@ public class COSWriter implements ICOSVisitor {
         }
         org.apache.pdfbox.pdfwriter.COSWriter.writeString(obj, getStandardOutput());
     }
-    
+
     /**
      * This will write the pdf document.
      *
@@ -1268,7 +1268,7 @@ public class COSWriter implements ICOSVisitor {
         PDDocument pdDoc = new PDDocument(doc);
         write(pdDoc);
     }
-    
+
     /**
      * This will write the pdf document. If signature should be created externally,
      * {@link #writeExternalSignature(byte[])} should be invoked to set signature after calling this method.
@@ -1279,7 +1279,7 @@ public class COSWriter implements ICOSVisitor {
     public void write(PDDocument doc) throws IOException {
         write(doc, null);
     }
-    
+
     /**
      * This will write the pdf document. If signature should be created externally,
      * {@link #writeExternalSignature(byte[])} should be invoked to set signature after calling this method.
@@ -1312,7 +1312,7 @@ public class COSWriter implements ICOSVisitor {
         }
         long idTime = pdDocument.getDocumentId() == null ? System.currentTimeMillis()
                               : pdDocument.getDocumentId();
-        
+
         // if the document says we should remove encryption, then we shouldn't encrypt
         if (doc.isAllSecurityToBeRemoved()) {
             willEncrypt = false;
@@ -1335,7 +1335,7 @@ public class COSWriter implements ICOSVisitor {
                 willEncrypt = false;
             }
         }
-        
+
         COSArray idArray;
         boolean missingID = true;
         COSBase base = trailer.getDictionaryObject(COSName.ID);
@@ -1356,11 +1356,11 @@ public class COSWriter implements ICOSVisitor {
                 // should never happen
                 throw new RuntimeException(e);
             }
-            
+
             // algorithm says to use time/path/size/values in doc to generate the id.
             // we don't have path or size, so do the best we can
             md5.update(Long.toString(idTime).getBytes(StandardCharsets.ISO_8859_1));
-            
+
             COSDictionary info = trailer.getCOSDictionary(COSName.INFO);
             if (info != null) {
                 for (COSBase cosBase : info.getValues()) {
@@ -1381,7 +1381,7 @@ public class COSWriter implements ICOSVisitor {
             cosDoc.setHighestXRefObjectNumber(number);
         }
     }
-    
+
     /**
      * This will write the fdf document.
      *
@@ -1398,7 +1398,7 @@ public class COSWriter implements ICOSVisitor {
         willEncrypt = false;
         cosDoc.accept(this);
     }
-    
+
     /**
      * This will get all available object keys.
      *

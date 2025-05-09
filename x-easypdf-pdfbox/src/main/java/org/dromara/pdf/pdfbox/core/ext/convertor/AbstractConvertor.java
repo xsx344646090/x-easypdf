@@ -2,8 +2,6 @@ package org.dromara.pdf.pdfbox.core.ext.convertor;
 
 import com.documents4j.api.DocumentType;
 import com.documents4j.api.IConverter;
-import com.documents4j.conversion.msoffice.MicrosoftPowerpointBridge;
-import com.documents4j.job.LocalConverter;
 import lombok.SneakyThrows;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.ext.AbstractExpander;
@@ -16,7 +14,6 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 抽象转换器
@@ -26,7 +23,7 @@ import java.util.concurrent.TimeUnit;
  * @since 1.8
  * <p>
  * Copyright (c) 2020 xsx All Rights Reserved.
- * x-easypdf is licensed under Mulan PSL v2.
+ * x-easypdf-pdfbox is licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  * http://license.coscl.org.cn/MulanPSL2
@@ -37,15 +34,12 @@ import java.util.concurrent.TimeUnit;
  * </p>
  */
 public abstract class AbstractConvertor extends AbstractExpander {
-    
+
     /**
      * 转换器
      */
-    protected static final IConverter CONVERTER = LocalConverter.builder()
-                                                          .enable(MicrosoftPowerpointBridge.class)
-                                                          .processTimeout(60, TimeUnit.SECONDS)
-                                                          .build();
-    
+    protected IConverter converter;
+
     /**
      * 有参构造
      *
@@ -54,12 +48,22 @@ public abstract class AbstractConvertor extends AbstractExpander {
     public AbstractConvertor(Document document) {
         super(document);
     }
-    
+
+    /**
+     * 设置内置转换器
+     *
+     * @param converter 转换器
+     */
+    public void setInlineConverter(IConverter converter) {
+        Objects.requireNonNull(converter, "the converter can not be null");
+        this.converter = converter;
+    }
+
     /**
      * 转pdf
      *
-     * @param type     类型
-     * @param source   源路径
+     * @param type   类型
+     * @param source 源路径
      * @return 返回文档
      */
     @SneakyThrows
@@ -78,7 +82,7 @@ public abstract class AbstractConvertor extends AbstractExpander {
             }
         }
     }
-    
+
     /**
      * 转pdf
      *
@@ -88,21 +92,22 @@ public abstract class AbstractConvertor extends AbstractExpander {
      */
     @SneakyThrows
     protected Document toPdf(DocumentType type, InputStream source) {
+        Objects.requireNonNull(this.converter, "the inline converter can not be null");
         Objects.requireNonNull(type, "the type can not be null");
         Objects.requireNonNull(source, "the source can not be null");
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream(8192)) {
-            boolean executed = CONVERTER.convert(source)
-                                       .as(type)
-                                       .to(outputStream)
-                                       .as(DocumentType.PDF)
-                                       .execute();
+            boolean executed = this.converter.convert(source)
+                    .as(type)
+                    .to(outputStream)
+                    .as(DocumentType.PDF)
+                    .execute();
             if (executed) {
                 return PdfHandler.getDocumentHandler().load(outputStream.toByteArray());
             }
             throw new RuntimeException("convert fail");
         }
     }
-    
+
     /**
      * 转file
      *
@@ -112,14 +117,15 @@ public abstract class AbstractConvertor extends AbstractExpander {
      */
     @SneakyThrows
     protected boolean toFile(DocumentType type, OutputStream output) {
+        Objects.requireNonNull(this.converter, "the inline converter can not be null");
         Objects.requireNonNull(type, "the type can not be null");
         Objects.requireNonNull(output, "the output can not be null");
         File tempFile = this.document.getTempFile();
-        boolean executed = CONVERTER.convert(tempFile)
-                                   .as(DocumentType.PDF)
-                                   .to(output)
-                                   .as(type)
-                                   .execute();
+        boolean executed = this.converter.convert(tempFile)
+                .as(DocumentType.PDF)
+                .to(output)
+                .as(type)
+                .execute();
         if (Objects.nonNull(tempFile)) {
             tempFile.delete();
         }

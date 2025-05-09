@@ -21,7 +21,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.dromara.pdf.pdfbox.support.linearizer;
+package org.dromara.pdf.pdfbox.support.linearization;
 
 
 import org.apache.pdfbox.cos.COSBase;
@@ -41,13 +41,13 @@ import java.util.*;
  */
 class PDFObjectQueue {
     //~ Enums -----------------------------------------------------------------------------------------------------------------------------------------
-    
+
     private final LinkedHashMap<COSBase, ObjectMetaData> object_queue = new LinkedHashMap<>();
-    
+
     //~ Instance members ------------------------------------------------------------------------------------------------------------------------------
     private final HashMap<PDFDummyObjects, ObjectMetaData> dummies = new HashMap<>();
     private int object_id = 0;
-    
+
     /**
      * Enqueues a PDF-object and assigns the next object number.
      *
@@ -63,9 +63,9 @@ class PDFObjectQueue {
             }
         }
     }
-    
+
     //~ Methods ---------------------------------------------------------------------------------------------------------------------------------------
-    
+
     /**
      * Returns count of all objects scheduled, dummies excluded.
      *
@@ -74,7 +74,7 @@ class PDFObjectQueue {
     int size() {
         return object_queue.size();
     }
-    
+
     /**
      * Returns all non-dummy objects scheduled and their associated metadata.
      *
@@ -83,7 +83,7 @@ class PDFObjectQueue {
     Set<Map.Entry<COSBase, ObjectMetaData>> entrySet() {
         return object_queue.entrySet();
     }
-    
+
     /**
      * Returns all non-dummy objects scheduled.
      *
@@ -92,7 +92,7 @@ class PDFObjectQueue {
     Set<COSBase> keySet() {
         return object_queue.keySet();
     }
-    
+
     /**
      * Assigns the current object number, objects enqueued subsequently will be
      * assigned a sequenced number starting with the value specified.
@@ -102,14 +102,14 @@ class PDFObjectQueue {
     void setObjectID(final int id) {
         this.object_id = id;
     }
-    
+
     /**
      * Resets the oject number to 1.
      */
     void resetObjectID() {
         this.object_id = 1;
     }
-    
+
     /**
      * Enqueus a list of objects.
      *
@@ -120,7 +120,7 @@ class PDFObjectQueue {
             enqueueObject(iter);
         }
     }
-    
+
     /**
      * Enqueus a dummy object and assigns it an object number
      *
@@ -129,7 +129,7 @@ class PDFObjectQueue {
     void enqueueDummy(final PDFDummyObjects key) {
         dummies.put(key, new ObjectMetaData(object_id++));
     }
-    
+
     /**
      * Removes a dummy object and places the real object along with its metadata
      * to the real queue.
@@ -139,12 +139,12 @@ class PDFObjectQueue {
      */
     void replaceDummy(final PDFDummyObjects key, final COSBase object) {
         final ObjectMetaData data = this.get(key);
-        
+
         dummies.remove(key);
-        
+
         object_queue.put(object, data);
     }
-    
+
     /**
      * Retrieves the metadata associated with the object specified.
      *
@@ -154,7 +154,7 @@ class PDFObjectQueue {
     ObjectMetaData get(final COSBase base) {
         return object_queue.get(base);
     }
-    
+
     /**
      * Retrieves the metadata associated with the dummy specified.
      *
@@ -164,7 +164,7 @@ class PDFObjectQueue {
     ObjectMetaData get(final PDFDummyObjects dummy) {
         return dummies.get(dummy);
     }
-    
+
     /**
      * Retrieves the object number that is to be assigned next
      *
@@ -173,8 +173,8 @@ class PDFObjectQueue {
     int getNextID() {
         return object_id;
     }
-    
-    
+
+
     /**
      * Types of objects which depend on the other objects being written.
      *
@@ -183,12 +183,12 @@ class PDFObjectQueue {
      */
     enum PDFDummyObjects {
         //~ Enum constants -----------------------------------------------------------------------------------------------------------------------------
-        
+
         LINDICT, FIRSTXREF, SECONDXREF, HINTSTREAM
     }
-    
+
     //~ Inner Classes ---------------------------------------------------------------------------------------------------------------------------------
-    
+
     /**
      * Encapsulates metadata associated with a pdf object
      *
@@ -197,19 +197,19 @@ class PDFObjectQueue {
      */
     class ObjectMetaData {
         //~ Instance members ---------------------------------------------------------------------------------------------------------------------------
-        
+
         /**
          * object number
          */
         final int objNumber;
-        
+
         /**
          * length in bytes of written object. -1 until assigned
          */
         long objLength = -1;
-        
+
         //~ Constructors -------------------------------------------------------------------------------------------------------------------------------
-        
+
         /**
          * Default constructor
          *

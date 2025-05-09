@@ -20,7 +20,7 @@ import java.util.Objects;
  * @since 1.8
  * <p>
  * Copyright (c) 2020 xsx All Rights Reserved.
- * x-easypdf is licensed under Mulan PSL v2.
+ * x-easypdf-pdfbox is licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  * http://license.coscl.org.cn/MulanPSL2
@@ -31,7 +31,7 @@ import java.util.Objects;
  * </p>
  */
 public abstract class AbstractWordConvertor extends AbstractConvertor {
-    
+
     /**
      * 有参构造
      *
@@ -40,7 +40,7 @@ public abstract class AbstractWordConvertor extends AbstractConvertor {
     public AbstractWordConvertor(Document document) {
         super(document);
     }
-    
+
     /**
      * 转pdf
      *
@@ -49,7 +49,7 @@ public abstract class AbstractWordConvertor extends AbstractConvertor {
      * @return 返回文档
      */
     public abstract Document toPdf(WordType type, InputStream source);
-    
+
     /**
      * 转word
      *
@@ -58,7 +58,7 @@ public abstract class AbstractWordConvertor extends AbstractConvertor {
      * @return 返回布尔值，true为成功，false为失败
      */
     public abstract boolean toWord(WordType type, OutputStream output);
-    
+
     /**
      * 转pdf
      *
@@ -71,7 +71,7 @@ public abstract class AbstractWordConvertor extends AbstractConvertor {
         Objects.requireNonNull(type, "the type can not be null");
         return super.toPdf(type.getType(), source);
     }
-    
+
     /**
      * 转pdf
      *
@@ -86,7 +86,7 @@ public abstract class AbstractWordConvertor extends AbstractConvertor {
             return this.toPdf(type, inputStream);
         }
     }
-    
+
     /**
      * 转word
      *
@@ -101,7 +101,7 @@ public abstract class AbstractWordConvertor extends AbstractConvertor {
             return this.toWord(type, outputStream);
         }
     }
-    
+
     /**
      * 转word
      *

@@ -23,7 +23,6 @@ import org.dromara.pdf.pdfbox.core.ext.processor.PageProcessor;
 import org.dromara.pdf.pdfbox.core.info.CatalogInfo;
 import org.dromara.pdf.pdfbox.support.Constants;
 import org.dromara.pdf.pdfbox.support.DefaultResourceCache;
-import org.dromara.pdf.pdfbox.support.linearizer.Linearizer;
 import org.dromara.pdf.pdfbox.util.FileUtil;
 import org.dromara.pdf.pdfbox.util.IdUtil;
 
@@ -99,10 +98,6 @@ public class Document extends AbstractBase implements Closeable {
      * 是否刷新元数据
      */
     protected Boolean isFlushMetadata;
-    /**
-     * 是否线性化
-     */
-    protected Boolean isLinearization;
 
     /**
      * 无参构造
@@ -202,15 +197,6 @@ public class Document extends AbstractBase implements Closeable {
      */
     public void setIsFlushMetadata(boolean isFlushMetadata) {
         this.isFlushMetadata = isFlushMetadata;
-    }
-
-    /**
-     * 设置是否线性化
-     *
-     * @param isLinearization 是否线性化
-     */
-    public void setIsLinearization(boolean isLinearization) {
-        this.isLinearization = isLinearization;
     }
 
     /**
@@ -736,11 +722,7 @@ public class Document extends AbstractBase implements Closeable {
             processor.flush();
         }
         // 保存文档
-        if (this.getIsLinearization()) {
-            this.linearize(outputStream);
-        } else {
-            this.getTarget().save(outputStream, new CompressParameters(number));
-        }
+        this.getTarget().save(outputStream, new CompressParameters(500));
     }
 
     /**
@@ -911,20 +893,7 @@ public class Document extends AbstractBase implements Closeable {
         this.version = this.target.getVersion();
         // 初始化是否刷新元数据
         this.isFlushMetadata = Boolean.TRUE;
-        // 初始化是否线性化
-        this.isLinearization = Boolean.FALSE;
         // 初始化背景颜色
         this.backgroundColor = Color.WHITE;
-    }
-
-    /**
-     * 线性化
-     *
-     * @param outputStream 输出流
-     */
-    protected void linearize(OutputStream outputStream) {
-        Linearizer linearizer = new Linearizer(this.getTarget());
-        linearizer.linearize().write(outputStream);
-        linearizer.close();
     }
 }

@@ -9,6 +9,7 @@ import org.dromara.pdf.pdfbox.core.enums.ComponentType;
 import org.dromara.pdf.pdfbox.core.ext.handler.AbstractTextHandler;
 import org.dromara.pdf.pdfbox.core.ext.handler.TextHandler;
 import org.dromara.pdf.pdfbox.core.info.CatalogInfo;
+import org.dromara.pdf.pdfbox.handler.FontHandler;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 
 import java.util.*;
@@ -242,8 +243,10 @@ public class Context {
     public void addFontCache(String... fontNames) {
         Objects.requireNonNull(fontNames, "the font names can not be null");
         for (String fontName : fontNames) {
-            this.fontMap.putIfAbsent(fontName, PdfHandler.getFontHandler().getPDFont(this.getTargetDocument(), fontName, true));
-            PdfHandler.getFontHandler().initCharacterMap(fontName);
+            if (!this.fontMap.containsKey(fontName)) {
+                this.fontMap.put(fontName, PdfHandler.getFontHandler().getPDFont(this.getTargetDocument(), fontName, true));
+                FontHandler.getInstance().initCodeMap(fontName);
+            }
         }
     }
 
