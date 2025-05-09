@@ -11,6 +11,7 @@ import org.apache.pdfbox.pdmodel.font.encoding.GlyphList;
 import org.apache.pdfbox.util.Matrix;
 import org.apache.pdfbox.util.Vector;
 import org.dromara.pdf.pdfbox.handler.FontHandler;
+import org.dromara.pdf.pdfbox.support.CharacterWrapper;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -36,8 +37,8 @@ public abstract class PDFont implements COSObjectable, PDFontLike {
     private List<Float> widths;
     private float avgFontWidth;
     private float fontWidthOfSpace = -1f;
-    private Map<Character, Float> codeMap;
-    private final Map<Character, byte[]> encodeMap = new HashMap<>(4096);
+    private Map<CharacterWrapper, Float> codeMap;
+    private final Map<CharacterWrapper, byte[]> encodeMap = new HashMap<>(4096);
 
     /**
      * Constructor for embedding.
@@ -272,10 +273,11 @@ public abstract class PDFont implements COSObjectable, PDFontLike {
      * @throws IllegalArgumentException if a character isn't supported by the font.
      */
     public final byte[] encode(char character) throws IOException {
-        byte[] bytes = this.encodeMap.get(character);
+        CharacterWrapper wrapper = new CharacterWrapper(character);
+        byte[] bytes = this.encodeMap.get(wrapper);
         if (Objects.isNull(bytes)) {
             bytes = encode(Character.codePointAt(new char[]{character}, 0, 1));
-            this.encodeMap.put(character, bytes);
+            this.encodeMap.put(wrapper, bytes);
         }
         return bytes;
     }
@@ -317,11 +319,12 @@ public abstract class PDFont implements COSObjectable, PDFontLike {
      * @throws IOException              If there is an error getting the width information.
      * @throws IllegalArgumentException if a character isn't supported by the font.
      */
-    public float getCharacterWidth(Character character) throws IOException {
+    public float getCharacterWidth(char character) throws IOException {
         if (Objects.isNull(this.codeMap)) {
             this.codeMap = FontHandler.getInstance().getCodeMap(this.getName());
         }
-        Float charWidth = this.codeMap.get(character);
+        CharacterWrapper wrapper = new CharacterWrapper(character);
+        Float charWidth = this.codeMap.get(wrapper);
         if (Objects.nonNull(charWidth)) {
             return charWidth;
         }
@@ -332,7 +335,7 @@ public abstract class PDFont implements COSObjectable, PDFontLike {
                 charWidth += getWidth(code);
             }
         }
-        this.codeMap.put(character, charWidth);
+        this.codeMap.put(wrapper, charWidth);
         return charWidth;
     }
 
