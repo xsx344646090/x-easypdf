@@ -29,8 +29,9 @@ public abstract class COSBase implements COSObjectable {
 
     private boolean direct;
     private COSObjectKey key;
-    private boolean isWritten;
-    private boolean isVisit;
+    private boolean isWritten = false;
+    private boolean isVisit = false;
+    private boolean isDirectVisit = true;
 
     /**
      * Constructor.
@@ -107,5 +108,13 @@ public abstract class COSBase implements COSObjectable {
 
     public void setVisit(boolean visit) {
         isVisit = visit;
+    }
+
+    public boolean isDirectVisit() {
+        return isDirectVisit;
+    }
+
+    public void setDirectVisit(boolean directVisit) {
+        isDirectVisit = directVisit;
     }
 }

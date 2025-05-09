@@ -10,6 +10,7 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.dromara.pdf.pdfbox.core.base.Banner;
 import org.dromara.pdf.pdfbox.core.enums.FontType;
+import org.dromara.pdf.pdfbox.support.CharacterWrapper;
 import org.dromara.pdf.pdfbox.support.Constants;
 import org.dromara.pdf.pdfbox.support.fonts.FontInfo;
 import org.dromara.pdf.pdfbox.support.fonts.FontMapperImpl;
@@ -56,7 +57,7 @@ public class FontHandler {
     /**
      * 字符宽度字典
      */
-    private final Map<String, Map<Character, Float>> codeWithMap = new ConcurrentHashMap<>(16);
+    private final Map<String, Map<CharacterWrapper, Float>> codeWithMap = new ConcurrentHashMap<>(16);
 
     /**
      * 无参构造
@@ -87,9 +88,9 @@ public class FontHandler {
         Map<String, FontInfo> fontInfoByName = FontMapperImpl.getInstance().getFontInfoByName();
         FontInfo fontInfo = fontInfoByName.get(fontName);
         if (Objects.isNull(fontInfo)) {
-            this.codeWithMap.putIfAbsent(fontName, new HashMap<>(2048));
+            this.codeWithMap.putIfAbsent(fontName, new ConcurrentHashMap<>(2048, 1.0F));
         } else {
-            this.codeWithMap.putIfAbsent(fontInfo.getPostScriptName(), new HashMap<>(2048));
+            this.codeWithMap.putIfAbsent(fontInfo.getPostScriptName(), new ConcurrentHashMap<>(2048, 1.0F));
         }
     }
 
@@ -99,7 +100,7 @@ public class FontHandler {
      * @param fontName 字体名称
      * @return 返回字符字典
      */
-    public Map<Character, Float> getCodeMap(String fontName) {
+    public Map<CharacterWrapper, Float> getCodeMap(String fontName) {
         return this.codeWithMap.get(fontName);
     }
 

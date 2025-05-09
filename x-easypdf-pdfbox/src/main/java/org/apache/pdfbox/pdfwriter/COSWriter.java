@@ -174,7 +174,6 @@ public class COSWriter implements ICOSVisitor {
     private SignatureInterface signatureInterface;
     private byte[] incrementPart;
     private COSArray byteRangeArray;
-    private boolean blockAddingObject = false;
 
     /**
      * COSWriter constructor.
@@ -428,7 +427,6 @@ public class COSWriter implements ICOSVisitor {
     private void doWriteBodyCompressed(COSDocument document) throws IOException {
         COSDictionary trailer = document.getTrailer();
         COSDictionary encrypt = trailer.getCOSDictionary(COSName.ENCRYPT);
-        blockAddingObject = true;
         willEncrypt = encrypt != null;
         if (trailer.containsKey(COSName.ROOT)) {
             COSWriterCompressionPool compressionPool = new COSWriterCompressionPool(pdDocument, compressParameters);
@@ -445,7 +443,7 @@ public class COSWriter implements ICOSVisitor {
             // Append object streams to document.
             for (COSWriterObjectStream finalizedObjectStream : objectStreams) {
                 // Create new COSObject for object stream.
-                COSStream stream = finalizedObjectStream.writeObjectsToStream(document.createCOSStream());
+                COSStream stream = finalizedObjectStream.writeObjectsToStream(document.createTempCOSStream());
                 // Determine key for object stream.
                 COSObjectKey objectStreamKey = new COSObjectKey(++number, 0);
                 // Create new COSObject for object stream.
@@ -460,6 +458,7 @@ public class COSWriter implements ICOSVisitor {
                 // Include object stream in document.
                 currentObjectKey = objectStreamKey;
                 doWriteObject(objectStreamKey, objectStream);
+                stream.close();
             }
             objectStreams.clear();
 
@@ -471,7 +470,6 @@ public class COSWriter implements ICOSVisitor {
 
                 doWriteObject(encryptKey, encrypt);
             }
-            blockAddingObject = false;
         }
     }
 

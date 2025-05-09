@@ -41,8 +41,6 @@ public class COSWriterCompressionPool {
     private final List<COSObjectKey> topLevelObjects = new ArrayList<>();
     // A list containing all objects, that may be appended to an object stream.
     private final List<COSObjectKey> objectStreamObjects = new ArrayList<>();
-    // A list of all direct objects
-    private final Set<COSBase> allDirectObjects = new HashSet<>();
 
     /**
      * <p>
@@ -160,8 +158,8 @@ public class COSWriterCompressionPool {
     private void addElements(Iterator<COSBase> elements) throws IOException {
         while (elements.hasNext()) {
             COSBase value = elements.next();
-            if (value instanceof COSArray || (value instanceof COSDictionary && !allDirectObjects.contains(value))) {
-                allDirectObjects.add(value);
+            if (value instanceof COSArray || (value instanceof COSDictionary && value.isDirectVisit())) {
+                value.setDirectVisit(false);
                 addStructure(value);
             } else if (value instanceof COSObject) {
                 COSObject cosObject = (COSObject) value;
@@ -251,18 +249,18 @@ public class COSWriterCompressionPool {
      * @return The created {@link COSWriterObjectStream}s for all currently registered compressible objects.
      */
     public List<COSWriterObjectStream> createObjectStreams() {
-        allDirectObjects.clear();
         List<COSWriterObjectStream> objectStreams = new ArrayList<>();
-        COSWriterObjectStream objectStream = null;
+        COSWriterObjectStream objectStream = new COSWriterObjectStream(this);
+        objectStreams.add(objectStream);
         int index = 0;
         for (COSObjectKey key : objectStreamObjects) {
-            if (objectStream == null || (index == parameters.getObjectStreamSize())) {
+            objectStream.prepareStreamObject(key, objectPool.getObject(key));
+            index++;
+            if ((index == parameters.getObjectStreamSize())) {
                 objectStream = new COSWriterObjectStream(this);
                 objectStreams.add(objectStream);
                 index = 0;
             }
-            objectStream.prepareStreamObject(key, objectPool.getObject(key));
-            index++;
         }
         objectStreamObjects.clear();
         return objectStreams;
