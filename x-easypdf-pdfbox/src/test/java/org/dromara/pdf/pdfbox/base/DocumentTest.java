@@ -350,18 +350,6 @@ public class DocumentTest extends BaseTest {
     }
 
     /**
-     * 测试线性化
-     */
-    @Test
-    public void linearizeTest() {
-        this.test(() -> {
-            Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\linearizer\\test.pdf");
-            document.setIsLinearization(true);
-            document.saveAndClose("E:\\PDF\\pdfbox\\linearizer\\linearizeTest.pdf");
-        });
-    }
-
-    /**
      * 创建文档
      */
     private Document create(Integer totalPage) {
