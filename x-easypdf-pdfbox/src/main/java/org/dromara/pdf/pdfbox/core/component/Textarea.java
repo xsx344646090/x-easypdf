@@ -537,9 +537,13 @@ public class Textarea extends AbstractComponent {
         // 过滤特殊字符
         String temp = TextUtil.filterAll(text);
         // 替换当前页码
-        temp = temp.replace(Constants.CURRENT_PAGE_PLACEHOLDER, this.getPage().getLastNo().toString());
+        if (temp.contains(Constants.CURRENT_PAGE_PLACEHOLDER)) {
+            temp = temp.replace(Constants.CURRENT_PAGE_PLACEHOLDER, this.getPage().getLastNo().toString());
+        }
         // 替换制表符
-        temp = TextUtil.replaceTab(temp, this.getTabSize());
+        if (temp.indexOf(Constants.TAB_CHARACTER) > -1) {
+            temp = TextUtil.replaceTab(temp, this.getTabSize());
+        }
         // 根据换行符拆分
         return Arrays.asList(temp.split("\n"));
     }

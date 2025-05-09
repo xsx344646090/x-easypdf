@@ -21,7 +21,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.dromara.pdf.pdfbox.support.linearizer;
+package org.dromara.pdf.pdfbox.support.linearization;
 
 
 import org.apache.pdfbox.cos.COSBase;
@@ -38,7 +38,7 @@ import java.util.List;
  */
 class CHSharedObject {
     //~ Instance members ------------------------------------------------------------------------------------------------------------------------------
-    
+
     /**
      * vector size is nshared_total
      */
@@ -55,9 +55,9 @@ class CHSharedObject {
      * [!FIELD_DESCRIPTION!]
      */
     int nshared_total;
-    
+
     //~ Constructors ----------------------------------------------------------------------------------------------------------------------------------
-    
+
     /**
      * [!CONSTR_DESCIRPTION_FOR_CHSharedObject!]
      */

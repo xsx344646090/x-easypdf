@@ -1,8 +1,8 @@
 /**
- * 线性化
+ * documents4j重写
  *
  * @author xsx
- * @date 2025/1/16
+ * @date 2025/5/6
  * @since 1.8
  * <p>
  * Copyright (c) 2020 xsx All Rights Reserved.
@@ -16,4 +16,4 @@
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-package org.dromara.pdf.pdfbox.support.linearizer;
+package com.documents4j;

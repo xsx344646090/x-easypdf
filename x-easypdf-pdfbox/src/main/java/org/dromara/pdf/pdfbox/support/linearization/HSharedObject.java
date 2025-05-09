@@ -21,7 +21,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.dromara.pdf.pdfbox.support.linearizer;
+package org.dromara.pdf.pdfbox.support.linearization;
 
 
 import java.io.IOException;
@@ -37,49 +37,49 @@ import java.util.List;
  */
 public class HSharedObject {
     //~ Instance members ------------------------------------------------------------------------------------------------------------------------------
-    
+
     /**
      * [!FIELD_DESCRIPTION!]
      */
     int first_shared_obj;  // 1
-    
+
     /**
      * [!FIELD_DESCRIPTION!]
      */
     long first_shared_offset;  // 2
-    
+
     /**
      * [!FIELD_DESCRIPTION!]
      */
     int nshared_first_page;  // 3
-    
+
     /**
      * [!FIELD_DESCRIPTION!]
      */
     int nshared_total;  // 4
-    
+
     /**
      * [!FIELD_DESCRIPTION!]
      */
     int nbits_nobjects;  // 5
-    
+
     /**
      * [!FIELD_DESCRIPTION!]
      */
     int min_group_length;  // 6
-    
+
     /**
      * [!FIELD_DESCRIPTION!]
      */
     int nbits_delta_group_length;  // 7
-    
+
     /**
      * vector size is nshared_total
      */
     List<HSharedObjectEntry> entries = new ArrayList<>();
-    
+
     //~ Constructors ----------------------------------------------------------------------------------------------------------------------------------
-    
+
     /**
      * [!CONSTR_DESCIRPTION_FOR_HSharedObject!]
      *
@@ -97,9 +97,9 @@ public class HSharedObject {
             entries.add(new HSharedObjectEntry());
         }
     }
-    
+
     //~ Methods ---------------------------------------------------------------------------------------------------------------------------------------
-    
+
     /**
      * [!ONE_SENTENCE_SHORT_DESCRIPTION!].[!METHOD_DESCRIPTION!]
      *
@@ -111,13 +111,13 @@ public class HSharedObject {
     static HSharedObject filledSharedObjectHints(final StructuredPDFInfo info, final PDFObjectQueue queue, final long first_shared_offset) {
         long min_length = Integer.MAX_VALUE;
         long max_length = Integer.MIN_VALUE;
-        
+
         final HSharedObject sharedObjectHints = new HSharedObject(info.sharedObjectData.nshared_total);
-        
+
         for (int i = 0; i < info.sharedObjectData.nshared_total; ++i) {
             // Assign absolute numbers to deltas; adjust later
             final long length = queue.get(info.sharedObjectData.entries.get(i)).objLength;
-            
+
             min_length = Math.min(min_length, length);
             max_length = Math.max(max_length, length);
             sharedObjectHints.entries.get(i).delta_group_length = (int) length;
@@ -137,8 +137,8 @@ public class HSharedObject {
         }
         return sharedObjectHints;
     }
-    
-    
+
+
     /**
      * [!ONE_SENTENCE_SHORT_DESCRIPTION!].[!METHOD_DESCRIPTION!]
      *
@@ -153,9 +153,9 @@ public class HSharedObject {
         w.writeBits(this.nbits_nobjects, 16);  // 5
         w.writeBits(this.min_group_length, 32);  // 6
         w.writeBits(this.nbits_delta_group_length, 16);  // 7
-        
+
         final int nitems = this.nshared_total;
-        
+
         for (final HSharedObjectEntry en : entries) {
             w.writeBits(en.delta_group_length, this.nbits_delta_group_length);
         }
@@ -175,9 +175,9 @@ public class HSharedObject {
         }
         w.flush();
     }
-    
+
     //~ Inner Classes ---------------------------------------------------------------------------------------------------------------------------------
-    
+
     /**
      * PDF 1.4: Table F.6
      *
@@ -186,24 +186,24 @@ public class HSharedObject {
      */
     class HSharedObjectEntry {
         //~ Instance members ---------------------------------------------------------------------------------------------------------------------------
-        
+
         /**
          * Item 3 is a 128-bit signature (unsupported by Acrobat)
          */
         int delta_group_length;  // 1
-        
+
         /**
          * [!FIELD_DESCRIPTION!]
          */
         int signature_present;  // 2 -- always 0
-        
+
         /**
          * [!FIELD_DESCRIPTION!]
          */
         int nobjects_minus_one;  // 4 -- always 0
-        
+
         //~ Constructors -------------------------------------------------------------------------------------------------------------------------------
-        
+
         /**
          * [!CONSTR_DESCIRPTION_FOR_HSharedObjectEntry!]
          */

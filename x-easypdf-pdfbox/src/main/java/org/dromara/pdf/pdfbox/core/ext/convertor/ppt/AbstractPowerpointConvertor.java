@@ -17,7 +17,7 @@ import java.util.Objects;
  * @since 1.8
  * <p>
  * Copyright (c) 2020 xsx All Rights Reserved.
- * x-easypdf is licensed under Mulan PSL v2.
+ * x-easypdf-pdfbox is licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  * http://license.coscl.org.cn/MulanPSL2
@@ -28,7 +28,7 @@ import java.util.Objects;
  * </p>
  */
 public abstract class AbstractPowerpointConvertor extends AbstractConvertor {
-    
+
     /**
      * 有参构造
      *
@@ -37,7 +37,7 @@ public abstract class AbstractPowerpointConvertor extends AbstractConvertor {
     public AbstractPowerpointConvertor(Document document) {
         super(document);
     }
-    
+
     /**
      * 转pdf
      *
@@ -46,7 +46,7 @@ public abstract class AbstractPowerpointConvertor extends AbstractConvertor {
      * @return 返回文档
      */
     public abstract Document toPdf(PowerpointType type, InputStream source);
-    
+
     /**
      * 转pdf
      *
@@ -59,7 +59,7 @@ public abstract class AbstractPowerpointConvertor extends AbstractConvertor {
         Objects.requireNonNull(type, "the type can not be null");
         return super.toPdf(type.getType(), source);
     }
-    
+
     /**
      * 转pdf
      *

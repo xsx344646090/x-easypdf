@@ -21,7 +21,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.dromara.pdf.pdfbox.support.linearizer;
+package org.dromara.pdf.pdfbox.support.linearization;
 
 
 import org.apache.pdfbox.cos.COSBase;
@@ -37,34 +37,34 @@ import java.io.IOException;
  */
 class HGeneric {
     //~ Instance members ------------------------------------------------------------------------------------------------------------------------------
-    
+
     /**
      * [!FIELD_DESCRIPTION!]
      */
     int first_object_nr;  // 3
-    
+
     /**
      * [!FIELD_DESCRIPTION!]
      */
     COSBase first_object;  // 1
-    
+
     /**
      * [!FIELD_DESCRIPTION!]
      */
     long first_object_offset;  // 2
-    
+
     /**
      * [!FIELD_DESCRIPTION!]
      */
     int nobjects;  // 3
-    
+
     /**
      * [!FIELD_DESCRIPTION!]
      */
     long group_length;  // 4
-    
+
     //~ Constructors ----------------------------------------------------------------------------------------------------------------------------------
-    
+
     /**
      * [!CONSTR_DESCIRPTION_FOR_HGeneric!]
      */
@@ -74,9 +74,9 @@ class HGeneric {
         nobjects = 0;
         group_length = 0;
     }
-    
+
     //~ Methods ---------------------------------------------------------------------------------------------------------------------------------------
-    
+
     /**
      * [!ONE_SENTENCE_SHORT_DESCRIPTION!].[!METHOD_DESCRIPTION!]
      *
@@ -87,7 +87,7 @@ class HGeneric {
      */
     static HGeneric filledOutlineHints(final StructuredPDFInfo info, final PDFObjectQueue queue, final Linearizer.LinearizationInformation offsets) {
         final HGeneric outlineHints = new HGeneric();
-        
+
         if (info.outlineData.nobjects > 0) {
             outlineHints.first_object_nr = queue.get(info.outlineData.first_object).objNumber;
             outlineHints.first_object_offset = offsets.firstObjectOffset;
@@ -96,8 +96,8 @@ class HGeneric {
         }
         return outlineHints;
     }
-    
-    
+
+
     /**
      * [!ONE_SENTENCE_SHORT_DESCRIPTION!].[!METHOD_DESCRIPTION!]
      *

@@ -97,7 +97,15 @@ public final class Constants {
     /**
      * 默认未知字符
      */
-    public static final String DEFAULT_UNKNOWN_CHARACTER = "□";
+    public static final Character DEFAULT_UNKNOWN_CHARACTER = '□';
+    /**
+     * 制表符
+     */
+    public static final Character TAB_CHARACTER = '\t';
+    /**
+     * 空白符
+     */
+    public static final Character SPACE_CHARACTER = ' ';
     /**
      * 默认行间距
      */

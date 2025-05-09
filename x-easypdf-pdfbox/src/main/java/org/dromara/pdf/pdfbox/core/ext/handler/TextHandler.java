@@ -59,12 +59,12 @@ public class TextHandler extends AbstractTextHandler {
         PDFont font = this.getContext().getFont(fontConfiguration.getFontName());
         // 获取字体大小
         Float fontSize = fontConfiguration.getFontSize();
-        // 获取字符数组
-        char[] charArray = text.getText().toCharArray();
+        // 获取文本内容
+        String content = text.getText();
         // 遍历字符
-        for (int i = 0; i < charArray.length; i++) {
+        for (int i = 0; i < content.length(); i++) {
             // 获取字符
-            char character = charArray[i];
+            char character = content.charAt(i);
             try {
                 // 写入文本
                 contentStream.showCharacter(character);
@@ -74,9 +74,9 @@ public class TextHandler extends AbstractTextHandler {
                 // 未解析成功
                 if (flag) {
                     // 还有下一个字符
-                    if (i + 1 < charArray.length) {
+                    if (i + 1 < content.length()) {
                         // 获取下一个字符
-                        char next = charArray[i + 1];
+                        char next = content.charAt(i + 1);
                         // 处理双字符
                         flag = this.processDouble(contentStream, character, next, specialFontNames, font, fontSize);
                         // 未解析成功
@@ -84,7 +84,7 @@ public class TextHandler extends AbstractTextHandler {
                             // 重置字体
                             contentStream.setFont(this.getContext().getFont(Constants.DEFAULT_FONT_NAME), fontSize);
                             // 写入未知字符
-                            contentStream.showCharacter(Constants.DEFAULT_UNKNOWN_CHARACTER.charAt(0));
+                            contentStream.showCharacter(Constants.DEFAULT_UNKNOWN_CHARACTER);
                             // 重置字体
                             contentStream.setFont(font, fontSize);
                         } else {

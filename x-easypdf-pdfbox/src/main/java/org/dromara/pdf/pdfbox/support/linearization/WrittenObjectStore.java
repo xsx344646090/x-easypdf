@@ -21,7 +21,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.dromara.pdf.pdfbox.support.linearizer;
+package org.dromara.pdf.pdfbox.support.linearization;
 
 
 import lombok.SneakyThrows;
@@ -44,14 +44,14 @@ import java.util.List;
  */
 public class WrittenObjectStore {
     //~ Enums -----------------------------------------------------------------------------------------------------------------------------------------
-    
+
     public static final int EOF = -1;
-    
+
     //~ Instance members ------------------------------------------------------------------------------------------------------------------------------
     private final EnumMap<SpecialParts, List<VirtualPart>> specialParts = new EnumMap<>(SpecialParts.class);
-    
+
     //~ Methods ---------------------------------------------------------------------------------------------------------------------------------------
-    
+
     public static void writePartsToOutputStream(List<VirtualPart> objParts, OutputStream fos) throws IOException {
         for (VirtualPart part : objParts) {
             if (part.isReference()) {
@@ -63,7 +63,7 @@ public class WrittenObjectStore {
             }
         }
     }
-    
+
     public static long copyLarge(final InputStream input, final OutputStream output, final long inputOffset, final long length) throws IOException {
         if (inputOffset > 0) {
             input.skip(inputOffset);
@@ -89,7 +89,7 @@ public class WrittenObjectStore {
         }
         return totalRead;
     }
-    
+
     /**
      * Writes dumped content to a VirtualFile at the destination specified.
      *
@@ -97,14 +97,14 @@ public class WrittenObjectStore {
      */
     @SneakyThrows
     public void write(final OutputStream dest) {
-        
+
         writePartsToOutputStream(this.get(SpecialParts.PARTS_BEFORE_FIRST_XREF), dest);
         writePartsToOutputStream(this.get(SpecialParts.FIRST_PART_OBJECTS), dest);
         writePartsToOutputStream(this.get(SpecialParts.HINTSTREAM), dest);
         writePartsToOutputStream(this.get(SpecialParts.SECOND_PART_OBJECTS), dest);
         writePartsToOutputStream(this.get(SpecialParts.SECOND_XREF_PART), dest);
     }
-    
+
     /**
      * Dumps a list of VirtualParts and associates them with a PDF part. If there
      * are already parts associated with the key specified, they will be
@@ -118,7 +118,7 @@ public class WrittenObjectStore {
         specialParts.put(key, objects);
         return VirtualPart.calculateInflatedLength(objects);
     }
-    
+
     /**
      * Retrieves length of VirtualParts associated with the key specified.
      *
@@ -128,7 +128,7 @@ public class WrittenObjectStore {
     long getLength(final SpecialParts key) {
         return VirtualPart.calculateInflatedLength(specialParts.get(key));
     }
-    
+
     /**
      * Retrieves all VirtualParts associated with the given key.
      *
@@ -138,7 +138,7 @@ public class WrittenObjectStore {
     List<VirtualPart> get(final SpecialParts key) {
         return specialParts.get(key);
     }
-    
+
     /**
      * Enum describing parts of linearized PDF.
      *
@@ -147,8 +147,8 @@ public class WrittenObjectStore {
      */
     public static enum SpecialParts {
         //~ Enum constants -----------------------------------------------------------------------------------------------------------------------------
-        
+
         PARTS_BEFORE_FIRST_XREF, HINTSTREAM, SECOND_XREF_PART, FIRST_PART_OBJECTS, SECOND_PART_OBJECTS, PART_4_END_MARKER
     }
-    
+
 }

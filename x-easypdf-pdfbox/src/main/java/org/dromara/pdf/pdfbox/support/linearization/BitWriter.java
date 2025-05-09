@@ -21,7 +21,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.dromara.pdf.pdfbox.support.linearizer;
+package org.dromara.pdf.pdfbox.support.linearization;
 
 
 import java.io.IOException;
@@ -36,15 +36,15 @@ import java.io.OutputStream;
  */
 class BitWriter {
     //~ Instance members ------------------------------------------------------------------------------------------------------------------------------
-    
+
     // byref übergeben
     private final char[] ch = new char[1];
     private final int[] bitOffset = new int[1];
     private final OutputStream str;
     private final int[] length = new int[1];
-    
+
     //~ Constructors ----------------------------------------------------------------------------------------------------------------------------------
-    
+
     /**
      * [!CONSTR_DESCIRPTION_FOR_BitWriter!]
      *
@@ -56,20 +56,20 @@ class BitWriter {
         length[0] = 0;
         bitOffset[0] = 7;
     }
-    
+
     //~ Methods ---------------------------------------------------------------------------------------------------------------------------------------
-    
+
     private static void write_bits(final char[] ch, final int[] bitOffset, final long val, int bits, final OutputStream str, final int[] length) throws IOException {
         if (bits > 32) {
             throw new ArithmeticException("write_bits: too many bits requested");
         }
-        
+
         // bit_offset + 1 is the number of bits left in ch
         while (bits > 0) {
             final int bitsToWrite = Math.min(bits, bitOffset[0] + 1);
             char newval = (char) ((val >> (bits - bitsToWrite)) & ((1 << bitsToWrite) - 1));
             final int bits_left_in_ch = bitOffset[0] + 1 - bitsToWrite;
-            
+
             newval <<= bits_left_in_ch;
             ch[0] |= newval;
             if (bits_left_in_ch == 0) {
@@ -83,7 +83,7 @@ class BitWriter {
             bits -= bitsToWrite;
         }
     }
-    
+
     /**
      * [!ONE_SENTENCE_SHORT_DESCRIPTION!].[!METHOD_DESCRIPTION!]
      *
@@ -94,7 +94,7 @@ class BitWriter {
     void writeBits(final long val, final int bits) throws IOException {
         write_bits(ch, bitOffset, val, bits, str, length);
     }
-    
+
     /**
      * [!ONE_SENTENCE_SHORT_DESCRIPTION!].[!METHOD_DESCRIPTION!]
      *
@@ -103,7 +103,7 @@ class BitWriter {
     int getCount() {
         return length[0];
     }
-    
+
     /**
      * [!ONE_SENTENCE_SHORT_DESCRIPTION!].[!METHOD_DESCRIPTION!]
      *
@@ -113,7 +113,7 @@ class BitWriter {
      */
     void writeBitsSigned(final long val, final int bits) throws IOException {
         long uval;
-        
+
         if (val < 0) {
             uval = ((1 << bits) + val);
         } else {
@@ -121,7 +121,7 @@ class BitWriter {
         }
         writeBits(uval, bits);
     }
-    
+
     /**
      * [!ONE_SENTENCE_SHORT_DESCRIPTION!].[!METHOD_DESCRIPTION!]
      *
@@ -130,7 +130,7 @@ class BitWriter {
     void flush() throws IOException {
         if (bitOffset[0] < 7) {
             final int bitsToWrite = bitOffset[0] + 1;
-            
+
             write_bits(ch, bitOffset, 0, bitsToWrite, str, length);
         }
     }

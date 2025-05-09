@@ -1,16 +1,16 @@
-package org.dromara.pdf.pdfbox.core.ext.convertor.excel;
+package org.dromara.pdf.pdfbox.core.ext.processor;
 
-import lombok.SneakyThrows;
+import lombok.EqualsAndHashCode;
 import org.dromara.pdf.pdfbox.core.base.Document;
+import org.dromara.pdf.pdfbox.support.linearization.Linearizer;
 
-import java.io.InputStream;
-import java.util.Objects;
+import java.io.OutputStream;
 
 /**
- * excel转换器
+ * 线性化处理器
  *
  * @author xsx
- * @date 2025/1/8
+ * @date 2025/4/30
  * @since 1.8
  * <p>
  * Copyright (c) 2020 xsx All Rights Reserved.
@@ -24,28 +24,26 @@ import java.util.Objects;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public class ExcelConvertor extends AbstractExcelConvertor {
+@EqualsAndHashCode(callSuper = true)
+public class LinearizationProcessor extends AbstractProcessor {
 
     /**
      * 有参构造
      *
      * @param document 文档
      */
-    public ExcelConvertor(Document document) {
+    public LinearizationProcessor(Document document) {
         super(document);
     }
 
     /**
-     * 转pdf
+     * 线性化
+     * <p>注：仅适用加载的文档</p>
      *
-     * @param type   类型
-     * @param source 源输入流
-     * @return 返回文档
+     * @param outputStream 输出流
      */
-    @SneakyThrows
-    @Override
-    public Document toPdf(ExcelType type, InputStream source) {
-        Objects.requireNonNull(type, "the type can not be null");
-        return super.toPdf(type.getType(), source);
+    public void linearize(OutputStream outputStream) {
+        Linearizer linearizer = new Linearizer(this.getDocument());
+        linearizer.linearize().write(outputStream);
     }
 }

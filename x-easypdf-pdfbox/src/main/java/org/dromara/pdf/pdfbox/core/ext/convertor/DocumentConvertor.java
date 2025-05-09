@@ -15,7 +15,7 @@ import org.dromara.pdf.pdfbox.core.ext.convertor.word.WordConvertor;
  * @since 1.8
  * <p>
  * Copyright (c) 2020 xsx All Rights Reserved.
- * x-easypdf is licensed under Mulan PSL v2.
+ * x-easypdf-pdfbox is licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  * http://license.coscl.org.cn/MulanPSL2
@@ -26,7 +26,7 @@ import org.dromara.pdf.pdfbox.core.ext.convertor.word.WordConvertor;
  * </p>
  */
 public class DocumentConvertor extends AbstractConvertor {
-    
+
     /**
      * 有参构造
      *
@@ -35,7 +35,7 @@ public class DocumentConvertor extends AbstractConvertor {
     public DocumentConvertor(Document document) {
         super(document);
     }
-    
+
     /**
      * 获取word转换器
      *
@@ -44,7 +44,7 @@ public class DocumentConvertor extends AbstractConvertor {
     public WordConvertor getWordConvertor() {
         return new WordConvertor(this.document);
     }
-    
+
     /**
      * 获取excel转换器
      *
@@ -53,7 +53,7 @@ public class DocumentConvertor extends AbstractConvertor {
     public ExcelConvertor getExcelConvertor() {
         return new ExcelConvertor(this.document);
     }
-    
+
     /**
      * 获取ppt转换器
      *
@@ -62,7 +62,7 @@ public class DocumentConvertor extends AbstractConvertor {
     public PowerpointConvertor getPowerpointConvertor() {
         return new PowerpointConvertor(this.document);
     }
-    
+
     /**
      * 获取html转换器
      *
@@ -71,7 +71,7 @@ public class DocumentConvertor extends AbstractConvertor {
     public HtmlConvertor getHtmlConvertor() {
         return new HtmlConvertor(this.document);
     }
-    
+
     /**
      * 获取rtf转换器
      *

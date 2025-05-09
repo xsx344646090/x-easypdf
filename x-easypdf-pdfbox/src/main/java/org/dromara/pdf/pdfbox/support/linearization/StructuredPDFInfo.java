@@ -21,7 +21,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.dromara.pdf.pdfbox.support.linearizer;
+package org.dromara.pdf.pdfbox.support.linearization;
 
 
 import org.apache.pdfbox.cos.*;
@@ -38,7 +38,7 @@ import java.util.*;
  */
 class StructuredPDFInfo {
     //~ Instance members ------------------------------------------------------------------------------------------------------------------------------
-    
+
     /**
      * [!FIELD_DESCRIPTION!]
      */
@@ -81,9 +81,9 @@ class StructuredPDFInfo {
      * [!FIELD_DESCRIPTION!]
      */
     BidirectionalMultiMap<ObjUser, COSBase> userObjectMap;
-    
+
     //~ Constructors ----------------------------------------------------------------------------------------------------------------------------------
-    
+
     /**
      * [!CONSTR_DESCIRPTION_FOR_StructuredPDFInfo!]
      *
@@ -93,9 +93,9 @@ class StructuredPDFInfo {
         this.document = doc;
         this.pages = new ArrayList<>();
     }
-    
+
     //~ Methods ---------------------------------------------------------------------------------------------------------------------------------------
-    
+
     /**
      * [!ONE_SENTENCE_SHORT_DESCRIPTION!].[!METHOD_DESCRIPTION!]
      *
@@ -104,8 +104,8 @@ class StructuredPDFInfo {
     int sizeSecondPart() {
         return this.part7.size() + this.part8.size() + this.part9.size() + 2;
     }
-    
-    
+
+
     /**
      * [!ONE_SENTENCE_SHORT_DESCRIPTION!].[!METHOD_DESCRIPTION!]
      *
@@ -114,8 +114,8 @@ class StructuredPDFInfo {
     COSBase getPart4EndMarker() {
         return this.part4.get(this.part4.size() - 1);
     }
-    
-    
+
+
     /**
      * [!ONE_SENTENCE_SHORT_DESCRIPTION!].[!METHOD_DESCRIPTION!]
      *
@@ -124,12 +124,12 @@ class StructuredPDFInfo {
     COSBase getPart6EndMarker() {
         return this.part6.get(this.part6.size() - 1);
     }
-    
+
     List<COSObject> getPages() {
         return this.pages;
     }
-    
-    
+
+
     /**
      * * This function calculates the ordering of objects, divides them into the
      * appropriate parts, and computes some values for the linearization
@@ -142,7 +142,7 @@ class StructuredPDFInfo {
         // determine which part of the linearized file should contain the
         // object.  This categorization is useful for other purposes as
         // well.  Part numbers refer to version 1.4 of the PDF spec.
-        
+
         // Parts 1, 3, 5, 10, and 11 don't contain any objects from the
         // original file (except the trailer dictionary in part 11).
         // Part 4 is the document catalog (root) and the following root
@@ -172,7 +172,7 @@ class StructuredPDFInfo {
         final COSObject root = (COSObject) document.getTrailer().getItem(COSName.ROOT);
         boolean outlines_in_first_page = false;
         final COSBase pagemode = ((COSDictionary) root.getObject()).getDictionaryObject(COSName.PAGE_MODE);
-        
+
         if (pagemode instanceof COSName) {
             if (((COSName) pagemode).getName().equalsIgnoreCase("/UseOutlines")) {
                 if (((COSDictionary) root.getObject()).getDictionaryObject(COSName.OUTLINES) != null) {
@@ -182,20 +182,20 @@ class StructuredPDFInfo {
                 }
             }
         }
-        
+
         // hauptdokument elemente
         final List<COSName> open_document_keys = new ArrayList<>();
-        
+
         open_document_keys.add(COSName.VIEWER_PREFERENCES);
         open_document_keys.add(COSName.PAGE_MODE);
         open_document_keys.add(COSName.THREADS);
         open_document_keys.add(COSName.OPEN_ACTION);
         open_document_keys.add(COSName.ACRO_FORM);
-        
+
         final PreLinearizationOptimizer optimizer = new PreLinearizationOptimizer(this.document);
-        
+
         this.userObjectMap = optimizer.optimize(this.pages);
-        
+
         final List<COSBase> lc_open_document = new ArrayList<>();
         final List<COSBase> lc_first_page_private = new ArrayList<>();
         final List<COSBase> lc_first_page_shared = new ArrayList<>();
@@ -206,22 +206,22 @@ class StructuredPDFInfo {
         final List<COSBase> lc_other = new ArrayList<>();
         final List<COSBase> lc_outlines = new ArrayList<>();
         final ArrayList<COSBase> lc_root = new ArrayList<>();
-        
+
         traverseElements(open_document_keys, lc_root, lc_outlines, lc_open_document, lc_first_page_private, lc_first_page_shared, lc_other_page_private, lc_other_page_shared, lc_thumbnail_private, lc_thumbnail_shared, lc_other);
-        
+
         initData(lc_root, lc_open_document);
-        
+
         processPart6(lc_first_page_private, lc_first_page_shared, outlines_in_first_page, lc_outlines);
         processPart7(lc_other_page_private);
-        
+
         processPart8(lc_other_page_shared);
-        
+
         processPart9(lc_other, lc_thumbnail_private, lc_thumbnail_shared, outlines_in_first_page, lc_outlines);
-        
+
         gatherSharedHintTable();
     }
-    
-    
+
+
     private void initData(final ArrayList<COSBase> lc_root, final List<COSBase> lc_open_document) throws ArithmeticException {
         // Generate ordering for objects in the output file.  Sometimes we
         // just dump right from a set into a vector.  Rather than
@@ -263,7 +263,7 @@ class StructuredPDFInfo {
         // reasonable size.
         // c_linp.npages = npages;
         pageOffsetData = new CHPageOffset(pages.size());
-        
+
         // Part 4: open document objects.  We don't care about the order.
         if (lc_root.size() != 1) {
             throw new ArithmeticException("calculateLinearizationData: too many roots");
@@ -273,8 +273,8 @@ class StructuredPDFInfo {
             part4.add(obj);
         });
     }
-    
-    
+
+
     private void gatherSharedHintTable() throws ArithmeticException {
         // Calculate shared object hint table information including
         // references to shared objects from page offset hint data.
@@ -287,12 +287,12 @@ class StructuredPDFInfo {
         // can map from object number only without regards to generation.
         sharedObjectData.nshared_first_page = part6.size();
         sharedObjectData.nshared_total = sharedObjectData.nshared_first_page + part8.size();
-        
+
         part6.forEach((iterpart6) -> {
             this.indexObjectMap.putValuePair(sharedObjectData.entries.size(), iterpart6);
             sharedObjectData.entries.add(iterpart6);
         });
-        
+
         if (!part8.isEmpty()) {
             sharedObjectData.first_shared_obj = part8.get(0);
             part8.forEach((iterpart8) -> {
@@ -300,35 +300,35 @@ class StructuredPDFInfo {
                 sharedObjectData.entries.add(iterpart8);
             });
         }
-        
+
         if (sharedObjectData.nshared_total != sharedObjectData.entries.size()) {
             throw new ArithmeticException("shared object hint table has wrong number of entries");
         }
-        
+
         // Now compute the list of shared objects for each page after the
         // first page.
         for (int i = 1; i < pages.size(); ++i) {
             final CHPageOffset.CHPageOffsetEntry pe = pageOffsetData.entries.get(i);
             final ObjUser ou = new ObjUser(ObjUser.user_e.ou_page, i);
-            
+
             if (!this.userObjectMap.containsT1Key(ou)) {
                 throw new ArithmeticException("keine page Object!");
             }
-            
+
             final List<COSBase> ogs = this.userObjectMap.getT1ValuesForKey(ou);
-            
+
             for (final COSBase iterogs : ogs) {
                 if ((this.userObjectMap.getT2ValuesForKey(iterogs).size() > 1) && (this.indexObjectMap.containsT2Key(iterogs))) {
                     final int idx = this.indexObjectMap.getValueForT2(iterogs);
-                    
+
                     ++pe.nshared_objects;
                     pe.shared_identifiers.add(idx);
                 }
             }
         }
     }
-    
-    
+
+
     private void processPart9(final List<COSBase> lc_other, final List<COSBase> lc_thumbnail_private, final List<COSBase> lc_thumbnail_shared, final boolean outlines_in_first_page, final List<COSBase> lc_outlines) throws ArithmeticException {
         // Part 9: other objects
         // The PDF specification makes recommendations on ordering here.
@@ -338,7 +338,7 @@ class StructuredPDFInfo {
         // in part 6).  After that, we throw all remaining objects in
         // arbitrary order.
         final List<COSBase> pages_ogs = this.userObjectMap.getT1ValuesForKey(new ObjUser(ObjUser.user_e.ou_root_key, COSName.PAGES));
-        
+
         if (pages_ogs.isEmpty()) {
             throw new ArithmeticException("calculateLinearizationData: pages_ogs is empty");
         }
@@ -348,19 +348,19 @@ class StructuredPDFInfo {
                 part9.add(pages_ogsiter);
             }
         });
-        
+
         // Place private thumbnail images in page order.  Slightly more
         // information would be required if we were going to bother with
         // thumbnail hint tables.
         for (int i = 0; i < pages.size(); ++i) {
             final COSBase thumb = ((COSDictionary) pages.get(i).getObject()).getDictionaryObject(COSName.THUMB);
-            
+
             // thumb = getUncompressedObject(thumb, object_stream_data);
             if (thumb != null) {
                 // Output the thumbnail itself
                 // COSBase thumb_og(thumb.getObjGen());
                 final COSBase thumb_og = thumb;
-                
+
                 if (lc_thumbnail_private.contains(thumb_og)) {
                     lc_thumbnail_private.remove(thumb_og);
                     part9.add(thumb);
@@ -372,9 +372,9 @@ class StructuredPDFInfo {
                     // having been in some set other than
                     // lc_thumbnail_private.
                 }
-                
+
                 final List<COSBase> ogs = this.userObjectMap.getT1ValuesForKey(new ObjUser(ObjUser.user_e.ou_thumb, i));
-                
+
                 ogs.forEach((iterogs) -> {
                     if (lc_thumbnail_private.contains(iterogs)) {
                         lc_thumbnail_private.remove(iterogs);
@@ -386,31 +386,31 @@ class StructuredPDFInfo {
         if (!lc_thumbnail_private.isEmpty()) {
             throw new ArithmeticException("calculateLinearizationData: lc_thumbnail_private - not empty after placing thumbnails");
         }
-        
+
         // Place shared thumbnail objects
         lc_thumbnail_shared.forEach((iterthumshar) -> {
             part9.add(iterthumshar);
         });
-        
+
         // Place outlines unless in first page
         if (!outlines_in_first_page) {
             pushOutlinesToPart(part9, lc_outlines);
         }
-        
+
         // Place all remaining objects
         lc_other.forEach((iterother) -> {
             part9.add(iterother);
         });
-        
+
         final int num_placed = part4.size() + part6.size() + part7.size() + part8.size() + part9.size();
         final int num_wanted = this.userObjectMap.getT2Size();
-        
+
         if (num_placed != num_wanted) {
             throw new ArithmeticException("calculateLinearizationData: wrong number of objects placed (num_placed = " + num_placed + "; number of objects: " + num_wanted);
         }
     }
-    
-    
+
+
     private void processPart8(final List<COSBase> lc_other_page_shared) {
         // Part 8: other pages' shared objects
         // Order is unimportant.
@@ -418,34 +418,34 @@ class StructuredPDFInfo {
             part8.add(itershared);
         });
     }
-    
-    
+
+
     private void processPart7(final Set<COSBase> lc_other_page_private) throws ArithmeticException {
         // Part 7: other pages' private objects
         // For each page in order:
         for (int i = 1; i < pages.size(); ++i) {
             // Place this page's page object
-            
+
             final COSBase page_og = pages.get(i);
-            
+
             if (!lc_other_page_private.contains(page_og)) {
                 throw new ArithmeticException("calculateLinearizationData: page object for page " + i + " - object not in lc_first_page_private");
             }
             lc_other_page_private.remove(page_og);
             part7.add(page_og);
-            
+
             // Place all non-shared objects referenced by this page,
             // updating the page object count for the hint table.
             pageOffsetData.entries.get(i).nobjects = 1;
-            
+
             final ObjUser ou = new ObjUser(ObjUser.user_e.ou_page, i);
-            
+
             if (!this.userObjectMap.containsT1Key(ou)) {
                 throw new ArithmeticException("calculateLinearizationData: no user data for page " + i);
             }
-            
+
             final List<COSBase> ogs = this.userObjectMap.getT1ValuesForKey(ou);
-            
+
             for (final COSBase ogpage : ogs) {
                 if (lc_other_page_private.remove(ogpage)) {
                     // lc_other_page_private.remove(ogpage);
@@ -454,14 +454,14 @@ class StructuredPDFInfo {
                 }
             }
         }
-        
+
         // That should have covered all part7 objects.
         if (!lc_other_page_private.isEmpty()) {
             throw new ArithmeticException("calculateLinearizationData: lc_other_page_private is not empty after generation of part7");
         }
     }
-    
-    
+
+
     private void processPart6(final List<COSBase> lc_first_page_private, final List<COSBase> lc_first_page_shared, final boolean outlines_in_first_page, final List<COSBase> lc_outlines) throws ArithmeticException {
         // Part 6: first page objects.  Note: implementation note 124
         // states that Acrobat always treats page 0 as the first page for
@@ -470,15 +470,15 @@ class StructuredPDFInfo {
         // will do the same.
         // First, place the actual first page object itself.
         final COSBase first_page_og = pages.get(0);
-        
+
         if (!lc_first_page_private.contains(first_page_og)) {
             throw new ArithmeticException("calculateLinearizationData: first page - object not in lc_first_page_private");
         }
         lc_first_page_private.remove(first_page_og);
-        
+
         // this.m.c_linp.first_page_object = pages.at(0).getObjectID();
         part6.add(first_page_og);
-        
+
         // The PDF spec "recommends" an order for the rest of the objects,
         // but we are going to disregard it except to the extent that it
         // groups private and shared objects contiguously for the sake of
@@ -486,16 +486,16 @@ class StructuredPDFInfo {
         lc_first_page_private.forEach((page) -> {
             part6.add(page);
         });
-        
+
         lc_first_page_shared.forEach((page) -> {
             part6.add(page);
         });
-        
+
         // Place the outline dictionary if it goes in the first page section.
         if (outlines_in_first_page) {
             pushOutlinesToPart(part6, lc_outlines);
         }
-        
+
         // Fill in page offset hint table information for the first page.
         // The PDF spec says that nshared_objects should be zero for the
         // first page.  pdlin does not appear to obey this, but it fills
@@ -503,13 +503,13 @@ class StructuredPDFInfo {
         // first page.
         pageOffsetData.entries.get(0).nobjects = part6.size();
     }
-    
-    
+
+
     private void traverseElements(final List<COSName> open_document_keys, final ArrayList<COSBase> lc_root, final List<COSBase> lc_outlines, final List<COSBase> lc_open_document, final List<COSBase> lc_first_page_private, final List<COSBase> lc_first_page_shared, final Set<COSBase> lc_other_page_private, final List<COSBase> lc_other_page_shared, final List<COSBase> lc_thumbnail_private, final List<COSBase> lc_thumbnail_shared, final List<COSBase> lc_other) throws ArithmeticException {
         for (final Map.Entry<COSBase, List<ObjUser>> entry : this.userObjectMap.getT2ToT1Map().entrySet()) {
             final COSBase og = entry.getKey();
             final List<ObjUser> ous = entry.getValue();
-            
+
             boolean in_open_document = false;
             boolean in_first_page = false;
             int other_pages = 0;
@@ -517,7 +517,7 @@ class StructuredPDFInfo {
             int others = 0;
             boolean in_outlines = false;
             boolean is_root = false;
-            
+
             for (final ObjUser ou : ous) {
                 switch (ou.ou_type) {
                     case ou_trailer_key:
@@ -544,14 +544,14 @@ class StructuredPDFInfo {
                     case ou_root:
                         is_root = true;
                         break;
-                    
+
                     case ou_bad:
                         throw new ArithmeticException("INTERNAL ERROR: calculateLinearizationData: - invalid user type");
                     default:
                         break;
                 }
             }
-            
+
             if (is_root) {
                 lc_root.add(og);
             } else if (in_outlines) {
@@ -575,12 +575,12 @@ class StructuredPDFInfo {
             }
         }
     }
-    
-    
+
+
     private void pushOutlinesToPart(final List<COSBase> part, final List<COSBase> lc_outlines) {
         final COSObject root = (COSObject) document.getTrailer().getItem(COSName.ROOT);
         final COSObject outlines = (COSObject) ((COSDictionary) root.getObject()).getItem(COSName.OUTLINES);
-        
+
         if (outlines == null) {
             return;
         }

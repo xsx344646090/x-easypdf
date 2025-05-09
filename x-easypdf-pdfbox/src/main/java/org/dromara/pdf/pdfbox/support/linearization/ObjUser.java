@@ -21,7 +21,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.dromara.pdf.pdfbox.support.linearizer;
+package org.dromara.pdf.pdfbox.support.linearization;
 
 
 import org.apache.pdfbox.cos.COSName;
@@ -37,12 +37,12 @@ import java.util.Objects;
  */
 class ObjUser {
     //~ Enums -----------------------------------------------------------------------------------------------------------------------------------------
-    
+
     /**
      * [!FIELD_DESCRIPTION!]
      */
     user_e ou_type;
-    
+
     //~ Instance members ------------------------------------------------------------------------------------------------------------------------------
     /**
      * [!FIELD_DESCRIPTION!]
@@ -52,7 +52,7 @@ class ObjUser {
      * [!FIELD_DESCRIPTION!]
      */
     COSName key;  // if ou_trailer_key or ou_root_key
-    
+
     /**
      * type is set to ou_bad
      */
@@ -60,9 +60,9 @@ class ObjUser {
         ou_type = user_e.ou_bad;
         pageno = 0;
     }
-    
+
     //~ Constructors ----------------------------------------------------------------------------------------------------------------------------------
-    
+
     /**
      * type must be ou_root
      *
@@ -72,8 +72,8 @@ class ObjUser {
         this();
         ou_type = type;
     }
-    
-    
+
+
     /**
      * type must be one of ou_page or ou_thumb
      *
@@ -85,8 +85,8 @@ class ObjUser {
         this(type);
         this.pageno = pageno;
     }
-    
-    
+
+
     /**
      * type must be one of ou_trailer_key or ou_root_key
      *
@@ -98,13 +98,13 @@ class ObjUser {
         this(type);
         this.key = key;
     }
-    
+
     @Override
     public boolean equals(final Object rhs) {
         if (!(rhs instanceof ObjUser)) {
             return false;
         }
-        
+
         if (this.ou_type != ((ObjUser) rhs).ou_type) {
             return false;
         } else if (this.ou_type == ((ObjUser) rhs).ou_type) {
@@ -116,20 +116,20 @@ class ObjUser {
         }
         return false;
     }
-    
+
     //~ Methods ---------------------------------------------------------------------------------------------------------------------------------------
-    
+
     @Override
     public String toString() {
         return "" + ou_type + ", " + pageno + ", " + key;
     }
-    
+
     @Override
     public int hashCode() {
         return Objects.hash(ou_type, pageno, key);
     }
-    
-    
+
+
     /**
      * [!CLASS_DESCRIPTION!]
      *
@@ -138,7 +138,7 @@ class ObjUser {
      */
     public enum user_e {
         //~ Enum constants -----------------------------------------------------------------------------------------------------------------------------
-        
+
         ou_bad, ou_page, ou_thumb, ou_trailer_key, ou_root_key, ou_root
     }
 }

@@ -35,10 +35,11 @@ import org.apache.pdfbox.pdmodel.fdf.FDFDocument;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.COSFilterInputStream;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureInterface;
 import org.apache.pdfbox.util.Hex;
-import org.dromara.pdf.pdfbox.util.IdUtil;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -432,23 +433,10 @@ public class COSWriter implements ICOSVisitor {
         if (trailer.containsKey(COSName.ROOT)) {
             COSWriterCompressionPool compressionPool = new COSWriterCompressionPool(pdDocument, compressParameters);
             number = compressionPool.getHighestXRefObjectNumber();
-            List<COSObjectKey> objectStreamObjects = compressionPool.getObjectStreamObjects();
-            // Append object stream entries to document.
-            for (COSObjectKey key : objectStreamObjects) {
-                // COSBase object = compressionPool.getObject(key);
-                // keyObject.put(key, object);
-                compressionPool.getObject(key).setVisit(true);
-            }
+
             List<COSObjectKey> topLevelObjects = compressionPool.getTopLevelObjects();
-            // Append top level objects to document.
-            for (COSObjectKey key : topLevelObjects) {
-                // COSBase object = compressionPool.getObject(key);
-                // keyObject.put(key, object);
-                compressionPool.getObject(key).setVisit(true);
-            }
             for (COSObjectKey key : topLevelObjects) {
                 currentObjectKey = key;
-                // doWriteObject(key, keyObject.get(key));
                 doWriteObject(key, compressionPool.getObject(key));
             }
             topLevelObjects.clear();
@@ -474,12 +462,11 @@ public class COSWriter implements ICOSVisitor {
                 doWriteObject(objectStreamKey, objectStream);
             }
             objectStreams.clear();
-            objectStreamObjects.clear();
+
             willEncrypt = false;
             if (encrypt != null) {
                 COSObjectKey encryptKey = new COSObjectKey(++number, 0);
                 currentObjectKey = encryptKey;
-                // keyObject.put(encryptKey, encrypt);
                 encrypt.setVisit(true);
 
                 doWriteObject(encryptKey, encrypt);
@@ -487,40 +474,6 @@ public class COSWriter implements ICOSVisitor {
             blockAddingObject = false;
         }
     }
-
-    // private void doWriteObjects() throws IOException {
-    //     while (!objectsToWrite.isEmpty()) {
-    //         doWriteObject(objectsToWrite.removeFirst());
-    //     }
-    // }
-
-    // private void addObjectToWrite(COSBase object) {
-    //     if (blockAddingObject) {
-    //         return;
-    //     }
-    //
-    //     if (object.isWritten() || objectsToWrite.contains(object)) {
-    //         return;
-    //     }
-    //
-    //     COSBase actual = object;
-    //     if (actual instanceof COSObject) {
-    //         actual = ((COSObject) actual).getObject();
-    //     }
-    //
-    //     COSBase cosBase = null;
-    //     COSObjectKey cosObjectKey = null;
-    //     if (actual != null) {
-    //         cosObjectKey = actual.getKey();
-    //         if (cosObjectKey != null) {
-    //             cosBase = keyObject.get(cosObjectKey);
-    //             if (!isNeedToBeUpdated(object) && !isNeedToBeUpdated(cosBase)) {
-    //                 return;
-    //             }
-    //         }
-    //     }
-    //     objectsToWrite.add(object);
-    // }
 
     /**
      * This will write a COS object for a predefined key.
@@ -534,7 +487,6 @@ public class COSWriter implements ICOSVisitor {
         if (obj == null || obj.isWritten() ||(obj instanceof COSObject && ((COSObject) obj).getObject() == null)) {
             return;
         }
-        obj.setWritten(true);
         // add a x ref entry
         addXRefEntry(new NormalXReference(getStandardOutput().getPos(), key, obj));
         // write the object
@@ -549,6 +501,7 @@ public class COSWriter implements ICOSVisitor {
         getStandardOutput().write(ENDOBJ);
         getStandardOutput().writeEOL();
         getStandardOutput().flush();
+        obj.setWritten(true);
     }
 
     /**
@@ -1176,29 +1129,24 @@ public class COSWriter implements ICOSVisitor {
 
     @Override
     public void visitFromStream(COSStream obj) throws IOException {
+        if (obj.isWritten()) {
+            return;
+        }
         if (willEncrypt) {
             pdDocument.getEncryption().getSecurityHandler().encryptStream(obj, currentObjectKey.getNumber(), currentObjectKey.getGeneration());
         }
 
-        InputStream input = null;
-        try {
-            // write the stream content
-            visitFromDictionary(obj);
-            getStandardOutput().write(STREAM);
-            getStandardOutput().writeCRLF();
-            if (obj.hasData()) {
-                input = obj.createRawInputStream();
-                IOUtils.copy(input, getStandardOutput());
-            }
-            getStandardOutput().writeCRLF();
-            getStandardOutput().write(ENDSTREAM);
-            getStandardOutput().writeEOL();
-        } finally {
-            if (input != null) {
-                input.close();
-            }
+        // write the stream content
+        visitFromDictionary(obj);
+        getStandardOutput().write(STREAM);
+        getStandardOutput().writeCRLF();
+        if (obj.hasData()) {
+            IOUtils.copy(obj.createRawInputStream(), getStandardOutput());
             obj.close();
         }
+        getStandardOutput().writeCRLF();
+        getStandardOutput().write(ENDSTREAM);
+        getStandardOutput().writeEOL();
     }
 
     @Override
@@ -1216,8 +1164,7 @@ public class COSWriter implements ICOSVisitor {
      * @throws IOException If an error occurs while generating the data.
      */
     public void write(COSDocument doc) throws IOException {
-        PDDocument pdDoc = new PDDocument(doc);
-        write(pdDoc);
+        write(new PDDocument(doc));
     }
 
     /**
@@ -1290,13 +1237,34 @@ public class COSWriter implements ICOSVisitor {
             idArray = new COSArray();
         }
         if (missingID || incrementalUpdate) {
+            MessageDigest sha256;
+            try {
+                sha256 = MessageDigest.getInstance("SHA-256");
+            }
+            catch (NoSuchAlgorithmException e) {
+                // should never happen
+                throw new RuntimeException(e);
+            }
+
+            long idTime = pdDocument.getDocumentId() == null ? System.currentTimeMillis() : pdDocument.getDocumentId();
+            // algorithm says to use time/path/size/values in doc to generate the id.
+            // we don't have path or size, so do the best we can
+            sha256.update( Long.toString(idTime).getBytes(StandardCharsets.ISO_8859_1) );
+
+            COSDictionary info = trailer.getCOSDictionary(COSName.INFO);
+            if( info != null ) {
+                for (COSBase cosBase : info.getValues())
+                {
+                    sha256.update(cosBase.toString().getBytes(StandardCharsets.ISO_8859_1));
+                }
+            }
             // reuse origin documentID if available as first value
-            COSString firstID = missingID ? new COSString(IdUtil.get()) : (COSString) idArray.get(0);
+            COSString firstID = missingID ? new COSString(sha256.digest()) : (COSString) idArray.get(0);
             // it's ok to use the same ID for the second part if the ID is created for the first time
-            COSString secondID = missingID ? firstID : new COSString(IdUtil.get());
+            COSString secondID = missingID ? firstID : new COSString(sha256.digest());
             idArray = new COSArray();
-            idArray.add(firstID);
-            idArray.add(secondID);
+            idArray.add( firstID );
+            idArray.add( secondID );
             trailer.setItem(COSName.ID, idArray);
         }
         cosDoc.accept(this);

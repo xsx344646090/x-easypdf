@@ -21,7 +21,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.dromara.pdf.pdfbox.support.linearizer;
+package org.dromara.pdf.pdfbox.support.linearization;
 
 
 import java.util.ArrayList;
@@ -36,14 +36,14 @@ import java.util.List;
  */
 class CHPageOffset {
     //~ Instance members ------------------------------------------------------------------------------------------------------------------------------
-    
+
     /**
      * vector size is npages
      */
     final List<CHPageOffsetEntry> entries;
-    
+
     //~ Constructors ----------------------------------------------------------------------------------------------------------------------------------
-    
+
     /**
      * [!CONSTR_DESCIRPTION_FOR_CHPageOffset!]
      *
@@ -55,9 +55,9 @@ class CHPageOffset {
             entries.add(new CHPageOffsetEntry());
         }
     }
-    
+
     //~ Inner Classes ---------------------------------------------------------------------------------------------------------------------------------
-    
+
     /**
      * [!CLASS_DESCRIPTION!]
      *
@@ -66,7 +66,7 @@ class CHPageOffset {
      */
     class CHPageOffsetEntry {
         //~ Instance members ---------------------------------------------------------------------------------------------------------------------------
-        
+
         /**
          * vectors' sizes = nshared_objects
          */
@@ -79,9 +79,9 @@ class CHPageOffset {
          * [!FIELD_DESCRIPTION!]
          */
         int nshared_objects;
-        
+
         //~ Constructors -------------------------------------------------------------------------------------------------------------------------------
-        
+
         /**
          * [!CONSTR_DESCIRPTION_FOR_CHPageOffsetEntry!]
          */

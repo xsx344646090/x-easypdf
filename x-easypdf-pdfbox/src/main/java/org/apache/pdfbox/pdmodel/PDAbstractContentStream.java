@@ -108,7 +108,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         if (inTextMode) {
             throw new IllegalStateException("Error: Nested beginText() calls are not allowed.");
         }
-        writeOperator(OperatorName.BEGIN_TEXT);
+        writeOperator(OperatorName.BEGIN_TEXT_BYTES);
         inTextMode = true;
     }
 
@@ -123,7 +123,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         if (!inTextMode) {
             throw new IllegalStateException("Error: You must call beginText() before calling endText.");
         }
-        writeOperator(OperatorName.END_TEXT);
+        writeOperator(OperatorName.END_TEXT_BYTES);
         inTextMode = false;
     }
 
@@ -169,7 +169,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         }
         writeOperand(resources.add(font));
         writeOperand(fontSize);
-        writeOperator(OperatorName.SET_FONT_AND_SIZE);
+        writeOperator(OperatorName.SET_FONT_AND_SIZE_BYTES);
     }
 
     /**
@@ -253,8 +253,8 @@ public abstract class PDAbstractContentStream implements Closeable {
      * @throws IOException If an io exception occurs.
      */
     public void endTextInternal() throws IOException {
-        write(" ");
-        writeOperator(OperatorName.SHOW_TEXT);
+        outputStream.write(' ');
+        writeOperator(OperatorName.SHOW_TEXT_BYTES);
     }
 
     /**
@@ -314,7 +314,7 @@ public abstract class PDAbstractContentStream implements Closeable {
      */
     public void setLeading(float leading) throws IOException {
         writeOperand(leading);
-        writeOperator(OperatorName.SET_TEXT_LEADING);
+        writeOperator(OperatorName.SET_TEXT_LEADING_BYTES);
     }
 
     /**
@@ -345,7 +345,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         }
         writeOperand(tx);
         writeOperand(ty);
-        writeOperator(OperatorName.MOVE_TEXT);
+        writeOperator(OperatorName.MOVE_TEXT_BYTES);
     }
 
     /**
@@ -598,7 +598,7 @@ public abstract class PDAbstractContentStream implements Closeable {
     public void setStrokingColor(PDColor color) throws IOException {
         if (strokingColorSpaceStack.isEmpty() || strokingColorSpaceStack.peek() != color.getColorSpace()) {
             writeOperand(getName(color.getColorSpace()));
-            writeOperator(OperatorName.STROKING_COLORSPACE);
+            writeOperator(OperatorName.STROKING_COLORSPACE_BYTES);
             setStrokingColorSpaceStack(color.getColorSpace());
         }
 
@@ -611,9 +611,9 @@ public abstract class PDAbstractContentStream implements Closeable {
         }
 
         if (color.getColorSpace() instanceof PDPattern || color.getColorSpace() instanceof PDSeparation || color.getColorSpace() instanceof PDDeviceN || color.getColorSpace() instanceof PDICCBased) {
-            writeOperator(OperatorName.STROKING_COLOR_N);
+            writeOperator(OperatorName.STROKING_COLOR_N_BYTES);
         } else {
-            writeOperator(OperatorName.STROKING_COLOR);
+            writeOperator(OperatorName.STROKING_COLOR_BYTES);
         }
     }
 
@@ -645,7 +645,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         writeOperand(r);
         writeOperand(g);
         writeOperand(b);
-        writeOperator(OperatorName.STROKING_COLOR_RGB);
+        writeOperator(OperatorName.STROKING_COLOR_RGB_BYTES);
         setStrokingColorSpaceStack(PDDeviceRGB.INSTANCE);
     }
 
@@ -667,7 +667,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         writeOperand(m);
         writeOperand(y);
         writeOperand(k);
-        writeOperator(OperatorName.STROKING_COLOR_CMYK);
+        writeOperator(OperatorName.STROKING_COLOR_CMYK_BYTES);
         setStrokingColorSpaceStack(PDDeviceCMYK.INSTANCE);
     }
 
@@ -683,7 +683,7 @@ public abstract class PDAbstractContentStream implements Closeable {
             throw new IllegalArgumentException("Parameter must be within 0..1, but is " + g);
         }
         writeOperand(g);
-        writeOperator(OperatorName.STROKING_COLOR_GRAY);
+        writeOperator(OperatorName.STROKING_COLOR_GRAY_BYTES);
         setStrokingColorSpaceStack(PDDeviceGray.INSTANCE);
     }
 
@@ -696,7 +696,7 @@ public abstract class PDAbstractContentStream implements Closeable {
     public void setNonStrokingColor(PDColor color) throws IOException {
         if (nonStrokingColorSpaceStack.isEmpty() || nonStrokingColorSpaceStack.peek() != color.getColorSpace()) {
             writeOperand(getName(color.getColorSpace()));
-            writeOperator(OperatorName.NON_STROKING_COLORSPACE);
+            writeOperator(OperatorName.NON_STROKING_COLORSPACE_BYTES);
             setNonStrokingColorSpaceStack(color.getColorSpace());
         }
 
@@ -709,9 +709,9 @@ public abstract class PDAbstractContentStream implements Closeable {
         }
 
         if (color.getColorSpace() instanceof PDPattern || color.getColorSpace() instanceof PDSeparation || color.getColorSpace() instanceof PDDeviceN || color.getColorSpace() instanceof PDICCBased) {
-            writeOperator(OperatorName.NON_STROKING_COLOR_N);
+            writeOperator(OperatorName.NON_STROKING_COLOR_N_BYTES);
         } else {
-            writeOperator(OperatorName.NON_STROKING_COLOR);
+            writeOperator(OperatorName.NON_STROKING_COLOR_BYTES);
         }
     }
 
@@ -743,7 +743,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         writeOperand(r);
         writeOperand(g);
         writeOperand(b);
-        writeOperator(OperatorName.NON_STROKING_RGB);
+        writeOperator(OperatorName.NON_STROKING_RGB_BYTES);
         setNonStrokingColorSpaceStack(PDDeviceRGB.INSTANCE);
     }
 
@@ -764,7 +764,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         writeOperand(m);
         writeOperand(y);
         writeOperand(k);
-        writeOperator(OperatorName.NON_STROKING_CMYK);
+        writeOperator(OperatorName.NON_STROKING_CMYK_BYTES);
         setNonStrokingColorSpaceStack(PDDeviceCMYK.INSTANCE);
     }
 
@@ -780,7 +780,7 @@ public abstract class PDAbstractContentStream implements Closeable {
             throw new IllegalArgumentException("Parameter must be within 0..1, but is " + g);
         }
         writeOperand(g);
-        writeOperator(OperatorName.NON_STROKING_GRAY);
+        writeOperator(OperatorName.NON_STROKING_GRAY_BYTES);
         setNonStrokingColorSpaceStack(PDDeviceGray.INSTANCE);
     }
 
@@ -1299,6 +1299,17 @@ public abstract class PDAbstractContentStream implements Closeable {
      */
     public void writeOperator(String text) throws IOException {
         write(text);
+        writeLine();
+    }
+
+    /**
+     * Writes a string to the content stream as ASCII.
+     *
+     * @param data the text to be added to the content stream followed by a newline
+     * @throws IOException If the underlying stream has a problem being written to.
+     */
+    public void writeOperator(byte[] data) throws IOException {
+        writeBytes(data);
         writeLine();
     }
 

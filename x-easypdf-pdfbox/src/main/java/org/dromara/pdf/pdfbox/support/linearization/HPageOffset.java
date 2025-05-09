@@ -21,7 +21,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.dromara.pdf.pdfbox.support.linearizer;
+package org.dromara.pdf.pdfbox.support.linearization;
 
 
 import org.apache.pdfbox.cos.COSBase;
@@ -39,7 +39,7 @@ import java.util.List;
  */
 class HPageOffset {
     //~ Instance members ------------------------------------------------------------------------------------------------------------------------------
-    
+
     /**
      * vector size is npages
      */
@@ -96,9 +96,9 @@ class HPageOffset {
      * [!FIELD_DESCRIPTION!]
      */
     int shared_denominator;  // 13
-    
+
     //~ Constructors ----------------------------------------------------------------------------------------------------------------------------------
-    
+
     /**
      * [!CONSTR_DESCIRPTION_FOR_HPageOffset!]
      *
@@ -106,7 +106,7 @@ class HPageOffset {
      */
     private HPageOffset(final int pages) {
         entries = new ArrayList<>();
-        
+
         min_nobjects = 0;
         first_page_offset = 0;
         nbits_delta_nobjects = 0;
@@ -124,9 +124,9 @@ class HPageOffset {
             entries.add(new HPageOffsetEntry());
         }
     }
-    
+
     //~ Methods ---------------------------------------------------------------------------------------------------------------------------------------
-    
+
     /**
      * [!ONE_SENTENCE_SHORT_DESCRIPTION!].[!METHOD_DESCRIPTION!]
      *
@@ -142,48 +142,48 @@ class HPageOffset {
         long min_length = Integer.MAX_VALUE;
         long max_length = Integer.MIN_VALUE;
         int max_shared = Integer.MIN_VALUE;
-        
+
         final HPageOffset pageOffsetHints;
-        
+
         pageOffsetHints = new HPageOffset(pageCount);
-        
+
         // calculateHPageOffset + writeparts already
         for (int i = 0; i < pageCount; ++i) {
             // set corect parent for every page
             final ObjUser ou = new ObjUser(ObjUser.user_e.ou_page, i);
             long length = 0;
             final List<COSBase> ogs = info.userObjectMap.getT1ValuesForKey(ou);
-            
+
             for (final COSBase ogpage : ogs) {
                 length += queue.get(ogpage).objLength;
             }
-            
+
             // substract shared object length from page length
             final CHPageOffset.CHPageOffsetEntry entry = info.pageOffsetData.entries.get(i);
-            
+
             if (entry.nshared_objects > 0) {
                 for (final int sharedObjId : entry.shared_identifiers) {
                     length -= queue.get(info.indexObjectMap.getValueForT1(sharedObjId)).objLength;
                 }
             }
-            
+
             // Calculate values for each page, assigning full values to
             // the delta items.  They will be adjusted later.
             final int nobjects = entry.nobjects;
             final int nshared = entry.nshared_objects;
-            
+
             min_nobjects = Math.min(min_nobjects, nobjects);
             max_nobjects = Math.max(max_nobjects, nobjects);
             min_length = Math.min(min_length, length);
             max_length = Math.max(max_length, length);
             max_shared = Math.max(max_shared, nshared);
-            
+
             pageOffsetHints.entries.get(i).delta_nobjects = nobjects;
             pageOffsetHints.entries.get(i).delta_page_length = length;
             pageOffsetHints.entries.get(i).nshared_objects = nshared;
         }
         pageOffsetHints.min_nobjects = min_nobjects;
-        
+
         // TODO:: !!!!!!!!!!!!!!!!!
         pageOffsetHints.first_page_offset = lin_dict_offset;
         pageOffsetHints.nbits_delta_nobjects = IO.nbits(max_nobjects - min_nobjects);
@@ -192,7 +192,7 @@ class HPageOffset {
         pageOffsetHints.nbits_nshared_objects = IO.nbits(max_shared);
         pageOffsetHints.nbits_shared_identifier = IO.nbits(info.sharedObjectData.nshared_total);
         pageOffsetHints.shared_denominator = 4;  // doesn't matter
-        
+
         // It isn't clear how to compute content offset and content
         // length.  Since we are not interleaving page objects with the
         // content stream, we'll use the same values for content length as
@@ -207,9 +207,9 @@ class HPageOffset {
             pageOffsetHints.entries.get(i).delta_nobjects -= min_nobjects;
             pageOffsetHints.entries.get(i).delta_page_length -= min_length;
             pageOffsetHints.entries.get(i).delta_content_length = pageOffsetHints.entries.get(i).delta_page_length;
-            
+
             final CHPageOffset.CHPageOffsetEntry entry = info.pageOffsetData.entries.get(i);
-            
+
             for (int j = 0; j < entry.nshared_objects; ++j) {
                 pageOffsetHints.entries.get(i).shared_identifiers.add(entry.shared_identifiers.get(j));
                 pageOffsetHints.entries.get(i).shared_numerators.add(0);
@@ -217,8 +217,8 @@ class HPageOffset {
         }
         return pageOffsetHints;
     }
-    
-    
+
+
     /**
      * [!ONE_SENTENCE_SHORT_DESCRIPTION!].[!METHOD_DESCRIPTION!]
      *
@@ -239,7 +239,7 @@ class HPageOffset {
         w.writeBits(this.nbits_shared_identifier, 16);  // 11
         w.writeBits(this.nbits_shared_numerator, 16);  // 12
         w.writeBits(this.shared_denominator, 16);  // 13
-        
+
         for (final HPageOffsetEntry en : entries) {
             w.writeBits(en.delta_nobjects, this.nbits_delta_nobjects);
         }
@@ -273,9 +273,9 @@ class HPageOffset {
         }
         w.flush();
     }
-    
+
     //~ Inner Classes ---------------------------------------------------------------------------------------------------------------------------------
-    
+
     /**
      * PDF 1.4: Table F.4
      *
@@ -284,44 +284,44 @@ class HPageOffset {
      */
     class HPageOffsetEntry {
         //~ Instance members ---------------------------------------------------------------------------------------------------------------------------
-        
+
         /**
          * [!FIELD_DESCRIPTION!]
          */
         int delta_nobjects;  // 1
-        
+
         /**
          * [!FIELD_DESCRIPTION!]
          */
         long delta_page_length;  // 2
-        
+
         /**
          * [!FIELD_DESCRIPTION!]
          */
         int nshared_objects;  // 3
-        
+
         /**
          * vectors' sizes = nshared_objects
          */
         List<Integer> shared_identifiers = new ArrayList<>();  // 4
-        
+
         /**
          * [!FIELD_DESCRIPTION!]
          */
         List<Integer> shared_numerators = new ArrayList<>();  // 5
-        
+
         /**
          * [!FIELD_DESCRIPTION!]
          */
         long delta_content_offset;  // 6
-        
+
         /**
          * [!FIELD_DESCRIPTION!]
          */
         long delta_content_length;  // 7
-        
+
         //~ Constructors -------------------------------------------------------------------------------------------------------------------------------
-        
+
         /**
          * [!CONSTR_DESCIRPTION_FOR_HPageOffsetEntry!]
          */

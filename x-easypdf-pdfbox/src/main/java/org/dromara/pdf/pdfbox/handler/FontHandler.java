@@ -13,6 +13,7 @@ import org.dromara.pdf.pdfbox.core.enums.FontType;
 import org.dromara.pdf.pdfbox.support.Constants;
 import org.dromara.pdf.pdfbox.support.fonts.FontInfo;
 import org.dromara.pdf.pdfbox.support.fonts.FontMapperImpl;
+import org.dromara.pdf.pdfbox.util.FileUtil;
 
 import java.io.File;
 import java.io.InputStream;
@@ -47,14 +48,15 @@ public class FontHandler {
      * 助手实例
      */
     private static final FontHandler INSTANCE = new FontHandler();
-    /**
-     * 字符宽度字典
-     */
-    private final Map<String, Map<String, Float>> characterWidthMap = new ConcurrentHashMap<>(16);
 
     static {
         Banner.print();
     }
+
+    /**
+     * 字符宽度字典
+     */
+    private final Map<String, Map<Character, Float>> codeWithMap = new ConcurrentHashMap<>(16);
 
     /**
      * 无参构造
@@ -81,19 +83,24 @@ public class FontHandler {
      *
      * @param fontName 字体名称
      */
-    public void initCharacterMap(String fontName) {
-        FontInfo fontInfo = FontMapperImpl.getInstance().getFontInfoByName().get(fontName);
-        this.characterWidthMap.putIfAbsent(fontInfo.getPostScriptName(), new HashMap<>(4096));
+    public void initCodeMap(String fontName) {
+        Map<String, FontInfo> fontInfoByName = FontMapperImpl.getInstance().getFontInfoByName();
+        FontInfo fontInfo = fontInfoByName.get(fontName);
+        if (Objects.isNull(fontInfo)) {
+            this.codeWithMap.putIfAbsent(fontName, new HashMap<>(2048));
+        } else {
+            this.codeWithMap.putIfAbsent(fontInfo.getPostScriptName(), new HashMap<>(2048));
+        }
     }
 
     /**
-     * 获取字符宽度字典
+     * 获取字符字典
      *
      * @param fontName 字体名称
-     * @return 返回字符宽度字典
+     * @return 返回字符字典
      */
-    public Map<String, Float> getCharacterWidthMap(String fontName) {
-        return this.characterWidthMap.get(fontName);
+    public Map<Character, Float> getCodeMap(String fontName) {
+        return this.codeWithMap.get(fontName);
     }
 
     /**
@@ -244,5 +251,14 @@ public class FontHandler {
             // 添加字体到子集
             document.addFontToSubset(font);
         }
+    }
+
+    /**
+     * 清理缓存
+     *
+     * @return 返回布尔值，true为是，false为否
+     */
+    public boolean clearCache() {
+        return FileUtil.getFontCacheFile().delete();
     }
 }
