@@ -196,7 +196,7 @@ public abstract class PDAbstractContentStream implements Closeable {
             }
         }
         write("] ");
-        writeOperator(OperatorName.SHOW_TEXT_ADJUSTED);
+        writeOperator(OperatorName.SHOW_TEXT_ADJUSTED_BYTES);
     }
 
     /**
@@ -327,7 +327,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         if (!inTextMode) {
             throw new IllegalStateException("Must call beginText() before newLine()");
         }
-        writeOperator(OperatorName.NEXT_LINE);
+        writeOperator(OperatorName.NEXT_LINE_BYTES);
     }
 
     /**
@@ -361,7 +361,7 @@ public abstract class PDAbstractContentStream implements Closeable {
             throw new IllegalStateException("Error: must call beginText() before setTextMatrix");
         }
         writeAffineTransform(matrix.createAffineTransform());
-        writeOperator(OperatorName.SET_MATRIX);
+        writeOperator(OperatorName.SET_MATRIX_BYTES);
     }
 
     /**
@@ -398,7 +398,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         transform(new Matrix(transform));
 
         writeOperand(resources.add(image));
-        writeOperator(OperatorName.DRAW_OBJECT);
+        writeOperator(OperatorName.DRAW_OBJECT_BYTES);
 
         restoreGraphicsState();
     }
@@ -422,7 +422,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         transform(new Matrix(transform));
 
         writeOperand(resources.add(image));
-        writeOperator(OperatorName.DRAW_OBJECT);
+        writeOperator(OperatorName.DRAW_OBJECT_BYTES);
 
         restoreGraphicsState();
     }
@@ -495,10 +495,10 @@ public abstract class PDAbstractContentStream implements Closeable {
         writeLine();
 
         // binary data
-        writeOperator(OperatorName.BEGIN_INLINE_IMAGE_DATA);
+        writeOperator(OperatorName.BEGIN_INLINE_IMAGE_DATA_BYTES);
         writeBytes(inlineImage.getData());
         writeLine();
-        writeOperator(OperatorName.END_INLINE_IMAGE);
+        writeOperator(OperatorName.END_INLINE_IMAGE_BYTES);
 
         restoreGraphicsState();
     }
@@ -516,7 +516,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         }
 
         writeOperand(resources.add(form));
-        writeOperator(OperatorName.DRAW_OBJECT);
+        writeOperator(OperatorName.DRAW_OBJECT_BYTES);
     }
 
     /**
@@ -534,7 +534,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         }
 
         writeAffineTransform(matrix.createAffineTransform());
-        writeOperator(OperatorName.CONCAT);
+        writeOperator(OperatorName.CONCAT_BYTES);
     }
 
     /**
@@ -556,7 +556,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         if (!nonStrokingColorSpaceStack.isEmpty()) {
             nonStrokingColorSpaceStack.push(nonStrokingColorSpaceStack.peek());
         }
-        writeOperator(OperatorName.SAVE);
+        writeOperator(OperatorName.SAVE_BYTES);
     }
 
     /**
@@ -578,7 +578,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         if (!nonStrokingColorSpaceStack.isEmpty()) {
             nonStrokingColorSpaceStack.pop();
         }
-        writeOperator(OperatorName.RESTORE);
+        writeOperator(OperatorName.RESTORE_BYTES);
     }
 
     protected COSName getName(PDColorSpace colorSpace) {
@@ -802,7 +802,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         writeOperand(y);
         writeOperand(width);
         writeOperand(height);
-        writeOperator(OperatorName.APPEND_RECT);
+        writeOperator(OperatorName.APPEND_RECT_BYTES);
     }
 
     /**
@@ -820,7 +820,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         writeOperand(rectangle.getLowerLeftY());
         writeOperand(rectangle.getWidth());
         writeOperand(rectangle.getHeight());
-        writeOperator(OperatorName.APPEND_RECT);
+        writeOperator(OperatorName.APPEND_RECT_BYTES);
     }
 
     /**
@@ -846,7 +846,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         writeOperand(y2);
         writeOperand(x3);
         writeOperand(y3);
-        writeOperator(OperatorName.CURVE_TO);
+        writeOperator(OperatorName.CURVE_TO_BYTES);
     }
 
     /**
@@ -868,7 +868,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         writeOperand(y2);
         writeOperand(x3);
         writeOperand(y3);
-        writeOperator(OperatorName.CURVE_TO_REPLICATE_INITIAL_POINT);
+        writeOperator(OperatorName.CURVE_TO_REPLICATE_INITIAL_POINT_BYTES);
     }
 
     /**
@@ -890,7 +890,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         writeOperand(y1);
         writeOperand(x3);
         writeOperand(y3);
-        writeOperator(OperatorName.CURVE_TO_REPLICATE_FINAL_POINT);
+        writeOperator(OperatorName.CURVE_TO_REPLICATE_FINAL_POINT_BYTES);
     }
 
     /**
@@ -907,7 +907,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         }
         writeOperand(x);
         writeOperand(y);
-        writeOperator(OperatorName.MOVE_TO);
+        writeOperator(OperatorName.MOVE_TO_BYTES);
     }
 
     /**
@@ -924,7 +924,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         }
         writeOperand(x);
         writeOperand(y);
-        writeOperator(OperatorName.LINE_TO);
+        writeOperator(OperatorName.LINE_TO_BYTES);
     }
 
     /**
@@ -937,7 +937,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         if (inTextMode) {
             throw new IllegalStateException("Error: stroke is not allowed within a text block.");
         }
-        writeOperator(OperatorName.STROKE_PATH);
+        writeOperator(OperatorName.STROKE_PATH_BYTES);
     }
 
     /**
@@ -950,7 +950,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         if (inTextMode) {
             throw new IllegalStateException("Error: closeAndStroke is not allowed within a text block.");
         }
-        writeOperator(OperatorName.CLOSE_AND_STROKE);
+        writeOperator(OperatorName.CLOSE_AND_STROKE_BYTES);
     }
 
     /**
@@ -963,7 +963,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         if (inTextMode) {
             throw new IllegalStateException("Error: fill is not allowed within a text block.");
         }
-        writeOperator(OperatorName.FILL_NON_ZERO);
+        writeOperator(OperatorName.FILL_NON_ZERO_BYTES);
     }
 
     /**
@@ -976,7 +976,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         if (inTextMode) {
             throw new IllegalStateException("Error: fillEvenOdd is not allowed within a text block.");
         }
-        writeOperator(OperatorName.FILL_EVEN_ODD);
+        writeOperator(OperatorName.FILL_EVEN_ODD_BYTES);
     }
 
     /**
@@ -991,7 +991,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         if (inTextMode) {
             throw new IllegalStateException("Error: fillAndStroke is not allowed within a text block.");
         }
-        writeOperator(OperatorName.FILL_NON_ZERO_AND_STROKE);
+        writeOperator(OperatorName.FILL_NON_ZERO_AND_STROKE_BYTES);
     }
 
     /**
@@ -1006,7 +1006,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         if (inTextMode) {
             throw new IllegalStateException("Error: fillAndStrokeEvenOdd is not allowed within a text block.");
         }
-        writeOperator(OperatorName.FILL_EVEN_ODD_AND_STROKE);
+        writeOperator(OperatorName.FILL_EVEN_ODD_AND_STROKE_BYTES);
     }
 
     /**
@@ -1021,7 +1021,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         if (inTextMode) {
             throw new IllegalStateException("Error: closeAndFillAndStroke is not allowed within a text block.");
         }
-        writeOperator(OperatorName.CLOSE_FILL_NON_ZERO_AND_STROKE);
+        writeOperator(OperatorName.CLOSE_FILL_NON_ZERO_AND_STROKE_BYTES);
     }
 
     /**
@@ -1036,7 +1036,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         if (inTextMode) {
             throw new IllegalStateException("Error: closeAndFillAndStrokeEvenOdd is not allowed within a text block.");
         }
-        writeOperator(OperatorName.CLOSE_FILL_EVEN_ODD_AND_STROKE);
+        writeOperator(OperatorName.CLOSE_FILL_EVEN_ODD_AND_STROKE_BYTES);
     }
 
     /**
@@ -1052,7 +1052,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         }
 
         writeOperand(resources.add(shading));
-        writeOperator(OperatorName.SHADING_FILL);
+        writeOperator(OperatorName.SHADING_FILL_BYTES);
     }
 
     /**
@@ -1065,7 +1065,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         if (inTextMode) {
             throw new IllegalStateException("Error: closePath is not allowed within a text block.");
         }
-        writeOperator(OperatorName.CLOSE_PATH);
+        writeOperator(OperatorName.CLOSE_PATH_BYTES);
     }
 
     /**
@@ -1078,10 +1078,10 @@ public abstract class PDAbstractContentStream implements Closeable {
         if (inTextMode) {
             throw new IllegalStateException("Error: clip is not allowed within a text block.");
         }
-        writeOperator(OperatorName.CLIP_NON_ZERO);
+        writeOperator(OperatorName.CLIP_NON_ZERO_BYTES);
 
         // end path without filling or stroking
-        writeOperator(OperatorName.ENDPATH);
+        writeOperator(OperatorName.ENDPATH_BYTES);
     }
 
     /**
@@ -1094,10 +1094,10 @@ public abstract class PDAbstractContentStream implements Closeable {
         if (inTextMode) {
             throw new IllegalStateException("Error: clipEvenOdd is not allowed within a text block.");
         }
-        writeOperator(OperatorName.CLIP_EVEN_ODD);
+        writeOperator(OperatorName.CLIP_EVEN_ODD_BYTES);
 
         // end path without filling or stroking
-        writeOperator(OperatorName.ENDPATH);
+        writeOperator(OperatorName.ENDPATH_BYTES);
     }
 
     /**
@@ -1108,7 +1108,7 @@ public abstract class PDAbstractContentStream implements Closeable {
      */
     public void setLineWidth(float lineWidth) throws IOException {
         writeOperand(lineWidth);
-        writeOperator(OperatorName.SET_LINE_WIDTH);
+        writeOperator(OperatorName.SET_LINE_WIDTH_BYTES);
     }
 
     /**
@@ -1121,7 +1121,7 @@ public abstract class PDAbstractContentStream implements Closeable {
     public void setLineJoinStyle(int lineJoinStyle) throws IOException {
         if (lineJoinStyle >= 0 && lineJoinStyle <= 2) {
             writeOperand(lineJoinStyle);
-            writeOperator(OperatorName.SET_LINE_JOINSTYLE);
+            writeOperator(OperatorName.SET_LINE_JOINSTYLE_BYTES);
         } else {
             throw new IllegalArgumentException("Error: unknown value for line join style");
         }
@@ -1137,7 +1137,7 @@ public abstract class PDAbstractContentStream implements Closeable {
     public void setLineCapStyle(int lineCapStyle) throws IOException {
         if (lineCapStyle >= 0 && lineCapStyle <= 2) {
             writeOperand(lineCapStyle);
-            writeOperator(OperatorName.SET_LINE_CAPSTYLE);
+            writeOperator(OperatorName.SET_LINE_CAPSTYLE_BYTES);
         } else {
             throw new IllegalArgumentException("Error: unknown value for line cap style");
         }
@@ -1157,7 +1157,7 @@ public abstract class PDAbstractContentStream implements Closeable {
         }
         write("] ");
         writeOperand(phase);
-        writeOperator(OperatorName.SET_LINE_DASHPATTERN);
+        writeOperator(OperatorName.SET_LINE_DASHPATTERN_BYTES);
     }
 
     /**
@@ -1172,7 +1172,7 @@ public abstract class PDAbstractContentStream implements Closeable {
             throw new IllegalArgumentException("A miter limit <= 0 is invalid and will not render in Acrobat Reader");
         }
         writeOperand(miterLimit);
-        writeOperator(OperatorName.SET_LINE_MITERLIMIT);
+        writeOperator(OperatorName.SET_LINE_MITERLIMIT_BYTES);
     }
 
     /**
@@ -1183,7 +1183,7 @@ public abstract class PDAbstractContentStream implements Closeable {
      */
     public void beginMarkedContent(COSName tag) throws IOException {
         writeOperand(tag);
-        writeOperator(OperatorName.BEGIN_MARKED_CONTENT);
+        writeOperator(OperatorName.BEGIN_MARKED_CONTENT_BYTES);
     }
 
     /**
@@ -1196,7 +1196,7 @@ public abstract class PDAbstractContentStream implements Closeable {
     public void beginMarkedContent(COSName tag, PDPropertyList propertyList) throws IOException {
         writeOperand(tag);
         writeOperand(resources.add(propertyList));
-        writeOperator(OperatorName.BEGIN_MARKED_CONTENT_SEQ);
+        writeOperator(OperatorName.BEGIN_MARKED_CONTENT_SEQ_BYTES);
     }
 
     /**
@@ -1205,7 +1205,7 @@ public abstract class PDAbstractContentStream implements Closeable {
      * @throws IOException If the content stream could not be written
      */
     public void endMarkedContent() throws IOException {
-        writeOperator(OperatorName.END_MARKED_CONTENT);
+        writeOperator(OperatorName.END_MARKED_CONTENT_BYTES);
     }
 
     /**
@@ -1216,7 +1216,7 @@ public abstract class PDAbstractContentStream implements Closeable {
      */
     public void setGraphicsStateParameters(PDExtendedGraphicsState state) throws IOException {
         writeOperand(resources.add(state));
-        writeOperator(OperatorName.SET_GRAPHICS_STATE_PARAMS);
+        writeOperator(OperatorName.SET_GRAPHICS_STATE_PARAMS_BYTES);
     }
 
     /**
@@ -1288,6 +1288,17 @@ public abstract class PDAbstractContentStream implements Closeable {
      */
     protected void writeOperand(String text) throws IOException {
         write(text);
+        outputStream.write(' ');
+    }
+
+    /**
+     * Writes a COSName to the content stream.
+     *
+     * @param data the text to be added to the content stream
+     * @throws IOException If the underlying stream has a problem being written to.
+     */
+    protected void writeOperand(byte[] data) throws IOException {
+        writeBytes(data);
         outputStream.write(' ');
     }
 
@@ -1404,7 +1415,7 @@ public abstract class PDAbstractContentStream implements Closeable {
      */
     public void setCharacterSpacing(float spacing) throws IOException {
         writeOperand(spacing);
-        writeOperator(OperatorName.SET_CHAR_SPACING);
+        writeOperator(OperatorName.SET_CHAR_SPACING_BYTES);
     }
 
     /**
@@ -1422,7 +1433,7 @@ public abstract class PDAbstractContentStream implements Closeable {
      */
     public void setWordSpacing(float spacing) throws IOException {
         writeOperand(spacing);
-        writeOperator(OperatorName.SET_WORD_SPACING);
+        writeOperator(OperatorName.SET_WORD_SPACING_BYTES);
     }
 
     /**
@@ -1434,7 +1445,7 @@ public abstract class PDAbstractContentStream implements Closeable {
      */
     public void setHorizontalScaling(float scale) throws IOException {
         writeOperand(scale);
-        writeOperator(OperatorName.SET_TEXT_HORIZONTAL_SCALING);
+        writeOperator(OperatorName.SET_TEXT_HORIZONTAL_SCALING_BYTES);
     }
 
     /**
@@ -1446,7 +1457,7 @@ public abstract class PDAbstractContentStream implements Closeable {
      */
     public void setRenderingMode(RenderingMode rm) throws IOException {
         writeOperand(rm.intValue());
-        writeOperand(OperatorName.SET_TEXT_RENDERINGMODE);
+        writeOperand(OperatorName.SET_TEXT_RENDERINGMODE_BYTES);
     }
 
     /**
@@ -1459,7 +1470,7 @@ public abstract class PDAbstractContentStream implements Closeable {
      */
     public void setTextRise(float rise) throws IOException {
         writeOperand(rise);
-        writeOperator(OperatorName.SET_TEXT_RISE);
+        writeOperator(OperatorName.SET_TEXT_RISE_BYTES);
     }
 
     protected byte[] encodeForGsub(GsubWorker gsubWorker, Set<Integer> glyphIds, PDType0Font font, String text) throws IOException {
