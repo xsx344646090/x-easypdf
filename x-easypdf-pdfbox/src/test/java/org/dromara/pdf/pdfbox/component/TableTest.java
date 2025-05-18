@@ -119,7 +119,7 @@ public class TableTest extends BaseTest {
             // 添加页面
             document.appendPage(page);
             // 保存文档
-            document.save("E:\\PDF\\pdfbox\\table\\test.pdf");
+            document.save("E:\\PDF\\pdfbox\\table\\tableTest.pdf");
             // 关闭文档
             document.close();
 
@@ -302,7 +302,7 @@ public class TableTest extends BaseTest {
             // 添加页面
             document.appendPage(page);
             // 保存文档
-            document.save("E:\\PDF\\pdfbox\\table\\test2.pdf");
+            document.save("E:\\PDF\\pdfbox\\table\\tableTest2.pdf");
             // 关闭文档
             document.close();
         });
@@ -580,7 +580,7 @@ public class TableTest extends BaseTest {
             components.add(headerTextarea);
             header.setComponents(components);
             header.setHeight(12F);
-            header.setIsBorder(false);
+            header.setIsBorder(true);
             header.render();
 
             float width = page.getWithoutMarginWidth() / 6;
@@ -593,24 +593,24 @@ public class TableTest extends BaseTest {
 
             List<TableRow> rowList = new ArrayList<>(16);
 
-            int rowCount = 13;
+            int rowCount = 18;
             TableRow tableRow = new TableRow(table);
             tableRow.setHeight(height);
             Textarea textarea1 = new Textarea(table.getPage());
             textarea1.setText("合并行");
-            textarea1.setHorizontalAlignment(HorizontalAlignment.CENTER);
-            textarea1.setVerticalAlignment(VerticalAlignment.BOTTOM);
             Textarea textarea2 = new Textarea(table.getPage());
             textarea2.setText("合并内容1");
-            textarea2.setHorizontalAlignment(HorizontalAlignment.CENTER);
-            textarea2.setVerticalAlignment(VerticalAlignment.BOTTOM);
             TableCell cell1 = new TableCell(tableRow);
+            cell1.setContentHorizontalAlignment(HorizontalAlignment.CENTER);
+            cell1.setContentVerticalAlignment(VerticalAlignment.CENTER);
             cell1.setComponents(textarea1);
             cell1.setRowspan(rowCount);
             TableCell cell2 = new TableCell(tableRow);
+            cell2.setContentHorizontalAlignment(HorizontalAlignment.CENTER);
+            cell2.setContentVerticalAlignment(VerticalAlignment.CENTER);
             cell2.setComponents(textarea2);
             cell2.setColspan(2);
-            tableRow.setCells(cell1, cell2);
+            tableRow.setCells(cell1, cell2, null, null);
             rowList.add(tableRow);
 
             for (int i = 1; i <= rowCount; i++) {
@@ -622,14 +622,14 @@ public class TableTest extends BaseTest {
                 TableCell cell = new TableCell(tableRow);
                 cell.setColspan(2);
                 cell.setComponents(textarea);
-                tableRow.setCells(null, cell);
+                tableRow.setCells(null, cell, null, null);
                 rowList.add(tableRow);
             }
             table.setRows(rowList);
             table.render();
 
             document.appendPage(page);
-            document.save("E:\\PDF\\pdfbox\\table\\simpleTableTest.pdf");
+            document.save("E:\\PDF\\pdfbox\\table\\simpleTableTest2.pdf");
             document.close();
         });
     }
@@ -685,7 +685,7 @@ public class TableTest extends BaseTest {
             table.render();
 
             document.appendPage(page);
-            document.save("E:\\PDF\\pdfbox\\table\\simpleTableTest.pdf");
+            document.save("E:\\PDF\\pdfbox\\table\\simpleTableTest3.pdf");
             document.close();
         });
     }
@@ -784,7 +784,7 @@ public class TableTest extends BaseTest {
             table.render();
 
             document.appendPage(page);
-            document.save("E:\\PDF\\pdfbox\\table\\simpleTableTest.pdf");
+            document.save("E:\\PDF\\pdfbox\\table\\simpleTableTest4.pdf");
             document.close();
         });
     }

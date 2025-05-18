@@ -99,7 +99,7 @@ public class FileUtil {
             return name;
         }
         // 返回文件名称
-        return name.substring(dot).toLowerCase();
+        return name.substring(0, dot);
     }
 
     /**

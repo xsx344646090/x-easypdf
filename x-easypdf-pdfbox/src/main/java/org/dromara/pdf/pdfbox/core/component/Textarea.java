@@ -1014,11 +1014,15 @@ public class Textarea extends AbstractComponent {
      * @param rectangle 尺寸
      * @param stream    内容流
      */
+    @SneakyThrows
     protected void addBorder(PDRectangle rectangle, PDPageContentStream stream) {
-        // 重置Y轴起始坐标
-        rectangle.setLowerLeftY(rectangle.getLowerLeftY() - this.getFontSize() / 6);
-        // 绘制边框
-        BorderUtil.drawNormalBorder(stream, rectangle, new BorderData(this, this.getBorderConfiguration()));
+        if (this.getBorderConfiguration().hasBorder()) {
+            // 重置Y轴起始坐标
+            rectangle.setLowerLeftY(rectangle.getLowerLeftY() - this.getFontSize() / 6);
+            // 绘制边框
+            BorderUtil.drawNormalBorder(stream, rectangle, new BorderData(this, this.getBorderConfiguration()), this.getPage().getBackgroundColor());
+            stream.stroke();
+        }
     }
 
     /**

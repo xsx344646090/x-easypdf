@@ -5,12 +5,10 @@ import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.dromara.pdf.pdfbox.core.base.Page;
-import org.dromara.pdf.pdfbox.core.base.Position;
 import org.dromara.pdf.pdfbox.core.enums.ComponentType;
+import org.dromara.pdf.pdfbox.support.Constants;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -92,7 +90,11 @@ public class Circle extends AbstractComponent {
         if (Objects.isNull(this.borderColor)) {
             this.borderColor = Color.BLACK;
         }
-        // 获取直径
+        // 初始化边框颜色
+        if (Objects.isNull(this.backgroundColor)) {
+            this.backgroundColor = this.getPage().getBackgroundColor();
+        }
+        // 获取半径
         float diameter = this.getMinWidth();
         // 初始化起始XY轴坐标
         this.initBeginXY(diameter, diameter);
@@ -105,70 +107,7 @@ public class Circle extends AbstractComponent {
      */
     @Override
     protected float getMinWidth() {
-        return this.getRadius() * 2;
-    }
-
-    /**
-     * 初始化数据坐标点
-     *
-     * @param radius 半径
-     * @return 返回数据坐标点列表
-     */
-    protected List<Position> initPosition(float radius) {
-        // 获取X轴坐标（补偿半径）
-        float x = this.getBeginX() + this.radius + this.getRelativeBeginX();
-        // 获取Y轴坐标（补偿半径）
-        float y = this.getBeginY() + this.radius - this.getRelativeBeginY();
-        // 定义4个圆形数据坐标点
-        List<Position> list = new ArrayList<>(4);
-        // 添加数据上坐标点
-        list.add(new Position(x, y + radius));
-        // 添加数据右坐标点
-        list.add(new Position(x + radius, y));
-        // 添加数据下坐标点
-        list.add(new Position(x, y - radius));
-        // 添加数据左坐标点
-        list.add(new Position(x - radius, y));
-        // 返回数据坐标点列表
-        return list;
-    }
-
-    /**
-     * 初始化控制坐标点
-     *
-     * @return 返回控制坐标点列表
-     */
-    protected List<Position> initCtrlPosition(List<Position> positions) {
-        // 计算补偿
-        final float offset = this.getRadius() * 0.551915024494F;
-        // 定义8个圆形控制坐标点
-        List<Position> points = new ArrayList<>(8);
-        // 获取数据上坐标点
-        Position top = positions.get(0);
-        // 添加上右控制坐标点
-        points.add(new Position(top.getX() + offset, top.getY()));
-        // 获取数据右坐标点
-        Position right = positions.get(1);
-        // 添加右上控制坐标点
-        points.add(new Position(right.getX(), right.getY() + offset));
-        // 添加右下控制坐标点
-        points.add(new Position(right.getX(), right.getY() - offset));
-        // 获取数据下坐标点
-        Position bottom = positions.get(2);
-        // 添加下右控制坐标点
-        points.add(new Position(bottom.getX() + offset, bottom.getY()));
-        // 添加下左控制坐标点
-        points.add(new Position(bottom.getX() - offset, bottom.getY()));
-        // 获取数据左坐标点
-        Position left = positions.get(3);
-        // 添加左下控制坐标点
-        points.add(new Position(left.getX(), left.getY() - offset));
-        // 添加左上控制坐标点
-        points.add(new Position(left.getX(), left.getY() + offset));
-        // 添加上左控制坐标点
-        points.add(new Position(top.getX() - offset, top.getY()));
-        // 返回控制坐标点列表
-        return points;
+        return this.getRadius();
     }
 
     /**
@@ -186,13 +125,12 @@ public class Circle extends AbstractComponent {
                     true,
                     this.getIsResetContentStream()
             );
+            // 设置背景颜色
+            contentStream.setNonStrokingColor(this.getBackgroundColor());
+            // 设置边框颜色
+            contentStream.setStrokingColor(this.getBorderColor());
             // 绘制边框圆形
-            this.renderCircle(contentStream, this.getRadius(), this.getBorderColor());
-            // 绘制背景圆形
-            if (Objects.nonNull(this.getBackgroundColor())) {
-                // 绘制背景圆形
-                this.renderCircle(contentStream, this.getRadius() - this.getBorderConfiguration().getBorderLineWidth(), this.getBackgroundColor());
-            }
+            this.renderCircle(contentStream, this.getRadius());
             // 关闭内容流
             contentStream.close();
         }
@@ -203,68 +141,27 @@ public class Circle extends AbstractComponent {
      *
      * @param contentStream 内容流
      * @param radius        半径
-     * @param color         颜色
      */
     @SneakyThrows
-    protected void renderCircle(PDPageContentStream contentStream, float radius, Color color) {
-        // 获取数据坐标点列表
-        List<Position> positions = this.initPosition(radius);
-        // 获取控制坐标点列表
-        List<Position> ctrlPositions = this.initCtrlPosition(positions);
-        // 上数据坐标点
-        Position dataTop = positions.get(0);
-        // 上右控制坐标点
-        Position ctrlTopRight = ctrlPositions.get(0);
-        // 右上控制坐标点
-        Position ctrlRightTop = ctrlPositions.get(1);
-        // 右数据坐标点
-        Position dataRight = positions.get(1);
-        // 右下控制坐标点
-        Position ctrlRightBottom = ctrlPositions.get(2);
-        // 下右控制坐标点
-        Position ctrlBottomRight = ctrlPositions.get(3);
-        // 下数据坐标点
-        Position dataBottom = positions.get(2);
-        // 下左控制坐标点
-        Position ctrlBottomLeft = ctrlPositions.get(4);
-        // 左下控制坐标点
-        Position ctrlLeftBottom = ctrlPositions.get(5);
-        // 左数据坐标点
-        Position dataLeft = positions.get(3);
-        // 左上控制坐标点
-        Position ctrlLeftTop = ctrlPositions.get(6);
-        // 上左控制坐标点
-        Position ctrlTopLeft = ctrlPositions.get(7);
-        // 绘制圆形
-        contentStream.moveTo(dataTop.getX(), dataTop.getY());
-        // 连线
-        contentStream.curveTo(
-                ctrlTopRight.getX(), ctrlTopRight.getY(),
-                ctrlRightTop.getX(), ctrlRightTop.getY(),
-                dataRight.getX(), dataRight.getY()
-        );
-        // 连线
-        contentStream.curveTo(
-                ctrlRightBottom.getX(), ctrlRightBottom.getY(),
-                ctrlBottomRight.getX(), ctrlBottomRight.getY(),
-                dataBottom.getX(), dataBottom.getY()
-        );
-        // 连线
-        contentStream.curveTo(
-                ctrlBottomLeft.getX(), ctrlBottomLeft.getY(),
-                ctrlLeftBottom.getX(), ctrlLeftBottom.getY(),
-                dataLeft.getX(), dataLeft.getY()
-        );
-        // 连线
-        contentStream.curveTo(
-                ctrlLeftTop.getX(), ctrlLeftTop.getY(),
-                ctrlTopLeft.getX(), ctrlTopLeft.getY(),
-                dataTop.getX(), dataTop.getY()
-        );
-        // 设置圆形颜色
-        contentStream.setNonStrokingColor(color);
-        // 填充圆形
-        contentStream.fill();
+    protected void renderCircle(PDPageContentStream contentStream, float radius) {
+        // 计算补偿
+        final float offset = radius * Constants.BEZIER_COEF‌;
+        // 获取X轴坐标
+        float beginX = this.getBeginX() + this.getRelativeBeginX();
+        // 获取Y轴坐标
+        float beginY = this.getBeginY() + this.getRelativeBeginX();
+        // 移动坐标
+        contentStream.moveTo(beginX, beginY + radius);
+        // 绘制右上
+        contentStream.curveTo(beginX + offset, beginY + radius, beginX + radius, beginY + offset, beginX + radius, beginY);
+        // 绘制右下
+        contentStream.curveTo(beginX + radius, beginY - offset, beginX + offset, beginY - radius, beginX, beginY - radius);
+        // 绘制左下
+        contentStream.curveTo(beginX - offset, beginY - radius, beginX - radius, beginY - offset, beginX - radius, beginY);
+        // 绘制左上
+        contentStream.curveTo(beginX - radius, beginY + offset, beginX - offset, beginY + radius, beginX, beginY + radius);
+        // 填充并闭合
+        contentStream.fillAndStroke();
     }
 
     /**

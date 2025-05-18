@@ -119,6 +119,10 @@ public class Rectangle extends AbstractComponent {
         if (Objects.isNull(this.alpha)) {
             this.alpha = 1.0F;
         }
+        // 初始化背景颜色
+        if (Objects.isNull(this.backgroundColor)) {
+            this.backgroundColor = this.getPage().getBackgroundColor();
+        }
         // 初始化起始XY轴坐标
         this.initBeginXY(this.width, this.height);
     }
@@ -151,15 +155,13 @@ public class Rectangle extends AbstractComponent {
             // 初始化矩阵
             CommonUtil.initMatrix(contentStream, this.getBeginX(), this.getBeginY(), this.getRelativeBeginX(), this.getRelativeBeginY(), this.getWidth(), this.getHeight(), this.getAngle(), this.getAlpha());
             // 添加边框
-            BorderUtil.drawNormalBorder(contentStream, CommonUtil.getRectangle(this.getWidth(), this.getHeight()), BorderData.create(this, this.getBorderConfiguration()));
-            // 添加背景
-            if (Objects.nonNull(this.getBackgroundColor())) {
-                // 添加矩形（背景矩形）
-                contentStream.addRect(this.getBorderConfiguration().getBorderLineWidth() / 2, this.getBorderConfiguration().getBorderLineWidth() / 2, this.getWidth() - this.getBorderConfiguration().getBorderLineWidth(), this.getHeight() - this.getBorderConfiguration().getBorderLineWidth());
-                // 设置矩形颜色（背景颜色）
-                contentStream.setNonStrokingColor(this.getBackgroundColor());
-                // 填充矩形（背景矩形）
-                contentStream.fill();
+            BorderUtil.drawNormalBorder(contentStream, CommonUtil.getRectangle(this.getWidth(), this.getHeight()), BorderData.create(this, this.getBorderConfiguration()), this.getBackgroundColor());
+            // 填充
+            if (this.getBorderConfiguration().hasAllBorder()) {
+                contentStream.closePath();
+                contentStream.fillAndStroke();
+            } else {
+                contentStream.stroke();
             }
             // 恢复图形状态
             contentStream.restoreGraphicsState();

@@ -14,7 +14,6 @@ import org.dromara.pdf.pdfbox.support.CharacterWrapper;
 import org.dromara.pdf.pdfbox.support.Constants;
 import org.dromara.pdf.pdfbox.support.fonts.FontInfo;
 import org.dromara.pdf.pdfbox.support.fonts.FontMapperImpl;
-import org.dromara.pdf.pdfbox.util.FileUtil;
 
 import java.io.File;
 import java.io.InputStream;
@@ -252,14 +251,5 @@ public class FontHandler {
             // 添加字体到子集
             document.addFontToSubset(font);
         }
-    }
-
-    /**
-     * 清理缓存
-     *
-     * @return 返回布尔值，true为是，false为否
-     */
-    public boolean clearCache() {
-        return FileUtil.getFontCacheFile().delete();
     }
 }

@@ -6,10 +6,8 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.dromara.pdf.pdfbox.core.base.*;
-import org.dromara.pdf.pdfbox.core.component.Container;
 import org.dromara.pdf.pdfbox.core.component.Line;
 import org.dromara.pdf.pdfbox.core.component.Textarea;
-import org.dromara.pdf.pdfbox.core.enums.HorizontalAlignment;
 import org.dromara.pdf.pdfbox.core.enums.LineStyle;
 import org.dromara.pdf.pdfbox.core.enums.PWLength;
 import org.dromara.pdf.pdfbox.core.info.CatalogInfo;
@@ -17,13 +15,13 @@ import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.awt.*;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
-import java.util.*;
+import java.util.Objects;
 
 /**
  * @author xsx
@@ -353,72 +351,32 @@ public class DocumentTest extends BaseTest {
      * 创建文档
      */
     private Document create(Integer totalPage) {
-        PdfHandler.getFontHandler().getFontNames().forEach(System.out::println);
+        // 创建文档
         Document document = PdfHandler.getDocumentHandler().create();
-        document.setMargin(50F);
-        document.setTotalPageNumber(totalPage);
 
+        // 创建页面
         Page page = new Page(document);
 
-        PageHeader pageHeader = new PageHeader(document.getCurrentPage());
-        Textarea headerText = new Textarea(pageHeader.getPage());
-        headerText.setText("页眉，当前第" + headerText.getContext().getPage().getPlaceholder() + "页");
-        pageHeader.setHeight(100F);
-        pageHeader.setComponents(Collections.singletonList(headerText));
-        pageHeader.setIsBorder(true);
-        if (Objects.isNull(totalPage)) {
-            pageHeader.virtualRender();
-        } else {
-            pageHeader.render();
-        }
-
+        // 创建页脚
         PageFooter pageFooter = new PageFooter(document.getCurrentPage());
-        Textarea footerText = new Textarea(pageHeader.getPage());
-        footerText.setText("页脚，共" + totalPage + "页");
-        pageFooter.setHeight(350F);
-        pageFooter.setComponents(Collections.singletonList(footerText));
-        pageFooter.setIsBorder(true);
+        // 设置页脚高度
+        pageFooter.setHeight(100F);
+        // 创建文本
+        Textarea footerText = new Textarea(pageFooter.getPage());
+        // 设置文本内容
+        footerText.setText("共" + totalPage + "页");
+        // 设置组件
+        pageFooter.setComponents(footerText);
         if (Objects.isNull(totalPage)) {
+            // 虚拟渲染
             pageFooter.virtualRender();
         } else {
+            // 真实渲染
             pageFooter.render();
         }
-
-        Container container = new Container(document.getCurrentPage());
-        container.setWidth(200F);
-        container.setHeight(100F);
-        container.setBackgroundColor(Color.LIGHT_GRAY);
-        container.setHorizontalAlignment(HorizontalAlignment.CENTER);
-        container.setContentHorizontalAlignment(HorizontalAlignment.CENTER);
-        container.setIsBorder(true);
-        Textarea textarea1 = new Textarea(container.getPage());
-        textarea1.setText("hello");
-        Textarea textarea2 = new Textarea(container.getPage());
-        textarea2.setText("world1world2");
-        Textarea textarea3 = new Textarea(container.getPage());
-        textarea3.setText("总页数" + Optional.ofNullable(totalPage).orElse(0));
-        container.setComponents(Arrays.asList(textarea1, textarea2, textarea3));
-        if (Objects.isNull(totalPage)) {
-            container.virtualRender();
-            container.virtualRender();
-            container.virtualRender();
-            container.virtualRender();
-            container.virtualRender();
-            container.virtualRender();
-            container.setIsWrap(true);
-            container.virtualRender();
-        } else {
-            container.render();
-            container.render();
-            container.render();
-            container.render();
-            container.render();
-            container.render();
-            container.setIsWrap(true);
-            container.render();
-        }
-
+        // 添加页面
         document.appendPage(page);
+        // 返回文档
         return document;
     }
 }

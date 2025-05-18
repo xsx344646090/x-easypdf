@@ -3,8 +3,6 @@ package org.dromara.pdf.pdfbox.core.base;
 import lombok.EqualsAndHashCode;
 import org.dromara.pdf.pdfbox.core.component.AbstractPageHeaderOrFooter;
 import org.dromara.pdf.pdfbox.core.enums.ComponentType;
-import org.dromara.pdf.pdfbox.core.enums.HorizontalAlignment;
-import org.dromara.pdf.pdfbox.core.enums.VerticalAlignment;
 
 import java.util.Objects;
 
@@ -88,14 +86,6 @@ public class PageFooter extends AbstractPageHeaderOrFooter {
         // 初始化Y轴起始坐标
         if (Objects.isNull(this.getBeginY())) {
             this.setBeginY(this.getHeight() + this.getContext().getPage().getMarginBottom());
-        }
-        // 初始化内容水平对齐方式
-        if (Objects.isNull(this.getContentHorizontalAlignment())) {
-            this.setContentHorizontalAlignment(HorizontalAlignment.LEFT);
-        }
-        // 初始化内容垂直对齐方式
-        if (Objects.isNull(this.getContentVerticalAlignment())) {
-            this.setContentVerticalAlignment(VerticalAlignment.TOP);
         }
         // 初始化宽度
         this.initWidth();

@@ -1,12 +1,14 @@
 package org.dromara.pdf.pdfbox.other;
 
+import com.itextpdf.io.font.PdfEncodings;
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.element.Table;
 import org.dromara.pdf.pdfbox.base.BaseTest;
+import org.dromara.pdf.pdfbox.util.IdUtil;
 import org.junit.Test;
 
 /**
@@ -32,13 +34,19 @@ public class ItextTest extends BaseTest {
      */
     @Test
     public void itextTest() {
-        this.test(this::create);
+        for (int k = 0; k < 10; k++) {
+            this.test(this::create);
+        }
     }
 
     public void create() {
         try {
+            String fontPath = "E:\\Workspace\\x-easypdf\\gitee\\x-easypdf-pdfbox\\src\\main\\resources\\org\\dromara\\pdf\\pdfbox\\ttf\\HarmonyOS_Sans_SC_Regular.ttf"; // 中文字体文件路径
+            // 加载中文字体
+            PdfFont font = PdfFontFactory.createFont(fontPath, PdfEncodings.IDENTITY_H);
+
             // Creating a PdfDocument object
-            String dest = "E:\\PDF\\pdfbox\\table\\simpleTableTest1.pdf";
+            String dest = "E:\\PDF\\pdfbox\\document\\simpleTableTest-" + IdUtil.get() + ".pdf";
             PdfWriter writer = new PdfWriter(dest);
 
             // Creating a PdfDocument object
@@ -46,27 +54,22 @@ public class ItextTest extends BaseTest {
 
             // Creating a Document object
             Document doc = new Document(pdf);
-            doc.setMargins(0, 0, 0, 0);
+            doc.setMargins(50, 50, 50, 50);
 
-            // Creating a table
-            float [] pointColumnWidths = {150F, 150F, 150F};
-            Table table = new Table(pointColumnWidths);
+            Paragraph paragraph = new Paragraph().setFont(font).setMultipliedLeading(0.6F);
 
-            // Adding cells to the table
-            float height = 1000F;
-            for (int i = 0; i < 15; i++) {
-                Cell cell = new Cell();
-                cell.setHeight(height);
-                cell.add(new Paragraph("Name"));
-                table.addCell(cell);
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < 20; i++) {
+                for (int j = 0; j < 5000; j++) {
+                    builder.append("测试内容").append(j);
+                }
             }
+            paragraph.add(builder.toString());
 
-            // Adding Table to document
-            doc.add(table);
-
+            // Adding Paragraph to document
+            doc.add(paragraph);
             // Closing the document
             doc.close();
-            System.out.println("Table created successfully..");
         } catch (Exception e) {
             e.printStackTrace();
         }

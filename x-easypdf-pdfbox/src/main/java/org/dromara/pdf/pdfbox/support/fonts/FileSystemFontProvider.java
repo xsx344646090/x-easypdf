@@ -65,6 +65,10 @@ public class FileSystemFontProvider extends FontProvider {
                 List<FSFontInfo> cachedInfos = loadDiskCache(files);
                 if (cachedInfos != null && !cachedInfos.isEmpty()) {
                     fontInfoList.addAll(cachedInfos);
+                    cachedInfos.forEach(info -> {
+                        fontInfoByName.put(info.getFontName(), info);
+                        cache.getFont(info);
+                    });
                 } else {
                     LOG.info("Building on-disk font cache, this may take a while");
                     scanFonts(files);
@@ -160,15 +164,14 @@ public class FileSystemFontProvider extends FontProvider {
 
     private void writeFontInfo(BufferedWriter writer, FSFontInfo fontInfo) throws IOException {
         if (Objects.nonNull(fontInfo.file)) {
-            this.writeFontInfo(writer, fontInfo, fontInfo.postScriptName);
-            if (!Objects.equals(fontInfo.fontName, fontInfo.postScriptName)) {
-                this.writeFontInfo(writer, fontInfo, fontInfo.fontName);
-            }
+            this.writeToFontInfo(writer, fontInfo);
         }
     }
 
-    private void writeFontInfo(BufferedWriter writer, FSFontInfo fontInfo, String name) throws IOException {
-        writer.write(name);
+    private void writeToFontInfo(BufferedWriter writer, FSFontInfo fontInfo) throws IOException {
+        writer.write(fontInfo.getFontName());
+        writer.write("|");
+        writer.write(fontInfo.getPostScriptName());
         writer.write("|");
         writer.write(fontInfo.format.toString());
         writer.write("|");
@@ -232,12 +235,13 @@ public class FileSystemFontProvider extends FontProvider {
             try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    String[] parts = line.split("\\|", 10);
-                    if (parts.length < 10) {
+                    String[] parts = line.split("\\|", 11);
+                    if (parts.length < 11) {
                         LOG.warn("Incorrect line '" + line + "' in font disk cache is skipped");
                         continue;
                     }
 
+                    String fontName;
                     String postScriptName;
                     FontFormat format;
                     CIDSystemInfo cidSystemInfo = null;
@@ -249,39 +253,34 @@ public class FileSystemFontProvider extends FontProvider {
                     byte[] panose = null;
                     File fontFile;
 
-                    postScriptName = parts[0];
-                    format = FontFormat.valueOf(parts[1]);
-                    if (!parts[2].isEmpty()) {
-                        String[] ros = parts[2].split("-");
+                    fontName = parts[0];
+                    postScriptName = parts[1];
+                    format = FontFormat.valueOf(parts[2]);
+                    if (!parts[3].isEmpty()) {
+                        String[] ros = parts[3].split("-");
                         cidSystemInfo = new CIDSystemInfo(ros[0], ros[1], Integer.parseInt(ros[2]));
                     }
-                    if (!parts[3].isEmpty()) {
-                        usWeightClass = (int) Long.parseLong(parts[3], 16);
-                    }
                     if (!parts[4].isEmpty()) {
-                        sFamilyClass = (int) Long.parseLong(parts[4], 16);
+                        usWeightClass = (int) Long.parseLong(parts[4], 16);
                     }
-                    ulCodePageRange1 = (int) Long.parseLong(parts[5], 16);
-                    ulCodePageRange2 = (int) Long.parseLong(parts[6], 16);
-                    if (!parts[7].isEmpty()) {
-                        macStyle = (int) Long.parseLong(parts[7], 16);
+                    if (!parts[5].isEmpty()) {
+                        sFamilyClass = (int) Long.parseLong(parts[5], 16);
                     }
+                    ulCodePageRange1 = (int) Long.parseLong(parts[6], 16);
+                    ulCodePageRange2 = (int) Long.parseLong(parts[7], 16);
                     if (!parts[8].isEmpty()) {
+                        macStyle = (int) Long.parseLong(parts[8], 16);
+                    }
+                    if (!parts[9].isEmpty()) {
                         panose = new byte[10];
                         for (int i = 0; i < 10; i++) {
-                            String str = parts[8].substring(i * 2, i * 2 + 2);
+                            String str = parts[9].substring(i * 2, i * 2 + 2);
                             int b = Integer.parseInt(str, 16);
                             panose[i] = (byte) (b & 0xff);
                         }
                     }
-                    fontFile = new File(parts[9]);
+                    fontFile = new File(parts[10]);
                     if (fontFile.exists()) {
-                        String fontName;
-                        try {
-                            fontName = Font.createFont(Font.TRUETYPE_FONT, fontFile).getFontName();
-                        } catch (Exception e) {
-                            fontName = postScriptName;
-                        }
                         FSFontInfo info = new FSFontInfo(fontFile, format, fontName, postScriptName, cidSystemInfo, usWeightClass, sFamilyClass, ulCodePageRange1, ulCodePageRange2, macStyle, panose, this);
                         results.add(info);
                     } else {
@@ -368,17 +367,11 @@ public class FileSystemFontProvider extends FontProvider {
             // read PostScript name, if any
             if (ttf.getName() != null && ttf.getName().contains("|")) {
                 fontInfoList.add(new FSIgnored(file, FontFormat.TTF, this.getFontName(file, "*skippipeinname*"), "*skippipeinname*"));
-                if (Objects.nonNull(alias)) {
-                    fontInfoList.add(new FSIgnored(file, FontFormat.TTF, alias, "*skippipeinname*"));
-                }
                 LOG.warn("Skipping font with '|' in name " + ttf.getName() + " in file " + file);
             } else if (ttf.getName() != null) {
                 // ignore bitmap fonts
                 if (ttf.getHeader() == null) {
                     fontInfoList.add(new FSIgnored(file, FontFormat.TTF, this.getFontName(file, ttf.getName()), ttf.getName()));
-                    if (Objects.nonNull(alias)) {
-                        fontInfoList.add(new FSIgnored(file, FontFormat.TTF, alias, ttf.getName()));
-                    }
                     return;
                 }
                 int macStyle = ttf.getHeader().getMacStyle();
@@ -414,12 +407,6 @@ public class FileSystemFontProvider extends FontProvider {
                     fontInfoList.add(info);
                     fontInfoByName.put(info.getFontName(), info);
                     cache.addFont(info, ttf);
-                    if (Objects.nonNull(alias)) {
-                        info = new FSFontInfo(file, FontFormat.OTF, alias, ttf.getName(), ros, usWeightClass, sFamilyClass, ulCodePageRange1, ulCodePageRange2, macStyle, panose, this);
-                        fontInfoList.add(info);
-                        fontInfoByName.put(info.getFontName(), info);
-                        cache.addFont(info, ttf);
-                    }
                 } else {
                     CIDSystemInfo ros = null;
                     if (ttf.getTableMap().containsKey("gcid")) {
@@ -439,12 +426,6 @@ public class FileSystemFontProvider extends FontProvider {
                     fontInfoByName.put(info.getFontName(), info);
                     fontInfoByName.put(info.getPostScriptName(), info);
                     cache.addFont(info, ttf);
-                    if (Objects.nonNull(alias)) {
-                        info = new FSFontInfo(file, FontFormat.TTF, alias, ttf.getName(), ros, usWeightClass, sFamilyClass, ulCodePageRange1, ulCodePageRange2, macStyle, panose, this);
-                        fontInfoList.add(info);
-                        fontInfoByName.put(alias, info);
-                        cache.addFont(info, ttf);
-                    }
                 }
 
                 if (LOG.isTraceEnabled()) {
@@ -455,16 +436,10 @@ public class FileSystemFontProvider extends FontProvider {
                 }
             } else {
                 fontInfoList.add(new FSIgnored(file, FontFormat.TTF, this.getFontName(file, "*skipnoname*"), "*skipnoname*"));
-                if (Objects.nonNull(alias)) {
-                    fontInfoList.add(new FSIgnored(file, FontFormat.TTF, alias, "*skipnoname*"));
-                }
                 LOG.warn("Missing 'name' entry for PostScript name in font " + file);
             }
         } catch (IOException e) {
             fontInfoList.add(new FSIgnored(file, FontFormat.TTF, this.getFontName(file, "*skipexception*"), "*skipexception*"));
-            if (Objects.nonNull(alias)) {
-                fontInfoList.add(new FSIgnored(file, FontFormat.TTF, alias, "*skipexception*"));
-            }
             LOG.error("Could not load font file: " + file, e);
         } finally {
             ttf.close();
