@@ -246,6 +246,10 @@ public class Table extends AbstractComponent {
         super.init();
         // 初始化分页事件
         this.pagingEvent = new DefaultContainerPagingEvent();
+        // 初始化背景颜色
+        if (Objects.isNull(this.backgroundColor)) {
+            this.backgroundColor = this.getPage().getBackgroundColor();
+        }
         // 初始化是否整体换行
         if (Objects.isNull(this.isTogether)) {
             this.isTogether = Boolean.FALSE;
@@ -255,7 +259,7 @@ public class Table extends AbstractComponent {
             this.isPagingBorder = Boolean.FALSE;
         }
         // 重置Y轴相对坐标
-        if (!this.isCustomY && this.relativeBeginY == 0F) {
+        if (!this.isCustomY && this.relativeBeginY == 0F && this.getContext().getIsFirstComponent() && !this.getContext().hasPageHeader()) {
             this.relativeBeginY = this.getFirstRowHeight();
         }
         // 初始化内容上边距

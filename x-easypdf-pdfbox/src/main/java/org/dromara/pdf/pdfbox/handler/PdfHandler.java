@@ -11,6 +11,7 @@ import org.dromara.pdf.pdfbox.core.ext.extractor.DocumentExtractor;
 import org.dromara.pdf.pdfbox.core.ext.parser.ai.DocumentAIParser;
 import org.dromara.pdf.pdfbox.core.ext.processor.DocumentProcessor;
 import org.dromara.pdf.pdfbox.support.Constants;
+import org.dromara.pdf.pdfbox.util.FileUtil;
 
 /**
  * pdf助手
@@ -31,7 +32,7 @@ import org.dromara.pdf.pdfbox.support.Constants;
  * </p>
  */
 public class PdfHandler {
-    
+
     /**
      * 获取字体助手
      *
@@ -40,7 +41,7 @@ public class PdfHandler {
     public static FontHandler getFontHandler() {
         return FontHandler.getInstance();
     }
-    
+
     /**
      * 获取文档助手
      *
@@ -49,7 +50,7 @@ public class PdfHandler {
     public static DocumentHandler getDocumentHandler() {
         return DocumentHandler.getInstance();
     }
-    
+
     /**
      * 获取文档处理器
      *
@@ -59,7 +60,7 @@ public class PdfHandler {
     public static DocumentProcessor getDocumentProcessor(Document document) {
         return new DocumentProcessor(document);
     }
-    
+
     /**
      * 获取文档分析器
      *
@@ -69,7 +70,7 @@ public class PdfHandler {
     public static DocumentAnalyzer getDocumentAnalyzer(Document document) {
         return new DocumentAnalyzer(document);
     }
-    
+
     /**
      * 获取文档提取器
      *
@@ -79,7 +80,7 @@ public class PdfHandler {
     public static DocumentExtractor getDocumentExtractor(Document document) {
         return new DocumentExtractor(document);
     }
-    
+
     /**
      * 获取文档比较器
      *
@@ -89,7 +90,7 @@ public class PdfHandler {
     public static DocumentComparator getDocumentComparator(Document document) {
         return new DocumentComparator(document);
     }
-    
+
     /**
      * 获取文档AI解析器
      *
@@ -99,7 +100,7 @@ public class PdfHandler {
     public static DocumentAIParser getDocumentAIParser(Document document) {
         return new DocumentAIParser(document);
     }
-    
+
     /**
      * 获取文档转换器
      *
@@ -109,7 +110,7 @@ public class PdfHandler {
     public static DocumentConvertor getDocumentConvertor(Document document) {
         return new DocumentConvertor(document);
     }
-    
+
     /**
      * 开启压缩
      * <p>注：等级越高，压缩率越高，速度越慢</p>
@@ -122,18 +123,27 @@ public class PdfHandler {
         }
         System.setProperty(Filter.SYSPROP_DEFLATELEVEL, String.valueOf(level));
     }
-    
+
     /**
      * 关闭系统字体扫描
      */
     public static void disableScanSystemFonts() {
         System.setProperty(Constants.FONT_SCAN_SWITCH, "false");
     }
-    
+
     /**
      * 关闭标语
      */
     public static void disableBanner() {
         Banner.disable();
+    }
+
+    /**
+     * 清理字体缓存
+     *
+     * @return 返回布尔值，true为是，false为否
+     */
+    public static boolean clearFontCache() {
+        return FileUtil.getFontCacheFile().delete();
     }
 }

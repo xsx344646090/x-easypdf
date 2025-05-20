@@ -12,7 +12,6 @@ import org.dromara.pdf.pdfbox.core.base.config.BorderConfiguration;
 import org.dromara.pdf.pdfbox.core.enums.HorizontalAlignment;
 import org.dromara.pdf.pdfbox.core.enums.VerticalAlignment;
 import org.dromara.pdf.pdfbox.util.BorderUtil;
-import org.dromara.pdf.pdfbox.util.CommonUtil;
 
 import java.awt.*;
 import java.util.List;
@@ -493,10 +492,8 @@ public class TableCell extends BorderData {
                     info.getWidth(),
                     info.getHeight()
             );
-            // 添加背景颜色
-            CommonUtil.addBackgroundColor(info.getContext(), info.getContentMode(), info.getIsResetContentStream(), rectangle, info.getBackgroundColor());
             // 绘制边框
-            BorderUtil.drawBorderWithData(info, rectangle);
+            BorderUtil.drawBorderWithData(info, rectangle, Optional.ofNullable(info.getBackgroundColor()).orElse(this.getPage().getBackgroundColor()));
             // 返回尺寸
             return rectangle;
         }

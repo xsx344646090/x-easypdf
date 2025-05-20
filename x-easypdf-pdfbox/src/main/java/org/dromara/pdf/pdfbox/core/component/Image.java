@@ -240,7 +240,8 @@ public class Image extends AbstractComponent {
             // 添加图像
             contentStream.drawImage(this.getImage(), 0, 0, this.getWidth(), this.getHeight());
             // 添加边框
-            BorderUtil.drawNormalBorder(contentStream, CommonUtil.getRectangle(this.getWidth(), this.getHeight()), BorderData.create(this, this.getBorderConfiguration()));
+            BorderUtil.drawNormalBorder(contentStream, CommonUtil.getRectangle(this.getWidth(), this.getHeight()), BorderData.create(this, this.getBorderConfiguration()), this.getPage().getBackgroundColor());
+            contentStream.stroke();
             // 关闭内容流
             contentStream.close();
         }
