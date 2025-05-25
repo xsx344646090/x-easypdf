@@ -100,6 +100,6 @@ public abstract class AbstractTextHandler extends AbstractExpander {
      * @return 返回文本高度
      */
     public float getTextHeight(FontConfiguration fontConfiguration, int rowCount) {
-        return TextUtil.getTextHeight(fontConfiguration.getFontSize(), fontConfiguration.getLeading(), rowCount);
+        return TextUtil.getTextHeight(this.getContext(), fontConfiguration.getFontName(), fontConfiguration.getFontSize(), fontConfiguration.getLeading(), rowCount);
     }
 }

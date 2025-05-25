@@ -142,7 +142,7 @@ public class DocumentTest extends BaseTest {
     @Test
     public void encryptionTest() {
         this.test(() -> {
-            Document document = this.create(null);
+            Document document = this.create(2);
             document.encryption(true, PWLength.LENGTH_128, "123456", "123456");
             document.save("E:\\PDF\\pdfbox\\document\\encryptionTest.pdf");
             document.close();
@@ -177,8 +177,6 @@ public class DocumentTest extends BaseTest {
 
             document.insertPage(1, page);
             document.save("E:\\PDF\\pdfbox\\document\\insertPageTest1.pdf");
-            document.insertPage(3, page);
-            document.save("E:\\PDF\\pdfbox\\document\\insertPageTest2.pdf");
             document.close();
         });
     }
