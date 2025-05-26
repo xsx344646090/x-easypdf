@@ -2,6 +2,7 @@ package org.dromara.pdf.pdfbox.util;
 
 import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.font.PDFontDescriptor;
 import org.dromara.pdf.pdfbox.core.base.Context;
 import org.dromara.pdf.pdfbox.support.Constants;
 
@@ -127,20 +128,37 @@ public class TextUtil {
     /**
      * 获取文本高度
      *
+     * @param context  上下文
+     * @param fontName 字体名称
      * @param fontSize 字体大小
      * @param leading  行间距
      * @param rowCount 行数
      * @return 返回文本真实高度
      */
-    public static float getTextHeight(float fontSize, float leading, int rowCount) {
+    public static float getTextHeight(Context context, String fontName, float fontSize, float leading, int rowCount) {
         if (rowCount == 0) {
             return 0F;
         }
+        float height = getFontHeight(context.getFont(fontName), fontSize);
         if (rowCount == 1) {
-            return fontSize;
+            return height;
         }
         int leadingCount = rowCount - 1;
-        return (rowCount * fontSize) + (leadingCount * leading);
+        return (rowCount * height) + (leadingCount * leading);
+    }
+
+    /**
+     * 获取字体高度
+     *
+     * @param font     字体
+     * @param fontSize 字体大小
+     * @return 返回字体高度
+     */
+    public static float getFontHeight(PDFont font, float fontSize) {
+        PDFontDescriptor fontDescriptor = font.getFontDescriptor();
+        float ascent = fontDescriptor.getAscent();
+        float descent = fontDescriptor.getDescent();
+        return (ascent - descent) / 1000 * fontSize;
     }
 
     /**

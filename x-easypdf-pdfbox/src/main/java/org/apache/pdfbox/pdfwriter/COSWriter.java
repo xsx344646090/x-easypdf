@@ -485,6 +485,7 @@ public class COSWriter implements ICOSVisitor {
         if (obj == null || obj.isWritten() ||(obj instanceof COSObject && ((COSObject) obj).getObject() == null)) {
             return;
         }
+        obj.setKey(key);
         // add a x ref entry
         addXRefEntry(new NormalXReference(getStandardOutput().getPos(), key, obj));
         // write the object

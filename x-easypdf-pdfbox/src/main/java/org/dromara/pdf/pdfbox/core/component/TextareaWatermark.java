@@ -428,7 +428,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
         if (Objects.isNull(this.lines)) {
             int count = this.textList.size();
             int leadingCount = count - 1;
-            float textHeight = count * this.getFontSize() + leadingCount * this.getLeading();
+            float textHeight = count * TextUtil.getFontHeight(this.getFont(), this.getFontSize()) + leadingCount * this.getLeading();
             this.lines = (int) Math.ceil(this.getPage().getHeight() / textHeight);
         }
         // 初始化旋转角度
@@ -462,6 +462,8 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
         float beginY = this.getBeginY();
         // 定义文本最大宽度
         float maxWidth = 0;
+        // 定义字体高度
+        float fontHeight = TextUtil.getFontHeight(this.getFont(), this.getFontSize());
         // 定义文本最大宽度初始化标记
         boolean initFlag = true;
         // 初始化内容流
@@ -487,7 +489,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
                     // 结束写入
                     stream.endText();
                     // 重置Y轴起始坐标
-                    beginY = beginY - this.getFontSize() - this.getMultiLeading();
+                    beginY = beginY - fontHeight - this.getMultiLeading();
                     // 重置最大宽度
                     if (initFlag) {
                         // 重置最大宽度
