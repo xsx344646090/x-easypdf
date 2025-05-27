@@ -275,23 +275,23 @@ public abstract class PDAbstractContentStream implements Closeable {
         PDFont font = fontStack.peek();
 
         // complex text layout
-        byte[] encodedText = null;
-        if (font instanceof PDType0Font) {
+        byte[] encodedText = font.encode(text);
+        // if (font instanceof PDType0Font) {
+        //
+        //     GsubWorker gsubWorker = gsubWorkers.get(font);
+        //     if (gsubWorker != null) {
+        //         PDType0Font pdType0Font = (PDType0Font) font;
+        //         Set<Integer> glyphIds = new HashSet<>();
+        //         encodedText = encodeForGsub(gsubWorker, glyphIds, pdType0Font, text);
+        //         if (pdType0Font.willBeSubset()) {
+        //             pdType0Font.addGlyphsToSubset(glyphIds);
+        //         }
+        //     }
+        // }
 
-            GsubWorker gsubWorker = gsubWorkers.get(font);
-            if (gsubWorker != null) {
-                PDType0Font pdType0Font = (PDType0Font) font;
-                Set<Integer> glyphIds = new HashSet<>();
-                encodedText = encodeForGsub(gsubWorker, glyphIds, pdType0Font, text);
-                if (pdType0Font.willBeSubset()) {
-                    pdType0Font.addGlyphsToSubset(glyphIds);
-                }
-            }
-        }
-
-        if (encodedText == null) {
-            encodedText = font.encode(text);
-        }
+        // if (encodedText == null) {
+        //     encodedText = font.encode(text);
+        // }
 
         // Unicode code points to keep when subsetting
         if (font.willBeSubset()) {

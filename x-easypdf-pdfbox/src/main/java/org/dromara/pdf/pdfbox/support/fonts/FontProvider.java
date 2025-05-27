@@ -5,9 +5,9 @@ import org.dromara.pdf.pdfbox.core.enums.FontType;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * External font service provider interface.
@@ -17,7 +17,7 @@ import java.util.Map;
 public abstract class FontProvider {
 
     @Getter
-    protected Map<String, FontInfo> fontInfoByName = new HashMap<>(1024);
+    protected Map<String, FontInfo> fontInfoByName = new TreeMap<>();
 
     /**
      * Adds a font to the list of available fonts.
