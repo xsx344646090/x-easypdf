@@ -208,6 +208,8 @@ public class Image extends AbstractComponent {
             // 初始化高度
             this.height = (int) (this.image.getHeight() * this.scale);
         }
+        // 重置宽度
+        this.width = (int) Math.min(this.width, this.getPage().getWithoutMarginWidth());
     }
 
     /**

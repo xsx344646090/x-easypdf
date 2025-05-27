@@ -8,7 +8,7 @@
         </encoder>
     </appender>
 
-    <logger name="org.dromara.pdf.pdfbox" level="info" additivity="false">
+    <logger name="org.dromara.pdf.pdfbox" level="debug" additivity="false">
         <appender-ref ref="Console" />
     </logger>
 
