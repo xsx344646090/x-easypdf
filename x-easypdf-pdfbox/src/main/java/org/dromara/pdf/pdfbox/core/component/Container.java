@@ -19,9 +19,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * 容器组件
- * <p>
- * 注：{@link Container}组件与{@link Table}组件不兼容，请勿嵌套使用
- * </p>
+ * {@link Container}组件与{@link Table}组件不兼容，请勿嵌套使用
  *
  * @author xsx
  * @date 2023/9/14

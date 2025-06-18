@@ -53,7 +53,7 @@ public final class Constants {
     /**
      * 贝塞尔曲线系数
      */
-    public static final Float BEZIER_COEF‌ = 0.551915024494F;
+    public static final Float BEZIER_COEF = 0.551915024494F;
     /**
      * 默认版本
      */

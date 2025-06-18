@@ -150,7 +150,11 @@ public class BorderUtil {
      * @param backgroundColor 背景颜色
      */
     @SneakyThrows
-    public static void drawBorderWithData(BorderData data, PDRectangle rectangle, Color backgroundColor) {
+    public static void drawBorderWithData(
+            BorderData data,
+            PDRectangle rectangle,
+            Color backgroundColor
+    ) {
         // 获取上下文
         Context context = data.getContext();
         // 初始化内容流
@@ -178,7 +182,12 @@ public class BorderUtil {
      * @param backgroundColor 背景颜色
      */
     @SneakyThrows
-    public static void drawNormalBorder(PDPageContentStream stream, PDRectangle rectangle, BorderData data, Color backgroundColor) {
+    public static void drawNormalBorder(
+            PDPageContentStream stream,
+            PDRectangle rectangle,
+            BorderData data,
+            Color backgroundColor
+    ) {
         // 设置线宽
         stream.setLineWidth(data.getBorderLineWidth());
         // 设置线帽样式
@@ -187,6 +196,74 @@ public class BorderUtil {
         stream.setNonStrokingColor(backgroundColor);
         // 连线
         line(stream, rectangle, data);
+    }
+
+
+    /**
+     * 获取圆形数据坐标点
+     *
+     * @param radius 半径
+     * @param beginX X轴起始坐标
+     * @param beginY Y轴起始坐标
+     * @return 返回数据坐标点列表
+     */
+    public static List<Position> getCircleDataPositions(float radius, float beginX, float beginY) {
+        // 获取X轴坐标（补偿半径）
+        float x = beginX + radius;
+        // 获取Y轴坐标（补偿半径）
+        float y = beginY + radius;
+        // 定义4个圆形数据坐标点
+        List<Position> list = new ArrayList<>(4);
+        // 添加数据上坐标点
+        list.add(new Position(x, y + radius));
+        // 添加数据右坐标点
+        list.add(new Position(x + radius, y));
+        // 添加数据下坐标点
+        list.add(new Position(x, y - radius));
+        // 添加数据左坐标点
+        list.add(new Position(x - radius, y));
+        // 返回数据坐标点列表
+        return list;
+    }
+
+    /**
+     * 获取圆形控制坐标点
+     *
+     * @param radius        半径
+     * @param dataPositions 数据坐标点
+     * @return 返回控制坐标点列表
+     */
+    public static List<Position> getCircleCtrlPositions(float radius, List<Position> dataPositions) {
+        // 计算补偿
+        final float offset = radius * 0.551915024494F;
+        // 定义8个圆形控制坐标点
+        List<Position> points = new ArrayList<>(8);
+        // 获取数据上坐标点
+        Position top = dataPositions.get(0);
+        // 添加上右控制坐标点
+        points.add(new Position(top.getX() + offset, top.getY()));
+        // 获取数据右坐标点
+        Position right = dataPositions.get(1);
+        // 添加右上控制坐标点
+        points.add(new Position(right.getX(), right.getY() + offset));
+        // 添加右下控制坐标点
+        points.add(new Position(right.getX(), right.getY() - offset));
+        // 获取数据下坐标点
+        Position bottom = dataPositions.get(2);
+        // 添加下右控制坐标点
+        points.add(new Position(bottom.getX() + offset, bottom.getY()));
+        // 添加下左控制坐标点
+        points.add(new Position(bottom.getX() - offset, bottom.getY()));
+        // 获取数据左坐标点
+        Position left = dataPositions.get(3);
+        // 添加左下控制坐标点
+        points.add(new Position(left.getX(), left.getY() - offset));
+        // 添加左上控制坐标点
+        points.add(new Position(left.getX(), left.getY() + offset));
+        // 添加上左控制坐标点
+        points.add(new Position(top.getX() - offset, top.getY()));
+        // 返回控制坐标点列表
+        return points;
     }
 
     /**
@@ -226,7 +303,7 @@ public class BorderUtil {
         boolean isRound = data.getBorderLineCapStyle() == LineCapStyle.ROUND && data.getBorderRadius() > 0;
         // 计算补偿
         if (isRound) {
-            offset = data.getBorderRadius() * Constants.BEZIER_COEF‌;
+            offset = data.getBorderRadius() * Constants.BEZIER_COEF;
         }
         // 移动到x,y坐标点
         stream.moveTo(rectangle.getLowerLeftX() + data.getBorderRadius(), rectangle.getUpperRightY());
@@ -369,11 +446,18 @@ public class BorderUtil {
      *
      * @param stream pdfbox内容流
      * @param radius 半径
+     * @param offset 偏移量
      * @param beginX X轴起始坐标
      * @param beginY Y轴起始坐标
      */
     @SneakyThrows
-    private static void drawArcForRightTop(PDPageContentStream stream, float radius, float offset, float beginX, float beginY) {
+    private static void drawArcForRightTop(
+            PDPageContentStream stream,
+            float radius,
+            float offset,
+            float beginX,
+            float beginY
+    ) {
         // 绘制右上
         stream.curveTo(beginX + offset, beginY, beginX + radius, beginY - radius + offset, beginX + radius, beginY - radius);
     }
@@ -383,11 +467,18 @@ public class BorderUtil {
      *
      * @param stream pdfbox内容流
      * @param radius 半径
+     * @param offset 偏移量
      * @param beginX X轴起始坐标
      * @param beginY Y轴起始坐标
      */
     @SneakyThrows
-    private static void drawArcForRightBottom(PDPageContentStream stream, float radius, float offset, float beginX, float beginY) {
+    private static void drawArcForRightBottom(
+            PDPageContentStream stream,
+            float radius,
+            float offset,
+            float beginX,
+            float beginY
+    ) {
         // 绘制右下
         stream.curveTo(beginX, beginY - offset, beginX - radius + offset, beginY - radius, beginX - radius, beginY - radius);
     }
@@ -397,11 +488,18 @@ public class BorderUtil {
      *
      * @param stream pdfbox内容流
      * @param radius 半径
+     * @param offset 偏移量
      * @param beginX X轴起始坐标
      * @param beginY Y轴起始坐标
      */
     @SneakyThrows
-    private static void drawArcForLeftTop(PDPageContentStream stream, float radius, float offset, float beginX, float beginY) {
+    private static void drawArcForLeftTop(
+            PDPageContentStream stream,
+            float radius,
+            float offset,
+            float beginX,
+            float beginY
+    ) {
         // 绘制左上
         stream.curveTo(beginX, beginY + offset, beginX + radius - offset, beginY + radius, beginX + radius, beginY + radius);
     }
@@ -411,79 +509,19 @@ public class BorderUtil {
      *
      * @param stream pdfbox内容流
      * @param radius 半径
+     * @param offset 偏移量
      * @param beginX X轴起始坐标
      * @param beginY Y轴起始坐标
      */
     @SneakyThrows
-    private static void drawArcForLeftBottom(PDPageContentStream stream, float radius, float offset, float beginX, float beginY) {
+    private static void drawArcForLeftBottom(
+            PDPageContentStream stream,
+            float radius,
+            float offset,
+            float beginX,
+            float beginY
+    ) {
         // 绘制左下
         stream.curveTo(beginX - offset, beginY, beginX - radius, beginY + radius - offset, beginX - radius, beginY + radius);
-    }
-
-    /**
-     * 获取圆形数据坐标点
-     *
-     * @param radius 半径
-     * @param beginX X轴起始坐标
-     * @param beginY Y轴起始坐标
-     * @return 返回数据坐标点列表
-     */
-    public static List<Position> getCircleDataPositions(float radius, float beginX, float beginY) {
-        // 获取X轴坐标（补偿半径）
-        float x = beginX + radius;
-        // 获取Y轴坐标（补偿半径）
-        float y = beginY + radius;
-        // 定义4个圆形数据坐标点
-        List<Position> list = new ArrayList<>(4);
-        // 添加数据上坐标点
-        list.add(new Position(x, y + radius));
-        // 添加数据右坐标点
-        list.add(new Position(x + radius, y));
-        // 添加数据下坐标点
-        list.add(new Position(x, y - radius));
-        // 添加数据左坐标点
-        list.add(new Position(x - radius, y));
-        // 返回数据坐标点列表
-        return list;
-    }
-
-    /**
-     * 获取圆形控制坐标点
-     *
-     * @param radius        半径
-     * @param dataPositions 数据坐标点
-     * @return 返回控制坐标点列表
-     */
-    public static List<Position> getCircleCtrlPositions(float radius, List<Position> dataPositions) {
-        // 计算补偿
-        final float offset = radius * 0.551915024494F;
-        // 定义8个圆形控制坐标点
-        List<Position> points = new ArrayList<>(8);
-        // 获取数据上坐标点
-        Position top = dataPositions.get(0);
-        // 添加上右控制坐标点
-        points.add(new Position(top.getX() + offset, top.getY()));
-        // 获取数据右坐标点
-        Position right = dataPositions.get(1);
-        // 添加右上控制坐标点
-        points.add(new Position(right.getX(), right.getY() + offset));
-        // 添加右下控制坐标点
-        points.add(new Position(right.getX(), right.getY() - offset));
-        // 获取数据下坐标点
-        Position bottom = dataPositions.get(2);
-        // 添加下右控制坐标点
-        points.add(new Position(bottom.getX() + offset, bottom.getY()));
-        // 添加下左控制坐标点
-        points.add(new Position(bottom.getX() - offset, bottom.getY()));
-        // 获取数据左坐标点
-        Position left = dataPositions.get(3);
-        // 添加左下控制坐标点
-        points.add(new Position(left.getX(), left.getY() - offset));
-        // 添加左上控制坐标点
-        points.add(new Position(left.getX(), left.getY() + offset));
-        // 添加上左控制坐标点
-        points.add(new Position(top.getX() - offset, top.getY()));
-        // 返回控制坐标点列表
-        return points;
     }
 }

@@ -139,7 +139,7 @@ public class DocumentAIParser extends AbstractParser {
      * @param supplier 提供者
      * @return 返回自定义AI
      */
-    public AbstractAIParser getCustomAI(Supplier<AbstractAIParser> supplier) {
+    public <T extends AbstractAIParser> T getCustomAI(Supplier<T> supplier) {
         return supplier.get();
     }
 }

@@ -159,7 +159,7 @@ public class ImageUtil {
                     // 定义输出流
                     ByteArrayOutputStream outputStream = new ByteArrayOutputStream(8192)
             ) {
-                // 解析svg
+                // 转码svg
                 new org.apache.batik.transcoder.image.PNGTranscoder().transcode(new org.apache.batik.transcoder.TranscoderInput(inputStream), new org.apache.batik.transcoder.TranscoderOutput(outputStream));
                 // 重置字节数组
                 byteArray = outputStream.toByteArray();
@@ -172,18 +172,14 @@ public class ImageUtil {
                     // 定义输出流
                     ByteArrayOutputStream outputStream = new ByteArrayOutputStream(8192)
             ) {
-                // 解析jpeg2000
-                org.dromara.pdf.pdfbox.support.image.J2kImageHandler.parse(inputStream, outputStream, ImageType.PNG);
+                // 转码jpeg2000
+                org.dromara.pdf.pdfbox.support.image.J2kImageHandler.transcode(inputStream, outputStream, ImageType.PNG);
                 // 重置字节数组
                 byteArray = outputStream.toByteArray();
             }
         }
         // 返回字节数组
         return byteArray;
-    }
-
-    public static void svgToPng(InputStream inputStream, OutputStream outputStream) {
-
     }
 
     /**
@@ -344,78 +340,20 @@ public class ImageUtil {
     }
 
     /**
-     * 是否svg图像
-     * <p>注：判断是否为xml</p>
+     * 是否svg图像（判断是否为xml）
      *
      * @param bytes 字节数组
-     * @return 返回布尔值，是为true，否为false
+     * @return 返回布尔值，true为是，false为否
      */
     public static boolean isSvgImage(byte[] bytes) {
         return isSvgImage1(bytes) || isSvgImage2(bytes);
     }
 
     /**
-     * 是否svg图像
-     * <p>注：判断是否为xml</p>
-     *
-     * @param bytes 字节数组
-     * @return 返回布尔值，是为true，否为false
-     */
-    public static boolean isSvgImage1(byte[] bytes) {
-        // 定义长度
-        int length = 5;
-        // 定义最大长度
-        int maxLength = 24;
-        // 定义索引
-        int index = 0;
-        // 定义标记字节
-        byte flag = SVG_BYTES1[index];
-        // 遍历字节数组
-        for (int idx = 0; idx < bytes.length; idx++) {
-            // 到达指定长度
-            if (index == length || idx == maxLength) {
-                // 结束
-                break;
-            }
-            // 当前字节与标记字节相等
-            if (bytes[idx] == flag) {
-                // 重置标记
-                flag = SVG_BYTES1[++index];
-            }
-        }
-        // 返回是否svg图像
-        return index == length;
-    }
-
-    /**
-     * 是否svg图像
-     * <p>注：判断是否为xml</p>
-     *
-     * @param bytes 字节数组
-     * @return 返回布尔值，是为true，否为false
-     */
-    public static boolean isSvgImage2(byte[] bytes) {
-        // 定义标记字节
-        boolean flag = true;
-        // 遍历字节数组
-        for (int idx = 0; idx < SVG_BYTES2.length; idx++) {
-            // 当前字节与标记字节相等
-            if (bytes[idx] != SVG_BYTES2[idx]) {
-                // 重置标记
-                flag = false;
-                // 结束
-                break;
-            }
-        }
-        // 返回是否svg图像
-        return flag;
-    }
-
-    /**
      * 是否jpeg2000图像
      *
      * @param bytes 字节数组
-     * @return 返回布尔值，是为true，否为false
+     * @return 返回布尔值，true为是，false为否
      */
     public static boolean isJ2kImage(byte[] bytes) {
         // 定义结果
@@ -494,5 +432,60 @@ public class ImageUtil {
         int offsetHeight = Math.abs((int) (len * Math.cos(Math.PI - radiansAlpha - radiansHeight)));
         // 返回旋转后的矩形
         return new Rectangle((int) (src.getWidth() + offsetWidth * num), (int) (src.getHeight() + offsetHeight * num));
+    }
+
+    /**
+     * 是否svg图像（判断是否为xml）
+     *
+     * @param bytes 字节数组
+     * @return 返回布尔值，true为是，false为否
+     */
+    private static boolean isSvgImage1(byte[] bytes) {
+        // 定义长度
+        int length = 5;
+        // 定义最大长度
+        int maxLength = 24;
+        // 定义索引
+        int index = 0;
+        // 定义标记字节
+        byte flag = SVG_BYTES1[index];
+        // 遍历字节数组
+        for (int idx = 0; idx < bytes.length; idx++) {
+            // 到达指定长度
+            if (index == length || idx == maxLength) {
+                // 结束
+                break;
+            }
+            // 当前字节与标记字节相等
+            if (bytes[idx] == flag) {
+                // 重置标记
+                flag = SVG_BYTES1[++index];
+            }
+        }
+        // 返回是否svg图像
+        return index == length;
+    }
+
+    /**
+     * 是否svg图像（判断是否为xml）
+     *
+     * @param bytes 字节数组
+     * @return 返回布尔值，true为是，false为否
+     */
+    private static boolean isSvgImage2(byte[] bytes) {
+        // 定义标记字节
+        boolean flag = true;
+        // 遍历字节数组
+        for (int idx = 0; idx < SVG_BYTES2.length; idx++) {
+            // 当前字节与标记字节相等
+            if (bytes[idx] != SVG_BYTES2[idx]) {
+                // 重置标记
+                flag = false;
+                // 结束
+                break;
+            }
+        }
+        // 返回是否svg图像
+        return flag;
     }
 }

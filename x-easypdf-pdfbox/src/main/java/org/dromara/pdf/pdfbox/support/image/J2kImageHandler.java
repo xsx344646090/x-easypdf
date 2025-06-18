@@ -29,7 +29,7 @@ import java.util.Objects;
  * </p>
  */
 public class J2kImageHandler {
-    
+
     /**
      * 解析
      *
@@ -102,16 +102,16 @@ public class J2kImageHandler {
         // 返回图像
         return image;
     }
-    
+
     /**
-     * 解析
+     * 转码
      *
      * @param inputStream  输入流
      * @param outputStream 输出流
      * @param outputType   图像类型
      */
     @SneakyThrows
-    public static void parse(InputStream inputStream, OutputStream outputStream, ImageType outputType) {
+    public static void transcode(InputStream inputStream, OutputStream outputStream, ImageType outputType) {
         // 参数校验
         Objects.requireNonNull(inputStream, "the input stream can not be null");
         Objects.requireNonNull(outputStream, "the output stream can not be null");

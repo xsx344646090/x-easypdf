@@ -36,7 +36,7 @@ import java.util.Objects;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class TableRow extends BorderData {
-    
+
     /**
      * 背景颜色
      */
@@ -113,7 +113,7 @@ public class TableRow extends BorderData {
      * 内容垂直对齐方式
      */
     protected VerticalAlignment contentVerticalAlignment;
-    
+
     /**
      * 有参构造
      *
@@ -123,7 +123,7 @@ public class TableRow extends BorderData {
         this.table = table;
         this.borderConfiguration = new BorderConfiguration(false);
     }
-    
+
     /**
      * 设置内容边距（上下左右）
      *
@@ -135,7 +135,7 @@ public class TableRow extends BorderData {
         this.contentMarginLeft = margin;
         this.contentMarginRight = margin;
     }
-    
+
     /**
      * 设置高度
      *
@@ -147,17 +147,16 @@ public class TableRow extends BorderData {
         }
         this.height = height;
     }
-    
+
     /**
      * 设置单元格
      *
      * @param cells 单元格
      */
-    @SuppressWarnings("all")
     public void setCells(List<TableCell> cells) {
         this.cells = cells;
     }
-    
+
     /**
      * 设置单元格
      *
@@ -171,7 +170,7 @@ public class TableRow extends BorderData {
             this.cells = null;
         }
     }
-    
+
     /**
      * 添加单元格
      *
@@ -186,7 +185,7 @@ public class TableRow extends BorderData {
             }
         }
     }
-    
+
     /**
      * 添加单元格
      *
@@ -200,7 +199,7 @@ public class TableRow extends BorderData {
             Collections.addAll(this.cells, cells);
         }
     }
-    
+
     /**
      * 获取宽度
      *
@@ -212,7 +211,7 @@ public class TableRow extends BorderData {
         }
         return (float) this.cells.stream().mapToDouble(TableCell::getWidth).sum();
     }
-    
+
     /**
      * 虚拟渲染
      */
@@ -239,7 +238,7 @@ public class TableRow extends BorderData {
             }
         }
     }
-    
+
     /**
      * 渲染
      */
@@ -266,7 +265,7 @@ public class TableRow extends BorderData {
             }
         }
     }
-    
+
     /**
      * 获取分页事件
      *
@@ -275,7 +274,7 @@ public class TableRow extends BorderData {
     protected PagingEvent getPagingEvent() {
         return this.table.getPagingEvent();
     }
-    
+
     /**
      * 初始化
      *
@@ -341,7 +340,7 @@ public class TableRow extends BorderData {
         // 检查是否换页
         this.checkBreak();
     }
-    
+
     /**
      * 初始化（表头或表尾）
      *
@@ -391,14 +390,14 @@ public class TableRow extends BorderData {
         // 初始化边框
         super.init(this.table, headerOrFooter.getBorderConfiguration());
     }
-    
+
     /**
      * 初始化边框
      */
     protected void initBorder() {
         super.init(this.table, this.table.getBorderConfiguration());
     }
-    
+
     /**
      * 初始化单元格
      */
@@ -415,7 +414,7 @@ public class TableRow extends BorderData {
             }
         }
     }
-    
+
     /**
      * 检查同行
      */
@@ -424,7 +423,7 @@ public class TableRow extends BorderData {
             this.isBreak = this.beginY - this.height < this.table.getBottom();
         }
     }
-    
+
     /**
      * 检查分页
      */

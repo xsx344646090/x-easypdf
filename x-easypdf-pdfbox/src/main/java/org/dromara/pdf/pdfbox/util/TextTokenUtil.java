@@ -45,6 +45,7 @@ public class TextTokenUtil {
      * @param tokens          标记列表
      * @param replaceList     替换列表
      * @param replaceIndexMap 替换索引字典
+     * @return 返回布尔值，true为是，false为否
      */
     @SneakyThrows
     public static boolean replaceTextForToken(

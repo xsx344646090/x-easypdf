@@ -8,6 +8,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.font.FontFormat;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
+import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.enums.FontType;
 import org.dromara.pdf.pdfbox.support.CharacterWrapper;
 import org.dromara.pdf.pdfbox.support.Constants;
@@ -119,7 +120,42 @@ public class FontHandler {
     /**
      * 获取pdfbox字体
      *
-     * @param document    pdf文档
+     * @param document pdf文档
+     * @param fontName 字体名称
+     * @return 返回pdfBox字体
+     */
+    public PDFont getPDFont(Document document, String fontName) {
+        return this.getPDFont(document.getTarget(), fontName);
+    }
+
+    /**
+     * 获取pdfbox字体
+     *
+     * @param document pdfbox文档
+     * @param fontName 字体名称
+     * @return 返回pdfBox字体
+     */
+    public PDFont getPDFont(PDDocument document, String fontName) {
+        return this.getPDFont(document, fontName, true);
+    }
+
+    /**
+     * 获取pdfbox字体
+     *
+     * @param document    文档
+     * @param fontName    字体名称
+     * @param embedSubset 是否嵌入子集
+     * @return 返回pdfBox字体
+     */
+    @SneakyThrows
+    public PDFont getPDFont(Document document, String fontName, boolean embedSubset) {
+        return this.getPDFont(document.getTarget(), fontName, embedSubset);
+    }
+
+    /**
+     * 获取pdfbox字体
+     *
+     * @param document    pdfbox文档
      * @param fontName    字体名称
      * @param embedSubset 是否嵌入子集
      * @return 返回pdfBox字体
@@ -131,18 +167,6 @@ public class FontHandler {
             embedSubset = false;
         }
         return PDType0Font.load(document, this.getTrueTypeFont(fontName), embedSubset);
-    }
-
-    /**
-     * 获取pdfbox字体
-     *
-     * @param document pdf文档
-     * @param fontName 字体名称
-     * @return 返回pdfBox字体
-     */
-    @SneakyThrows
-    public PDFont getPDFont(PDDocument document, String fontName) {
-        return this.getPDFont(document, fontName, true);
     }
 
     /**

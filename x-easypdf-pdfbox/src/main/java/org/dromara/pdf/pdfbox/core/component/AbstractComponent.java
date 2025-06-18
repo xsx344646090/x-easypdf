@@ -230,7 +230,6 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
      * @param margin 边距
      */
     public void setMarginLeft(float margin) {
-        // 重置左边距
         this.marginConfiguration.setMarginLeft(margin);
     }
 

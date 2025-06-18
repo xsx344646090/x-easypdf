@@ -143,6 +143,9 @@ public abstract class AbstractFormAnalyzer extends AbstractAnalyzer {
         this.tempSet.add(info);
     }
 
+    /**
+     * 处理页面信息
+     */
     protected void processPageInfo() {
         if (!this.tempSet.isEmpty()) {
             final int unknownIndex = -1;

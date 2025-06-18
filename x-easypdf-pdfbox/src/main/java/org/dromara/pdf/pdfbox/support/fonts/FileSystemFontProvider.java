@@ -65,7 +65,7 @@ public class FileSystemFontProvider extends FontProvider {
                 }
 
                 if (LOG.isTraceEnabled()) {
-                    LOG.trace("Found " + files.size() + " fonts on the local system");
+                    LOG.info("Found " + files.size() + " fonts on the local system");
                 }
 
                 List<FSFontInfo> cachedInfos = loadDiskCache(files);
