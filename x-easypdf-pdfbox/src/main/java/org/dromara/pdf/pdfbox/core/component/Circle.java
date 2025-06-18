@@ -145,7 +145,7 @@ public class Circle extends AbstractComponent {
     @SneakyThrows
     protected void renderCircle(PDPageContentStream contentStream, float radius) {
         // 计算补偿
-        final float offset = radius * Constants.BEZIER_COEF‌;
+        final float offset = radius * Constants.BEZIER_COEF;
         // 获取X轴坐标
         float beginX = this.getBeginX() + this.getRelativeBeginX();
         // 获取Y轴坐标

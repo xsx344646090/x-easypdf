@@ -21,30 +21,33 @@ import org.dromara.pdf.pdfbox.support.Constants;
  * </p>
  */
 public class UnitUtil {
-    
+
     /**
      * px转pt
      *
      * @param dpi   dpi
      * @param value 值
+     * @return 返回pt值
      */
     public static float px2pt(int dpi, float value) {
         return value * Constants.POINTS_PER_INCH / dpi;
     }
-    
+
     /**
      * mm转pt
      *
      * @param value 值
+     * @return 返回pt值
      */
     public static float mm2pt(float value) {
         return value * Constants.POINTS_PER_MM;
     }
-    
+
     /**
      * em转pt
      *
      * @param value 值
+     * @return 返回pt值
      */
     public static float em2pt(float value) {
         return value * 12;

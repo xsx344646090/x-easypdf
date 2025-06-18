@@ -869,7 +869,7 @@ public class Textarea extends AbstractComponent {
         // 开启高亮
         if (this.getIsHighlight()) {
             // 绘制矩形
-            contentStream.addRect(rectangle.getLowerLeftX(), rectangle.getLowerLeftY(), rectangle.getWidth(), rectangle.getHeight());
+            contentStream.addRect(rectangle.getLowerLeftX(), rectangle.getLowerLeftY() + this.getFontDescent(), rectangle.getWidth(), rectangle.getHeight());
             // 设置矩形颜色
             contentStream.setNonStrokingColor(this.getHighlightColor());
             // 填充矩形
@@ -893,7 +893,7 @@ public class Textarea extends AbstractComponent {
         // 开始写入
         contentStream.beginText();
         // 初始化位置
-        this.initMatrix(contentStream, rectangle.getLowerLeftX(), rectangle.getLowerLeftY() - this.getFontDescent());
+        this.initMatrix(contentStream, rectangle.getLowerLeftX(), rectangle.getLowerLeftY());
         // 写入文本
         this.getTextHandler().writeText(this.getFontConfiguration(), contentStream, text);
         // 结束写入
@@ -910,8 +910,8 @@ public class Textarea extends AbstractComponent {
     protected void addDeleteLine(PDRectangle rectangle, PDPageContentStream stream) {
         // 开启删除线
         if (this.getIsDeleteLine()) {
-            // 计算偏移量，删除线宽度/2+字体高度/2
-            float offset = this.getDeleteLineWidth() / 2 + this.getFontHeight() / 2;
+            // 计算偏移量，删除线宽度/2+字体高度/2+字体下降值
+            float offset = this.getDeleteLineWidth() / 2 + this.getFontHeight() / 2 + this.getFontDescent();
             // 初始化Y轴起始坐标为Y轴起始坐标+偏移量
             float beginY = rectangle.getLowerLeftY() + offset;
             // 设置颜色
@@ -937,14 +937,16 @@ public class Textarea extends AbstractComponent {
     protected void addUnderline(PDRectangle rectangle, PDPageContentStream stream) {
         // 开启下划线
         if (this.getIsUnderline()) {
+            // 获取Y轴坐标
+            float y = rectangle.getLowerLeftY() + this.getFontDescent();
             // 设置颜色
             stream.setStrokingColor(this.getUnderlineColor());
             // 设置线宽
             stream.setLineWidth(this.getUnderlineWidth());
             // 设置定位
-            stream.moveTo(rectangle.getLowerLeftX(), rectangle.getLowerLeftY());
+            stream.moveTo(rectangle.getLowerLeftX(), y);
             // 连线
-            stream.lineTo(rectangle.getUpperRightX(), rectangle.getLowerLeftY());
+            stream.lineTo(rectangle.getUpperRightX(), y);
             // 结束
             stream.stroke();
         }
@@ -1035,8 +1037,6 @@ public class Textarea extends AbstractComponent {
     @SneakyThrows
     protected void addBorder(PDRectangle rectangle, PDPageContentStream stream) {
         if (this.getBorderConfiguration().hasBorder()) {
-            // 重置Y轴起始坐标
-            rectangle.setLowerLeftY(rectangle.getLowerLeftY());
             // 绘制边框
             BorderUtil.drawNormalBorder(stream, rectangle, new BorderData(this, this.getBorderConfiguration()), this.getPage().getBackgroundColor());
             // 描边

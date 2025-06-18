@@ -45,11 +45,12 @@ public class CommonUtil {
     /**
      * 初始化字体颜色及透明度
      *
-     * @param stream    内容流
-     * @param fontStyle 字体样式
-     * @param fontColor 字体颜色
-     * @param fontColor 字体描边颜色
-     * @param fontAlpha 字体透明度
+     * @param stream          内容流
+     * @param backgroundColor 背景颜色
+     * @param fontStyle       字体样式
+     * @param fontColor       字体颜色
+     * @param strokColor      字体描边颜色
+     * @param fontAlpha       字体透明度
      */
     @SneakyThrows
     public static void initFontColorAndAlpha(
@@ -208,7 +209,13 @@ public class CommonUtil {
      * @param backgroundColor      背景颜色
      */
     @SneakyThrows
-    public static void addBackgroundColor(Context context, ContentMode mode, boolean isResetContentStream, PDRectangle rectangle, Color backgroundColor) {
+    public static void addBackgroundColor(
+            Context context,
+            ContentMode mode,
+            boolean isResetContentStream,
+            PDRectangle rectangle,
+            Color backgroundColor
+    ) {
         // 添加背景颜色
         if (Objects.nonNull(backgroundColor)) {
             // 初始化内容流
@@ -239,7 +246,12 @@ public class CommonUtil {
      * @param height 高度
      * @return 返回尺寸
      */
-    public static PDRectangle getRectangle(float beginX, float beginY, float width, float height) {
+    public static PDRectangle getRectangle(
+            float beginX,
+            float beginY,
+            float width,
+            float height
+    ) {
         // 返回尺寸
         return new PDRectangle(beginX, beginY, width, height);
     }

@@ -22,7 +22,7 @@ import com.google.zxing.BarcodeFormat;
  */
 public enum BarcodeType {
 
-    // ************** 一维码 **************  //
+    // ************** 一维码 **************
     /**
      * 库德巴码
      */
@@ -60,7 +60,7 @@ public enum BarcodeType {
      */
     UPC_E(BarcodeFormat.UPC_E),
 
-    // ************** 二维码 **************  //
+    // ************** 二维码 **************
     /**
      * QR码
      */

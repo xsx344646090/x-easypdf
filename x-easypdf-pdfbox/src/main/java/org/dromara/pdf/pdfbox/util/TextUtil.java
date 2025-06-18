@@ -243,7 +243,7 @@ public class TextUtil {
      * 空白
      *
      * @param text 文本
-     * @return 返回布尔值，是为true，否为false
+     * @return 返回布尔值，true为是，false为否
      */
     public static boolean isBlank(String text) {
         return !isNotBlank(text);
@@ -253,7 +253,7 @@ public class TextUtil {
      * 非空白
      *
      * @param text 文本
-     * @return 返回布尔值，是为true，否为false
+     * @return 返回布尔值，true为是，false为否
      */
     public static boolean isNotBlank(String text) {
         return Objects.nonNull(text) && !text.trim().isEmpty();
@@ -263,7 +263,7 @@ public class TextUtil {
      * 是否英文字符
      *
      * @param character 字符
-     * @return 返回布尔值，是为true，否为false
+     * @return 返回布尔值，true为是，false为否
      */
     public static boolean isEnglishCharacter(Character character) {
         // 检查字符是否在大写字母范围内

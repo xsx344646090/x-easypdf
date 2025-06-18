@@ -175,7 +175,7 @@ public class Context {
     /**
      * 是否相同组件
      *
-     * @return 返回布尔值，是为true，否为false
+     * @return 返回布尔值，true为是，false为否
      */
     public boolean isEqualsComponent(ComponentType type) {
         return this.executingComponentType == type;
@@ -184,7 +184,7 @@ public class Context {
     /**
      * 是否有页眉
      *
-     * @return 返回布尔值，是为true，否为false
+     * @return 返回布尔值，true为是，false为否
      */
     public boolean hasPageHeader() {
         return Objects.nonNull(this.pageHeader);
@@ -193,7 +193,7 @@ public class Context {
     /**
      * 是否有页脚
      *
-     * @return 返回布尔值，是为true，否为false
+     * @return 返回布尔值，true为是，false为否
      */
     public boolean hasPageFooter() {
         return Objects.nonNull(this.pageFooter);

@@ -30,12 +30,29 @@ import java.io.Writer;
 public class TextAnalyzer extends AbstractTextAnalyzer {
 
     /**
+     * 是否打印日志
+     */
+    protected boolean isPrint;
+
+    /**
      * 有参构造
      *
      * @param document 文档
      */
     public TextAnalyzer(Document document) {
         super(document);
+        this.isPrint = true;
+    }
+
+    /**
+     * 有参构造
+     *
+     * @param document 文档
+     * @param isPrint  是否打印日志
+     */
+    public TextAnalyzer(Document document, boolean isPrint) {
+        super(document);
+        this.isPrint = isPrint;
     }
 
     /**
@@ -47,7 +64,7 @@ public class TextAnalyzer extends AbstractTextAnalyzer {
     @Override
     public void processText(int pageIndex) {
         // 创建文本剥离器
-        DefaultTextStripper textStripper = new DefaultTextStripper(pageIndex, this.log);
+        DefaultTextStripper textStripper = new DefaultTextStripper(pageIndex, this.log, this.isPrint);
         // 创建写入器
         try (Writer writer = new OutputStreamWriter(new BufferedOutputStream(new ByteArrayOutputStream()))) {
             // 写入文本

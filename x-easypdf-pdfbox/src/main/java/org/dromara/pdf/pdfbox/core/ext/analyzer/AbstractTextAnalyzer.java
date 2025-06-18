@@ -68,26 +68,31 @@ public abstract class AbstractTextAnalyzer extends AbstractAnalyzer {
      */
     protected static class DefaultTextStripper extends PDFTextStripper {
         /**
-         * 日志
-         */
-        protected Log log;
-        /**
-         * 页面索引
-         */
-        protected Integer pageIndex;
-        /**
          * 文本信息列表
          */
         @Getter
         protected final Set<TextInfo> infoSet = new HashSet<>(64);
+        /**
+         * 日志
+         */
+        protected Log log;
+        /**
+         * 是否打印日志
+         */
+        protected boolean isPrint;
+        /**
+         * 页面索引
+         */
+        protected Integer pageIndex;
 
         /**
          * 有参构造
          *
          * @param pageIndex 页面索引
          * @param log       日志
+         * @param isPrint   是否打印日志
          */
-        public DefaultTextStripper(Integer pageIndex, Log log) {
+        public DefaultTextStripper(Integer pageIndex, Log log, boolean isPrint) {
             this(pageIndex, " ", log);
         }
 
@@ -101,7 +106,7 @@ public abstract class AbstractTextAnalyzer extends AbstractAnalyzer {
         public DefaultTextStripper(Integer pageIndex, String wordSeparator, Log log) {
             this.log = log;
             this.pageIndex = pageIndex;
-            this.setSortByPosition(true);
+            this.setSortByPosition(false);
             this.setStartPage(this.pageIndex + 1);
             this.setEndPage(this.pageIndex + 1);
             this.setWordSeparator(wordSeparator);
@@ -142,7 +147,7 @@ public abstract class AbstractTextAnalyzer extends AbstractAnalyzer {
                 // 添加文本列表
                 this.infoSet.add(textInfo);
                 // 如果日志打印开启，则打印日志
-                if (log.isDebugEnabled()) {
+                if (this.isPrint && log.isDebugEnabled()) {
                     // 打印日志
                     log.debug(
                             "\n********************************************ANALYZE TEXT BEGIN********************************************" +

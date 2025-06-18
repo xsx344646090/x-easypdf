@@ -139,7 +139,6 @@ public class TableCell extends BorderData {
      *
      * @param components 组件
      */
-    @SuppressWarnings("all")
     public void setComponents(List<Component> components) {
         this.components = components;
     }

@@ -153,7 +153,6 @@ public class Table extends AbstractComponent {
      *
      * @param rows 行
      */
-    @SuppressWarnings("all")
     public void setRows(List<TableRow> rows) {
         this.rows = rows;
     }

@@ -23,22 +23,40 @@ import lombok.Getter;
 @Getter
 public class CharacterWrapper {
 
+    /**
+     * 字符
+     */
     private final char c;
 
+    /**
+     * 有参构造
+     *
+     * @param c 字符
+     */
     public CharacterWrapper(char c) {
         this.c = c;
     }
 
+    /**
+     * 是否相等
+     *
+     * @param o 对象
+     * @return 返回布尔值，true为是，false为否
+     */
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof CharacterWrapper)) {
             return false;
         }
-
         CharacterWrapper that = (CharacterWrapper) o;
         return c == that.c;
     }
 
+    /**
+     * 哈希码
+     *
+     * @return 返回哈希码
+     */
     @Override
     public int hashCode() {
         return c;
