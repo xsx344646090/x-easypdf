@@ -1,8 +1,8 @@
-package org.dromara.pdf.pdfbox.core.ext.convertor.word;
+package org.dromara.pdf.pdfbox.core.ext.convertor.documents4j.word;
 
 import lombok.SneakyThrows;
 import org.dromara.pdf.pdfbox.core.base.Document;
-import org.dromara.pdf.pdfbox.core.ext.convertor.AbstractConvertor;
+import org.dromara.pdf.pdfbox.core.ext.convertor.documents4j.AbstractDocuments4jConvertor;
 import org.dromara.pdf.pdfbox.util.FileUtil;
 
 import java.io.File;
@@ -30,7 +30,7 @@ import java.util.Objects;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public abstract class AbstractWordConvertor extends AbstractConvertor {
+public abstract class AbstractWordConvertor extends AbstractDocuments4jConvertor {
 
     /**
      * 有参构造

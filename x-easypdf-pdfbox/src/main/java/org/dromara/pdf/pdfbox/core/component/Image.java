@@ -212,6 +212,23 @@ public class Image extends AbstractComponent {
         this.width = (int) Math.min(this.width, this.getPage().getWithoutMarginWidth());
     }
 
+
+    /**
+     * 初始化起始Y轴坐标
+     *
+     * @param height 高度
+     */
+    @Override
+    protected void initBeginY(float height) {
+        // 跳过
+        if (height >= this.getPage().getWithoutMarginHeight()) {
+            // 设置起始Y轴坐标
+            this.setBeginY(this.getBottom() + this.getContext().getMinBeginY(), this.getIsCustomY());
+            return;
+        }
+        super.initBeginY(height);
+    }
+
     /**
      * 获取最小宽度
      *

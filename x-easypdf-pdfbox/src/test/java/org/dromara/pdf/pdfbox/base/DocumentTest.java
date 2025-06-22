@@ -47,7 +47,7 @@ public class DocumentTest extends BaseTest {
     @Test
     public void pdfboxTest() {
         this.test(() -> {
-            Document document = PdfHandler.getDocumentHandler().load(new File("E:\\PDF\\pdfbox\\processor\\allTest.pdf"));
+            Document document = PdfHandler.getDocumentHandler().load(new File("E:\\PDF\\pdfbox\\document\\test.pdf"));
             document.setFontName("微软雅黑");
 
             PDDocument pdDocument = document.getTarget();

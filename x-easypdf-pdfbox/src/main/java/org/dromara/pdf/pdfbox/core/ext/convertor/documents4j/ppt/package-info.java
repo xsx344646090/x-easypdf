@@ -1,5 +1,5 @@
 /**
- * excel转换器
+ * ppt转换器
  *
  * @author xsx
  * @date 2025/1/8
@@ -16,4 +16,4 @@
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-package org.dromara.pdf.pdfbox.core.ext.convertor.excel;
+package org.dromara.pdf.pdfbox.core.ext.convertor.documents4j.ppt;

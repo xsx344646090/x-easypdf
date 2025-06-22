@@ -236,6 +236,15 @@ public class Context {
     }
 
     /**
+     * 获取最小Y轴起始坐标
+     *
+     * @return 返回最大Y轴起始坐标
+     */
+    public float getMinBeginY() {
+        return this.page.getHeight() - this.page.getMarginBottom() - this.getPageFooterHeight();
+    }
+
+    /**
      * 添加字体缓存
      *
      * @param fontNames 字体名称

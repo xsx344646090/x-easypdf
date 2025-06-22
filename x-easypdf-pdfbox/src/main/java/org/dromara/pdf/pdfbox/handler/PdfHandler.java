@@ -33,6 +33,10 @@ import org.dromara.pdf.pdfbox.util.FileUtil;
  */
 public class PdfHandler {
 
+    static {
+        Banner.print();
+    }
+
     /**
      * 获取字体助手
      *
@@ -99,6 +103,15 @@ public class PdfHandler {
      */
     public static DocumentAIParser getDocumentAIParser(Document document) {
         return new DocumentAIParser(document);
+    }
+
+    /**
+     * 获取文档转换器
+     *
+     * @return 返回文档转换器
+     */
+    public static DocumentConvertor getDocumentConvertor() {
+        return new DocumentConvertor(null);
     }
 
     /**

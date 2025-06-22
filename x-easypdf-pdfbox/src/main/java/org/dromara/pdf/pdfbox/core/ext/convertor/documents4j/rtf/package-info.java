@@ -1,5 +1,5 @@
 /**
- * html转换器
+ * rtf转换器
  *
  * @author xsx
  * @date 2025/1/8
@@ -16,4 +16,4 @@
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-package org.dromara.pdf.pdfbox.core.ext.convertor.html;
+package org.dromara.pdf.pdfbox.core.ext.convertor.documents4j.rtf;

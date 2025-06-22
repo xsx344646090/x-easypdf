@@ -1,5 +1,10 @@
+package org.dromara.pdf.pdfbox.core.ext.convertor.documents4j.word;
+
+import com.documents4j.api.DocumentType;
+import lombok.Getter;
+
 /**
- * word转换器
+ * word类型
  *
  * @author xsx
  * @date 2025/1/8
@@ -16,4 +21,28 @@
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-package org.dromara.pdf.pdfbox.core.ext.convertor.word;
+@Getter
+public enum WordType {
+    /**
+     * doc
+     */
+    DOC(DocumentType.DOC),
+    /**
+     * docx
+     */
+    DOCX(DocumentType.DOCX);
+
+    /**
+     * 类型
+     */
+    private final DocumentType type;
+
+    /**
+     * 有参构造
+     *
+     * @param type 类型
+     */
+    WordType(DocumentType type) {
+        this.type = type;
+    }
+}
