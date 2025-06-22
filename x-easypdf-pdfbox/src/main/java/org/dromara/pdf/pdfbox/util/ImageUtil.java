@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
@@ -277,13 +278,12 @@ public class ImageUtil {
     }
 
     /**
-     * 拼接图片
+     * 拼接图片（水平）
      *
      * @param sourceImageList 图片列表
-     * @param isHorizontal    是否水平拼接
      * @return 返回拼接后的图片对象
      */
-    public static BufferedImage join(List<BufferedImage> sourceImageList, boolean isHorizontal) {
+    public static BufferedImage joinForHorizontal(List<BufferedImage> sourceImageList) {
         // 如果图片列表为空，则提示错误信息
         Objects.requireNonNull(sourceImageList, "the source image list can not be null");
         // 获取首张源图片
@@ -291,24 +291,11 @@ public class ImageUtil {
         // 定义图片宽度
         int imageWidth = 0;
         // 定义图片高度
-        int imageHeight = 0;
-        // 如果为水平拼接，则累计宽度
-        if (isHorizontal) {
-            // 重置图片高度
-            imageHeight = firstImage.getHeight();
-            // 遍历源图片列表
-            for (BufferedImage sourceImage : sourceImageList) {
-                // 累计宽度
-                imageWidth = imageWidth + sourceImage.getWidth();
-            }
-        } else {
-            // 重置图片宽度
-            imageWidth = firstImage.getWidth();
-            // 遍历源图片列表
-            for (BufferedImage sourceImage : sourceImageList) {
-                // 累计高度
-                imageHeight = imageHeight + sourceImage.getHeight();
-            }
+        int imageHeight = firstImage.getHeight();
+        // 遍历源图片列表
+        for (BufferedImage sourceImage : sourceImageList) {
+            // 累计宽度
+            imageWidth = imageWidth + sourceImage.getWidth();
         }
         // 创建图片
         BufferedImage image = new BufferedImage(imageWidth, imageHeight, firstImage.getType());
@@ -322,14 +309,8 @@ public class ImageUtil {
         for (BufferedImage sourceImage : sourceImageList) {
             // 绘制图片
             graphics.drawImage(sourceImage, x, y, null);
-            // 如果为水平拼接，则累计x轴坐标
-            if (isHorizontal) {
-                // 累计x轴坐标
-                x = x + sourceImage.getWidth();
-            } else {
-                // 累计y轴坐标
-                y = y + sourceImage.getHeight();
-            }
+            // 累计x轴坐标
+            x = x + sourceImage.getWidth();
             // 释放源图片
             sourceImage.flush();
         }
@@ -337,6 +318,97 @@ public class ImageUtil {
         graphics.dispose();
         // 返回图片
         return image;
+    }
+
+    /**
+     * 拼接图片（垂直）
+     *
+     * @param sourceImageList 图片列表
+     * @return 返回拼接后的图片对象
+     */
+    public static BufferedImage joinForVertical(List<BufferedImage> sourceImageList) {
+        // 如果图片列表为空，则提示错误信息
+        Objects.requireNonNull(sourceImageList, "the source image list can not be null");
+        // 获取首张源图片
+        BufferedImage firstImage = sourceImageList.get(0);
+        // 定义图片宽度
+        int imageWidth = firstImage.getWidth();
+        // 定义图片高度
+        int imageHeight = 0;
+        // 遍历源图片列表
+        for (BufferedImage sourceImage : sourceImageList) {
+            // 累计高度
+            imageHeight = imageHeight + sourceImage.getHeight();
+        }
+        // 创建图片
+        BufferedImage image = new BufferedImage(imageWidth, imageHeight, firstImage.getType());
+        // 创建2d图像
+        Graphics2D graphics = createGraphics(image);
+        // 定义x轴坐标
+        int x = 0;
+        // 定义y轴坐标
+        int y = 0;
+        // 遍历源图片列表
+        for (BufferedImage sourceImage : sourceImageList) {
+            // 绘制图片
+            graphics.drawImage(sourceImage, x, y, null);
+            // 累计y轴坐标
+            y = y + sourceImage.getHeight();
+            // 释放源图片
+            sourceImage.flush();
+        }
+        // 关闭资源
+        graphics.dispose();
+        // 返回图片
+        return image;
+    }
+
+    /**
+     * 拆分图片（水平）
+     *
+     * @param image 图片
+     * @param width 宽度
+     * @return 返回图片列表
+     */
+    public static List<BufferedImage> splitForHorizontal(BufferedImage image, int width) {
+        Objects.requireNonNull(image, "the image can not be null");
+        List<BufferedImage> imageList = new ArrayList<>(16);
+        int imageWidth = image.getWidth();
+        int imageHeight = image.getHeight();
+        int x = 0;
+        int w = Math.min(width, imageWidth);
+        while (x <= imageWidth && w > 0) {
+            imageList.add(image.getSubimage(x, 0, w, imageHeight));
+            x = x + w;
+            w = Math.min(width, Math.abs(imageWidth - x));
+        }
+        return imageList;
+    }
+
+    /**
+     * 拆分图片（垂直）
+     *
+     * @param image  图片
+     * @param height 高度
+     * @return 返回图片列表
+     */
+    public static List<BufferedImage> splitForVertical(BufferedImage image, int height) {
+        Objects.requireNonNull(image, "the image can not be null");
+        List<BufferedImage> imageList = new ArrayList<>(16);
+        int imageWidth = image.getWidth();
+        int imageHeight = image.getHeight();
+        int y = 0;
+        int h = Math.min(height, imageHeight);
+        while (y + h < imageHeight) {
+            imageList.add(image.getSubimage(0, y, imageWidth, h));
+            y = y + h;
+            if (y + h > imageHeight) {
+                h = Math.abs(imageHeight - y);
+                y = imageHeight - h;
+                imageList.add(image.getSubimage(0, y, imageWidth, h));
+            }
+        }
+        return imageList;
     }
 
     /**

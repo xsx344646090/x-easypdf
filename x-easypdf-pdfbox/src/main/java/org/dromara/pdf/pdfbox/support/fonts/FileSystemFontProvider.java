@@ -15,7 +15,6 @@ import org.apache.pdfbox.pdmodel.font.CIDSystemInfo;
 import org.apache.pdfbox.pdmodel.font.FontCache;
 import org.apache.pdfbox.pdmodel.font.FontFormat;
 import org.apache.pdfbox.pdmodel.font.PDPanoseClassification;
-import org.dromara.pdf.pdfbox.core.base.Banner;
 import org.dromara.pdf.pdfbox.core.enums.FontType;
 import org.dromara.pdf.pdfbox.support.Constants;
 import org.dromara.pdf.pdfbox.util.FileUtil;
@@ -25,8 +24,8 @@ import java.io.*;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 
 /**
  * A FontProvider which searches for fonts on the local filesystem.
@@ -36,10 +35,6 @@ import java.util.*;
 public class FileSystemFontProvider extends FontProvider {
 
     private static final Log LOG = LogFactory.getLog(FileSystemFontProvider.class);
-
-    static {
-        Banner.print();
-    }
 
     private final List<FSFontInfo> fontInfoList = new ArrayList<>();
     private final FontCache cache;
@@ -317,7 +312,7 @@ public class FileSystemFontProvider extends FontProvider {
         try (TrueTypeCollection ttc = new TrueTypeCollection(ttcFile)) {
             ttc.processAllFonts(ttf -> addTrueTypeFontImpl(ttf, ttcFile, alias));
         } catch (IOException e) {
-            LOG.error("Could not load font file: " + ttcFile, e);
+            LOG.error("Could not load font file: " + ttcFile);
         }
     }
 
@@ -330,7 +325,7 @@ public class FileSystemFontProvider extends FontProvider {
             FileUtils.writeByteArrayToFile(tempFile, IOUtils.toByteArray(inputStream));
             ttc.processAllFonts(ttf -> addTrueTypeFontImpl(ttf, tempFile, ttf.getName()));
         } catch (IOException e) {
-            LOG.error("Could not load font file: " + alias + type.getSuffix(), e);
+            LOG.error("Could not load font file: " + alias + type.getSuffix());
         }
     }
 
@@ -349,7 +344,8 @@ public class FileSystemFontProvider extends FontProvider {
                 addTrueTypeFontImpl(ttf, file, alias);
             }
         } catch (IOException e) {
-            LOG.error("Could not load font file: " + file, e);
+            fontInfoList.add(new FSIgnored(file, FontFormat.TTF, "*skipexception*", "*skipexception*"));
+            LOG.error("Could not load font file: " + file);
         }
     }
 
@@ -362,7 +358,7 @@ public class FileSystemFontProvider extends FontProvider {
             FileUtils.writeByteArrayToFile(tempFile, IOUtils.toByteArray(inputStream));
             addTrueTypeFont(tempFile, alias);
         } catch (IOException e) {
-            LOG.error("Could not load font file: " + alias + type.getSuffix(), e);
+            LOG.error("Could not load font file: " + alias + type.getSuffix());
         }
     }
 
@@ -458,7 +454,7 @@ public class FileSystemFontProvider extends FontProvider {
             }
         } catch (IOException e) {
             fontInfoList.add(new FSIgnored(file, FontFormat.TTF, "*skipexception*", "*skipexception*"));
-            LOG.error("Could not load font file: " + file, e);
+            LOG.error("Could not load font file: " + file);
         } finally {
             ttf.close();
         }

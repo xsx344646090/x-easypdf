@@ -1,8 +1,8 @@
-package org.dromara.pdf.pdfbox.core.ext.convertor.ppt;
+package org.dromara.pdf.pdfbox.core.ext.convertor.documents4j.ppt;
 
 import lombok.SneakyThrows;
 import org.dromara.pdf.pdfbox.core.base.Document;
-import org.dromara.pdf.pdfbox.core.ext.convertor.AbstractConvertor;
+import org.dromara.pdf.pdfbox.core.ext.convertor.documents4j.AbstractDocuments4jConvertor;
 
 import java.io.File;
 import java.io.InputStream;
@@ -27,7 +27,7 @@ import java.util.Objects;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public abstract class AbstractPowerpointConvertor extends AbstractConvertor {
+public abstract class AbstractPowerpointConvertor extends AbstractDocuments4jConvertor {
 
     /**
      * 有参构造

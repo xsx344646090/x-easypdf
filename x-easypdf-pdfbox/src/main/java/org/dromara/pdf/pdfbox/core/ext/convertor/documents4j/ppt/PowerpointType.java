@@ -1,10 +1,10 @@
-package org.dromara.pdf.pdfbox.core.ext.convertor.html;
+package org.dromara.pdf.pdfbox.core.ext.convertor.documents4j.ppt;
 
 import com.documents4j.api.DocumentType;
 import lombok.Getter;
 
 /**
- * word类型
+ * ppt类型
  *
  * @author xsx
  * @date 2025/1/8
@@ -22,15 +22,15 @@ import lombok.Getter;
  * </p>
  */
 @Getter
-public enum HtmlType {
+public enum PowerpointType {
     /**
-     * html
+     * ppt
      */
-    HTML(DocumentType.HTML),
+    PPT(DocumentType.PPT),
     /**
-     * mhtml
+     * pptx
      */
-    MHTML(DocumentType.MHTML);
+    PPTX(DocumentType.PPTX);
 
     /**
      * 类型
@@ -42,7 +42,7 @@ public enum HtmlType {
      *
      * @param type 类型
      */
-    HtmlType(DocumentType type) {
+    PowerpointType(DocumentType type) {
         this.type = type;
     }
 }

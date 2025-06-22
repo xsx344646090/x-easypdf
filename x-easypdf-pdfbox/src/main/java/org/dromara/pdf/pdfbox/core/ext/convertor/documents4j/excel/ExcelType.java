@@ -1,10 +1,10 @@
-package org.dromara.pdf.pdfbox.core.ext.convertor.word;
+package org.dromara.pdf.pdfbox.core.ext.convertor.documents4j.excel;
 
 import com.documents4j.api.DocumentType;
 import lombok.Getter;
 
 /**
- * word类型
+ * excel类型
  *
  * @author xsx
  * @date 2025/1/8
@@ -22,15 +22,15 @@ import lombok.Getter;
  * </p>
  */
 @Getter
-public enum WordType {
+public enum ExcelType {
     /**
-     * doc
+     * xls
      */
-    DOC(DocumentType.DOC),
+    XLS(DocumentType.XLS),
     /**
-     * docx
+     * xlsx
      */
-    DOCX(DocumentType.DOCX);
+    XLSX(DocumentType.XLSX);
 
     /**
      * 类型
@@ -42,7 +42,7 @@ public enum WordType {
      *
      * @param type 类型
      */
-    WordType(DocumentType type) {
+    ExcelType(DocumentType type) {
         this.type = type;
     }
 }

@@ -26,7 +26,7 @@ public class UnitUtil {
      * px转pt
      *
      * @param dpi   dpi
-     * @param value 值
+     * @param value px值
      * @return 返回pt值
      */
     public static float px2pt(int dpi, float value) {
@@ -34,9 +34,20 @@ public class UnitUtil {
     }
 
     /**
+     * pt转px
+     *
+     * @param dpi   dpi
+     * @param value pt值
+     * @return 返回px值
+     */
+    public static float pt2px(int dpi, float value) {
+        return value * dpi / Constants.POINTS_PER_INCH;
+    }
+
+    /**
      * mm转pt
      *
-     * @param value 值
+     * @param value mm值
      * @return 返回pt值
      */
     public static float mm2pt(float value) {
@@ -44,12 +55,32 @@ public class UnitUtil {
     }
 
     /**
+     * pt转mm
+     *
+     * @param value pt值
+     * @return 返回mm值
+     */
+    public static float pt2mm(float value) {
+        return value / Constants.POINTS_PER_MM;
+    }
+
+    /**
      * em转pt
      *
-     * @param value 值
+     * @param value em值
      * @return 返回pt值
      */
     public static float em2pt(float value) {
         return value * 12;
+    }
+
+    /**
+     * pt转em
+     *
+     * @param value pt值
+     * @return 返回em值
+     */
+    public static float pt2em(float value) {
+        return value / 12;
     }
 }

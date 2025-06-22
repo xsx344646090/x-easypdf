@@ -1,11 +1,8 @@
 package org.dromara.pdf.pdfbox.core.ext.convertor;
 
 import org.dromara.pdf.pdfbox.core.base.Document;
-import org.dromara.pdf.pdfbox.core.ext.convertor.excel.ExcelConvertor;
-import org.dromara.pdf.pdfbox.core.ext.convertor.html.HtmlConvertor;
-import org.dromara.pdf.pdfbox.core.ext.convertor.ppt.PowerpointConvertor;
-import org.dromara.pdf.pdfbox.core.ext.convertor.rtf.RichTextConvertor;
-import org.dromara.pdf.pdfbox.core.ext.convertor.word.WordConvertor;
+import org.dromara.pdf.pdfbox.core.ext.convertor.documents4j.Document4jConvertor;
+import org.dromara.pdf.pdfbox.core.ext.convertor.playwright.PlaywrightConvertor;
 
 /**
  * 文档转换器
@@ -37,47 +34,20 @@ public class DocumentConvertor extends AbstractConvertor {
     }
 
     /**
-     * 获取word转换器
+     * 获取document4j转换器（office）
      *
-     * @return 返回word转换器
+     * @return 返回document4j转换器
      */
-    public WordConvertor getWordConvertor() {
-        return new WordConvertor(this.document);
+    public Document4jConvertor getDocument4jConvertor() {
+        return new Document4jConvertor(this.document);
     }
 
     /**
-     * 获取excel转换器
+     * 获取playwright转换器（html）
      *
-     * @return 返回excel转换器
+     * @return 返回playwright转换器
      */
-    public ExcelConvertor getExcelConvertor() {
-        return new ExcelConvertor(this.document);
-    }
-
-    /**
-     * 获取ppt转换器
-     *
-     * @return 返回ppt转换器
-     */
-    public PowerpointConvertor getPowerpointConvertor() {
-        return new PowerpointConvertor(this.document);
-    }
-
-    /**
-     * 获取html转换器
-     *
-     * @return 返回html转换器
-     */
-    public HtmlConvertor getHtmlConvertor() {
-        return new HtmlConvertor(this.document);
-    }
-
-    /**
-     * 获取rtf转换器
-     *
-     * @return 返回rtf转换器
-     */
-    public RichTextConvertor getRichTextConvertor() {
-        return new RichTextConvertor(this.document);
+    public PlaywrightConvertor getPlaywrightConvertor() {
+        return new PlaywrightConvertor(this.document);
     }
 }

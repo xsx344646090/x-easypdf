@@ -1,13 +1,8 @@
-package org.dromara.pdf.pdfbox.core.ext.convertor.ppt;
-
-import com.documents4j.api.DocumentType;
-import lombok.Getter;
-
 /**
- * ppt类型
+ * playwright转换器
  *
  * @author xsx
- * @date 2025/1/8
+ * @date 2025/6/18
  * @since 1.8
  * <p>
  * Copyright (c) 2020 xsx All Rights Reserved.
@@ -21,28 +16,4 @@ import lombok.Getter;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-@Getter
-public enum PowerpointType {
-    /**
-     * ppt
-     */
-    PPT(DocumentType.PPT),
-    /**
-     * pptx
-     */
-    PPTX(DocumentType.PPTX);
-
-    /**
-     * 类型
-     */
-    private final DocumentType type;
-
-    /**
-     * 有参构造
-     *
-     * @param type 类型
-     */
-    PowerpointType(DocumentType type) {
-        this.type = type;
-    }
-}
+package org.dromara.pdf.pdfbox.core.ext.convertor.playwright;

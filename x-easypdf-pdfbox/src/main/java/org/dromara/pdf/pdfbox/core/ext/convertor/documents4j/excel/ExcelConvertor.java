@@ -1,4 +1,4 @@
-package org.dromara.pdf.pdfbox.core.ext.convertor.excel;
+package org.dromara.pdf.pdfbox.core.ext.convertor.documents4j.excel;
 
 import lombok.SneakyThrows;
 import org.dromara.pdf.pdfbox.core.base.Document;
