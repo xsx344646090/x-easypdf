@@ -1,13 +1,13 @@
-package org.dromara.pdf.pdfbox.core.ext.convertor.documents4j.word;
+package org.dromara.pdf.pdfbox.core.ext.convertor.html;
 
-import com.documents4j.api.DocumentType;
+import com.microsoft.playwright.options.LoadState;
 import lombok.Getter;
 
 /**
- * word类型
+ * 页面加载状态
  *
  * @author xsx
- * @date 2025/1/8
+ * @date 2025/6/26
  * @since 1.8
  * <p>
  * Copyright (c) 2020 xsx All Rights Reserved.
@@ -22,27 +22,31 @@ import lombok.Getter;
  * </p>
  */
 @Getter
-public enum WordType {
+public enum PageLoadState {
     /**
-     * doc
+     * 加载完成
      */
-    DOC(DocumentType.DOC),
+    LOAD(LoadState.LOAD),
     /**
-     * docx
+     * 文档加载完成
      */
-    DOCX(DocumentType.DOCX);
+    DOMCONTENTLOADED(LoadState.DOMCONTENTLOADED),
+    /**
+     * 网络空闲
+     */
+    NETWORKIDLE(LoadState.NETWORKIDLE);
 
     /**
-     * 类型
+     * 状态
      */
-    private final DocumentType type;
+    private LoadState state;
 
     /**
      * 有参构造
      *
-     * @param type 类型
+     * @param state 状态
      */
-    WordType(DocumentType type) {
-        this.type = type;
+    PageLoadState(LoadState state) {
+        this.state = state;
     }
 }

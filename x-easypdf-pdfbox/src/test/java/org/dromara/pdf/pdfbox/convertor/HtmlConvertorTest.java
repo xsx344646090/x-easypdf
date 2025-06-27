@@ -2,7 +2,7 @@ package org.dromara.pdf.pdfbox.convertor;
 
 import org.dromara.pdf.pdfbox.base.BaseTest;
 import org.dromara.pdf.pdfbox.core.base.Document;
-import org.dromara.pdf.pdfbox.core.ext.convertor.playwright.PlaywrightConvertor;
+import org.dromara.pdf.pdfbox.core.ext.convertor.html.HtmlConvertor;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.dromara.pdf.pdfbox.util.ImageUtil;
 import org.junit.Test;
@@ -16,7 +16,7 @@ import java.io.File;
  * @since 1.8
  * <p>
  * Copyright (c) 2020-2024 xsx All Rights Reserved.
- * x-easypdf is licensed under Mulan PSL v2.
+ * x-easypdf-pdfbox is licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  * http://license.coscl.org.cn/MulanPSL2
@@ -34,7 +34,7 @@ public class HtmlConvertorTest extends BaseTest {
     @Test
     public void toPdfForRemoteTest() {
         this.test(() -> {
-            PlaywrightConvertor convertor = PdfHandler.getDocumentConvertor().getPlaywrightConvertor();
+            HtmlConvertor convertor = PdfHandler.getDocumentConvertor().getHtmlConvertor();
             convertor.setMargin(10F);
             convertor.setScale(0.85F);
             Document document = convertor.toPdf("https://www.oschina.net/");
@@ -48,7 +48,7 @@ public class HtmlConvertorTest extends BaseTest {
     @Test
     public void toPdfWithLocalTest() {
         this.test(() -> {
-            PlaywrightConvertor convertor = PdfHandler.getDocumentConvertor().getPlaywrightConvertor();
+            HtmlConvertor convertor = PdfHandler.getDocumentConvertor().getHtmlConvertor();
             convertor.setMargin(10F);
             convertor.setScale(0.85F);
             Document document = convertor.toPdf("E:\\PDF\\pdfbox\\convertor\\html\\test1.html");
@@ -62,7 +62,7 @@ public class HtmlConvertorTest extends BaseTest {
     @Test
     public void toPdfWithImageTest() {
         this.test(() -> {
-            PlaywrightConvertor convertor = PdfHandler.getDocumentConvertor().getPlaywrightConvertor();
+            HtmlConvertor convertor = PdfHandler.getDocumentConvertor().getHtmlConvertor();
             convertor.setMargin(10F);
             Document document = convertor.toPdfWithImage("https://www.oschina.net/");
             document.saveAndClose("E:\\PDF\\pdfbox\\convertor\\html\\oschina-image.pdf");
@@ -75,7 +75,7 @@ public class HtmlConvertorTest extends BaseTest {
     @Test
     public void toImageTest() {
         this.test(() -> {
-            PlaywrightConvertor convertor = PdfHandler.getDocumentConvertor().getPlaywrightConvertor();
+            HtmlConvertor convertor = PdfHandler.getDocumentConvertor().getHtmlConvertor();
             convertor.setMargin(10F);
             BufferedImage image = convertor.toImage("E:\\PDF\\pdfbox\\convertor\\html\\test1.html");
             ImageUtil.write(image, new File("E:\\PDF\\pdfbox\\convertor\\html\\test.png"));

@@ -1,5 +1,10 @@
+package org.dromara.pdf.pdfbox.core.ext.convertor.office.excel;
+
+import com.documents4j.api.DocumentType;
+import lombok.Getter;
+
 /**
- * ppt转换器
+ * excel类型
  *
  * @author xsx
  * @date 2025/1/8
@@ -16,4 +21,28 @@
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-package org.dromara.pdf.pdfbox.core.ext.convertor.documents4j.ppt;
+@Getter
+public enum ExcelType {
+    /**
+     * xls
+     */
+    XLS(DocumentType.XLS),
+    /**
+     * xlsx
+     */
+    XLSX(DocumentType.XLSX);
+
+    /**
+     * 类型
+     */
+    private final DocumentType type;
+
+    /**
+     * 有参构造
+     *
+     * @param type 类型
+     */
+    ExcelType(DocumentType type) {
+        this.type = type;
+    }
+}

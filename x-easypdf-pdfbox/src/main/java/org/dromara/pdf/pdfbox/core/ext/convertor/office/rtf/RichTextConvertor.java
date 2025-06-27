@@ -1,4 +1,4 @@
-package org.dromara.pdf.pdfbox.core.ext.convertor.documents4j.rtf;
+package org.dromara.pdf.pdfbox.core.ext.convertor.office.rtf;
 
 import com.documents4j.api.DocumentType;
 import lombok.SneakyThrows;

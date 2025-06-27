@@ -1,4 +1,4 @@
-package org.dromara.pdf.pdfbox.core.ext.convertor.documents4j.ppt;
+package org.dromara.pdf.pdfbox.core.ext.convertor.office.ppt;
 
 import lombok.SneakyThrows;
 import org.dromara.pdf.pdfbox.core.base.Document;

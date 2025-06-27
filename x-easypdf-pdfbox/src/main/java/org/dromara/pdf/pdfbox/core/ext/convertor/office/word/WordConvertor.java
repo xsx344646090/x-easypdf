@@ -1,16 +1,14 @@
-package org.dromara.pdf.pdfbox.core.ext.convertor.documents4j.ppt;
+package org.dromara.pdf.pdfbox.core.ext.convertor.office.word;
 
 import lombok.SneakyThrows;
 import org.dromara.pdf.pdfbox.core.base.Document;
-import org.dromara.pdf.pdfbox.core.ext.convertor.documents4j.AbstractDocuments4jConvertor;
 
-import java.io.File;
 import java.io.InputStream;
-import java.nio.file.Files;
+import java.io.OutputStream;
 import java.util.Objects;
 
 /**
- * 抽象ppt转换器
+ * word转换器
  *
  * @author xsx
  * @date 2025/1/8
@@ -27,14 +25,14 @@ import java.util.Objects;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public abstract class AbstractPowerpointConvertor extends AbstractDocuments4jConvertor {
+public class WordConvertor extends AbstractWordConvertor {
 
     /**
      * 有参构造
      *
      * @param document 文档
      */
-    public AbstractPowerpointConvertor(Document document) {
+    public WordConvertor(Document document) {
         super(document);
     }
 
@@ -45,33 +43,24 @@ public abstract class AbstractPowerpointConvertor extends AbstractDocuments4jCon
      * @param source 源输入流
      * @return 返回文档
      */
-    public abstract Document toPdf(PowerpointType type, InputStream source);
-
-    /**
-     * 转pdf
-     *
-     * @param type   类型
-     * @param source 源路径
-     * @return 返回文档
-     */
     @SneakyThrows
-    public Document toPdf(PowerpointType type, String source) {
+    @Override
+    public Document toPdf(WordType type, InputStream source) {
         Objects.requireNonNull(type, "the type can not be null");
         return super.toPdf(type.getType(), source);
     }
 
     /**
-     * 转pdf
+     * 转word
      *
      * @param type   类型
-     * @param source 源文件
-     * @return 返回文档
+     * @param output 输出流
+     * @return 返回布尔值，true为成功，false为失败
      */
     @SneakyThrows
-    public Document toPdf(PowerpointType type, File source) {
-        Objects.requireNonNull(source, "the source can not be null");
-        try (InputStream inputStream = Files.newInputStream(source.toPath())) {
-            return this.toPdf(type, inputStream);
-        }
+    @Override
+    public boolean toWord(WordType type, OutputStream output) {
+        Objects.requireNonNull(type, "the type can not be null");
+        return super.toFile(type.getType(), output);
     }
 }

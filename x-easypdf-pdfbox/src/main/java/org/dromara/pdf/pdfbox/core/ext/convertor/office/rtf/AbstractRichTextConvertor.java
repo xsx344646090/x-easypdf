@@ -1,8 +1,9 @@
-package org.dromara.pdf.pdfbox.core.ext.convertor.documents4j.word;
+package org.dromara.pdf.pdfbox.core.ext.convertor.office.rtf;
 
+import com.documents4j.api.DocumentType;
 import lombok.SneakyThrows;
 import org.dromara.pdf.pdfbox.core.base.Document;
-import org.dromara.pdf.pdfbox.core.ext.convertor.documents4j.AbstractDocuments4jConvertor;
+import org.dromara.pdf.pdfbox.core.ext.convertor.office.AbstractOfficeConvertor;
 import org.dromara.pdf.pdfbox.util.FileUtil;
 
 import java.io.File;
@@ -13,10 +14,10 @@ import java.nio.file.Paths;
 import java.util.Objects;
 
 /**
- * 抽象word转换器
+ * 抽象rtf转换器
  *
  * @author xsx
- * @date 2025/1/8
+ * @date 2025/1/14
  * @since 1.8
  * <p>
  * Copyright (c) 2020 xsx All Rights Reserved.
@@ -30,90 +31,83 @@ import java.util.Objects;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public abstract class AbstractWordConvertor extends AbstractDocuments4jConvertor {
+public abstract class AbstractRichTextConvertor extends AbstractOfficeConvertor {
 
     /**
      * 有参构造
      *
      * @param document 文档
      */
-    public AbstractWordConvertor(Document document) {
+    public AbstractRichTextConvertor(Document document) {
         super(document);
     }
 
     /**
      * 转pdf
      *
-     * @param type   类型
      * @param source 源输入流
      * @return 返回文档
      */
-    public abstract Document toPdf(WordType type, InputStream source);
+    public abstract Document toPdf(InputStream source);
 
     /**
-     * 转word
+     * 转rtf
      *
-     * @param type   类型
      * @param output 输出流
      * @return 返回布尔值，true为成功，false为失败
      */
-    public abstract boolean toWord(WordType type, OutputStream output);
+    public abstract boolean toRtf(OutputStream output);
 
     /**
      * 转pdf
      *
-     * @param type   类型
      * @param source 源路径
      * @return 返回文档
      */
     @SneakyThrows
-    public Document toPdf(WordType type, String source) {
-        Objects.requireNonNull(type, "the type can not be null");
-        return super.toPdf(type.getType(), source);
+    public Document toPdf(String source) {
+        return super.toPdf(DocumentType.RTF, source);
     }
 
     /**
      * 转pdf
      *
-     * @param type   类型
      * @param source 源文件
      * @return 返回文档
      */
     @SneakyThrows
-    public Document toPdf(WordType type, File source) {
+    public Document toPdf(File source) {
         Objects.requireNonNull(source, "the source can not be null");
         try (InputStream inputStream = Files.newInputStream(source.toPath())) {
-            return this.toPdf(type, inputStream);
+            return this.toPdf(inputStream);
         }
     }
 
     /**
      * 转word
      *
-     * @param type   类型
      * @param output 输出路径
      * @return 返回布尔值，true为成功，false为失败
      */
     @SneakyThrows
-    public boolean toWord(WordType type, String output) {
+    public boolean toRtf(String output) {
         Objects.requireNonNull(output, "the output can not be null");
         try (OutputStream outputStream = Files.newOutputStream(FileUtil.createDirectories(Paths.get(output)))) {
-            return this.toWord(type, outputStream);
+            return this.toRtf(outputStream);
         }
     }
 
     /**
      * 转word
      *
-     * @param type   类型
      * @param output 输出文件
      * @return 返回布尔值，true为成功，false为失败
      */
     @SneakyThrows
-    public boolean toWord(WordType type, File output) {
+    public boolean toRtf(File output) {
         Objects.requireNonNull(output, "the output can not be null");
         try (OutputStream outputStream = Files.newOutputStream(output.toPath())) {
-            return this.toWord(type, outputStream);
+            return this.toRtf(outputStream);
         }
     }
 }

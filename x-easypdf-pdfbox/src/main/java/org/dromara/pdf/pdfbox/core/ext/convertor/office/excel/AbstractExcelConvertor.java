@@ -1,14 +1,16 @@
-package org.dromara.pdf.pdfbox.core.ext.convertor.documents4j.word;
+package org.dromara.pdf.pdfbox.core.ext.convertor.office.excel;
 
 import lombok.SneakyThrows;
 import org.dromara.pdf.pdfbox.core.base.Document;
+import org.dromara.pdf.pdfbox.core.ext.convertor.office.AbstractOfficeConvertor;
 
+import java.io.File;
 import java.io.InputStream;
-import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.Objects;
 
 /**
- * word转换器
+ * 抽象excel转换器
  *
  * @author xsx
  * @date 2025/1/8
@@ -25,14 +27,14 @@ import java.util.Objects;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public class WordConvertor extends AbstractWordConvertor {
+public abstract class AbstractExcelConvertor extends AbstractOfficeConvertor {
 
     /**
      * 有参构造
      *
      * @param document 文档
      */
-    public WordConvertor(Document document) {
+    public AbstractExcelConvertor(Document document) {
         super(document);
     }
 
@@ -43,24 +45,33 @@ public class WordConvertor extends AbstractWordConvertor {
      * @param source 源输入流
      * @return 返回文档
      */
+    public abstract Document toPdf(ExcelType type, InputStream source);
+
+    /**
+     * 转pdf
+     *
+     * @param type   类型
+     * @param source 源路径
+     * @return 返回文档
+     */
     @SneakyThrows
-    @Override
-    public Document toPdf(WordType type, InputStream source) {
+    public Document toPdf(ExcelType type, String source) {
         Objects.requireNonNull(type, "the type can not be null");
         return super.toPdf(type.getType(), source);
     }
 
     /**
-     * 转word
+     * 转pdf
      *
      * @param type   类型
-     * @param output 输出流
-     * @return 返回布尔值，true为成功，false为失败
+     * @param source 源文件
+     * @return 返回文档
      */
     @SneakyThrows
-    @Override
-    public boolean toWord(WordType type, OutputStream output) {
-        Objects.requireNonNull(type, "the type can not be null");
-        return super.toFile(type.getType(), output);
+    public Document toPdf(ExcelType type, File source) {
+        Objects.requireNonNull(source, "the source can not be null");
+        try (InputStream inputStream = Files.newInputStream(source.toPath())) {
+            return this.toPdf(type, inputStream);
+        }
     }
 }

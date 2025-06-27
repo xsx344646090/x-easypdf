@@ -1,8 +1,8 @@
-package org.dromara.pdf.pdfbox.core.ext.convertor.documents4j.excel;
+package org.dromara.pdf.pdfbox.core.ext.convertor.office.ppt;
 
 import lombok.SneakyThrows;
 import org.dromara.pdf.pdfbox.core.base.Document;
-import org.dromara.pdf.pdfbox.core.ext.convertor.documents4j.AbstractDocuments4jConvertor;
+import org.dromara.pdf.pdfbox.core.ext.convertor.office.AbstractOfficeConvertor;
 
 import java.io.File;
 import java.io.InputStream;
@@ -10,7 +10,7 @@ import java.nio.file.Files;
 import java.util.Objects;
 
 /**
- * 抽象excel转换器
+ * 抽象ppt转换器
  *
  * @author xsx
  * @date 2025/1/8
@@ -27,14 +27,14 @@ import java.util.Objects;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public abstract class AbstractExcelConvertor extends AbstractDocuments4jConvertor {
+public abstract class AbstractPowerpointConvertor extends AbstractOfficeConvertor {
 
     /**
      * 有参构造
      *
      * @param document 文档
      */
-    public AbstractExcelConvertor(Document document) {
+    public AbstractPowerpointConvertor(Document document) {
         super(document);
     }
 
@@ -45,7 +45,7 @@ public abstract class AbstractExcelConvertor extends AbstractDocuments4jConverto
      * @param source 源输入流
      * @return 返回文档
      */
-    public abstract Document toPdf(ExcelType type, InputStream source);
+    public abstract Document toPdf(PowerpointType type, InputStream source);
 
     /**
      * 转pdf
@@ -55,7 +55,7 @@ public abstract class AbstractExcelConvertor extends AbstractDocuments4jConverto
      * @return 返回文档
      */
     @SneakyThrows
-    public Document toPdf(ExcelType type, String source) {
+    public Document toPdf(PowerpointType type, String source) {
         Objects.requireNonNull(type, "the type can not be null");
         return super.toPdf(type.getType(), source);
     }
@@ -68,7 +68,7 @@ public abstract class AbstractExcelConvertor extends AbstractDocuments4jConverto
      * @return 返回文档
      */
     @SneakyThrows
-    public Document toPdf(ExcelType type, File source) {
+    public Document toPdf(PowerpointType type, File source) {
         Objects.requireNonNull(source, "the source can not be null");
         try (InputStream inputStream = Files.newInputStream(source.toPath())) {
             return this.toPdf(type, inputStream);
