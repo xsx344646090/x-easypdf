@@ -1,5 +1,10 @@
+package org.dromara.pdf.pdfbox.core.ext.convertor.office.ppt;
+
+import com.documents4j.api.DocumentType;
+import lombok.Getter;
+
 /**
- * rtf转换器
+ * ppt类型
  *
  * @author xsx
  * @date 2025/1/8
@@ -16,4 +21,28 @@
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-package org.dromara.pdf.pdfbox.core.ext.convertor.documents4j.rtf;
+@Getter
+public enum PowerpointType {
+    /**
+     * ppt
+     */
+    PPT(DocumentType.PPT),
+    /**
+     * pptx
+     */
+    PPTX(DocumentType.PPTX);
+
+    /**
+     * 类型
+     */
+    private final DocumentType type;
+
+    /**
+     * 有参构造
+     *
+     * @param type 类型
+     */
+    PowerpointType(DocumentType type) {
+        this.type = type;
+    }
+}

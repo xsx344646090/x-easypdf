@@ -1,8 +1,8 @@
 package org.dromara.pdf.pdfbox.core.ext.convertor;
 
 import org.dromara.pdf.pdfbox.core.base.Document;
-import org.dromara.pdf.pdfbox.core.ext.convertor.documents4j.Document4jConvertor;
-import org.dromara.pdf.pdfbox.core.ext.convertor.playwright.PlaywrightConvertor;
+import org.dromara.pdf.pdfbox.core.ext.convertor.office.OfficeConvertor;
+import org.dromara.pdf.pdfbox.core.ext.convertor.html.HtmlConvertor;
 
 /**
  * 文档转换器
@@ -34,20 +34,20 @@ public class DocumentConvertor extends AbstractConvertor {
     }
 
     /**
-     * 获取document4j转换器（office）
+     * 获取office转换器
      *
-     * @return 返回document4j转换器
+     * @return 返回office转换器
      */
-    public Document4jConvertor getDocument4jConvertor() {
-        return new Document4jConvertor(this.document);
+    public OfficeConvertor getOfficeConvertor() {
+        return new OfficeConvertor(this.document);
     }
 
     /**
-     * 获取playwright转换器（html）
+     * 获取html转换器
      *
-     * @return 返回playwright转换器
+     * @return 返回html转换器
      */
-    public PlaywrightConvertor getPlaywrightConvertor() {
-        return new PlaywrightConvertor(this.document);
+    public HtmlConvertor getHtmlConvertor() {
+        return new HtmlConvertor(this.document);
     }
 }

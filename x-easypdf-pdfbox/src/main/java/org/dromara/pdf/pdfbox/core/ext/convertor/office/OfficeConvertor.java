@@ -1,11 +1,11 @@
-package org.dromara.pdf.pdfbox.core.ext.convertor.documents4j;
+package org.dromara.pdf.pdfbox.core.ext.convertor.office;
 
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.ext.convertor.AbstractConvertor;
-import org.dromara.pdf.pdfbox.core.ext.convertor.documents4j.excel.ExcelConvertor;
-import org.dromara.pdf.pdfbox.core.ext.convertor.documents4j.ppt.PowerpointConvertor;
-import org.dromara.pdf.pdfbox.core.ext.convertor.documents4j.rtf.RichTextConvertor;
-import org.dromara.pdf.pdfbox.core.ext.convertor.documents4j.word.WordConvertor;
+import org.dromara.pdf.pdfbox.core.ext.convertor.office.excel.ExcelConvertor;
+import org.dromara.pdf.pdfbox.core.ext.convertor.office.ppt.PowerpointConvertor;
+import org.dromara.pdf.pdfbox.core.ext.convertor.office.rtf.RichTextConvertor;
+import org.dromara.pdf.pdfbox.core.ext.convertor.office.word.WordConvertor;
 
 /**
  * documents4j转换器
@@ -25,14 +25,14 @@ import org.dromara.pdf.pdfbox.core.ext.convertor.documents4j.word.WordConvertor;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public class Document4jConvertor extends AbstractConvertor {
+public class OfficeConvertor extends AbstractConvertor {
 
     /**
      * 有参构造
      *
      * @param document 文档
      */
-    public Document4jConvertor(Document document) {
+    public OfficeConvertor(Document document) {
         super(document);
     }
 

@@ -1,4 +1,4 @@
-package org.dromara.pdf.pdfbox.core.ext.convertor.playwright;
+package org.dromara.pdf.pdfbox.core.ext.convertor.html;
 
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserType;
@@ -33,11 +33,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 /**
- * playwright转换器
+ * html转换器
+ * <p>使用playwright实现</p>
  *
  * @author xsx
  * @date 2025/6/18
- * @see <a href="https://playwright.dev/java/docs/intro">官方文档</a>
+ * @see <a href="https://playwright.dev/java/docs/intro">playwright官方文档</a>
  * @since 1.8
  * <p>
  * Copyright (c) 2020 xsx All Rights Reserved.
@@ -53,7 +54,7 @@ import java.util.function.Function;
  */
 @Setter
 @EqualsAndHashCode(callSuper = true)
-public class PlaywrightConvertor extends AbstractConvertor {
+public class HtmlConvertor extends AbstractConvertor {
 
     /**
      * 线程池
@@ -114,7 +115,7 @@ public class PlaywrightConvertor extends AbstractConvertor {
      *
      * @param document 文档
      */
-    public PlaywrightConvertor(Document document) {
+    public HtmlConvertor(Document document) {
         super(document);
     }
 

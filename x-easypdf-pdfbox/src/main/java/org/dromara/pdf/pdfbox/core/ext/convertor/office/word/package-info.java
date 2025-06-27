@@ -1,8 +1,8 @@
 /**
- * playwright转换器
+ * word转换器
  *
  * @author xsx
- * @date 2025/6/18
+ * @date 2025/1/8
  * @since 1.8
  * <p>
  * Copyright (c) 2020 xsx All Rights Reserved.
@@ -16,4 +16,4 @@
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-package org.dromara.pdf.pdfbox.core.ext.convertor.playwright;
+package org.dromara.pdf.pdfbox.core.ext.convertor.office.word;

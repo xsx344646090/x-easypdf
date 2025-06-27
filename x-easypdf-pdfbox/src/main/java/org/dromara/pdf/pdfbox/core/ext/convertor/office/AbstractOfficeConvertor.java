@@ -1,4 +1,4 @@
-package org.dromara.pdf.pdfbox.core.ext.convertor.documents4j;
+package org.dromara.pdf.pdfbox.core.ext.convertor.office;
 
 import com.documents4j.api.DocumentType;
 import com.documents4j.api.IConverter;
@@ -33,7 +33,7 @@ import java.util.Objects;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public abstract class AbstractDocuments4jConvertor extends AbstractConvertor {
+public abstract class AbstractOfficeConvertor extends AbstractConvertor {
 
     /**
      * 转换器
@@ -45,7 +45,7 @@ public abstract class AbstractDocuments4jConvertor extends AbstractConvertor {
      *
      * @param document 文档
      */
-    public AbstractDocuments4jConvertor(Document document) {
+    public AbstractOfficeConvertor(Document document) {
         super(document);
     }
 
