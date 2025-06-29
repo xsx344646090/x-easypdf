@@ -9,6 +9,9 @@ import org.junit.Test;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author xsx
@@ -37,8 +40,8 @@ public class HtmlConvertorTest extends BaseTest {
             HtmlConvertor convertor = PdfHandler.getDocumentConvertor().getHtmlConvertor();
             convertor.setMargin(10F);
             convertor.setScale(0.85F);
-            Document document = convertor.toPdf("https://www.oschina.net/");
-            document.saveAndClose("E:\\PDF\\pdfbox\\convertor\\html\\oschina.pdf");
+            Document document = convertor.toPdf("https://x-easypdf.cn/guide/fop/%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8.html");
+            document.saveAndClose("E:\\PDF\\pdfbox\\convertor\\html\\x-easypdf.pdf");
         });
     }
 
@@ -47,13 +50,19 @@ public class HtmlConvertorTest extends BaseTest {
      */
     @Test
     public void toPdfWithLocalTest() {
-        this.test(() -> {
-            HtmlConvertor convertor = PdfHandler.getDocumentConvertor().getHtmlConvertor();
-            convertor.setMargin(10F);
-            convertor.setScale(0.85F);
-            Document document = convertor.toPdf("E:\\PDF\\pdfbox\\convertor\\html\\test1.html");
-            document.saveAndClose("E:\\PDF\\pdfbox\\convertor\\html\\test.pdf");
-        });
+        HtmlConvertor convertor = PdfHandler.getDocumentConvertor().getHtmlConvertor();
+        convertor.setMargin(10F);
+        List<CompletableFuture<?>> list = new ArrayList<>(50);
+        for (int i = 0; i < 50; i++) {
+            int finalI = i;
+            list.add(CompletableFuture.runAsync(() -> {
+                this.test(() -> {
+                    Document document = convertor.toPdf("E:\\PDF\\pdfbox\\convertor\\html\\test1.html");
+                    document.saveAndClose("E:\\PDF\\pdfbox\\convertor\\html\\test" + finalI + ".pdf");
+                });
+            }));
+        }
+        CompletableFuture.allOf(list.toArray(new CompletableFuture[0])).join();
     }
 
     /**
