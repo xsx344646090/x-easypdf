@@ -116,6 +116,16 @@ public class Template {
     }
 
     /**
+     * 设置是否新布局
+     *
+     * @return 返回pdf模板
+     */
+    public Template setIsNewLayout(Boolean flag) {
+        Optional.ofNullable(flag).ifPresent(this.param::setIsNewLayout);
+        return this;
+    }
+
+    /**
      * 设置是否禁止打印
      *
      * @param flag 是否禁止打印

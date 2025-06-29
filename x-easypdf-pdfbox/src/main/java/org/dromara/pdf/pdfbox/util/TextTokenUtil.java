@@ -37,11 +37,6 @@ import java.util.*;
 public class TextTokenUtil {
 
     /**
-     * 英文字符字典
-     */
-    public static final Map<Character, Boolean> EN_CHARACTERS = initEnCharacters();
-
-    /**
      * 替换文本标记
      *
      * @param log             日志
@@ -50,6 +45,7 @@ public class TextTokenUtil {
      * @param tokens          标记列表
      * @param replaceList     替换列表
      * @param replaceIndexMap 替换索引字典
+     * @return 返回布尔值，true为是，false为否
      */
     @SneakyThrows
     public static boolean replaceTextForToken(
@@ -325,7 +321,7 @@ public class TextTokenUtil {
                     // 第一个字符
                     if (index == 0) {
                         // 重置英文标记
-                        isEnglish = EN_CHARACTERS.containsKey(chars);
+                        isEnglish = TextUtil.isEnglishCharacter(chars);
                     } else {
                         // Y轴坐标一致
                         if (lastY == textValue.getY()) {
@@ -340,9 +336,9 @@ public class TextTokenUtil {
                                     // 获取X轴偏移量
                                     float offsetX = ((COSNumber) tokens.get(textValue.getIndex() - 3)).floatValue();
                                     // 当前被替换文本为英文字符
-                                    if (EN_CHARACTERS.containsKey(textValue.getValue().charAt(0))) {
+                                    if (TextUtil.isEnglishCharacter(textValue.getValue().charAt(0))) {
                                         // 当前替换文本为英文字符
-                                        if (EN_CHARACTERS.containsKey(chars)) {
+                                        if (TextUtil.isEnglishCharacter(chars)) {
                                             // 非英文
                                             if (!isEnglish) {
                                                 tokens.set(textValue.getIndex() - 3, new COSFloat(offsetX + info.getFontSize() * 10));
@@ -361,7 +357,7 @@ public class TextTokenUtil {
                                         }
                                     } else {
                                         // 当前替换文本为英文字符
-                                        if (EN_CHARACTERS.containsKey(chars)) {
+                                        if (TextUtil.isEnglishCharacter(chars)) {
                                             tokens.set(textValue.getIndex() - 3, new COSFloat(offsetX - info.getFontSize() * 10));
                                         } else {
                                             tokens.set(textValue.getIndex() - 3, new COSFloat(offsetX + info.getFontSize() * 10));
@@ -372,7 +368,7 @@ public class TextTokenUtil {
                                     // 定义最小X轴坐标
                                     float minX;
                                     // 当前替换文本为英文字符
-                                    if (EN_CHARACTERS.containsKey(chars)) {
+                                    if (TextUtil.isEnglishCharacter(chars)) {
                                         // 英文
                                         if (isEnglish) {
                                             minX = lastX + font.getCharacterWidth(chars) * info.getFontSize() / 1000F;
@@ -826,24 +822,5 @@ public class TextTokenUtil {
                 }
             }
         }
-    }
-
-    /**
-     * 初始化英文字符
-     *
-     * @return 返回字典
-     */
-    protected static Map<Character, Boolean> initEnCharacters() {
-        char[] characters = {
-                'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-                'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-                '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '+', '-', '*', '/', '=', '_', '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')',
-                '`', ',', '.', '\'', ';', '[', ']', '{', '}', ':', '"', '<', '>', '?'
-        };
-        Map<Character, Boolean> map = new HashMap<>(characters.length);
-        for (char c : characters) {
-            map.put(c, true);
-        }
-        return map;
     }
 }

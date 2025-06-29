@@ -148,6 +148,10 @@ class TableCellParam extends TableRowParam {
      */
     private String borderRightWidth;
     /**
+     * 边框半径
+     */
+    private String borderRadius;
+    /**
      * 合并行
      */
     private Integer rowSpan;

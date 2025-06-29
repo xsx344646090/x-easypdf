@@ -24,7 +24,7 @@ import java.util.function.Supplier;
  * </p>
  */
 public class DocumentAIParser extends AbstractParser {
-    
+
     /**
      * 有参构造
      *
@@ -33,122 +33,113 @@ public class DocumentAIParser extends AbstractParser {
     public DocumentAIParser(Document document) {
         super(document);
     }
-    
+
     /**
      * 获取智谱AI
      *
-     * @param ak             api密钥
-     * @param sk             密钥
+     * @param apiKey         api密钥
      * @param isJsonResponse 是否json响应
      * @return 返回智谱AI
      */
-    public ZhiPuAIParser getZhiPuAI(String ak, String sk, boolean isJsonResponse) {
-        return new ZhiPuAIParser(this.document, ak, sk, isJsonResponse);
+    public ZhiPuAIParser getZhiPuAI(String apiKey, boolean isJsonResponse) {
+        return new ZhiPuAIParser(this.document, apiKey, isJsonResponse);
     }
-    
+
     /**
      * 获取腾讯AI
      *
-     * @param ak             api密钥
-     * @param sk             密钥
+     * @param apiKey         api密钥
      * @param isJsonResponse 是否json响应
      * @return 返回腾讯AI
      */
-    public TencentAIParser getTencentAI(String ak, String sk, boolean isJsonResponse) {
-        return new TencentAIParser(this.document, ak, sk, isJsonResponse);
+    public TencentAIParser getTencentAI(String apiKey, boolean isJsonResponse) {
+        return new TencentAIParser(this.document, apiKey, isJsonResponse);
     }
-    
+
     /**
      * 获取深度求索AI
      *
-     * @param ak             api密钥
-     * @param sk             密钥
+     * @param apiKey         api密钥
      * @param isJsonResponse 是否json响应
      * @return 返回深度求索AI
      */
-    public DeepSeekAIParser getDeepSeekAI(String ak, String sk, boolean isJsonResponse) {
-        return new DeepSeekAIParser(this.document, ak, sk, isJsonResponse);
+    public DeepSeekAIParser getDeepSeekAI(String apiKey, boolean isJsonResponse) {
+        return new DeepSeekAIParser(this.document, apiKey, isJsonResponse);
     }
-    
+
     /**
      * 获取阿里AI
      *
-     * @param ak             api密钥
-     * @param sk             密钥
+     * @param apiKey         api密钥
      * @param isJsonResponse 是否json响应
      * @return 返回阿里AI
      */
-    public ALiAIParser getALiAI(String ak, String sk, boolean isJsonResponse) {
-        return new ALiAIParser(this.document, ak, sk, isJsonResponse);
+    public ALiAIParser getALiAI(String apiKey, boolean isJsonResponse) {
+        return new ALiAIParser(this.document, apiKey, isJsonResponse);
     }
-    
+
     /**
      * 获取讯飞AI
      *
-     * @param ak             api密钥
-     * @param sk             密钥
+     * @param apiKey         api密钥
      * @param isJsonResponse 是否json响应
      * @return 返回讯飞AI
      */
-    public XunFeiAIParser getXunFeiAI(String ak, String sk, boolean isJsonResponse) {
-        return new XunFeiAIParser(this.document, ak, sk, isJsonResponse);
+    public XunFeiAIParser getXunFeiAI(String apiKey, boolean isJsonResponse) {
+        return new XunFeiAIParser(this.document, apiKey, isJsonResponse);
     }
-    
+
     /**
      * 获取月之暗面AI
      *
-     * @param ak             api密钥
-     * @param sk             密钥
+     * @param apiKey         api密钥
      * @param isJsonResponse 是否json响应
      * @return 返回月之暗面AI
      */
-    public MoonshotAIParser getMoonshotAI(String ak, String sk, boolean isJsonResponse) {
-        return new MoonshotAIParser(this.document, ak, sk, isJsonResponse);
+    public MoonshotAIParser getMoonshotAI(String apiKey, boolean isJsonResponse) {
+        return new MoonshotAIParser(this.document, apiKey, isJsonResponse);
     }
-    
+
     /**
      * 获取昆仑万维AI
      *
-     * @param ak             api密钥
-     * @param sk             密钥
+     * @param apiKey         api密钥
      * @param isJsonResponse 是否json响应
      * @return 返回昆仑万维AI
      */
-    public KunLunWanWeiAIParser getKunLunWanWeiAI(String ak, String sk, boolean isJsonResponse) {
-        return new KunLunWanWeiAIParser(this.document, ak, sk, isJsonResponse);
+    public KunLunWanWeiAIParser getKunLunWanWeiAI(String apiKey, boolean isJsonResponse) {
+        return new KunLunWanWeiAIParser(this.document, apiKey, isJsonResponse);
     }
-    
+
     /**
      * 获取字节跳动AI
      *
-     * @param ak             api密钥
-     * @param sk             密钥
+     * @param apiKey         api密钥
      * @param isJsonResponse 是否json响应
      * @return 返回字节跳动AI
      */
-    public ByteDanceAIParser getByteDanceAI(String ak, String sk, boolean isJsonResponse) {
-        return new ByteDanceAIParser(this.document, ak, sk, isJsonResponse);
+    public ByteDanceAIParser getByteDanceAI(String apiKey, boolean isJsonResponse) {
+        return new ByteDanceAIParser(this.document, apiKey, isJsonResponse);
     }
-    
+
     /**
      * 获取开源中国AI
      *
-     * @param ak             api密钥
-     * @param sk             密钥
+     * @param apiKey         api密钥
      * @param isJsonResponse 是否json响应
      * @return 返回开源中国AI
      */
-    public OSChinaAIParser getOSChinaAIParser(String ak, String sk, boolean isJsonResponse) {
-        return new OSChinaAIParser(this.document, ak, sk, isJsonResponse);
+    public OSChinaAIParser getOSChinaAIParser(String apiKey, boolean isJsonResponse) {
+        return new OSChinaAIParser(this.document, apiKey, isJsonResponse);
     }
-    
+
     /**
      * 获取自定义AI
      *
      * @param supplier 提供者
      * @return 返回自定义AI
      */
-    public AbstractAIParser getCustomAI(Supplier<AbstractAIParser> supplier) {
+    public <T extends AbstractAIParser> T getCustomAI(Supplier<T> supplier) {
         return supplier.get();
     }
 }

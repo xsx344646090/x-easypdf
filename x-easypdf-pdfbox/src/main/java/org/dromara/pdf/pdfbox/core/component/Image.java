@@ -208,6 +208,25 @@ public class Image extends AbstractComponent {
             // 初始化高度
             this.height = (int) (this.image.getHeight() * this.scale);
         }
+        // 重置宽度
+        this.width = (int) Math.min(this.width, this.getPage().getWithoutMarginWidth());
+    }
+
+
+    /**
+     * 初始化起始Y轴坐标
+     *
+     * @param height 高度
+     */
+    @Override
+    protected void initBeginY(float height) {
+        // 跳过
+        if (height >= this.getPage().getWithoutMarginHeight()) {
+            // 设置起始Y轴坐标
+            this.setBeginY(this.getBottom() + this.getContext().getMinBeginY(), this.getIsCustomY());
+            return;
+        }
+        super.initBeginY(height);
     }
 
     /**
@@ -240,7 +259,8 @@ public class Image extends AbstractComponent {
             // 添加图像
             contentStream.drawImage(this.getImage(), 0, 0, this.getWidth(), this.getHeight());
             // 添加边框
-            BorderUtil.drawNormalBorder(contentStream, CommonUtil.getRectangle(this.getWidth(), this.getHeight()), BorderData.create(this, this.getBorderConfiguration()));
+            BorderUtil.drawNormalBorder(contentStream, CommonUtil.getRectangle(this.getWidth(), this.getHeight()), BorderData.create(this, this.getBorderConfiguration()), this.getPage().getBackgroundColor());
+            contentStream.stroke();
             // 关闭内容流
             contentStream.close();
         }

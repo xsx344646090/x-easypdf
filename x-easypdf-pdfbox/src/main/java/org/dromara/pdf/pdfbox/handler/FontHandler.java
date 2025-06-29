@@ -8,8 +8,9 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.font.FontFormat;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
-import org.dromara.pdf.pdfbox.core.base.Banner;
+import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.enums.FontType;
+import org.dromara.pdf.pdfbox.support.CharacterWrapper;
 import org.dromara.pdf.pdfbox.support.Constants;
 import org.dromara.pdf.pdfbox.support.fonts.FontInfo;
 import org.dromara.pdf.pdfbox.support.fonts.FontMapperImpl;
@@ -17,6 +18,7 @@ import org.dromara.pdf.pdfbox.support.fonts.FontMapperImpl;
 import java.io.File;
 import java.io.InputStream;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 字体助手
@@ -38,19 +40,19 @@ import java.util.*;
  */
 public class FontHandler {
 
-    static {
-        Banner.print();
-    }
-
     /**
      * 日志
      */
     private static final Log log = LogFactory.getLog(FontHandler.class);
-
     /**
      * 助手实例
      */
     private static final FontHandler INSTANCE = new FontHandler();
+
+    /**
+     * 字符宽度字典
+     */
+    private final Map<String, Map<CharacterWrapper, Float>> codeWithMap = new ConcurrentHashMap<>(16);
 
     /**
      * 无参构造
@@ -70,6 +72,31 @@ public class FontHandler {
      */
     public static FontHandler getInstance() {
         return INSTANCE;
+    }
+
+    /**
+     * 初始化字符字典
+     *
+     * @param fontName 字体名称
+     */
+    public void initCodeMap(String fontName) {
+        Map<String, FontInfo> fontInfoByName = FontMapperImpl.getInstance().getFontInfoByName();
+        FontInfo fontInfo = fontInfoByName.get(fontName);
+        if (Objects.isNull(fontInfo)) {
+            this.codeWithMap.putIfAbsent(fontName, new ConcurrentHashMap<>(2048, 1.0F));
+        } else {
+            this.codeWithMap.putIfAbsent(fontInfo.getPostScriptName(), new ConcurrentHashMap<>(2048, 1.0F));
+        }
+    }
+
+    /**
+     * 获取字符字典
+     *
+     * @param fontName 字体名称
+     * @return 返回字符字典
+     */
+    public Map<CharacterWrapper, Float> getCodeMap(String fontName) {
+        return this.codeWithMap.get(fontName);
     }
 
     /**
@@ -93,7 +120,42 @@ public class FontHandler {
     /**
      * 获取pdfbox字体
      *
-     * @param document    pdf文档
+     * @param document pdf文档
+     * @param fontName 字体名称
+     * @return 返回pdfBox字体
+     */
+    public PDFont getPDFont(Document document, String fontName) {
+        return this.getPDFont(document.getTarget(), fontName);
+    }
+
+    /**
+     * 获取pdfbox字体
+     *
+     * @param document pdfbox文档
+     * @param fontName 字体名称
+     * @return 返回pdfBox字体
+     */
+    public PDFont getPDFont(PDDocument document, String fontName) {
+        return this.getPDFont(document, fontName, true);
+    }
+
+    /**
+     * 获取pdfbox字体
+     *
+     * @param document    文档
+     * @param fontName    字体名称
+     * @param embedSubset 是否嵌入子集
+     * @return 返回pdfBox字体
+     */
+    @SneakyThrows
+    public PDFont getPDFont(Document document, String fontName, boolean embedSubset) {
+        return this.getPDFont(document.getTarget(), fontName, embedSubset);
+    }
+
+    /**
+     * 获取pdfbox字体
+     *
+     * @param document    pdfbox文档
      * @param fontName    字体名称
      * @param embedSubset 是否嵌入子集
      * @return 返回pdfBox字体
@@ -108,25 +170,14 @@ public class FontHandler {
     }
 
     /**
-     * 获取pdfbox字体
-     *
-     * @param document pdf文档
-     * @param fontName 字体名称
-     * @return 返回pdfBox字体
-     */
-    @SneakyThrows
-    public PDFont getPDFont(PDDocument document, String fontName) {
-        return this.getPDFont(document, fontName, true);
-    }
-
-    /**
      * 获取字体
      *
      * @param fontName 字体名称
      * @return 返回字体
      */
     public TrueTypeFont getTrueTypeFont(String fontName) {
-        return FontMapperImpl.getInstance().getTrueTypeFont(fontName, null).getFont();
+        FontInfo fontInfo = FontMapperImpl.getInstance().getFontInfoByName().get(fontName);
+        return FontMapperImpl.getInstance().getTrueTypeFont(Optional.ofNullable(fontInfo).map(FontInfo::getPostScriptName).orElse(fontName), null).getFont();
     }
 
     /**
@@ -142,7 +193,6 @@ public class FontHandler {
             if (log.isDebugEnabled()) {
                 log.debug("Added font ['" + alias + "']");
             }
-            FontMapperImpl.getInstance().resetFontInfoByName();
         }
     }
 
@@ -154,13 +204,7 @@ public class FontHandler {
      */
     public void addFont(File... files) {
         if (Objects.nonNull(files)) {
-            Arrays.stream(files).forEach(file -> {
-                String fontName = FontMapperImpl.getInstance().getProvider().addFont(file);
-                if (log.isDebugEnabled()) {
-                    log.debug("Added font ['" + fontName + "']");
-                }
-            });
-            FontMapperImpl.getInstance().resetFontInfoByName();
+            Arrays.stream(files).forEach(file -> FontMapperImpl.getInstance().getProvider().addFont(file));
         }
     }
 
@@ -172,13 +216,7 @@ public class FontHandler {
      */
     public void addFont(Collection<File> files) {
         if (Objects.nonNull(files)) {
-            files.forEach(file -> {
-                String fontName = FontMapperImpl.getInstance().getProvider().addFont(file);
-                if (log.isDebugEnabled()) {
-                    log.debug("Added font ['" + fontName + "']");
-                }
-            });
-            FontMapperImpl.getInstance().resetFontInfoByName();
+            files.forEach(file -> FontMapperImpl.getInstance().getProvider().addFont(file));
         }
     }
 
@@ -187,15 +225,11 @@ public class FontHandler {
      * <p>注：添加一次即可</p>
      *
      * @param inputStream 字体文件输入流
-     * @param tempName    临时文件名称
+     * @param alias       别名
      * @param type        字体类型
      */
-    public void addFont(InputStream inputStream, String tempName, FontType type) {
-        String fontName = FontMapperImpl.getInstance().getProvider().addFont(inputStream, tempName, type);
-        if (log.isDebugEnabled()) {
-            log.debug("Added font ['" + fontName + "']");
-        }
-        FontMapperImpl.getInstance().resetFontInfoByName();
+    public void addFont(InputStream inputStream, String alias, FontType type) {
+        FontMapperImpl.getInstance().getProvider().addFont(inputStream, alias, type);
     }
 
     /**

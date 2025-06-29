@@ -12,7 +12,6 @@ import org.dromara.pdf.pdfbox.core.base.config.BorderConfiguration;
 import org.dromara.pdf.pdfbox.core.enums.HorizontalAlignment;
 import org.dromara.pdf.pdfbox.core.enums.VerticalAlignment;
 import org.dromara.pdf.pdfbox.util.BorderUtil;
-import org.dromara.pdf.pdfbox.util.CommonUtil;
 
 import java.awt.*;
 import java.util.List;
@@ -39,7 +38,7 @@ import java.util.*;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class TableCell extends BorderData {
-    
+
     /**
      * 背景颜色
      */
@@ -112,7 +111,7 @@ public class TableCell extends BorderData {
      * 是否开启下对角线
      */
     protected Boolean isEnableDownLine;
-    
+
     /**
      * 有参构造
      *
@@ -122,7 +121,7 @@ public class TableCell extends BorderData {
         this.row = row;
         this.borderConfiguration = new BorderConfiguration(false);
     }
-    
+
     /**
      * 设置内容边距（上下左右）
      *
@@ -134,17 +133,16 @@ public class TableCell extends BorderData {
         this.contentMarginLeft = margin;
         this.contentMarginRight = margin;
     }
-    
+
     /**
      * 设置组件
      *
      * @param components 组件
      */
-    @SuppressWarnings("all")
     public void setComponents(List<Component> components) {
         this.components = components;
     }
-    
+
     /**
      * 设置组件
      *
@@ -157,7 +155,7 @@ public class TableCell extends BorderData {
             this.components = null;
         }
     }
-    
+
     /**
      * 添加组件
      *
@@ -172,7 +170,7 @@ public class TableCell extends BorderData {
             }
         }
     }
-    
+
     /**
      * 添加组件
      *
@@ -186,7 +184,15 @@ public class TableCell extends BorderData {
             Collections.addAll(this.components, components);
         }
     }
-    
+
+    /**
+     * 使用默认内容对齐方式
+     */
+    public void useDefaultContentAlignment() {
+        this.contentHorizontalAlignment = HorizontalAlignment.LEFT;
+        this.contentVerticalAlignment = VerticalAlignment.TOP;
+    }
+
     /**
      * 获取宽度
      *
@@ -212,7 +218,7 @@ public class TableCell extends BorderData {
         // 返回总宽度
         return total;
     }
-    
+
     /**
      * 获取高度
      *
@@ -239,7 +245,7 @@ public class TableCell extends BorderData {
         // 返回总高度
         return total;
     }
-    
+
     /**
      * 获取跨行数
      *
@@ -248,7 +254,7 @@ public class TableCell extends BorderData {
     public Integer getRowspan() {
         return Optional.ofNullable(this.rowspan).orElse(0);
     }
-    
+
     /**
      * 获取跨列数
      *
@@ -257,7 +263,7 @@ public class TableCell extends BorderData {
     public Integer getColspan() {
         return Optional.ofNullable(this.colspan).orElse(0);
     }
-    
+
     /**
      * 获取页面
      *
@@ -266,21 +272,21 @@ public class TableCell extends BorderData {
     public Page getPage() {
         return this.row.getPage();
     }
-    
+
     /**
      * 虚拟渲染
      */
     public void virtualRender(Float beginX, Float beginY) {
         this.processRender(beginX, beginY, false);
     }
-    
+
     /**
      * 渲染
      */
     public void render(Float beginX, Float beginY) {
         this.processRender(beginX, beginY, true);
     }
-    
+
     /**
      * 获取分页事件
      *
@@ -289,7 +295,7 @@ public class TableCell extends BorderData {
     protected PagingEvent getPagingEvent() {
         return this.row.getPagingEvent();
     }
-    
+
     /**
      * 初始化
      *
@@ -346,7 +352,7 @@ public class TableCell extends BorderData {
         // 初始化边框信息
         this.initBorderInfo();
     }
-    
+
     /**
      * 初始化边框
      */
@@ -356,7 +362,7 @@ public class TableCell extends BorderData {
             this.isPagingBorder = this.row.getIsPagingBorder();
         }
     }
-    
+
     /**
      * 初始化边框信息
      */
@@ -375,7 +381,7 @@ public class TableCell extends BorderData {
                 )
         );
     }
-    
+
     /**
      * 是否开启对角线
      *
@@ -384,7 +390,7 @@ public class TableCell extends BorderData {
     protected boolean isEnableDiagonalLine() {
         return this.isEnableUpLine || this.isEnableDownLine;
     }
-    
+
     /**
      * 处理渲染
      *
@@ -450,7 +456,7 @@ public class TableCell extends BorderData {
         // 重置光标位置
         context.resetCursor(beginX + this.getWidth(), tempY);
     }
-    
+
     /**
      * 添加边框
      *
@@ -485,15 +491,13 @@ public class TableCell extends BorderData {
                     info.getWidth(),
                     info.getHeight()
             );
-            // 添加背景颜色
-            CommonUtil.addBackgroundColor(info.getContext(), info.getContentMode(), info.getIsResetContentStream(), rectangle, info.getBackgroundColor());
             // 绘制边框
-            BorderUtil.drawBorderWithData(info, rectangle);
+            BorderUtil.drawBorderWithData(info, rectangle, Optional.ofNullable(info.getBackgroundColor()).orElse(this.getPage().getBackgroundColor()));
             // 返回尺寸
             return rectangle;
         }
     }
-    
+
     /**
      * 添加对角线
      *

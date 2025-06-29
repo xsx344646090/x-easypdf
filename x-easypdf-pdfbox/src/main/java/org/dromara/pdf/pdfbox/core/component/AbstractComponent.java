@@ -9,7 +9,9 @@ import org.dromara.pdf.pdfbox.core.enums.*;
 
 import java.awt.*;
 import java.io.Closeable;
-import java.util.*;
+import java.util.LinkedHashSet;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * 抽象组件
@@ -228,7 +230,6 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
      * @param margin 边距
      */
     public void setMarginLeft(float margin) {
-        // 重置左边距
         this.marginConfiguration.setMarginLeft(margin);
     }
 
@@ -284,6 +285,15 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
      */
     public void setBorderLineCapStyle(LineCapStyle style) {
         this.borderConfiguration.setBorderLineCapStyle(style);
+    }
+
+    /**
+     * 设置圆角半径
+     *
+     * @param radius 半径
+     */
+    public void setBorderRadius(float radius) {
+        this.borderConfiguration.setBorderRadius(radius);
     }
 
     /**
@@ -696,7 +706,28 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
             }
         }
         // 设置起始Y轴坐标
-        this.setBeginY(this.getBeginY() - offset, this.getIsCustomY());
+        this.setBeginY(this.getBeginY(this.getPage(), this.getBeginY() - offset), this.getIsCustomY());
+    }
+
+    /**
+     * 获取起始Y轴坐标
+     *
+     * @param page   页面
+     * @param beginY 起始Y轴坐标
+     * @return 返回起始Y轴坐标
+     */
+    protected float getBeginY(Page page, float beginY) {
+        if (beginY < 0) {
+            Page subPage = page.getSubPage();
+            beginY = beginY + subPage.getHeight();
+            if (beginY >= 0) {
+                this.getContext().setPage(subPage);
+                return beginY;
+            }
+            return getBeginY(subPage, beginY);
+        } else {
+            return beginY;
+        }
     }
 
     /**

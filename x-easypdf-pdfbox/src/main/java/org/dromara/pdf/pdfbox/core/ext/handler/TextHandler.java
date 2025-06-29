@@ -6,6 +6,7 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.base.config.FontConfiguration;
 import org.dromara.pdf.pdfbox.core.component.TextLineInfo;
+import org.dromara.pdf.pdfbox.core.ext.handler.tokenizer.StandardTokenizer;
 import org.dromara.pdf.pdfbox.support.Constants;
 
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.Objects;
  * @date 2024/9/25
  * @since 1.8
  * <p>
- * Copyright (c) 2020-2024 xsx All Rights Reserved.
+ * Copyright (c) 2020 xsx All Rights Reserved.
  * x-easypdf-pdfbox is licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
@@ -30,7 +31,7 @@ import java.util.Objects;
  * </p>
  */
 public class TextHandler extends AbstractTextHandler {
-    
+
     /**
      * 有参构造
      *
@@ -38,8 +39,10 @@ public class TextHandler extends AbstractTextHandler {
      */
     public TextHandler(Document document) {
         super(document);
+        this.tokenizer = new StandardTokenizer();
+        this.tokenizer.setContext(this.getContext());
     }
-    
+
     /**
      * 写入文本
      *
@@ -56,12 +59,12 @@ public class TextHandler extends AbstractTextHandler {
         PDFont font = this.getContext().getFont(fontConfiguration.getFontName());
         // 获取字体大小
         Float fontSize = fontConfiguration.getFontSize();
-        // 获取字符数组
-        char[] charArray = text.getText().toCharArray();
+        // 获取文本内容
+        String content = text.getText();
         // 遍历字符
-        for (int i = 0; i < charArray.length; i++) {
+        for (int i = 0; i < content.length(); i++) {
             // 获取字符
-            char character = charArray[i];
+            char character = content.charAt(i);
             try {
                 // 写入文本
                 contentStream.showCharacter(character);
@@ -71,9 +74,9 @@ public class TextHandler extends AbstractTextHandler {
                 // 未解析成功
                 if (flag) {
                     // 还有下一个字符
-                    if (i + 1 < charArray.length) {
+                    if (i + 1 < content.length()) {
                         // 获取下一个字符
-                        char next = charArray[i + 1];
+                        char next = content.charAt(i + 1);
                         // 处理双字符
                         flag = this.processDouble(contentStream, character, next, specialFontNames, font, fontSize);
                         // 未解析成功
@@ -93,7 +96,7 @@ public class TextHandler extends AbstractTextHandler {
             }
         }
     }
-    
+
     /**
      * 处理单字符
      *
@@ -107,7 +110,7 @@ public class TextHandler extends AbstractTextHandler {
     @SneakyThrows
     protected boolean processSingle(
             PDPageContentStream contentStream,
-            Character character,
+            char character,
             List<String> specialFontNames,
             PDFont font,
             Float fontSize
@@ -137,7 +140,7 @@ public class TextHandler extends AbstractTextHandler {
         // 返回标记
         return flag;
     }
-    
+
     /**
      * 处理双字符
      *
@@ -152,8 +155,8 @@ public class TextHandler extends AbstractTextHandler {
     @SneakyThrows
     protected boolean processDouble(
             PDPageContentStream contentStream,
-            Character character,
-            Character next,
+            char character,
+            char next,
             List<String> specialFontNames,
             PDFont font,
             Float fontSize

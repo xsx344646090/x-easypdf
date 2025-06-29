@@ -31,10 +31,9 @@ public class ZhiPuAITest extends BaseTest {
     @Test
     public void parseImageWithPageTest() {
         this.test(()->{
-            String ak = System.getenv("ak");
             String sk = System.getenv("sk");
             Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\allTest.pdf");
-            ZhiPuAIParser parser = PdfHandler.getDocumentAIParser(document).getZhiPuAI(ak, sk, false);
+            ZhiPuAIParser parser = PdfHandler.getDocumentAIParser(document).getZhiPuAI(sk, false);
             AIParseInfo info = parser.parseImageWithPage("根据“这是一张XXX地点XXX的图片”的格式描述图片展示的内容，说出具体的城市，使用中文回答", 0, 1);
             log.info("返回内容：\n" + info.getResult());
             document.close();
@@ -47,10 +46,9 @@ public class ZhiPuAITest extends BaseTest {
     @Test
     public void parsePageWithImageTest() {
         this.test(()->{
-            String ak = System.getenv("ak");
             String sk = System.getenv("sk");
             Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\allTest.pdf");
-            ZhiPuAIParser parser = PdfHandler.getDocumentAIParser(document).getZhiPuAI(ak, sk, true);
+            ZhiPuAIParser parser = PdfHandler.getDocumentAIParser(document).getZhiPuAI(sk, true);
             AIParseInfo info = parser.parsePageWithImage("提取表格内容，以json格式返回", 1);
             log.info("返回内容：\n" + info.getResult());
             document.close();
@@ -63,10 +61,9 @@ public class ZhiPuAITest extends BaseTest {
     @Test
     public void parseTextWithPageTest() {
         this.test(()->{
-            String ak = System.getenv("ak");
             String sk = System.getenv("sk");
             Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\allTest.pdf");
-            ZhiPuAIParser parser = PdfHandler.getDocumentAIParser(document).getZhiPuAI(ak, sk, false);
+            ZhiPuAIParser parser = PdfHandler.getDocumentAIParser(document).getZhiPuAI(sk, false);
             AIParseInfo info = parser.parseTextWithPage("一句话总结文本内容", 0, 0);
             log.info("返回内容：\n" + info.getResult());
             document.close();
@@ -79,10 +76,9 @@ public class ZhiPuAITest extends BaseTest {
     @Test
     public void parseTextWithDocumentTest() {
         this.test(()->{
-            String ak = System.getenv("ak");
             String sk = System.getenv("sk");
             Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\allTest.pdf");
-            ZhiPuAIParser parser = PdfHandler.getDocumentAIParser(document).getZhiPuAI(ak, sk, true);
+            ZhiPuAIParser parser = PdfHandler.getDocumentAIParser(document).getZhiPuAI(sk, true);
             AIParseInfo info = parser.parseTextWithDocument("提取表格内容，以json格式返回");
             log.info("返回内容：\n" + info.getResult());
             document.close();

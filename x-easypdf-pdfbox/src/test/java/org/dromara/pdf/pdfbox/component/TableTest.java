@@ -4,9 +4,9 @@ import org.dromara.pdf.pdfbox.base.BaseTest;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.base.PageHeader;
+import org.dromara.pdf.pdfbox.core.component.*;
 import org.dromara.pdf.pdfbox.core.component.Component;
 import org.dromara.pdf.pdfbox.core.component.Image;
-import org.dromara.pdf.pdfbox.core.component.*;
 import org.dromara.pdf.pdfbox.core.enums.FontStyle;
 import org.dromara.pdf.pdfbox.core.enums.HorizontalAlignment;
 import org.dromara.pdf.pdfbox.core.enums.VerticalAlignment;
@@ -19,6 +19,7 @@ import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * @author xsx
@@ -112,6 +113,188 @@ public class TableTest extends BaseTest {
                 table.addRows(tableRow);
             }
 
+            // 绘制
+            table.render();
+
+            // 添加页面
+            document.appendPage(page);
+            // 保存文档
+            document.save("E:\\PDF\\pdfbox\\table\\tableTest.pdf");
+            // 关闭文档
+            document.close();
+
+        });
+    }
+
+    /**
+     * 表格测试
+     */
+    @Test
+    public void tableTest2() {
+        this.test(() -> {
+            // 创建文档
+            Document document = PdfHandler.getDocumentHandler().create();
+
+            // 创建页面
+            Page page = new Page(document);
+
+            // 定义每列宽度
+            float width = 100F;
+            // 定义行高
+            float height = 70F;
+
+            // 创建表格
+            Table table = new Table(document.getCurrentPage());
+            // 设置列宽（5列）
+            table.setCellWidths(width, width, width, width, width);
+            // 设置显示边框
+            table.setIsBorder(true);
+            // 表格水平居中
+            table.setHorizontalAlignment(HorizontalAlignment.CENTER);
+            // 内容水平居中
+            table.setContentHorizontalAlignment(HorizontalAlignment.CENTER);
+            // 内容垂直居中
+            table.setContentVerticalAlignment(VerticalAlignment.CENTER);
+
+            // 创建行
+            TableRow tableRow = new TableRow(table);
+            // 设置行高
+            tableRow.setHeight(height);
+            // 创建文本域
+            Textarea textarea = new Textarea(table.getPage());
+            // 设置文本
+            textarea.setText("考试成绩");
+            // 创建单元格
+            TableCell cell = new TableCell(tableRow);
+            // 设置合并列数
+            cell.setColspan(4);
+            // 添加组件
+            cell.addComponents(textarea);
+            // 添加单元格
+            tableRow.addCells(cell);
+            // 添加行
+            table.addRows(tableRow);
+
+            // 创建行
+            tableRow = new TableRow(table);
+            // 设置行高
+            tableRow.setHeight(height);
+            // 创建单元格
+            cell = new TableCell(tableRow);
+            // 设置合并列数
+            cell.setColspan(1);
+            // 开启下对角线
+            cell.setIsEnableDownLine(true);
+            // 使用默认内容对齐方式（水平居左垂直居上）
+            cell.useDefaultContentAlignment();
+            // 创建文本域
+            Textarea textarea1 = new Textarea(table.getPage());
+            // 设置文本
+            textarea1.setText("时间");
+            // 设置X轴相对坐标
+            textarea1.setRelativeBeginX(40F);
+            // 设置Y轴相对坐标
+            textarea1.setRelativeBeginY(40F);
+            // 创建文本域
+            Textarea textarea2 = new Textarea(table.getPage());
+            // 设置文本
+            textarea2.setText("科目");
+            // 设置X轴相对坐标
+            textarea2.setRelativeBeginX(90F);
+            // 设置Y轴相对坐标
+            textarea2.setRelativeBeginY(-20F);
+            // 添加组件
+            cell.addComponents(textarea1, textarea2);
+            // 添加单元格
+            tableRow.addCells(cell, null);
+
+            // 创建文本域
+            textarea = new Textarea(table.getPage());
+            // 设置文本
+            textarea.setText("语文");
+            // 创建单元格
+            cell = new TableCell(tableRow);
+            // 添加组件
+            cell.addComponents(textarea);
+            // 添加单元格
+            tableRow.addCells(cell);
+
+            // 创建文本域
+            textarea = new Textarea(table.getPage());
+            // 设置文本
+            textarea.setText("数学");
+            // 创建单元格
+            cell = new TableCell(tableRow);
+            // 添加组件
+            cell.addComponents(textarea);
+            // 添加单元格
+            tableRow.addCells(cell);
+
+            // 创建文本域
+            textarea = new Textarea(table.getPage());
+            // 设置文本
+            textarea.setText("英语");
+            // 创建单元格
+            cell = new TableCell(tableRow);
+            // 添加组件
+            cell.addComponents(textarea);
+            // 添加单元格
+            tableRow.addCells(cell);
+            // 添加行
+            table.addRows(tableRow);
+
+            // 定义随机数
+            Random random = new Random(0);
+            // 定义季度索引
+            int index = 1;
+            // 循环添加行
+            for (int i = 1; i <= 4; i++) {
+                // 创建行
+                tableRow = new TableRow(table);
+                // 设置行高
+                tableRow.setHeight(height);
+                // 合并行
+                if (i == 1 || i == 3) {
+                    // 创建单元格
+                    cell = new TableCell(tableRow);
+                    // 设置合并行数
+                    cell.setRowspan(1);
+                    // 创建文本域
+                    textarea = new Textarea(table.getPage());
+                    // 设置文本
+                    textarea.setText(i == 1 ? "上半年" : "下半年");
+                    // 添加组件
+                    cell.addComponents(textarea);
+                    // 添加单元格
+                    tableRow.addCells(cell);
+                } else {
+                    // 添加单元格
+                    tableRow.addCells((TableCell) null);
+                }
+                // 循环添加列
+                for (int j = 0; j < 4; j++) {
+                    // 创建单元格
+                    cell = new TableCell(tableRow);
+                    // 创建文本域
+                    textarea = new Textarea(table.getPage());
+                    // 第一列
+                    if (j == 0) {
+                        // 设置文本
+                        textarea.setText(index + "季度");
+                        // 季度索引自增
+                        index++;
+                    } else {
+                        // 设置文本
+                        textarea.setText(String.valueOf(random.nextInt(101)));
+                    }
+                    // 添加组件
+                    cell.addComponents(textarea);
+                    // 添加单元格
+                    tableRow.addCells(cell);
+                }
+                // 添加行
+                table.addRows(tableRow);
+            }
 
             // 绘制
             table.render();
@@ -119,10 +302,9 @@ public class TableTest extends BaseTest {
             // 添加页面
             document.appendPage(page);
             // 保存文档
-            document.save("E:\\PDF\\pdfbox\\table\\test.pdf");
+            document.save("E:\\PDF\\pdfbox\\table\\tableTest2.pdf");
             // 关闭文档
             document.close();
-
         });
     }
 
@@ -398,7 +580,7 @@ public class TableTest extends BaseTest {
             components.add(headerTextarea);
             header.setComponents(components);
             header.setHeight(12F);
-            header.setIsBorder(false);
+            header.setIsBorder(true);
             header.render();
 
             float width = page.getWithoutMarginWidth() / 6;
@@ -411,24 +593,24 @@ public class TableTest extends BaseTest {
 
             List<TableRow> rowList = new ArrayList<>(16);
 
-            int rowCount = 13;
+            int rowCount = 18;
             TableRow tableRow = new TableRow(table);
             tableRow.setHeight(height);
             Textarea textarea1 = new Textarea(table.getPage());
             textarea1.setText("合并行");
-            textarea1.setHorizontalAlignment(HorizontalAlignment.CENTER);
-            textarea1.setVerticalAlignment(VerticalAlignment.BOTTOM);
             Textarea textarea2 = new Textarea(table.getPage());
             textarea2.setText("合并内容1");
-            textarea2.setHorizontalAlignment(HorizontalAlignment.CENTER);
-            textarea2.setVerticalAlignment(VerticalAlignment.BOTTOM);
             TableCell cell1 = new TableCell(tableRow);
+            cell1.setContentHorizontalAlignment(HorizontalAlignment.CENTER);
+            cell1.setContentVerticalAlignment(VerticalAlignment.CENTER);
             cell1.setComponents(textarea1);
             cell1.setRowspan(rowCount);
             TableCell cell2 = new TableCell(tableRow);
+            cell2.setContentHorizontalAlignment(HorizontalAlignment.CENTER);
+            cell2.setContentVerticalAlignment(VerticalAlignment.CENTER);
             cell2.setComponents(textarea2);
             cell2.setColspan(2);
-            tableRow.setCells(cell1, cell2);
+            tableRow.setCells(cell1, cell2, null, null);
             rowList.add(tableRow);
 
             for (int i = 1; i <= rowCount; i++) {
@@ -440,14 +622,14 @@ public class TableTest extends BaseTest {
                 TableCell cell = new TableCell(tableRow);
                 cell.setColspan(2);
                 cell.setComponents(textarea);
-                tableRow.setCells(null, cell);
+                tableRow.setCells(null, cell, null, null);
                 rowList.add(tableRow);
             }
             table.setRows(rowList);
             table.render();
 
             document.appendPage(page);
-            document.save("E:\\PDF\\pdfbox\\table\\simpleTableTest.pdf");
+            document.save("E:\\PDF\\pdfbox\\table\\simpleTableTest2.pdf");
             document.close();
         });
     }
@@ -503,7 +685,7 @@ public class TableTest extends BaseTest {
             table.render();
 
             document.appendPage(page);
-            document.save("E:\\PDF\\pdfbox\\table\\simpleTableTest.pdf");
+            document.save("E:\\PDF\\pdfbox\\table\\simpleTableTest3.pdf");
             document.close();
         });
     }
@@ -602,7 +784,7 @@ public class TableTest extends BaseTest {
             table.render();
 
             document.appendPage(page);
-            document.save("E:\\PDF\\pdfbox\\table\\simpleTableTest.pdf");
+            document.save("E:\\PDF\\pdfbox\\table\\simpleTableTest4.pdf");
             document.close();
         });
     }

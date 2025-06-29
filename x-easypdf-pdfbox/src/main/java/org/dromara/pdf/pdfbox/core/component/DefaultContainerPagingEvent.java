@@ -6,7 +6,6 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.dromara.pdf.pdfbox.core.base.Context;
 import org.dromara.pdf.pdfbox.core.base.PageHeader;
 import org.dromara.pdf.pdfbox.util.BorderUtil;
-import org.dromara.pdf.pdfbox.util.CommonUtil;
 
 import java.util.Optional;
 
@@ -31,7 +30,7 @@ import java.util.Optional;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class DefaultContainerPagingEvent extends AbstractPagingEvent {
-    
+
     /**
      * 分页之前
      *
@@ -80,19 +79,8 @@ public class DefaultContainerPagingEvent extends AbstractPagingEvent {
             );
             // 如果非虚拟渲染
             if (!context.getIsVirtualRender()) {
-                // 根据组件的类型执行不同的操作
-                switch (context.getExecutingComponentType()) {
-                    case CONTAINER:
-                    case TABLE: {
-                        // 添加背景颜色
-                        CommonUtil.addBackgroundColor(info.getContext(), info.getContentMode(), info.getIsResetContentStream(), rectangle, info.getBackgroundColor());
-                        break;
-                    }
-                    default:
-                        break;
-                }
                 // 绘制边框
-                BorderUtil.drawBorderWithData(info, rectangle);
+                BorderUtil.drawBorderWithData(info, rectangle, info.getBackgroundColor());
             }
             // 恢复边框的顶部和底部
             info.setIsBorderTop(isBorderTop);
@@ -105,7 +93,7 @@ public class DefaultContainerPagingEvent extends AbstractPagingEvent {
         // 设置是否已经分页
         context.setIsAlreadyPaging(false);
     }
-    
+
     /**
      * 分页之后
      *

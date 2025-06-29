@@ -49,6 +49,13 @@ public class VisualOptions {
      */
     private Float imageScalePercent;
 
+    /**
+     * 初始化可见配置
+     *
+     * @param document         文档
+     * @param signature        签名
+     * @param signatureOptions 签名选项
+     */
     @SneakyThrows
     protected void initVisualOptions(PDDocument document, PDSignature signature, SignatureOptions signatureOptions) {
         // 定义可视化签名属性

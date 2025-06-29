@@ -144,6 +144,10 @@ public class TemplateAttributes {
      */
     public static final String BORDER_SPACING = "border-spacing";
     /**
+     * 边框半径
+     */
+    public static final String BORDER_RADIUS = "fox:border-radius";
+    /**
      * 上边框
      */
     public static final String BORDER_TOP = "border-top";

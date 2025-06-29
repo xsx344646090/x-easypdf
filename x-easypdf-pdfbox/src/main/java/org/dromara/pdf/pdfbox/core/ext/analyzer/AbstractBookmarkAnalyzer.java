@@ -97,10 +97,7 @@ public abstract class AbstractBookmarkAnalyzer extends AbstractAnalyzer {
         // 处理页面目标
         BookmarkInfo bookmarkInfo = this.processPageDestination(outlineItem, destination);
         // 没有书签
-        if (Objects.isNull(bookmarkInfo)) {
-            // 返回
-            return;
-        } else {
+        if (Objects.nonNull(bookmarkInfo)) {
             // 处理子书签
             bookmarkInfo.setChildren(this.processOutlineItemChildren(documentCatalog, outlineItem));
             // 添加书签
@@ -109,10 +106,7 @@ public abstract class AbstractBookmarkAnalyzer extends AbstractAnalyzer {
         // 处理名称目标
         bookmarkInfo = this.processNamedDestination(documentCatalog, destination);
         // 没有书签
-        if (Objects.isNull(bookmarkInfo)) {
-            // 返回
-            return;
-        } else {
+        if (Objects.nonNull(bookmarkInfo)) {
             // 处理子书签
             bookmarkInfo.setChildren(this.processOutlineItemChildren(documentCatalog, outlineItem));
             // 添加书签

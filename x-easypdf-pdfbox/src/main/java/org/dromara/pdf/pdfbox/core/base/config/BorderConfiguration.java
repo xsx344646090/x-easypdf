@@ -36,6 +36,10 @@ public class BorderConfiguration {
      */
     protected LineCapStyle borderLineCapStyle;
     /**
+     * 圆角半径
+     */
+    protected Float borderRadius;
+    /**
      * 边框线长
      */
     protected Float borderLineLength;
@@ -170,10 +174,19 @@ public class BorderConfiguration {
     /**
      * 是否有边框
      *
-     * @return 返回是否有边框
+     * @return 返回布尔值，true为是，false为否
      */
     public boolean hasBorder() {
         return this.isBorderTop || this.isBorderBottom || this.isBorderLeft || this.isBorderRight;
+    }
+
+    /**
+     * 是否包含所有边框
+     *
+     * @return 返回布尔值，true为是，false为否
+     */
+    public boolean hasAllBorder() {
+        return this.isBorderTop && this.isBorderBottom && this.isBorderLeft && this.isBorderRight;
     }
 
     /**
@@ -187,6 +200,10 @@ public class BorderConfiguration {
         // 初始化边框线帽样式
         if (Objects.isNull(this.borderLineCapStyle)) {
             this.borderLineCapStyle = LineCapStyle.SQUARE;
+        }
+        // 初始化边框圆角半径
+        if (Objects.isNull(this.borderRadius)) {
+            this.borderRadius = 0F;
         }
         // 初始化边框线宽
         if (Objects.isNull(this.borderLineWidth)) {
@@ -243,6 +260,10 @@ public class BorderConfiguration {
         // 初始化边框线帽样式
         if (Objects.isNull(this.borderLineCapStyle)) {
             this.borderLineCapStyle = base.borderLineCapStyle;
+        }
+        // 初始化边框圆角半径
+        if (Objects.isNull(this.borderRadius)) {
+            this.borderRadius = base.borderRadius;
         }
         // 初始化边框线长
         if (Objects.isNull(this.borderLineLength)) {

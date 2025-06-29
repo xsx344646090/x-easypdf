@@ -23,15 +23,11 @@ import okhttp3.OkHttpClient;
  */
 @Data
 public class AIParserConfig {
-    
+
     /**
      * api密钥
      */
-    protected String ak;
-    /**
-     * 密钥
-     */
-    protected String sk;
+    protected String apiKey;
     /**
      * 图像接口地址
      */
@@ -64,20 +60,18 @@ public class AIParserConfig {
      * http客户端
      */
     protected OkHttpClient client;
-    
+
     /**
      * 有参构造
      *
-     * @param ak                api密钥
-     * @param sk                密钥
+     * @param apiKey            api密钥
      * @param imageSystemPrompt 图像系统提示词
      * @param textSystemPrompt  文本系统提示词
      * @param isJsonResponse    是否json格式返回
      * @param client            http客户端
      */
-    public AIParserConfig(String ak, String sk, String imageSystemPrompt, String textSystemPrompt, boolean isJsonResponse, OkHttpClient client) {
-        this.ak = ak;
-        this.sk = sk;
+    public AIParserConfig(String apiKey, String imageSystemPrompt, String textSystemPrompt, boolean isJsonResponse, OkHttpClient client) {
+        this.apiKey = apiKey;
         this.imageSystemPrompt = imageSystemPrompt;
         this.textSystemPrompt = textSystemPrompt;
         this.isJsonResponse = isJsonResponse;

@@ -6,6 +6,7 @@ import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.component.Textarea;
 import org.dromara.pdf.pdfbox.core.ext.processor.MergeProcessor;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
+import org.dromara.pdf.pdfbox.util.IdUtil;
 import org.junit.Test;
 
 import java.io.File;
@@ -36,11 +37,12 @@ public class BigDataTest extends BaseTest {
     public void bigDataTest1() {
         // 单次渲染耗时：2.417s 页面数：290 耗时：3.369s 大小：448KB
         this.test(() -> {
-            Document document = PdfHandler.getDocumentHandler().create(MemoryPolicy.setupMix(20L * 1024 * 1024, "E:\\PDF\\pdfbox\\document"));
+            PdfHandler.disableScanSystemFonts();
+            Document document = PdfHandler.getDocumentHandler().create();
             document.setMargin(50F);
-            
+
             Page page = new Page(document);
-            
+
             this.test(() -> {
                 StringBuilder builder = new StringBuilder();
                 for (int j = 0; j < 1000000; j++) {
@@ -50,50 +52,50 @@ public class BigDataTest extends BaseTest {
                 textarea.setText(builder.toString());
                 textarea.render();
             }, "单次渲染");
-            
+
             document.appendPage(page);
             log.info("页面数：" + document.getTotalPageNumber());
-            
+
             this.test(() -> document.save("E:\\PDF\\pdfbox\\document\\bigDataTest1.pdf"), "保存");
             document.close();
         });
     }
-    
+
     /**
      * 测试大数据
      */
     @Test
     public void bigDataTest2() {
-        // 单次渲染耗时：0.022s 页面数：300 耗时：3.321s 大小：446KB
-        this.test(() -> {
-            Document document = PdfHandler.getDocumentHandler().create(MemoryPolicy.setupMix(50L * 1024 * 1024, "E:\\PDF\\pdfbox\\document"));
-            document.setMargin(50F);
-            
-            int total = 300;
-            List<Page> pages = new ArrayList<>(total);
-            for (int i = 0; i < total; i++) {
-                int finalI = i;
-                this.test(() -> {
-                    Page page = new Page(document);
-                    pages.add(page);
+        for (int k = 0; k < 10; k++) {
+            // 单次渲染耗时：0.022s 页面数：300 耗时：3.321s 大小：446KB
+            this.test(() -> {
+                // PdfHandler.enableCompression(8);
+                PdfHandler.disableScanSystemFonts();
+                // PdfHandler.getFontHandler().addFont(new File("C:\\Windows\\Fonts\\simfang.ttf"));
+                Document document = PdfHandler.getDocumentHandler().create();
+                document.setMargin(50F);
+                // document.setFontName("仿宋");
+                Page page = new Page(document);
+
+                for (int i = 0; i < 20; i++) {
                     StringBuilder builder = new StringBuilder();
                     for (int j = 0; j < 5000; j++) {
-                        builder.append(finalI).append("测试内容").append(j);
+                        builder.append("测试内容").append(j);
                     }
-                    Textarea textarea = new Textarea(page);
+                    Textarea textarea = new Textarea(document.getCurrentPage());
                     textarea.setText(builder.toString());
                     textarea.render();
-                }, "单次渲染");
-            }
-            
-            document.appendPage(pages);
-            log.info("页面数：" + document.getTotalPageNumber());
-            
-            this.test(() -> document.save("E:\\PDF\\pdfbox\\document\\bigDataTest2.pdf"), "保存");
-            document.close();
-        });
+                }
+
+                document.appendPage(page);
+                // log.info("页面数：" + document.getTotalPageNumber());
+
+                // this.test(() -> document.save("E:\\PDF\\pdfbox\\document\\bigDataTest-"+ IdUtil.get() +".pdf"), "保存");
+                document.saveAndClose("E:\\PDF\\pdfbox\\document\\bigDataTest-"+ IdUtil.get() +".pdf");
+            });
+        }
     }
-    
+
     /**
      * 测试大数据
      */
@@ -102,9 +104,9 @@ public class BigDataTest extends BaseTest {
         this.test(() -> {
             Document document = PdfHandler.getDocumentHandler().create(MemoryPolicy.setupTempFileOnly("E:\\PDF\\pdfbox\\document"));
             document.setMargin(50F);
-            
+
             int total = 500;
-            
+
             List<File> files = new ArrayList<>(total);
             for (int i = 0; i < total; i++) {
                 int finalI = i;
@@ -120,14 +122,14 @@ public class BigDataTest extends BaseTest {
                     Textarea textarea = new Textarea(page);
                     textarea.setText(builder.toString());
                     textarea.render();
-                    
+
                     temp.appendPage(page);
                     temp.save(file);
                     temp.close();
                     files.add(file);
                 }, "单次渲染");
             }
-            
+
             MergeProcessor processor = PdfHandler.getDocumentProcessor(document).getMergeProcessor();
             int size = files.size() - 1;
             int begin = 0;
@@ -138,14 +140,14 @@ public class BigDataTest extends BaseTest {
                 begin = end;
                 end = Math.min(end + 49, size);
             } while (end != size);
-            
+
             document = processor.flush();
             log.info("页面数：" + document.getTotalPageNumber());
-            
+
             Document finalDocument = document;
             this.test(() -> finalDocument.save("E:\\PDF\\pdfbox\\document\\bigDataTest3.pdf"), "保存");
             document.close();
-            
+
             files.forEach(File::delete);
         });
     }

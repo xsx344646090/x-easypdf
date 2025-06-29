@@ -10,6 +10,7 @@ import org.dromara.pdf.pdfbox.core.enums.ContentMode;
 import org.dromara.pdf.pdfbox.core.enums.HorizontalAlignment;
 import org.dromara.pdf.pdfbox.core.enums.VerticalAlignment;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
+import org.dromara.pdf.pdfbox.support.Constants;
 import org.junit.Test;
 
 import java.awt.*;
@@ -61,7 +62,6 @@ public class HelloWorldTest extends BaseTest {
     @Test
     public void allTest() {
         this.test(() -> {
-            PdfHandler.disableBanner();
             Document document = PdfHandler.getDocumentHandler().create();
             document.setMargin(20F);
             document.setFontName("宋体");
@@ -100,7 +100,7 @@ public class HelloWorldTest extends BaseTest {
             PageFooter pageFooter = new PageFooter(document.getCurrentPage());
 
             Textarea footerText = new Textarea(pageFooter.getPage());
-            footerText.setText("第 " + footerText.getPlaceholder() + " 页，共 2 页");
+            footerText.setText("第 " + Constants.CURRENT_PAGE_PLACEHOLDER + " 页，共 2 页");
             footerText.setHorizontalAlignment(HorizontalAlignment.CENTER);
             footerText.setVerticalAlignment(VerticalAlignment.CENTER);
 
@@ -213,9 +213,9 @@ public class HelloWorldTest extends BaseTest {
 
             document.appendPage(page);
 
-            TextareaWatermark watermark = new TextareaWatermark(document);
-            watermark.setTexts("水印");
-            watermark.render(document);
+            // TextareaWatermark watermark = new TextareaWatermark(document);
+            // watermark.setTexts("水印");
+            // watermark.render(document);
 
             document.save("E:\\PDF\\pdfbox\\allTest.pdf");
             document.close();

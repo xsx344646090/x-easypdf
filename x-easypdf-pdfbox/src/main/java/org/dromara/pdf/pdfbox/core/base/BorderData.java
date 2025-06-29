@@ -82,6 +82,15 @@ public class BorderData extends AbstractBase {
     }
 
     /**
+     * 设置圆角半径
+     *
+     * @param radius 半径
+     */
+    public void setBorderLineCapStyle(float radius) {
+        this.borderConfiguration.setBorderRadius(radius);
+    }
+
+    /**
      * 设置边框线长
      *
      * @param length 线长
@@ -106,6 +115,18 @@ public class BorderData extends AbstractBase {
      */
     public void setBorderDottedSpacing(float spacing) {
         this.borderConfiguration.setBorderDottedSpacing(spacing);
+    }
+
+    /**
+     * 设置边框颜色
+     *
+     * @param color 颜色
+     */
+    public void setBorderColor(Color color) {
+        this.borderConfiguration.setBorderTopColor(color);
+        this.borderConfiguration.setBorderBottomColor(color);
+        this.borderConfiguration.setBorderLeftColor(color);
+        this.borderConfiguration.setBorderRightColor(color);
     }
 
     /**
@@ -205,6 +226,15 @@ public class BorderData extends AbstractBase {
      */
     public LineCapStyle getBorderLineCapStyle() {
         return this.borderConfiguration.getBorderLineCapStyle();
+    }
+
+    /**
+     * 获取圆角半径
+     *
+     * @return 返回圆角半径
+     */
+    public Float getBorderRadius() {
+        return this.borderConfiguration.getBorderRadius();
     }
 
     /**

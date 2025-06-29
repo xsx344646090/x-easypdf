@@ -7,7 +7,9 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.dromara.pdf.pdfbox.core.component.BorderInfo;
 import org.dromara.pdf.pdfbox.core.enums.ComponentType;
 import org.dromara.pdf.pdfbox.core.ext.handler.AbstractTextHandler;
+import org.dromara.pdf.pdfbox.core.ext.handler.TextHandler;
 import org.dromara.pdf.pdfbox.core.info.CatalogInfo;
+import org.dromara.pdf.pdfbox.handler.FontHandler;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 
 import java.util.*;
@@ -109,10 +111,6 @@ public class Context {
      * 字体字典
      */
     protected Map<String, PDFont> fontMap;
-    /**
-     * 文本助手
-     */
-    protected AbstractTextHandler textHandler;
 
     /**
      * 有参构造
@@ -130,16 +128,6 @@ public class Context {
         this.catalogs = new ArrayList<>(16);
         this.customInfo = new HashMap<>(16);
         this.fontMap = new HashMap<>(16);
-    }
-
-    /**
-     * 设置文本助手
-     *
-     * @param handler 助手
-     */
-    public void setTextHandler(AbstractTextHandler handler) {
-        Objects.requireNonNull(handler, "the handler can not be null");
-        this.textHandler = handler;
     }
 
     /**
@@ -161,6 +149,15 @@ public class Context {
     }
 
     /**
+     * 获取文本助手
+     *
+     * @return 返回文本助手
+     */
+    public AbstractTextHandler getTextHandler() {
+        return new TextHandler(this.document);
+    }
+
+    /**
      * 获取字体
      *
      * @param fontName 字体名称
@@ -178,7 +175,7 @@ public class Context {
     /**
      * 是否相同组件
      *
-     * @return 返回布尔值，是为true，否为false
+     * @return 返回布尔值，true为是，false为否
      */
     public boolean isEqualsComponent(ComponentType type) {
         return this.executingComponentType == type;
@@ -187,7 +184,7 @@ public class Context {
     /**
      * 是否有页眉
      *
-     * @return 返回布尔值，是为true，否为false
+     * @return 返回布尔值，true为是，false为否
      */
     public boolean hasPageHeader() {
         return Objects.nonNull(this.pageHeader);
@@ -196,7 +193,7 @@ public class Context {
     /**
      * 是否有页脚
      *
-     * @return 返回布尔值，是为true，否为false
+     * @return 返回布尔值，true为是，false为否
      */
     public boolean hasPageFooter() {
         return Objects.nonNull(this.pageFooter);
@@ -239,6 +236,15 @@ public class Context {
     }
 
     /**
+     * 获取最小Y轴起始坐标
+     *
+     * @return 返回最大Y轴起始坐标
+     */
+    public float getMinBeginY() {
+        return this.page.getHeight() - this.page.getMarginBottom() - this.getPageFooterHeight();
+    }
+
+    /**
      * 添加字体缓存
      *
      * @param fontNames 字体名称
@@ -248,6 +254,7 @@ public class Context {
         for (String fontName : fontNames) {
             if (!this.fontMap.containsKey(fontName)) {
                 this.fontMap.put(fontName, PdfHandler.getFontHandler().getPDFont(this.getTargetDocument(), fontName, true));
+                FontHandler.getInstance().initCodeMap(fontName);
             }
         }
     }

@@ -1,20 +1,48 @@
 package org.dromara.pdf.pdfbox.core.ext.convertor.html;
 
+import com.microsoft.playwright.Browser;
+import com.microsoft.playwright.BrowserType;
+import com.microsoft.playwright.Page;
+import com.microsoft.playwright.Playwright;
+import com.microsoft.playwright.options.Margin;
+import com.microsoft.playwright.options.ScreenshotType;
+import lombok.EqualsAndHashCode;
+import lombok.Setter;
 import lombok.SneakyThrows;
 import org.dromara.pdf.pdfbox.core.base.Document;
+import org.dromara.pdf.pdfbox.core.base.PageSize;
+import org.dromara.pdf.pdfbox.core.component.Image;
+import org.dromara.pdf.pdfbox.core.enums.HorizontalAlignment;
+import org.dromara.pdf.pdfbox.core.enums.VerticalAlignment;
+import org.dromara.pdf.pdfbox.core.ext.convertor.AbstractConvertor;
+import org.dromara.pdf.pdfbox.handler.PdfHandler;
+import org.dromara.pdf.pdfbox.util.ImageUtil;
+import org.dromara.pdf.pdfbox.util.UnitUtil;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.io.InputStream;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 
 /**
  * html转换器
+ * <p>使用playwright实现</p>
  *
  * @author xsx
- * @date 2025/1/8
+ * @date 2025/6/18
+ * @see <a href="https://playwright.dev/java/docs/intro">playwright官方文档</a>
  * @since 1.8
  * <p>
  * Copyright (c) 2020 xsx All Rights Reserved.
- * x-easypdf is licensed under Mulan PSL v2.
+ * x-easypdf-pdfbox is licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  * http://license.coscl.org.cn/MulanPSL2
@@ -24,8 +52,64 @@ import java.util.Objects;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public class HtmlConvertor extends AbstractHtmlConvertor {
-    
+@Setter
+@EqualsAndHashCode(callSuper = true)
+public class HtmlConvertor extends AbstractConvertor {
+
+    /**
+     * 本地线程
+     */
+    protected static final ThreadLocal<Page> THREAD_LOCAL = new ThreadLocal<>();
+    /**
+     * 线程池
+     */
+    protected static final ThreadPoolExecutor POOL = DefaultThreadPool.createPool();
+    /**
+     * 单位
+     */
+    protected static final String UNIT = "px";
+
+    /**
+     * dpi
+     */
+    protected Integer dpi;
+    /**
+     * 页面尺寸
+     */
+    protected PageSize pageSize;
+    /**
+     * 是否包含背景
+     */
+    protected Boolean isIncludeBackground;
+    /**
+     * 请求超时时间（ms）
+     */
+    protected Long requestTimeout;
+    /**
+     * 页面加载状态
+     */
+    protected PageLoadState pageState;
+    /**
+     * 上边距（单位：px）
+     */
+    protected Float marginTop;
+    /**
+     * 下边距（单位：px）
+     */
+    protected Float marginBottom;
+    /**
+     * 左边距（单位：px）
+     */
+    protected Float marginLeft;
+    /**
+     * 右边距（单位：px）
+     */
+    protected Float marginRight;
+    /**
+     * 缩放比例（0.1-2.0）
+     */
+    protected Float scale;
+
     /**
      * 有参构造
      *
@@ -34,18 +118,478 @@ public class HtmlConvertor extends AbstractHtmlConvertor {
     public HtmlConvertor(Document document) {
         super(document);
     }
-    
+
+    /**
+     * 边距（上下左右，单位：px）
+     *
+     * @param margin 边距
+     */
+    public void setMargin(float margin) {
+        this.marginTop = margin;
+        this.marginBottom = margin;
+        this.marginLeft = margin;
+        this.marginRight = margin;
+    }
+
     /**
      * 转pdf
      *
-     * @param type   类型
-     * @param source 源输入流
+     * @param file 文件
      * @return 返回文档
      */
+    public Document toPdf(File file) {
+        return this.toPdf(file.getAbsolutePath());
+    }
+
+    /**
+     * 转pdf
+     *
+     * @param url 地址
+     * @return 返回文档
+     */
+    public Document toPdf(String url) {
+        this.init();
+        return this.convertToPdf(url);
+    }
+
+    /**
+     * 转pdf字节数组
+     *
+     * @param file 文件
+     * @return 返回pdf字节数组
+     */
+    public byte[] toPdfBytes(File file) {
+        // 转换pdf
+        return this.toPdfBytes(file.getAbsolutePath());
+    }
+
+    /**
+     * 转pdf字节数组
+     *
+     * @param url 地址
+     * @return 返回pdf字节数组
+     */
+    public byte[] toPdfBytes(String url) {
+        // 初始化
+        this.init();
+        // 转换pdf
+        return this.convertToPdfBytes(url);
+    }
+
+    /**
+     * 转pdf
+     *
+     * @param file 文件
+     * @return 返回文档
+     */
+    public Document toPdfWithImage(File file) {
+        return this.toPdfWithImage(file.getAbsolutePath());
+    }
+
+    /**
+     * 转pdf
+     *
+     * @param url 地址
+     * @return 返回文档
+     */
+    public Document toPdfWithImage(String url) {
+        // 初始化
+        this.init();
+        // 获取图像
+        BufferedImage bufferedImage = this.convertToImage(url);
+        // 返回文档
+        return this.imageToPdf(bufferedImage);
+    }
+
+    /**
+     * 转图像
+     *
+     * @param file 文件
+     * @return 返回图像
+     */
+    public BufferedImage toImage(File file) {
+        return this.toImage(file.getAbsolutePath());
+    }
+
+    /**
+     * 转图像
+     *
+     * @param url 地址
+     * @return 返回图像
+     */
+    public BufferedImage toImage(String url) {
+        // 初始化
+        this.init();
+        // 返回图像
+        return this.convertToImage(url);
+    }
+
+    /**
+     * 转图像
+     *
+     * @param file 文件
+     * @return 返回图像
+     */
+    public byte[] toImageBytes(File file) {
+        return this.toImageBytes(file.getAbsolutePath());
+    }
+
+    /**
+     * 转图像
+     *
+     * @param url 地址
+     * @return 返回图像
+     */
+    public byte[] toImageBytes(String url) {
+        // 初始化
+        this.init();
+        // 返回图像
+        return this.convertToImageBytes(url);
+    }
+
+    /**
+     * 初始化
+     */
+    protected void init() {
+        // 初始化dpi
+        if (Objects.isNull(this.dpi)) {
+            this.dpi = 96;
+        }
+        // 初始化页面尺寸
+        if (Objects.isNull(this.pageSize)) {
+            this.pageSize = PageSize.A4;
+        }
+        // 初始化是否包含背景
+        if (Objects.isNull(this.isIncludeBackground)) {
+            this.isIncludeBackground = true;
+        }
+        // 初始化请求超时时间
+        if (Objects.isNull(this.requestTimeout)) {
+            this.requestTimeout = 60000L;
+        }
+        // 初始化页面加载状态
+        if (Objects.isNull(this.pageState)) {
+            this.pageState = PageLoadState.DOMCONTENTLOADED;
+        }
+        // 初始化上边距
+        if (Objects.isNull(this.marginTop)) {
+            this.marginTop = 0F;
+        }
+        // 初始化下边距
+        if (Objects.isNull(this.marginBottom)) {
+            this.marginBottom = 0F;
+        }
+        // 初始化左边距
+        if (Objects.isNull(this.marginLeft)) {
+            this.marginLeft = 0F;
+        }
+        // 初始化右边距
+        if (Objects.isNull(this.marginRight)) {
+            this.marginRight = 0F;
+        }
+        // 初始化缩放比例
+        if (Objects.isNull(this.scale)) {
+            this.scale = 1.0F;
+        }
+    }
+
+    /**
+     * 转换pdf
+     *
+     * @param url 地址
+     * @return 返回文档
+     */
+    protected Document convertToPdf(String url) {
+        // 返回pdf文档
+        return PdfHandler.getDocumentHandler().load(this.convertToPdfBytes(url));
+    }
+
+    /**
+     * 转换pdf
+     *
+     * @param url 地址
+     * @return 返回文档
+     */
+    protected byte[] convertToPdfBytes(String url) {
+        // 定义页面选项
+        Page.PdfOptions options = new Page.PdfOptions()
+                .setWidth(UnitUtil.pt2px(this.dpi, this.pageSize.getWidth()) + UNIT)
+                .setHeight(UnitUtil.pt2px(this.dpi, this.pageSize.getHeight()) + UNIT)
+                .setPrintBackground(this.isIncludeBackground)
+                .setOutline(true)
+                .setScale(this.scale)
+                .setMargin(
+                        new Margin().setLeft(this.marginLeft + UNIT)
+                                .setRight(this.marginRight + UNIT)
+                                .setTop(this.marginTop + UNIT)
+                                .setBottom(this.marginBottom + UNIT)
+                );
+        // 转pdf
+        return this.convert(url, page -> page.pdf(options));
+    }
+
+    /**
+     * 转换pdf
+     *
+     * @param url 地址
+     * @return 返回文档
+     */
+    protected BufferedImage convertToImage(String url) {
+        // 返回图像
+        return ImageUtil.read(this.convertToImageBytes(url));
+    }
+
+    /**
+     * 转换pdf
+     *
+     * @param url 地址
+     * @return 返回文档
+     */
+    protected byte[] convertToImageBytes(String url) {
+        // 转图像
+        return this.convert(url, page -> page.screenshot(
+                new Page.ScreenshotOptions()
+                        .setType(ScreenshotType.PNG)
+                        .setFullPage(true)
+                        .setOmitBackground(true)
+        ));
+    }
+
+    /**
+     * 转换
+     *
+     * @param url      地址
+     * @param function 功能
+     * @return 返回字节数组
+     */
     @SneakyThrows
-    @Override
-    public Document toPdf(HtmlType type, InputStream source) {
-        Objects.requireNonNull(type, "the type can not be null");
-        return super.toPdf(type.getType(), source);
+    protected byte[] convert(String url, Function<Page, byte[]> function) {
+        return POOL.submit(() -> {
+            // 定义起始时间
+            long begin = 0L;
+            // 定义结束时间
+            long end = 0L;
+            // 获取页面
+            Page page = this.getBrowserPage();
+            // 打印日志
+            if (log.isInfoEnabled()) {
+                begin = System.currentTimeMillis();
+                log.info("Loading page: " + url);
+            }
+            // 导航地址
+            page.navigate(url);
+            // 等待加载
+            page.waitForLoadState(this.pageState.getState(), new Page.WaitForLoadStateOptions().setTimeout(this.requestTimeout));
+            // 执行脚本
+            page.evaluate("document.fonts.ready.then(() => { window.isFontLoaded = true; });");
+            // 等待执行
+            page.waitForFunction("window.isFontLoaded === true");
+            // 打印日志
+            if (log.isInfoEnabled()) {
+                end = System.currentTimeMillis();
+                log.info("Loaded page: " + (end - begin) + " ms");
+                begin = end;
+                log.info("Converting page...");
+            }
+            // 执行操作
+            byte[] bytes = function.apply(page);
+            // 打印日志
+            if (log.isInfoEnabled()) {
+                end = System.currentTimeMillis();
+                log.info("Converted page: " + (end - begin) + " ms");
+            }
+            // 返回字节数组
+            return bytes;
+        }).get(5, TimeUnit.MINUTES);
+    }
+
+    /**
+     * 图像转pdf
+     *
+     * @param sourceImage 图像
+     * @return 返回文档
+     */
+    protected Document imageToPdf(BufferedImage sourceImage) {
+        // 定义图像放大倍数
+        final int multiple = 2;
+        // 创建文档
+        Document document = PdfHandler.getDocumentHandler().create();
+        // 设置上边距
+        document.setMarginTop(this.marginTop);
+        // 设置下边距
+        document.setMarginBottom(this.marginBottom);
+        // 设置左边距
+        document.setMarginLeft(this.marginLeft);
+        // 设置右边距
+        document.setMarginRight(this.marginRight);
+        // 创建页面
+        org.dromara.pdf.pdfbox.core.base.Page page = new org.dromara.pdf.pdfbox.core.base.Page(document);
+        // 获取图像缩放比例
+        float scale = page.getWithoutMarginWidth() / sourceImage.getWidth();
+        // 获取拆分图像
+        List<BufferedImage> images = ImageUtil.splitForVertical(sourceImage, (int) (page.getWithoutMarginHeight() / scale));
+        // 遍历图像
+        for (BufferedImage image : images) {
+            // 创建图像
+            Image component = new Image(document.getCurrentPage());
+            // 设置图像
+            component.setImage(ImageUtil.scale(image, image.getWidth() * multiple, image.getHeight() * multiple, java.awt.Image.SCALE_DEFAULT));
+            // 设置缩放比例
+            component.setScale(scale * this.scale / multiple);
+            // 设置水平居中
+            component.setHorizontalAlignment(HorizontalAlignment.CENTER);
+            // 设置垂直居中
+            component.setVerticalAlignment(VerticalAlignment.CENTER);
+            // 绘制
+            component.render();
+        }
+        // 添加页面
+        document.appendPage(page);
+        // 返回文档
+        return document;
+    }
+
+    /**
+     * 获取浏览器页面
+     *
+     * @return 返回浏览器页面
+     */
+    protected Page getBrowserPage() {
+        // 获取浏览器页面
+        Page page = THREAD_LOCAL.get();
+        // 存在浏览器直接返回浏览器页面
+        if (Objects.nonNull(page)) {
+            return page;
+        }
+        // 初始化浏览器页面
+        page = initBrowserPage();
+        // 返回页面
+        return page;
+    }
+
+    /**
+     * 初始化浏览器页面
+     *
+     * @return 返回页面
+     */
+    @SuppressWarnings("all")
+    protected Page initBrowserPage() {
+        // 定义起始时间
+        long begin = 0L;
+        // 定义结束时间
+        long end = 0L;
+        // 打印日志
+        if (log.isInfoEnabled()) {
+            begin = System.currentTimeMillis();
+            log.info("Initializing browser...");
+        }
+        // 创建playwright
+        Playwright playwright = Playwright.create();
+        // 创建浏览器
+        Browser browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(true));
+        // 打印日志
+        if (log.isInfoEnabled()) {
+            end = System.currentTimeMillis();
+            log.info("Initialized browser: " + (end - begin) + " ms");
+            begin = end;
+            log.info("Initializing page...");
+        }
+        // 创建新页面
+        Page newPage = browser.newPage();
+        // 设置页面
+        THREAD_LOCAL.set(newPage);
+        // 添加钩子
+        Runtime.getRuntime().addShutdownHook(
+                new Thread(() -> {
+                    browser.close();
+                    playwright.close();
+                })
+        );
+        // 打印日志
+        if (log.isInfoEnabled()) {
+            end = System.currentTimeMillis();
+            log.info("Initialized page: " + (end - begin) + " ms");
+        }
+        // 返回页面
+        return newPage;
+    }
+
+    /**
+     * 线程池
+     */
+    protected static class DefaultThreadPool {
+
+        /**
+         * CPU密集型任务配置
+         */
+        protected static ThreadPoolExecutor createPool() {
+            int count = Runtime.getRuntime().availableProcessors() + 1;
+            return new ThreadPoolExecutor(
+                    count,
+                    count,
+                    300L,
+                    TimeUnit.SECONDS,
+                    new ArrayBlockingQueue<>(200),
+                    new DefaultThreadFactory(),
+                    new ThreadPoolExecutor.CallerRunsPolicy()
+            );
+        }
+    }
+
+    /**
+     * 默认线程工厂
+     */
+    protected static class DefaultThreadFactory implements ThreadFactory {
+        /**
+         * 线程组
+         */
+        private final ThreadGroup group;
+        /**
+         * 线程名称前缀
+         */
+        private final String namePrefix;
+        /**
+         * 线程计数器
+         */
+        private final AtomicInteger threadNumber = new AtomicInteger(1);
+
+        /**
+         * 有参构造
+         */
+        DefaultThreadFactory() {
+            this.group = Thread.currentThread().getThreadGroup();
+            this.namePrefix = "playwrightPool-" + "thread-";
+        }
+
+        /**
+         * 新建线程
+         *
+         * @param r 运行器
+         * @return 返回线程
+         */
+        @Override
+        public Thread newThread(Runnable r) {
+            Thread t = new DefaultThread(this.group, r, this.namePrefix + this.threadNumber.getAndIncrement(), 0);
+            if (t.isDaemon()) {
+                t.setDaemon(false);
+            }
+            if (t.getPriority() != Thread.NORM_PRIORITY) {
+                t.setPriority(Thread.NORM_PRIORITY);
+            }
+            return t;
+        }
+    }
+
+    /**
+     * 默认线程
+     */
+    protected static class DefaultThread extends Thread {
+
+        /**
+         * 有参构造
+         */
+        public DefaultThread(@Nullable ThreadGroup group, Runnable target, @NotNull String name, long stackSize) {
+            super(group, target, name, stackSize);
+        }
     }
 }

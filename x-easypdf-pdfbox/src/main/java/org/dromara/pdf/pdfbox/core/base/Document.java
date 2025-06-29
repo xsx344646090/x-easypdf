@@ -18,15 +18,13 @@ import org.dromara.pdf.pdfbox.core.base.config.FontConfiguration;
 import org.dromara.pdf.pdfbox.core.base.config.MarginConfiguration;
 import org.dromara.pdf.pdfbox.core.enums.FontStyle;
 import org.dromara.pdf.pdfbox.core.enums.PWLength;
-import org.dromara.pdf.pdfbox.core.ext.handler.AbstractTextHandler;
-import org.dromara.pdf.pdfbox.core.ext.handler.TextHandler;
 import org.dromara.pdf.pdfbox.core.ext.processor.MetadataProcessor;
 import org.dromara.pdf.pdfbox.core.ext.processor.PageProcessor;
 import org.dromara.pdf.pdfbox.core.info.CatalogInfo;
 import org.dromara.pdf.pdfbox.support.Constants;
 import org.dromara.pdf.pdfbox.support.DefaultResourceCache;
-import org.dromara.pdf.pdfbox.support.linearizer.Linearizer;
 import org.dromara.pdf.pdfbox.util.FileUtil;
+import org.dromara.pdf.pdfbox.util.IdUtil;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -35,8 +33,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 
 /**
  * 文档
@@ -100,10 +98,6 @@ public class Document extends AbstractBase implements Closeable {
      * 是否刷新元数据
      */
     protected Boolean isFlushMetadata;
-    /**
-     * 是否线性化
-     */
-    protected Boolean isLinearization;
 
     /**
      * 无参构造
@@ -206,30 +200,12 @@ public class Document extends AbstractBase implements Closeable {
     }
 
     /**
-     * 设置是否线性化
-     *
-     * @param isLinearization 是否线性化
-     */
-    public void setIsLinearization(boolean isLinearization) {
-        this.isLinearization = isLinearization;
-    }
-
-    /**
      * 设置边距（上下左右）
      *
      * @param margin 边距
      */
     public void setMargin(float margin) {
         this.marginConfiguration.setMargin(margin);
-    }
-
-    /**
-     * 设置文本助手
-     *
-     * @param handler 助手
-     */
-    public void setTextHandler(AbstractTextHandler handler) {
-        this.context.setTextHandler(handler);
     }
 
     /**
@@ -668,7 +644,7 @@ public class Document extends AbstractBase implements Closeable {
      */
     @SneakyThrows
     public File getTempFile() {
-        File temp = new File(Constants.TEMP_FILE_PATH, UUID.randomUUID() + ".pdf");
+        File temp = new File(Constants.TEMP_FILE_PATH, IdUtil.get() + ".pdf");
         this.save(temp);
         return temp;
     }
@@ -746,11 +722,7 @@ public class Document extends AbstractBase implements Closeable {
             processor.flush();
         }
         // 保存文档
-        if (this.getIsLinearization()) {
-            this.linearize(outputStream);
-        } else {
-            this.getTarget().save(outputStream, new CompressParameters(number));
-        }
+        this.getTarget().save(outputStream, new CompressParameters(500));
     }
 
     /**
@@ -915,28 +887,13 @@ public class Document extends AbstractBase implements Closeable {
     protected void initOtherParams() {
         // 添加字体缓存
         this.context.addFontCache(this.fontConfiguration.getFontName());
-        // 设置文本助手
-        this.context.setTextHandler(new TextHandler(this));
         // 初始化文档访问权限
         this.accessPermission = this.target.getCurrentAccessPermission();
         // 初始化文档版本
         this.version = this.target.getVersion();
         // 初始化是否刷新元数据
         this.isFlushMetadata = Boolean.TRUE;
-        // 初始化是否线性化
-        this.isLinearization = Boolean.FALSE;
         // 初始化背景颜色
         this.backgroundColor = Color.WHITE;
-    }
-
-    /**
-     * 线性化
-     *
-     * @param outputStream 输出流
-     */
-    protected void linearize(OutputStream outputStream) {
-        Linearizer linearizer = new Linearizer(this.getTarget());
-        linearizer.linearize().write(outputStream);
-        linearizer.close();
     }
 }

@@ -3,7 +3,7 @@ package org.dromara.pdf.pdfbox.support;
 import org.dromara.pdf.pdfbox.core.enums.FontStyle;
 
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -51,17 +51,21 @@ public final class Constants {
      */
     public static final String FONT_SCAN_SWITCH = "org.dromara.pdfbox.scan.font";
     /**
+     * 贝塞尔曲线系数
+     */
+    public static final Float BEZIER_COEF = 0.551915024494F;
+    /**
      * 默认版本
      */
     public static final Float DEFAULT_VERSION = 1.6F;
     /**
      * 默认字体
      */
-    public static final String DEFAULT_FONT_NAME = "HarmonyOS Sans SC";
+    public static final String DEFAULT_FONT_NAME = "HarmonyOS_Sans_SC";
     /**
      * 默认特殊字体
      */
-    public static final List<String> DEFAULT_FONT_SPECIAL_NAMES = new ArrayList<>();
+    public static final List<String> DEFAULT_FONT_SPECIAL_NAMES = new LinkedList<>();
     /**
      * 默认字体路径
      */
@@ -98,6 +102,14 @@ public final class Constants {
      * 默认未知字符
      */
     public static final Character DEFAULT_UNKNOWN_CHARACTER = '□';
+    /**
+     * 制表符
+     */
+    public static final Character TAB_CHARACTER = '\t';
+    /**
+     * 空白符
+     */
+    public static final Character SPACE_CHARACTER = ' ';
     /**
      * 默认行间距
      */

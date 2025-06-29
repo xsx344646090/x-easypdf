@@ -100,6 +100,10 @@ class TemplateParam {
      */
     private DataSource dataSource;
     /**
+     * 是否开启新布局
+     */
+    private Boolean isNewLayout = Boolean.TRUE;
+    /**
      * 是否开启辅助功能
      */
     private Boolean isAccessibility = Boolean.FALSE;
@@ -176,7 +180,7 @@ class TemplateParam {
             throw new IllegalArgumentException("the data source can not be null");
         }
         // 如果布局管理器未初始化，则初始化
-        if (Objects.isNull(this.layoutManagerMaker)) {
+        if (this.isNewLayout && Objects.isNull(this.layoutManagerMaker)) {
             // 初始化布局管理器
             layoutManagerMaker = new LayoutManagerMapping();
         }
@@ -185,13 +189,16 @@ class TemplateParam {
             // 初始化fop工厂
             this.fopFactory = this.initFopFactory();
         }
-        // 如果用户代理未初始化，则初始化-+
+        // 如果用户代理未初始化，则初始化
         if (Objects.isNull(this.userAgent)) {
             // 初始化用户代理
             this.userAgent = this.initUserAgent();
         }
-        // 初始化布局管理器
-        this.layoutManagerMaker.initialize(this.userAgent);
+        // 如果布局管理器未初始化，则初始化
+        if (Objects.nonNull(this.layoutManagerMaker)) {
+            // 初始化布局管理器
+            this.layoutManagerMaker.initialize(this.userAgent);
+        }
         // 重置事件助手
         this.userAgent.setFOEventHandlerOverride(new DefaultAreaTreeHandler(this.userAgent, outputStream));
     }

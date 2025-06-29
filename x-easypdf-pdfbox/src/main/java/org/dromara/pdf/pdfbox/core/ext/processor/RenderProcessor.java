@@ -271,7 +271,7 @@ public class RenderProcessor extends AbstractProcessor {
                 );
             }
             // 拼接图片
-            BufferedImage bufferedImage = ImageUtil.join(imageList, this.mergeType == MergeType.HORIZONTAL);
+            BufferedImage bufferedImage = this.mergeType == MergeType.HORIZONTAL ? ImageUtil.joinForHorizontal(imageList) : ImageUtil.joinForVertical(imageList);
             // 写出图片
             ImageIOUtil.writeImage(bufferedImage, imageType.name().toLowerCase(), outputStream, this.dpi.intValue());
         } else {
@@ -345,7 +345,7 @@ public class RenderProcessor extends AbstractProcessor {
             imageList.add(renderer.renderImageWithDPI(i, this.dpi, this.getColorType()));
         }
         // 拼接图片
-        BufferedImage bufferedImage = ImageUtil.join(imageList, this.mergeType == MergeType.HORIZONTAL);
+        BufferedImage bufferedImage = this.mergeType == MergeType.HORIZONTAL ? ImageUtil.joinForHorizontal(imageList) : ImageUtil.joinForVertical(imageList);
         // 获取输出流
         try (OutputStream outputStream = new BufferedOutputStream(Files.newOutputStream(FileUtil.createDirectories(Paths.get(outputPath + File.separator + prefix + '.' + imageTypeName))))) {
             // 写出图片

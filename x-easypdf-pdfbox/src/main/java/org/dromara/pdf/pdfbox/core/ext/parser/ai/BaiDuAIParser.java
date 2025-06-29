@@ -35,18 +35,17 @@ import java.util.Objects;
  * </p>
  */
 public class BaiDuAIParser extends AbstractAIParser {
-    
+
     /**
      * 有参构造
      *
      * @param document 文档
-     * @param ak       api密钥
-     * @param sk       密钥
+     * @param apiKey   api密钥
      */
-    public BaiDuAIParser(Document document, String ak, String sk) {
-        super(document, ak, sk, false);
+    public BaiDuAIParser(Document document, String apiKey) {
+        super(document, apiKey, false);
     }
-    
+
     /**
      * 解析页面（整个页面）
      * <p>注：访问大模型超时时间为1分钟</p>
@@ -59,7 +58,7 @@ public class BaiDuAIParser extends AbstractAIParser {
     public AIParseInfo parsePageWithImage(String prompt, int pageIndex) {
         throw new UnsupportedOperationException();
     }
-    
+
     /**
      * 解析图像（页面中的图像）
      * <p>注：访问大模型超时时间为1分钟</p>
@@ -73,7 +72,7 @@ public class BaiDuAIParser extends AbstractAIParser {
     public AIParseInfo parseImageWithPage(String prompt, int pageIndex, int imageIndex) {
         throw new UnsupportedOperationException();
     }
-    
+
     /**
      * 解析文本（页面）
      * <p>注：访问大模型超时时间为1分钟</p>
@@ -87,12 +86,12 @@ public class BaiDuAIParser extends AbstractAIParser {
     public AIParseInfo parseTextWithPage(String prompt, int beginPageIndex, int endPageIndex) {
         throw new UnsupportedOperationException();
     }
-    
+
     /**
      * 解析器
      */
     protected static class Parser {
-        
+
         /**
          * 请求路径
          */
@@ -101,7 +100,7 @@ public class BaiDuAIParser extends AbstractAIParser {
          * 标记json路径
          */
         private static final String TOKEN_JSON_PATH = "$.usage.total_tokens";
-        
+
         /**
          * 解析图像
          *
@@ -127,7 +126,7 @@ public class BaiDuAIParser extends AbstractAIParser {
             // 返回解析信息
             return new AIParseInfo(response.getString("id"), response.getString("result"), String.valueOf(response.getByPath(TOKEN_JSON_PATH)));
         }
-        
+
         /**
          * 获取访问凭证
          *
@@ -140,10 +139,10 @@ public class BaiDuAIParser extends AbstractAIParser {
             Headers headers = new Headers.Builder().add("Content-Type", "application/x-www-form-urlencoded").build();
             // 表单请求体
             RequestBody body = new FormBody.Builder()
-                                       .add("grant_type", "client_credentials")
-                                       .add("client_id", ak)
-                                       .add("client_secret", sk)
-                                       .build();
+                    .add("grant_type", "client_credentials")
+                    .add("client_id", ak)
+                    .add("client_secret", sk)
+                    .build();
             // 响应体
             JSONObject response = HttpUtil.request(client, ACCESS_TOKEN_URL, headers, body);
             if (response.containsKey("error")) {
@@ -153,17 +152,17 @@ public class BaiDuAIParser extends AbstractAIParser {
             return response.getString("access_token");
         }
     }
-    
+
     /**
      * 图像解析器
      */
     protected static class ImageParser extends Parser {
-        
+
         /**
          * 请求路径
          */
         private static final String URL = "https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/image2text/fuyu_8b";
-        
+
         /**
          * 设置模型
          *
@@ -172,7 +171,7 @@ public class BaiDuAIParser extends AbstractAIParser {
         public void setModel(String model) {
             throw new UnsupportedOperationException();
         }
-        
+
         /**
          * 设置系统提示词
          *
@@ -181,7 +180,7 @@ public class BaiDuAIParser extends AbstractAIParser {
         public void setSystemPrompt(String prompt) {
             throw new UnsupportedOperationException();
         }
-        
+
         /**
          * 解析图像
          *
@@ -200,7 +199,7 @@ public class BaiDuAIParser extends AbstractAIParser {
             return this.parseInfo(client, ak, sk, URL, jsonBody);
         }
     }
-    
+
     /**
      * 文本解析器
      */
@@ -214,7 +213,7 @@ public class BaiDuAIParser extends AbstractAIParser {
          * 系统提示词
          */
         protected String systemPrompt = "<role>你是一个数据分析与提取专家</role>";
-        
+
         /**
          * 设置模型
          *
@@ -223,7 +222,7 @@ public class BaiDuAIParser extends AbstractAIParser {
         public void setModel(String model) {
             throw new UnsupportedOperationException();
         }
-        
+
         /**
          * 解析
          *
@@ -241,7 +240,7 @@ public class BaiDuAIParser extends AbstractAIParser {
             // 返回解析信息
             return this.parseInfo(client, ak, sk, URL, jsonBody);
         }
-        
+
         /**
          * 创建消息
          *
@@ -262,7 +261,7 @@ public class BaiDuAIParser extends AbstractAIParser {
             return messages;
         }
     }
-    
+
     /**
      * 消息
      */
@@ -277,7 +276,7 @@ public class BaiDuAIParser extends AbstractAIParser {
          * 文本内容
          */
         protected String content;
-        
+
         /**
          * 有参构造
          *

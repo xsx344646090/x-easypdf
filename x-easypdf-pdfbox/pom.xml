@@ -5,11 +5,11 @@
     <parent>
         <groupId>org.dromara</groupId>
         <artifactId>x-easypdf-parent</artifactId>
-        <version>3.3.1</version>
+        <version>3.4.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>x-easypdf-pdfbox</artifactId>
-    <version>3.3.1</version>
+    <version>3.4.0</version>
     <packaging>jar</packaging>
     <name>x-easypdf-pdfbox</name>
     <url>https://www.x-easypdf.cn</url>
@@ -17,8 +17,9 @@
 
     <properties>
         <documents4j.version>1.1.12</documents4j.version>
+        <playwright.version>1.52.0</playwright.version>
         <okhttp.version>4.12.0</okhttp.version>
-        <fastjson.version>2.0.54</fastjson.version>
+        <fastjson.version>2.0.57</fastjson.version>
         <skipTests>true</skipTests>
     </properties>
 
@@ -61,18 +62,34 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>3.1.0</version>
+                        <version>3.2.0</version>
                         <configuration>
                             <encoding>utf8</encoding>
-                            <additionalOptions>
-                                <additionalOption>-Xdoclint:none</additionalOption>
-                            </additionalOptions>
+                            <doclint>none</doclint>
+                            <sourcepath>target/generated-sources/delombok</sourcepath>
                         </configuration>
                         <executions>
                             <execution>
+                                <id>attach-javadocs</id>
                                 <phase>package</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.projectlombok</groupId>
+                        <artifactId>lombok-maven-plugin</artifactId>
+                        <version>1.18.12.0</version>
+                        <configuration>
+                            <encoding>UTF-8</encoding>
+                            <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
+                            <outputDirectory>target/generated-sources/delombok</outputDirectory>
+                            <addOutputDirectory>false</addOutputDirectory>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>generate-sources</phase>
                                 <goals>
-                                    <goal>jar</goal>
+                                    <goal>delombok</goal>
                                 </goals>
                             </execution>
                         </executions>
@@ -136,8 +153,8 @@
                     </resources>
                     <nonFilteredFileExtensions>
                         <nonFilteredFileExtension>ttf</nonFilteredFileExtension>
-                        <nonFilteredFileExtension>pdf</nonFilteredFileExtension>
-                        <nonFilteredFileExtension>trineddata</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>otf</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>ttc</nonFilteredFileExtension>
                     </nonFilteredFileExtensions>
                 </configuration>
             </plugin>
@@ -196,6 +213,12 @@
         </dependency>
         <dependency>
             <groupId>com.documents4j</groupId>
+            <artifactId>documents4j-client</artifactId>
+            <version>${documents4j.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.documents4j</groupId>
             <artifactId>documents4j-transformer-msoffice-word</artifactId>
             <version>${documents4j.version}</version>
             <optional>true</optional>
@@ -210,6 +233,12 @@
             <groupId>com.documents4j</groupId>
             <artifactId>documents4j-transformer-msoffice-powerpoint</artifactId>
             <version>${documents4j.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.microsoft.playwright</groupId>
+            <artifactId>playwright</artifactId>
+            <version>${playwright.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>

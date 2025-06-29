@@ -22,17 +22,16 @@ import org.dromara.pdf.pdfbox.core.base.Document;
  * </p>
  */
 public class MoonshotAIParser extends AbstractAIParser {
-    
+
     /**
      * 有参构造
      *
      * @param document       文档
-     * @param ak             api密钥
-     * @param sk             密钥
+     * @param apiKey         api密钥
      * @param isJsonResponse 是否json响应
      */
-    public MoonshotAIParser(Document document, String ak, String sk, boolean isJsonResponse) {
-        super(document, ak, sk, isJsonResponse);
+    public MoonshotAIParser(Document document, String apiKey, boolean isJsonResponse) {
+        super(document, apiKey, isJsonResponse);
         this.config.setTextUrl("https://api.moonshot.cn/v1/chat/completions");
         this.config.setTextModel("moonshot-v1-32k");
         this.config.setImageUrl("https://api.moonshot.cn/v1/chat/completions");
