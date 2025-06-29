@@ -57,13 +57,13 @@ import java.util.function.Function;
 public class HtmlConvertor extends AbstractConvertor {
 
     /**
-     * 线程池
-     */
-    protected static final ThreadPoolExecutor POOL = DefaultThreadPool.createPool();
-    /**
      * 本地线程
      */
     protected static final ThreadLocal<Page> THREAD_LOCAL = new ThreadLocal<>();
+    /**
+     * 线程池
+     */
+    protected static final ThreadPoolExecutor POOL = DefaultThreadPool.createPool();
     /**
      * 单位
      */
@@ -404,58 +404,6 @@ public class HtmlConvertor extends AbstractConvertor {
     }
 
     /**
-     * 获取浏览器页面
-     *
-     * @return 返回浏览器页面
-     */
-    protected Page getBrowserPage() {
-        // 定义起始时间
-        long begin = 0L;
-        // 定义结束时间
-        long end = 0L;
-        // 获取浏览器
-        Page page = THREAD_LOCAL.get();
-        // 存在浏览器直接返回浏览器页面
-        if (Objects.nonNull(page)) {
-            return page;
-        }
-        // 打印日志
-        if (log.isInfoEnabled()) {
-            begin = System.currentTimeMillis();
-            log.info("Initializing browser...");
-        }
-        // 创建playwright
-        Playwright playwright = Playwright.create();
-        // 创建浏览器
-        Browser browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(true));
-        // 打印日志
-        if (log.isInfoEnabled()) {
-            end = System.currentTimeMillis();
-            log.info("Initialized browser: " + (end - begin) + " ms");
-            begin = end;
-            log.info("Initializing page...");
-        }
-        // 创建页面
-        Page newPage = browser.newPage();
-        // 设置浏览器
-        THREAD_LOCAL.set(newPage);
-        // 添加钩子
-        Runtime.getRuntime().addShutdownHook(
-                new Thread(() -> {
-                    browser.close();
-                    playwright.close();
-                })
-        );
-        // 打印日志
-        if (log.isInfoEnabled()) {
-            end = System.currentTimeMillis();
-            log.info("Initialized page: " + (end - begin) + " ms");
-        }
-        // 返回页面
-        return newPage;
-    }
-
-    /**
      * 图像转pdf
      *
      * @param sourceImage 图像
@@ -501,6 +449,70 @@ public class HtmlConvertor extends AbstractConvertor {
         return document;
     }
 
+    /**
+     * 获取浏览器页面
+     *
+     * @return 返回浏览器页面
+     */
+    protected Page getBrowserPage() {
+        // 获取浏览器页面
+        Page page = THREAD_LOCAL.get();
+        // 存在浏览器直接返回浏览器页面
+        if (Objects.nonNull(page)) {
+            return page;
+        }
+        // 初始化浏览器页面
+        page = initBrowserPage();
+        // 返回页面
+        return page;
+    }
+
+    /**
+     * 初始化浏览器页面
+     *
+     * @return 返回页面
+     */
+    @SuppressWarnings("all")
+    protected Page initBrowserPage() {
+        // 定义起始时间
+        long begin = 0L;
+        // 定义结束时间
+        long end = 0L;
+        // 打印日志
+        if (log.isInfoEnabled()) {
+            begin = System.currentTimeMillis();
+            log.info("Initializing browser...");
+        }
+        // 创建playwright
+        Playwright playwright = Playwright.create();
+        // 创建浏览器
+        Browser browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(true));
+        // 打印日志
+        if (log.isInfoEnabled()) {
+            end = System.currentTimeMillis();
+            log.info("Initialized browser: " + (end - begin) + " ms");
+            begin = end;
+            log.info("Initializing page...");
+        }
+        // 创建新页面
+        Page newPage = browser.newPage();
+        // 设置页面
+        THREAD_LOCAL.set(newPage);
+        // 添加钩子
+        Runtime.getRuntime().addShutdownHook(
+                new Thread(() -> {
+                    browser.close();
+                    playwright.close();
+                })
+        );
+        // 打印日志
+        if (log.isInfoEnabled()) {
+            end = System.currentTimeMillis();
+            log.info("Initialized page: " + (end - begin) + " ms");
+        }
+        // 返回页面
+        return newPage;
+    }
 
     /**
      * 线程池
@@ -528,17 +540,36 @@ public class HtmlConvertor extends AbstractConvertor {
      * 默认线程工厂
      */
     protected static class DefaultThreadFactory implements ThreadFactory {
+        /**
+         * 线程组
+         */
         private final ThreadGroup group;
+        /**
+         * 线程名称前缀
+         */
         private final String namePrefix;
+        /**
+         * 线程计数器
+         */
         private final AtomicInteger threadNumber = new AtomicInteger(1);
 
+        /**
+         * 有参构造
+         */
         DefaultThreadFactory() {
-            group = Thread.currentThread().getThreadGroup();
-            namePrefix = "playwrightPool-" + "thread-";
+            this.group = Thread.currentThread().getThreadGroup();
+            this.namePrefix = "playwrightPool-" + "thread-";
         }
 
+        /**
+         * 新建线程
+         *
+         * @param r 运行器
+         * @return 返回线程
+         */
+        @Override
         public Thread newThread(Runnable r) {
-            Thread t = new DefaultThread(group, r, namePrefix + threadNumber.getAndIncrement(), 0);
+            Thread t = new DefaultThread(this.group, r, this.namePrefix + this.threadNumber.getAndIncrement(), 0);
             if (t.isDaemon()) {
                 t.setDaemon(false);
             }

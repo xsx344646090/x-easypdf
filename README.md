@@ -58,7 +58,7 @@
 <dependency>
     <groupId>org.dromara</groupId>
     <artifactId>x-easypdf</artifactId>
-    <version>3.3.2</version>
+    <version>3.4.0</version>
 </dependency>
 ```
 
@@ -67,7 +67,7 @@
 <dependency>
     <groupId>org.dromara</groupId>
     <artifactId>x-easypdf-pdfbox</artifactId>
-    <version>3.3.2</version>
+    <version>3.4.0</version>
 </dependency>
 ```
 
@@ -76,7 +76,7 @@
 <dependency>
     <groupId>org.dromara</groupId>
     <artifactId>x-easypdf-fop</artifactId>
-    <version>3.3.2</version>
+    <version>3.4.0</version>
 </dependency>
 ```
 
@@ -113,7 +113,12 @@ document.close();
 ```
 - ##### fop模块（使用document数据源）
 ```
-TemplateHandler.Document.build().addPage(TemplateHandler.Page.build().addBodyComponent(TemplateHandler.Text.build().setText("hello world"))).transform("E:\\PDF\\fop\\document\\hello-world.pdf");
+Document document = TemplateHandler.Document.build();
+Page page = TemplateHandler.Page.build();
+Text text = TemplateHandler.Text.build().setText("hello world");
+page.addBodyComponent(text);
+document.addPage(page);
+document.transform("E:\\PDF\\fop\\document\\hello-world.pdf");
 ```
 
 更多教程，请查看[文档](https://x-easypdf.cn)
