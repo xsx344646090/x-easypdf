@@ -313,14 +313,8 @@ public class BorderUtil {
                 stream.setStrokingColor(data.getBorderTopColor());
                 stream.lineTo(rectangle.getUpperRightX() - data.getBorderRadius(), rectangle.getUpperRightY());
             } else {
-                drawSolidLine(
-                        stream,
-                        data.getBorderTopColor(),
-                        rectangle.getLowerLeftX(),
-                        rectangle.getUpperRightY(),
-                        rectangle.getUpperRightX(),
-                        rectangle.getUpperRightY()
-                );
+                stream.setStrokingColor(data.getBorderTopColor());
+                stream.lineTo(rectangle.getUpperRightX(), rectangle.getUpperRightY());
             }
         }
         // 绘制右边框
@@ -331,14 +325,8 @@ public class BorderUtil {
                 stream.lineTo(rectangle.getUpperRightX(), rectangle.getLowerLeftY() + data.getBorderRadius());
                 drawArcForRightBottom(stream, data.getBorderRadius(), offset, rectangle.getUpperRightX(), rectangle.getLowerLeftY() + data.getBorderRadius());
             } else {
-                drawSolidLine(
-                        stream,
-                        data.getBorderRightColor(),
-                        rectangle.getUpperRightX(),
-                        rectangle.getUpperRightY(),
-                        rectangle.getUpperRightX(),
-                        rectangle.getLowerLeftY()
-                );
+                stream.setStrokingColor(data.getBorderRightColor());
+                stream.lineTo(rectangle.getUpperRightX(), rectangle.getLowerLeftY());
 
             }
         }
@@ -348,14 +336,8 @@ public class BorderUtil {
                 stream.setStrokingColor(data.getBorderBottomColor());
                 stream.lineTo(rectangle.getLowerLeftX() + data.getBorderRadius(), rectangle.getLowerLeftY());
             } else {
-                drawSolidLine(
-                        stream,
-                        data.getBorderBottomColor(),
-                        rectangle.getUpperRightX(),
-                        rectangle.getLowerLeftY(),
-                        rectangle.getLowerLeftX(),
-                        rectangle.getLowerLeftY()
-                );
+                stream.setStrokingColor(data.getBorderBottomColor());
+                stream.lineTo(rectangle.getLowerLeftX(), rectangle.getLowerLeftY());
             }
         }
         // 绘制左边框
@@ -366,14 +348,8 @@ public class BorderUtil {
                 stream.lineTo(rectangle.getLowerLeftX(), rectangle.getUpperRightY() - data.getBorderRadius());
                 drawArcForLeftTop(stream, data.getBorderRadius(), offset, rectangle.getLowerLeftX(), rectangle.getUpperRightY() - data.getBorderRadius());
             } else {
-                drawSolidLine(
-                        stream,
-                        data.getBorderLeftColor(),
-                        rectangle.getLowerLeftX(),
-                        rectangle.getLowerLeftY(),
-                        rectangle.getLowerLeftX(),
-                        rectangle.getUpperRightY()
-                );
+                stream.setStrokingColor(data.getBorderLeftColor());
+                stream.lineTo(rectangle.getLowerLeftX(), rectangle.getUpperRightY());
             }
         }
     }

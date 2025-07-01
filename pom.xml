@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.dromara</groupId>
     <artifactId>x-easypdf-parent</artifactId>
-    <version>3.4.0</version>
+    <version>3.4.1</version>
     <packaging>pom</packaging>
     <name>x-easypdf-parent</name>
     <url>https://www.x-easypdf.cn</url>
@@ -131,6 +131,10 @@
                     <execution>
                         <id>attach-javadocs</id>
                         <phase>package</phase>
+                        <goals>
+                            <goal>javadoc</goal>
+                            <goal>jar</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
