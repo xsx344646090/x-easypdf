@@ -96,7 +96,12 @@ public class FontHandler {
      * @return 返回字符字典
      */
     public Map<CharacterWrapper, Float> getCodeMap(String fontName) {
-        return this.codeWithMap.get(fontName);
+        Map<CharacterWrapper, Float> map = this.codeWithMap.get(fontName);
+        if (Objects.isNull(map)) {
+            this.initCodeMap(fontName);
+            map = this.codeWithMap.get(fontName);
+        }
+        return map;
     }
 
     /**
