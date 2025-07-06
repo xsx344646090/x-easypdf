@@ -88,8 +88,8 @@ public class COSWriterCompressionPool {
         // if the given key is the same than the key which is stored for the "same" base object wihtin the object pool
         // the same is always true for COSFloat, COSBoolean and COSName and under certain circumstances for the remainig
         // types as well
-        if (current == null || current.isVisit()) {
-            return current;
+        if (current == null) {
+            return null;
         }
 
         // Check whether the object can not be appended to an object stream.
