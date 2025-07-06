@@ -2,7 +2,6 @@ package org.dromara.pdf.pdfbox.core.ext.analyzer;
 
 import lombok.Getter;
 import lombok.SneakyThrows;
-import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
@@ -77,19 +76,11 @@ public abstract class AbstractCommentAnalyzer extends AbstractAnalyzer {
                 PDRectangle pageRectangle = page.getMediaBox();
                 // 获取评论尺寸
                 PDRectangle commentRectangle = annotation.getRectangle();
-                // 获取字体信息
-                String[] fontInfo = this.getFontInfo(annotation);
-                // 获取字体名称
-                String fontName = fontInfo[1];
-                // 获取字体大小
-                String fontSize = fontInfo[2];
                 // 构建评论信息
                 CommentInfo info = CommentInfo.builder()
                         .pageIndex(pageIndex)
                         .pageWidth(pageRectangle.getWidth())
                         .pageHeight(pageRectangle.getHeight())
-                        .fontName(fontName)
-                        .fontSize(Float.valueOf(fontSize.substring(0, fontSize.indexOf("pt"))))
                         .textContent(content)
                         .textBeginPosition(commentRectangle.getLowerLeftX() + "," + commentRectangle.getLowerLeftY())
                         .textEndPosition(commentRectangle.getUpperRightX() + "," + commentRectangle.getUpperRightY())
@@ -116,8 +107,6 @@ public abstract class AbstractCommentAnalyzer extends AbstractAnalyzer {
                                     "\npage index: " + info.getPageIndex() +
                                     "\npage width: " + info.getPageWidth() +
                                     "\npage height: " + info.getPageHeight() +
-                                    "\ncomment font name: " + info.getFontName() +
-                                    "\ncomment font size: " + info.getFontSize() +
                                     "\ncomment content: " + info.getTextContent() +
                                     "\ncomment begin position: " + info.getTextBeginPosition() +
                                     "\ncomment end position: " + info.getTextEndPosition() +
@@ -137,15 +126,5 @@ public abstract class AbstractCommentAnalyzer extends AbstractAnalyzer {
                 }
             }
         }
-    }
-
-    /**
-     * 处理字体名称
-     *
-     * @param annotation 文档注解
-     * @return 返回字体信息
-     */
-    protected String[] getFontInfo(PDAnnotation annotation) {
-        return annotation.getCOSObject().getString(COSName.DS).split(";")[0].split(" ");
     }
 }
