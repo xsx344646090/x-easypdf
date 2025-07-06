@@ -9,7 +9,6 @@ import org.dromara.pdf.pdfbox.core.enums.ComponentType;
 import org.dromara.pdf.pdfbox.core.ext.handler.AbstractTextHandler;
 import org.dromara.pdf.pdfbox.core.ext.handler.TextHandler;
 import org.dromara.pdf.pdfbox.core.info.CatalogInfo;
-import org.dromara.pdf.pdfbox.handler.FontHandler;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 
 import java.util.*;
@@ -254,7 +253,6 @@ public class Context {
         for (String fontName : fontNames) {
             if (!this.fontMap.containsKey(fontName)) {
                 this.fontMap.put(fontName, PdfHandler.getFontHandler().getPDFont(this.getTargetDocument(), fontName, true));
-                FontHandler.getInstance().initCodeMap(fontName);
             }
         }
     }
