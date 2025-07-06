@@ -168,6 +168,7 @@ public class DocumentAnalyzer extends AbstractAnalyzer implements Closeable {
         if (Objects.isNull(pageIndexes) || pageIndexes.length == 0) {
             this.formAnalyzer.processForm(-1, null);
         }
+        // 处理表单
         this.process(this.formAnalyzer::processForm, pageIndexes);
         // 返回表单信息列表
         return this.formAnalyzer.getInfoSet();
