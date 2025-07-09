@@ -7,6 +7,7 @@ import org.dromara.pdf.fop.core.datasource.DataSource;
 import org.dromara.pdf.fop.support.font.FontInfoHelper;
 import org.dromara.pdf.fop.support.layout.ExpandLayoutManagerMaker;
 import org.dromara.pdf.fop.util.FileUtil;
+import org.dromara.pdf.pdfbox.handler.PdfHandler;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -348,8 +349,12 @@ public class Template {
             this.transform(outputStream);
             // 创建输入流
             try (InputStream inputStream = new BufferedInputStream(new ByteArrayInputStream(outputStream.toByteArray()))) {
-                // 加载pdf并返回
-                return org.dromara.pdf.pdfbox.handler.PdfHandler.getDocumentHandler().load(inputStream);
+                // 加载pdf
+                org.dromara.pdf.pdfbox.core.base.Document document = PdfHandler.getDocumentHandler().load(inputStream, this.param.getUserPassword());
+                // 解密
+                document.decrypt();
+                // 返回pdf
+                return document;
             }
         }
     }
