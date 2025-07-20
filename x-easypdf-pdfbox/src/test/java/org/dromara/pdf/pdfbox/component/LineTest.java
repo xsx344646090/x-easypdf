@@ -33,13 +33,12 @@ public class LineTest extends BaseTest {
     public void solidTest() {
         this.test(() -> {
             Document document = PdfHandler.getDocumentHandler().create();
-            document.setMargin(50F);
 
             Page page = new Page(document);
 
-            Line line = new Line(page);
+            Line line = new Line(document.getCurrentPage());
+            line.setLineStyle(LineStyle.SOLID);
             line.setMarginTop(100F);
-            line.setAngle(45F);
             line.render();
 
             document.appendPage(page);
@@ -55,13 +54,12 @@ public class LineTest extends BaseTest {
     public void dottedTest() {
         this.test(() -> {
             Document document = PdfHandler.getDocumentHandler().create();
-            document.setMargin(50F);
 
             Page page = new Page(document);
 
-            Line line = new Line(page);
-            line.setMarginTop(50F);
+            Line line = new Line(document.getCurrentPage());
             line.setLineStyle(LineStyle.DOTTED);
+            line.setMarginTop(100F);
             line.setDottedSpacing(5F);
             line.setDottedLength(5F);
             line.setLineWidth(5F);

@@ -170,7 +170,7 @@ public class RenderProcessor extends AbstractProcessor {
      */
     @SneakyThrows
     public void image(String outputPath, ImageType imageType) {
-        this.image(outputPath, imageType, null);
+        this.image(outputPath, imageType, (String) null);
     }
 
     /**
@@ -232,6 +232,20 @@ public class RenderProcessor extends AbstractProcessor {
                 this.dpi,
                 this.getColorType()
         );
+    }
+
+    /**
+     * 转为图片（根据页面索引）
+     *
+     * @param outputPath  输出路径
+     * @param imageType   图像类型
+     * @param pageIndexes 页面索引
+     */
+    @SneakyThrows
+    public void image(String outputPath, ImageType imageType, int... pageIndexes) {
+        try (OutputStream outputStream = Files.newOutputStream(FileUtil.createDirectories(Paths.get(outputPath)))){
+            this.image(outputStream, imageType, pageIndexes);
+        }
     }
 
     /**

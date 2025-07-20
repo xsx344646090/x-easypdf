@@ -50,7 +50,7 @@ public class DocumentAnalyzerTest extends BaseTest {
     public void characterTest() {
         this.test(() -> {
             try (
-                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\analyzer\\hello-world1.pdf");
+                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\analyzer\\hello-world.pdf");
             ) {
                 DocumentAnalyzer analyzer = new DocumentAnalyzer(document);
                 int characterCount = analyzer.getCharacterCount(0);
@@ -70,7 +70,7 @@ public class DocumentAnalyzerTest extends BaseTest {
                     DocumentAnalyzer analyzer = new DocumentAnalyzer(document);
             ) {
                 Set<CommentInfo> infoSet = analyzer.analyzeComment();
-                infoSet.forEach(log::info);
+                infoSet.forEach(System.out::println);
             }
         });
     }
@@ -118,7 +118,7 @@ public class DocumentAnalyzerTest extends BaseTest {
                     DocumentAnalyzer analyzer = new DocumentAnalyzer(document);
             ) {
                 Set<FormFieldInfo> infoSet = analyzer.analyzeForm();
-                infoSet.forEach(log::info);
+                infoSet.forEach(System.out::println);
             }
         });
     }

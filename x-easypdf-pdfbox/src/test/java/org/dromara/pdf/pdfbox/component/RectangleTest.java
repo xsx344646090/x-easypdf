@@ -6,6 +6,7 @@ import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.component.DiagonalLine;
 import org.dromara.pdf.pdfbox.core.component.Rectangle;
 import org.dromara.pdf.pdfbox.core.enums.HorizontalAlignment;
+import org.dromara.pdf.pdfbox.core.enums.LineCapStyle;
 import org.dromara.pdf.pdfbox.core.enums.VerticalAlignment;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.junit.Test;
@@ -42,10 +43,12 @@ public class RectangleTest extends BaseTest {
 
                     Page page = new Page(document);
 
-                    Rectangle rectangle = new Rectangle(page);
+                    Rectangle rectangle = new Rectangle(document.getCurrentPage());
                     rectangle.setBorderColor(new Color(0, 191, 255));
                     rectangle.setBorderLineWidth(1F);
                     rectangle.setBackgroundColor(Color.LIGHT_GRAY);
+                    rectangle.setBorderLineCapStyle(LineCapStyle.ROUND);
+                    rectangle.setBorderRadius(10F);
                     rectangle.setWidth(200F);
                     rectangle.setHeight(200F);
                     rectangle.setHorizontalAlignment(HorizontalAlignment.CENTER);
@@ -71,14 +74,14 @@ public class RectangleTest extends BaseTest {
 
                     Page page = new Page(document);
 
-                    Rectangle rectangle = new Rectangle(page);
+                    Rectangle rectangle = new Rectangle(document.getCurrentPage());
                     rectangle.setBeginX(100F);
                     rectangle.setBeginY(100F);
                     rectangle.setWidth(150F);
                     rectangle.setHeight(150F);
                     rectangle.setBorderColor(Color.BLACK);
                     rectangle.render();
-                    
+
                     DiagonalLine line = new DiagonalLine(page);
                     line.setBeginX(100F);
                     line.setBeginY(100F);

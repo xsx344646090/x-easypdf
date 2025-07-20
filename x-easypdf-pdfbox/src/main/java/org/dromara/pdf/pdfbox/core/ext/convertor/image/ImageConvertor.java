@@ -1,24 +1,31 @@
-package org.dromara.pdf.pdfbox.core.ext.processor;
+package org.dromara.pdf.pdfbox.core.ext.convertor.image;
 
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
+import org.apache.commons.io.IOUtils;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.base.PageSize;
 import org.dromara.pdf.pdfbox.core.component.Image;
+import org.dromara.pdf.pdfbox.core.ext.convertor.AbstractConvertor;
+import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.dromara.pdf.pdfbox.util.ImageUtil;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
- * 图像处理器
+ * 图像转换器
  *
  * @author xsx
- * @date 2023/10/20
+ * @date 2025/6/18
  * @since 1.8
  * <p>
  * Copyright (c) 2020 xsx All Rights Reserved.
@@ -33,17 +40,17 @@ import java.util.Objects;
  * </p>
  */
 @EqualsAndHashCode(callSuper = true)
-public class ImageProcessor extends AbstractProcessor {
-    
+public class ImageConvertor extends AbstractConvertor {
+
     /**
      * 有参构造
      *
      * @param document pdf文档
      */
-    public ImageProcessor(Document document) {
-        super(document);
+    public ImageConvertor(Document document) {
+        super(Optional.ofNullable(document).orElse(PdfHandler.getDocumentHandler().create()));
     }
-    
+
     /**
      * 转为pdf
      *
@@ -53,7 +60,7 @@ public class ImageProcessor extends AbstractProcessor {
     public void toPdf(File... files) {
         this.toPdf(PageSize.A4, files);
     }
-    
+
     /**
      * 转为pdf
      *
@@ -64,11 +71,17 @@ public class ImageProcessor extends AbstractProcessor {
     public void toPdf(PageSize pageSize, File... files) {
         List<BufferedImage> list = new ArrayList<>(files.length);
         for (File file : files) {
-            list.add(ImageUtil.read(file));
+            try (
+                    BufferedInputStream bufferedInputStream = new BufferedInputStream(Files.newInputStream(file.toPath()));
+                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream(8192)
+            ) {
+                IOUtils.copy(bufferedInputStream, outputStream);
+                list.add(ImageUtil.read(outputStream.toByteArray()));
+            }
         }
         this.toPdf(pageSize, list);
     }
-    
+
     /**
      * 转为pdf
      *
@@ -78,7 +91,7 @@ public class ImageProcessor extends AbstractProcessor {
     public void toPdf(List<BufferedImage> images) {
         this.toPdf(PageSize.A4, images);
     }
-    
+
     /**
      * 转为pdf
      *
@@ -89,7 +102,7 @@ public class ImageProcessor extends AbstractProcessor {
     public void toPdf(PageSize pageSize, List<BufferedImage> images) {
         this.toPdf(pageSize, images.toArray(new BufferedImage[0]));
     }
-    
+
     /**
      * 转为pdf
      *
@@ -99,7 +112,7 @@ public class ImageProcessor extends AbstractProcessor {
     public void toPdf(BufferedImage... images) {
         this.toPdf(PageSize.A4, images);
     }
-    
+
     /**
      * 转为pdf
      *
@@ -135,5 +148,14 @@ public class ImageProcessor extends AbstractProcessor {
         }
         // 添加页面
         this.document.appendPage(pages);
+    }
+
+    /**
+     * 刷新
+     *
+     * @return 返回文档
+     */
+    public Document flush() {
+        return this.document;
     }
 }

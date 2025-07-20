@@ -35,20 +35,6 @@ public class HtmlConvertorTest extends BaseTest {
      * html转pdf测试
      */
     @Test
-    public void toPdfForRemoteTest() {
-        this.test(() -> {
-            HtmlConvertor convertor = PdfHandler.getDocumentConvertor().getHtmlConvertor();
-            convertor.setMargin(10F);
-            convertor.setScale(0.85F);
-            Document document = convertor.toPdf("https://x-easypdf.cn/guide/fop/%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8.html");
-            document.saveAndClose("E:\\PDF\\pdfbox\\convertor\\html\\x-easypdf.pdf");
-        });
-    }
-
-    /**
-     * html转pdf测试
-     */
-    @Test
     public void toPdfWithLocalTest() {
         HtmlConvertor convertor = PdfHandler.getDocumentConvertor().getHtmlConvertor();
         convertor.setMargin(10F);

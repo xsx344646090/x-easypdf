@@ -41,12 +41,21 @@ public class CircleTest extends BaseTest {
 
                     Page page = new Page(document);
 
-                    Circle circle = new Circle(page);
+                    // 创建圆形组件
+                    Circle circle = new Circle(document.getCurrentPage());
+// 设置边框颜色
                     circle.setBorderColor(new Color(0, 191, 255));
+// 设置边框宽度
                     circle.setBorderLineWidth(1F);
+// 设置背景颜色
+                    circle.setBackgroundColor(Color.LIGHT_GRAY);
+// 设置半径
                     circle.setRadius(50F);
-                    circle.setHorizontalAlignment(HorizontalAlignment.LEFT);
-                    circle.setVerticalAlignment(VerticalAlignment.TOP);
+// 设置水平居中
+                    circle.setHorizontalAlignment(HorizontalAlignment.CENTER);
+// 设置垂直居中
+                    circle.setVerticalAlignment(VerticalAlignment.CENTER);
+// 绘制
                     circle.render();
 
                     document.appendPage(page);

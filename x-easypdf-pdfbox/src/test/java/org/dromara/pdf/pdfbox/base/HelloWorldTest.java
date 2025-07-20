@@ -42,7 +42,6 @@ public class HelloWorldTest extends BaseTest {
     public void test() {
         this.test(() -> {
             PdfHandler.disableScanSystemFonts();
-            PdfHandler.getFontHandler().getFontNames().forEach(System.out::println);
             Document document = PdfHandler.getDocumentHandler().create();
             Page page = new Page(document);
 

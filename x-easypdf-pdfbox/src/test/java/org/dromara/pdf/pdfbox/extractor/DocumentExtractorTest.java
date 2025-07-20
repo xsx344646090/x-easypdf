@@ -39,11 +39,11 @@ public class DocumentExtractorTest extends BaseTest {
     public void extractTextTest() {
         this.test(() -> {
             try (
-                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\extractor\\0216.pdf");
+                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\extractor\\hello-world.pdf");
                     DocumentExtractor extractor = PdfHandler.getDocumentExtractor(document);
             ) {
-                Map<Integer, List<String>> map = extractor.extractText(0);
-                map.forEach((key, value) -> log.info("key: " + key + ", value: " + value));
+                Map<Integer, List<String>> map = extractor.extractText();
+                map.forEach((key, value) -> System.out.println("第" + key + "页：" + value));
             }
         });
     }

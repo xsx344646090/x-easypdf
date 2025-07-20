@@ -8,7 +8,7 @@ import org.dromara.pdf.pdfbox.core.ext.convertor.office.rtf.RichTextConvertor;
 import org.dromara.pdf.pdfbox.core.ext.convertor.office.word.WordConvertor;
 
 /**
- * documents4j转换器
+ * office转换器
  *
  * @author xsx
  * @date 2025/6/18
