@@ -78,10 +78,6 @@ public class HtmlConvertor extends AbstractConvertor {
      */
     protected PageSize pageSize;
     /**
-     * 是否包含背景
-     */
-    protected Boolean isIncludeBackground;
-    /**
      * 请求超时时间（ms）
      */
     protected Long requestTimeout;
@@ -109,6 +105,14 @@ public class HtmlConvertor extends AbstractConvertor {
      * 缩放比例（0.1-2.0）
      */
     protected Float scale;
+    /**
+     * 是否横向
+     */
+    protected Boolean isLandscape;
+    /**
+     * 是否包含背景
+     */
+    protected Boolean isIncludeBackground;
 
     /**
      * 有参构造
@@ -291,6 +295,10 @@ public class HtmlConvertor extends AbstractConvertor {
         if (Objects.isNull(this.scale)) {
             this.scale = 1.0F;
         }
+        // 初始化是否横向
+        if (Objects.isNull(this.isLandscape)) {
+            this.isLandscape = Boolean.FALSE;
+        }
     }
 
     /**
@@ -318,6 +326,7 @@ public class HtmlConvertor extends AbstractConvertor {
                 .setPrintBackground(this.isIncludeBackground)
                 .setOutline(true)
                 .setScale(this.scale)
+                .setLandscape(this.isLandscape)
                 .setMargin(
                         new Margin().setLeft(this.marginLeft + UNIT)
                                 .setRight(this.marginRight + UNIT)

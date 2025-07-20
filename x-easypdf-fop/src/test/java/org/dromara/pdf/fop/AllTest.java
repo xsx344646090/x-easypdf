@@ -229,8 +229,7 @@ public class AllTest extends BaseTest {
             // 打印总页数
             log.info("Total pages: " + totalPage);
             // 转换pdf
-            org.dromara.pdf.pdfbox.core.base.Document document1 = document.transform();
-            document1.saveAndClose(outputPath);
+            document.transform(outputPath);
         });
     }
 

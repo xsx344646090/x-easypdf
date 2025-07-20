@@ -41,6 +41,7 @@ public class TextComparator extends AbstractComparator {
      *
      * @param other       文档
      * @param pageIndexes 页面索引
+     * @return 返回比较结果
      */
     public Map<Integer, List<TextCompareInfo>> compareTo(Document other, int... pageIndexes) {
         // 定义结果

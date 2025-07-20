@@ -144,15 +144,6 @@ public class DocumentProcessor extends AbstractProcessor {
     }
 
     /**
-     * 获取图像处理器
-     *
-     * @return 返回图像处理器
-     */
-    public ImageProcessor getImageProcessor() {
-        return new ImageProcessor(this.document);
-    }
-
-    /**
      * 获取附件处理器
      *
      * @return 返回附件处理器

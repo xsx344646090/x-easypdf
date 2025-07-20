@@ -2,7 +2,7 @@
 	<img src="https://images.gitee.com/uploads/images/2021/0621/111332_1f43ae97_1494292.png" width="45%">
 </p>
 <p align="center">
-	<strong>一个 java 语言简化处理 pdf 的框架</strong>
+	<strong>pdf 一站式解决方案</strong>
 </p>
 
 #### 更新说明
@@ -21,7 +21,7 @@
 ---
 
 #### 当前版本
-> v3.4.1
+> v3.4.2
 
 ---
 
@@ -58,7 +58,7 @@
 <dependency>
     <groupId>org.dromara</groupId>
     <artifactId>x-easypdf</artifactId>
-    <version>3.4.1</version>
+    <version>3.4.2</version>
 </dependency>
 ```
 
@@ -67,7 +67,7 @@
 <dependency>
     <groupId>org.dromara</groupId>
     <artifactId>x-easypdf-pdfbox</artifactId>
-    <version>3.4.1</version>
+    <version>3.4.2</version>
 </dependency>
 ```
 
@@ -76,7 +76,7 @@
 <dependency>
     <groupId>org.dromara</groupId>
     <artifactId>x-easypdf-fop</artifactId>
-    <version>3.4.1</version>
+    <version>3.4.2</version>
 </dependency>
 ```
 

@@ -37,14 +37,6 @@ public class CommentInfo {
      */
     private Float pageHeight;
     /**
-     * 字体名称
-     */
-    private String fontName;
-    /**
-     * 字体大小
-     */
-    private Float fontSize;
-    /**
      * 文本内容
      */
     private String textContent;

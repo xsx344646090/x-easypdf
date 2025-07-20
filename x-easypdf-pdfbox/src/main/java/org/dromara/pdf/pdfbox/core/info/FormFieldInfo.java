@@ -3,6 +3,7 @@ package org.dromara.pdf.pdfbox.core.info;
 import lombok.Builder;
 import lombok.Data;
 import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 
 /**
  * 表单字段信息
@@ -62,7 +63,27 @@ public class FormFieldInfo {
      */
     private Boolean isNoExport;
     /**
+     * 字段
+     */
+    private PDField field;
+    /**
      * 页面
      */
     private PDPage page;
+
+
+    @Override
+    public String toString() {
+        return "FormFieldInfo{" +
+                "pageIndex=" + pageIndex +
+                ", pageWidth=" + pageWidth +
+                ", pageHeight=" + pageHeight +
+                ", type='" + type + '\'' +
+                ", name='" + name + '\'' +
+                ", value='" + value + '\'' +
+                ", isReadOnly=" + isReadOnly +
+                ", isRequired=" + isRequired +
+                ", isNoExport=" + isNoExport +
+                '}';
+    }
 }

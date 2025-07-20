@@ -5,11 +5,11 @@
     <parent>
         <groupId>org.dromara</groupId>
         <artifactId>x-easypdf-parent</artifactId>
-        <version>3.4.1</version>
+        <version>3.4.2</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>x-easypdf-pdfbox</artifactId>
-    <version>3.4.1</version>
+    <version>3.4.2</version>
     <packaging>jar</packaging>
     <name>x-easypdf-pdfbox</name>
     <url>https://www.x-easypdf.cn</url>
@@ -17,7 +17,7 @@
 
     <properties>
         <documents4j.version>1.1.12</documents4j.version>
-        <playwright.version>1.52.0</playwright.version>
+        <playwright.version>1.53.0</playwright.version>
         <okhttp.version>4.12.0</okhttp.version>
         <fastjson.version>2.0.57</fastjson.version>
         <skipTests>true</skipTests>
@@ -208,12 +208,6 @@
         <dependency>
             <groupId>com.documents4j</groupId>
             <artifactId>documents4j-local</artifactId>
-            <version>${documents4j.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>com.documents4j</groupId>
-            <artifactId>documents4j-client</artifactId>
             <version>${documents4j.version}</version>
             <optional>true</optional>
         </dependency>

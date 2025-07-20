@@ -33,7 +33,7 @@ public class OSChinaAITest extends BaseTest {
         this.test(()->{
             String sk = System.getenv("sk");
             Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\allTest.pdf");
-            OSChinaAIParser parser = PdfHandler.getDocumentAIParser(document).getOSChinaAIParser(sk, false);
+            OSChinaAIParser parser = PdfHandler.getDocumentAIParser(document).getOSChinaAI(sk, false);
             AIParseInfo info = parser.parseTextWithPage("一句话总结文本内容", 0, 0);
             log.info("返回内容：\n" + info.getResult());
             document.close();
@@ -48,7 +48,7 @@ public class OSChinaAITest extends BaseTest {
         this.test(()->{
             String sk = System.getenv("sk");
             Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\allTest.pdf");
-            OSChinaAIParser parser = PdfHandler.getDocumentAIParser(document).getOSChinaAIParser(sk, true);
+            OSChinaAIParser parser = PdfHandler.getDocumentAIParser(document).getOSChinaAI(sk, true);
             AIParseInfo info = parser.parseTextWithDocument("提取表格内容，以json格式返回");
             log.info("返回内容：\n" + info.getResult());
             document.close();

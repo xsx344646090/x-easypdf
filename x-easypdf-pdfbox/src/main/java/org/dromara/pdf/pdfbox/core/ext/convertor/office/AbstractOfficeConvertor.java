@@ -2,10 +2,14 @@ package org.dromara.pdf.pdfbox.core.ext.convertor.office;
 
 import com.documents4j.api.DocumentType;
 import com.documents4j.api.IConverter;
+import com.documents4j.conversion.IExternalConverter;
+import com.documents4j.job.LocalConverter;
 import lombok.SneakyThrows;
+import org.apache.commons.logging.LogFactory;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.ext.convertor.AbstractConvertor;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
+import org.dromara.pdf.pdfbox.support.Constants;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -14,9 +18,10 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
- * 抽象documents4j转换器
+ * 抽象office转换器
  *
  * @author xsx
  * @date 2025/6/18
@@ -38,7 +43,7 @@ public abstract class AbstractOfficeConvertor extends AbstractConvertor {
     /**
      * 转换器
      */
-    protected IConverter converter;
+    protected static final IConverter CONVERTER = init();
 
     /**
      * 有参构造
@@ -50,13 +55,19 @@ public abstract class AbstractOfficeConvertor extends AbstractConvertor {
     }
 
     /**
-     * 设置内置转换器
+     * 初始化
      *
-     * @param converter 转换器
+     * @return 返回转换器
      */
-    public void setInlineConverter(IConverter converter) {
-        Objects.requireNonNull(converter, "the converter can not be null");
-        this.converter = converter;
+    @SuppressWarnings("all")
+    protected static IConverter init() {
+        LocalConverter.Builder builder = LocalConverter.builder().baseFolder(new File(Constants.TEMP_FILE_PATH)).processTimeout(600, TimeUnit.SECONDS);
+        try {
+            builder.enable((Class<? extends IExternalConverter>) Class.forName("com.documents4j.conversion.msoffice.MicrosoftPowerpointBridge"));
+        } catch (ClassNotFoundException e) {
+            LogFactory.getLog(AbstractOfficeConvertor.class).warn("The MicrosoftPowerpointBridge class not found, will skip the ppt initialization");
+        }
+        return builder.build();
     }
 
     /**
@@ -92,11 +103,10 @@ public abstract class AbstractOfficeConvertor extends AbstractConvertor {
      */
     @SneakyThrows
     protected Document toPdf(DocumentType type, InputStream source) {
-        Objects.requireNonNull(this.converter, "the inline converter can not be null");
         Objects.requireNonNull(type, "the type can not be null");
         Objects.requireNonNull(source, "the source can not be null");
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream(8192)) {
-            boolean executed = this.converter.convert(source)
+            boolean executed = CONVERTER.convert(source)
                     .as(type)
                     .to(outputStream)
                     .as(DocumentType.PDF)
@@ -117,17 +127,18 @@ public abstract class AbstractOfficeConvertor extends AbstractConvertor {
      */
     @SneakyThrows
     protected boolean toFile(DocumentType type, OutputStream output) {
-        Objects.requireNonNull(this.converter, "the inline converter can not be null");
         Objects.requireNonNull(type, "the type can not be null");
         Objects.requireNonNull(output, "the output can not be null");
         File tempFile = this.document.getTempFile();
-        boolean executed = this.converter.convert(tempFile)
+        boolean executed = CONVERTER.convert(tempFile)
                 .as(DocumentType.PDF)
                 .to(output)
                 .as(type)
                 .execute();
         if (Objects.nonNull(tempFile)) {
-            tempFile.delete();
+            if (!tempFile.delete()) {
+                this.log.warn("Delete temp file['" + tempFile.getName() + "'] fail: " + tempFile.getAbsolutePath());
+            }
         }
         return executed;
     }

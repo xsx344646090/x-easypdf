@@ -129,7 +129,7 @@ public class DocumentAIParser extends AbstractParser {
      * @param isJsonResponse 是否json响应
      * @return 返回开源中国AI
      */
-    public OSChinaAIParser getOSChinaAIParser(String apiKey, boolean isJsonResponse) {
+    public OSChinaAIParser getOSChinaAI(String apiKey, boolean isJsonResponse) {
         return new OSChinaAIParser(this.document, apiKey, isJsonResponse);
     }
 
