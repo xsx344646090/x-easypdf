@@ -118,8 +118,21 @@ public class SplitProcessor extends AbstractProcessor {
      */
     @SneakyThrows
     public void splitAll(String directory) {
+        this.splitAll(directory, null);
+    }
+
+    /**
+     * 拆分全部（单页拆分为独立文档）
+     *
+     * @param directory 目录
+     * @param prefix    名称前缀
+     */
+    @SneakyThrows
+    public void splitAll(String directory, String prefix) {
         // 检查参数
         Objects.requireNonNull(directory, "the directory can not be null");
+        // 定义文件名
+        String name = Optional.ofNullable(prefix).orElse("x-easypdf-split");
         // 文件名称构造器
         StringBuilder fileNameBuilder;
         // 定义拆分文档列表索引
@@ -137,7 +150,7 @@ public class SplitProcessor extends AbstractProcessor {
             // 新建文件名称构造器
             fileNameBuilder = new StringBuilder();
             // 构建文件名称
-            fileNameBuilder.append(directory).append(File.separator).append("x-easypdf-split").append(index).append(".pdf");
+            fileNameBuilder.append(directory).append(File.separator).append(name).append(index).append(".pdf");
             // 获取输出流
             try (OutputStream outputStream = new BufferedOutputStream(Files.newOutputStream(FileUtil.createDirectories(Paths.get(fileNameBuilder.toString()))))) {
                 // 保存任务

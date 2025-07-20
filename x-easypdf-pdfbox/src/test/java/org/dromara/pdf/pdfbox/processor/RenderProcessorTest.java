@@ -40,7 +40,7 @@ public class RenderProcessorTest extends BaseTest {
             try (
                     Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\document\\bigDataTest2.pdf", MemoryPolicy.setupTempFileOnly())
             ) {
-                RenderProcessor imager = new RenderProcessor(document);
+                RenderProcessor imager = PdfHandler.getDocumentProcessor(document).getRenderProcessor();
 
                 imager.setDpi(72F);
                 imager.enableOptimization();
@@ -60,7 +60,7 @@ public class RenderProcessorTest extends BaseTest {
                     Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\hello-world.pdf");
                     OutputStream outputStream = Files.newOutputStream(FileUtil.createDirectories(Paths.get("E:\\PDF\\pdfbox\\imager\\testPage.png")))
             ) {
-                RenderProcessor imager = new RenderProcessor(document);
+                RenderProcessor imager = PdfHandler.getDocumentProcessor(document).getRenderProcessor();
                 imager.setDpi(300F);
                 imager.image(outputStream, ImageType.PNG, 0);
             }

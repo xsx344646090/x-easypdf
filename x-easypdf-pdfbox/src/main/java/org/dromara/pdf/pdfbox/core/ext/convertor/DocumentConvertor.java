@@ -1,8 +1,9 @@
 package org.dromara.pdf.pdfbox.core.ext.convertor;
 
 import org.dromara.pdf.pdfbox.core.base.Document;
-import org.dromara.pdf.pdfbox.core.ext.convertor.office.OfficeConvertor;
 import org.dromara.pdf.pdfbox.core.ext.convertor.html.HtmlConvertor;
+import org.dromara.pdf.pdfbox.core.ext.convertor.image.ImageConvertor;
+import org.dromara.pdf.pdfbox.core.ext.convertor.office.OfficeConvertor;
 
 /**
  * 文档转换器
@@ -49,5 +50,14 @@ public class DocumentConvertor extends AbstractConvertor {
      */
     public HtmlConvertor getHtmlConvertor() {
         return new HtmlConvertor(this.document);
+    }
+
+    /**
+     * 获取图像转换器
+     *
+     * @return 返回图像转换器
+     */
+    public ImageConvertor getImageConvertor() {
+        return new ImageConvertor(this.document);
     }
 }

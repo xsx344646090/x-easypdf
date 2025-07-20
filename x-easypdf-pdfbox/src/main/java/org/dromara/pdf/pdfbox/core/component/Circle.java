@@ -94,10 +94,90 @@ public class Circle extends AbstractComponent {
         if (Objects.isNull(this.backgroundColor)) {
             this.backgroundColor = this.getPage().getBackgroundColor();
         }
-        // 获取半径
-        float diameter = this.getMinWidth();
+        // 获取直径
+        float diameter = this.getRadius() * 2;
         // 初始化起始XY轴坐标
         this.initBeginXY(diameter, diameter);
+    }
+
+    /**
+     * 初始化起始X轴坐标
+     *
+     * @param width 宽度
+     */
+    @Override
+    protected void initBeginX(float width) {
+        // 跳过
+        if (width == 0) {
+            return;
+        }
+        // 获取半径
+        float radius = width / 2;
+        // 匹配水平对齐方式
+        switch (this.getHorizontalAlignment()) {
+            // 居中
+            case CENTER: {
+                // 获取偏移量
+                float offset = (this.getContext().getWrapWidth() - width) / 2 + radius;
+                // 设置起始X轴坐标
+                this.setBeginX(this.getBeginX() + offset, this.getIsCustomX());
+                // 结束
+                break;
+            }
+            // 居右
+            case RIGHT: {
+                // 获取偏移量
+                float offset = this.getContext().getWrapWidth() - radius - this.getMarginRight();
+                // 设置起始X轴坐标
+                this.setBeginX(Math.min(this.getBeginX() + offset, this.getContext().getMaxBeginX() - radius), this.getIsCustomX());
+                // 结束
+                break;
+            }
+            // 居左
+            default: {
+                // nothing to do
+            }
+        }
+    }
+
+    /**
+     * 初始化起始Y轴坐标
+     *
+     * @param height 高度
+     */
+    @Override
+    protected void initBeginY(float height) {
+        // 跳过
+        if (height == 0) {
+            return;
+        }
+        // 获取半径
+        float radius = height / 2;
+        // 定义偏移量
+        float offset = 0F;
+        // 匹配垂直对齐方式
+        switch (this.getVerticalAlignment()) {
+            // 居中
+            case CENTER: {
+                // 获取偏移量
+                offset = (this.getContext().getHeight() - height) / 2 - radius;
+                // 结束
+                break;
+            }
+            // 居下
+            case BOTTOM: {
+                // 获取偏移量
+                offset = this.getContext().getHeight() - height - radius - this.getMarginBottom();
+                // 结束
+                break;
+            }
+            // 居上
+            default: {
+                // nothing to do
+            }
+        }
+        // 设置起始Y轴坐标
+        this.setBeginY(this.getBeginY(this.getPage(), this.getBeginY() - offset), this.getIsCustomY());
     }
 
     /**

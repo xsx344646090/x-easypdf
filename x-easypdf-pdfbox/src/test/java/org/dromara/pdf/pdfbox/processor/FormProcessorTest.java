@@ -34,7 +34,7 @@ import java.util.Map;
  * </p>
  */
 public class FormProcessorTest extends BaseTest {
-    
+
     /**
      * 测试文本填写
      */
@@ -42,21 +42,21 @@ public class FormProcessorTest extends BaseTest {
     public void fillTextTest() {
         this.test(() -> {
             try (
-                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\form\\form.pdf")
+                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\analyzer\\hello-world.pdf")
             ) {
                 FormProcessor processor = new FormProcessor(document);
                 processor.setFont("微软雅黑", 12F, Color.BLACK);
-                
+
                 Map<String, String> map = new HashMap<>(1);
                 map.put("test2", "其他");
                 processor.fillText(map);
                 processor.readOnly();
-                
-                document.save("E:\\PDF\\pdfbox\\form\\fillTextTest3.pdf");
+
+                document.save("E:\\PDF\\pdfbox\\analyzer\\hello-world3.pdf");
             }
         });
     }
-    
+
     /**
      * 测试图像填写
      */
@@ -67,16 +67,16 @@ public class FormProcessorTest extends BaseTest {
                     Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\form\\addImageFieldTest.pdf")
             ) {
                 FormProcessor processor = new FormProcessor(document);
-                
+
                 Map<String, BufferedImage> map = new HashMap<>(1);
                 map.put("test", ImageUtil.read(new File("E:\\PDF\\pdfbox\\image\\test.png")));
                 processor.fillImage(map);
-                
+
                 document.save("E:\\PDF\\pdfbox\\form\\fillImageTest.pdf");
             }
         });
     }
-    
+
     /**
      * 测试单选填写
      */
@@ -87,14 +87,14 @@ public class FormProcessorTest extends BaseTest {
                     Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\form\\addRadioFieldTest.pdf")
             ) {
                 FormProcessor processor = new FormProcessor(document);
-                
+
                 processor.fillRadio("test", 2);
-                
+
                 document.save("E:\\PDF\\pdfbox\\form\\fillRadioFieldTest.pdf");
             }
         });
     }
-    
+
     /**
      * 测试多选填写
      */
@@ -109,14 +109,14 @@ public class FormProcessorTest extends BaseTest {
                 map.put("test1", false);
                 map.put("test2", false);
                 map.put("test3", false);
-                
+
                 processor.fillCheckBox(map);
-                
+
                 document.save("E:\\PDF\\pdfbox\\form\\fillCheckBoxTest.pdf");
             }
         });
     }
-    
+
     /**
      * 测试添加文本字段
      */
@@ -127,21 +127,21 @@ public class FormProcessorTest extends BaseTest {
             Page page = new Page(document);
             // 需要先添加页面
             document.appendPage(page);
-            
+
             FormProcessor processor = new FormProcessor(document);
-            
+
             TextFieldBuilder builder = TextFieldBuilder.builder(document, page, Size.create(0F, 100F, 0F, 50F));
             builder.setName("test");
             builder.setFontName("仿宋");
             builder.setMaxLength(50);
             builder.setIsMultiline(true);
-            
+
             processor.addField(builder);
-            
+
             document.saveAndClose("E:\\PDF\\pdfbox\\form\\addTextFieldTest.pdf");
         });
     }
-    
+
     /**
      * 测试添加图像字段
      */
@@ -152,20 +152,20 @@ public class FormProcessorTest extends BaseTest {
             Page page = new Page(document);
             // 需要先添加页面
             document.appendPage(page);
-            
+
             FormProcessor processor = new FormProcessor(document);
-            
+
             ImageFieldBuilder builder = ImageFieldBuilder.builder(document, page, Size.create(0F, 50F, 0F, 50F));
             builder.setName("test");
             builder.setLabel("test");
             builder.setLayout(ImageFieldLayout.IMAGE_BEHIND);
-            
+
             processor.addField(builder);
-            
+
             document.saveAndClose("E:\\PDF\\pdfbox\\form\\addImageFieldTest.pdf");
         });
     }
-    
+
     /**
      * 测试添加单选字段
      */
@@ -176,9 +176,9 @@ public class FormProcessorTest extends BaseTest {
             Page page = new Page(document);
             // 需要先添加页面
             document.appendPage(page);
-            
+
             FormProcessor processor = new FormProcessor(document);
-            
+
             float leftX = 100F;
             float rightX = 120F;
             float bottomY = 480F;
@@ -194,11 +194,11 @@ public class FormProcessorTest extends BaseTest {
                 rightX = rightX + 30F;
             }
             processor.addField(builder);
-            
+
             document.saveAndClose("E:\\PDF\\pdfbox\\form\\addRadioFieldTest.pdf");
         });
     }
-    
+
     /**
      * 测试添加多选字段
      */
@@ -209,9 +209,9 @@ public class FormProcessorTest extends BaseTest {
             Page page = new Page(document);
             // 需要先添加页面
             document.appendPage(page);
-            
+
             FormProcessor processor = new FormProcessor(document);
-            
+
             float leftX = 100F;
             float rightX = 120F;
             float bottomY = 480F;
@@ -223,11 +223,11 @@ public class FormProcessorTest extends BaseTest {
                 builder.setStyle(FormFieldStateStyle.values()[i]);
                 builder.setIsSelected(true);
                 processor.addField(builder);
-                
+
                 leftX = leftX + 30F;
                 rightX = rightX + 30F;
             }
-            
+
             document.saveAndClose("E:\\PDF\\pdfbox\\form\\addCheckBoxFieldTest.pdf");
         });
     }

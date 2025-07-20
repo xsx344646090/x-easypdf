@@ -1,8 +1,8 @@
 /**
- * documents4j重写
+ * 图像转换器
  *
  * @author xsx
- * @date 2025/5/6
+ * @date 2025/6/18
  * @since 1.8
  * <p>
  * Copyright (c) 2020 xsx All Rights Reserved.
@@ -16,4 +16,4 @@
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-package com.documents4j;
+package org.dromara.pdf.pdfbox.core.ext.convertor.image;

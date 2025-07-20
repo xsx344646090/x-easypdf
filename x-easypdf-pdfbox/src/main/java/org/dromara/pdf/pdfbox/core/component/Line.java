@@ -35,7 +35,7 @@ import java.util.Objects;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class Line extends AbstractComponent {
-    
+
     /**
      * 样式
      */
@@ -72,7 +72,7 @@ public class Line extends AbstractComponent {
      * 透明度
      */
     protected Float alpha;
-    
+
     /**
      * 有参构造
      *
@@ -81,8 +81,8 @@ public class Line extends AbstractComponent {
     public Line(Page page) {
         super(page);
     }
-    
-    
+
+
     /**
      * 获取类型
      *
@@ -92,7 +92,7 @@ public class Line extends AbstractComponent {
     public ComponentType getType() {
         return ComponentType.LINE;
     }
-    
+
     /**
      * 初始化
      */
@@ -140,7 +140,7 @@ public class Line extends AbstractComponent {
         // 初始化起始XY轴坐标
         this.initBeginXY(this.getLineLength(), this.getLineWidth());
     }
-    
+
     /**
      * 获取最小宽度
      *
@@ -150,7 +150,7 @@ public class Line extends AbstractComponent {
     protected float getMinWidth() {
         return this.getLineLength();
     }
-    
+
     /**
      * 写入内容
      */
@@ -182,10 +182,12 @@ public class Line extends AbstractComponent {
                 break;
             }
         }
+        // 描边
+        stream.stroke();
         // 关闭内容流
         stream.close();
     }
-    
+
     /**
      * 重置
      */
@@ -198,7 +200,7 @@ public class Line extends AbstractComponent {
         // 重置
         super.reset(this.getType(), x, y);
     }
-    
+
     /**
      * 初始化内容流
      *

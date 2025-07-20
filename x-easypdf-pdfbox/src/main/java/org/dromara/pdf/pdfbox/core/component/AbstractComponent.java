@@ -652,7 +652,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
                 // 获取偏移量
                 float offset = (this.getContext().getWrapWidth() - width) / 2;
                 // 设置起始X轴坐标
-                this.setBeginX(this.getBeginX() + offset);
+                this.setBeginX(this.getBeginX() + offset, this.getIsCustomX());
                 // 结束
                 break;
             }
@@ -661,7 +661,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
                 // 获取偏移量
                 float offset = this.getContext().getWrapWidth() - width - this.getMarginRight();
                 // 设置起始X轴坐标
-                this.setBeginX(Math.min(this.getBeginX() + offset, this.getContext().getMaxBeginX() - width));
+                this.setBeginX(Math.min(this.getBeginX() + offset, this.getContext().getMaxBeginX() - width), this.getIsCustomX());
                 // 结束
                 break;
             }

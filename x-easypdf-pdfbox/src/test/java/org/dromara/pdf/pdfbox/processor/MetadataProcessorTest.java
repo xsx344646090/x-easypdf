@@ -33,9 +33,9 @@ public class MetadataProcessorTest extends BaseTest {
     public void metadataTest() {
         this.test(() -> {
             try (
-                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\comment\\addCommentTest.pdf")
+                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\hello-world.pdf")
             ) {
-                MetadataProcessor processor = new MetadataProcessor(document);
+                MetadataProcessor processor = PdfHandler.getDocumentProcessor(document).getMetadataProcessor();
                 processor.setProducer("myProducer");
                 processor.setKeywords("myKeywords1", "myKeywords2");
                 processor.setCreateDate(Calendar.getInstance());
@@ -44,13 +44,14 @@ public class MetadataProcessorTest extends BaseTest {
                 processor.setTitle("myTitle");
                 processor.setAuthors("myAuthors1", "myAuthors2");
                 processor.setDescription("description");
+                processor.setDescription();
                 processor.setFormat("pdf");
                 processor.setRights("myRights");
                 processor.setRightsMarked(Boolean.FALSE);
                 processor.setRightsUrl("https://x-easypdf.cn");
                 processor.flush();
 
-                document.save("E:\\PDF\\pdfbox\\metadata\\metadataTest.pdf");
+                document.save("E:\\PDF\\pdfbox\\processor\\metadata\\metadataTest.pdf");
             }
         });
     }
