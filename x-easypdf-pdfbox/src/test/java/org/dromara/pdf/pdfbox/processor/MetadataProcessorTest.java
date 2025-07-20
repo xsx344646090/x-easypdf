@@ -44,7 +44,6 @@ public class MetadataProcessorTest extends BaseTest {
                 processor.setTitle("myTitle");
                 processor.setAuthors("myAuthors1", "myAuthors2");
                 processor.setDescription("description");
-                processor.setDescription();
                 processor.setFormat("pdf");
                 processor.setRights("myRights");
                 processor.setRightsMarked(Boolean.FALSE);
