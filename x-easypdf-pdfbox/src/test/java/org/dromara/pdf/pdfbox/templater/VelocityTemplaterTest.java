@@ -2,7 +2,7 @@ package org.dromara.pdf.pdfbox.templater;
 
 import org.dromara.pdf.pdfbox.base.BaseTest;
 import org.dromara.pdf.pdfbox.core.base.Document;
-import org.dromara.pdf.pdfbox.core.ext.templater.BeetlTemplater;
+import org.dromara.pdf.pdfbox.core.ext.templater.VelocityTemplater;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.junit.Test;
 
@@ -25,7 +25,7 @@ import java.util.Map;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
-public class BeetlTemplaterTest extends BaseTest {
+public class VelocityTemplaterTest extends BaseTest {
 
     /**
      * 获取html内容测试
@@ -35,8 +35,8 @@ public class BeetlTemplaterTest extends BaseTest {
         this.test(() -> {
             Map<String, Object> data = new HashMap<>();
             data.put("title", "Hello World");
-            BeetlTemplater templater = PdfHandler.getDocumentTemplater().getBeetlTemplater();
-            templater.setTemplatePath("E:\\PDF\\pdfbox\\template\\beetl");
+            VelocityTemplater templater = PdfHandler.getDocumentTemplater().getVelocityTemplater();
+            templater.setTemplatePath("template/velocity");
             templater.setTemplateName("template.html");
             templater.setTemplateData(data);
             String content = templater.getHtmlContent();
@@ -52,13 +52,13 @@ public class BeetlTemplaterTest extends BaseTest {
         this.test(() -> {
             Map<String, Object> data = new HashMap<>();
             data.put("title", "Hello World");
-            BeetlTemplater templater = PdfHandler.getDocumentTemplater().getBeetlTemplater();
-            templater.setTemplatePath("template/beetl");
+            VelocityTemplater templater = PdfHandler.getDocumentTemplater().getVelocityTemplater();
+            templater.setTemplatePath("template/velocity");
             templater.setTemplateName("template.html");
             templater.setTemplateData(data);
             templater.setMargin(10F);
             Document document = templater.transform();
-            document.saveAndClose("E:\\PDF\\pdfbox\\template\\beetl.pdf");
+            document.saveAndClose("E:\\PDF\\pdfbox\\template\\velocity.pdf");
         });
     }
 }
