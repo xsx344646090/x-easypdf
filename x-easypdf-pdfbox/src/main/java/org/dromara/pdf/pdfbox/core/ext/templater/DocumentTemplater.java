@@ -71,6 +71,24 @@ public class DocumentTemplater extends AbstractTemplater {
     }
 
     /**
+     * 获取enjoy引擎
+     *
+     * @return 返回enjoy引擎
+     */
+    public EnjoyTemplater getEnjoyTemplater() {
+        return new EnjoyTemplater(this.document);
+    }
+
+    /**
+     * 获取velocity引擎
+     *
+     * @return 返回velocity引擎
+     */
+    public VelocityTemplater getVelocityTemplater() {
+        return new VelocityTemplater(this.document);
+    }
+
+    /**
      * 获取自定义引擎
      *
      * @return 返回自定义引擎

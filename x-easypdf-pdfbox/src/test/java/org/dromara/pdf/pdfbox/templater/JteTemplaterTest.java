@@ -36,7 +36,7 @@ public class JteTemplaterTest extends BaseTest {
             Map<String, Object> data = new HashMap<>();
             data.put("title", "Hello World");
             JteTemplater templater = PdfHandler.getDocumentTemplater().getJteTemplater();
-            templater.setTemplatePath("template/jte");
+            templater.setTemplatePath("E:\\PDF\\pdfbox\\template\\jte");
             templater.setTemplateName("template.html");
             templater.setTemplateData(data);
             String content = templater.getHtmlContent();

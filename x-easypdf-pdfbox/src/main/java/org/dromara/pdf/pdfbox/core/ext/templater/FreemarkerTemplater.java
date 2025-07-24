@@ -23,6 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author xsx
  * @date 2025/7/21
+ * @see <a href="https://freemarker.apache.org/docs/">官方文档</a>
  * @since 1.8
  * <p>
  * Copyright (c) 2020 xsx All Rights Reserved.
@@ -41,7 +42,7 @@ public class FreemarkerTemplater extends AbstractHtmlTemplater {
     /**
      * 模板配置
      */
-    private static final Map<String, Configuration> CONFIGURATION = new ConcurrentHashMap<>(16);
+    protected static final Map<String, Configuration> CONFIGURATION = new ConcurrentHashMap<>(16);
 
     /**
      * 有参构造
