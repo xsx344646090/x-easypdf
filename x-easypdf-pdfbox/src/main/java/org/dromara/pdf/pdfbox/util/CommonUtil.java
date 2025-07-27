@@ -1,6 +1,7 @@
 package org.dromara.pdf.pdfbox.util;
 
 import lombok.SneakyThrows;
+import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -17,6 +18,9 @@ import org.dromara.pdf.pdfbox.core.enums.FontStyle;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -269,6 +273,24 @@ public class CommonUtil {
     }
 
     /**
+     * 转为字节数组
+     *
+     * @param inputStream 输入流
+     * @return 返回字节数组
+     */
+    @SneakyThrows
+    public static byte[] toBytes(InputStream inputStream) {
+        Objects.requireNonNull(inputStream, "the input stream can not be null");
+        try (
+                BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream(8192)
+        ) {
+            IOUtils.copy(bufferedInputStream, outputStream);
+            return outputStream.toByteArray();
+        }
+    }
+
+    /**
      * 转基本整型数组
      *
      * @param list 列表
@@ -342,5 +364,43 @@ public class CommonUtil {
             array[i] = i;
         }
         return array;
+    }
+
+    /**
+     * 获取四分点
+     *
+     * @param rectangle 矩形
+     * @return 返回四分点
+     */
+    public static float[] getQuadPoints(PDRectangle rectangle) {
+        return new float[]{
+                rectangle.getLowerLeftX(),
+                rectangle.getLowerLeftY(),
+                rectangle.getUpperRightX(),
+                rectangle.getLowerLeftY(),
+                rectangle.getLowerLeftX(),
+                rectangle.getUpperRightY(),
+                rectangle.getUpperRightX(),
+                rectangle.getUpperRightY()
+        };
+    }
+
+    /**
+     * 获取四分点
+     *
+     * @param rectangle 矩形
+     * @return 返回四分点
+     */
+    public static float[] getQuadPoints2(PDRectangle rectangle) {
+        return new float[]{
+                rectangle.getLowerLeftX(),
+                rectangle.getUpperRightY(),
+                rectangle.getUpperRightX(),
+                rectangle.getUpperRightY(),
+                rectangle.getLowerLeftX(),
+                rectangle.getLowerLeftY(),
+                rectangle.getUpperRightX(),
+                rectangle.getLowerLeftY()
+        };
     }
 }

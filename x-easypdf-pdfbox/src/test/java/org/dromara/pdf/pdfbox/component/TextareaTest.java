@@ -32,54 +32,54 @@ import java.util.Arrays;
  * </p>
  */
 public class TextareaTest extends BaseTest {
-    
+
     /**
      * 角标测试
      */
     @Test
     public void riseTest() {
         this.test(() -> {
-            
+
             Document document = PdfHandler.getDocumentHandler().create();
             document.setSpecialFontNames("思源宋体");
-            
+
             Page page = new Page(document);
-            
+
             Textarea textarea = new Textarea(page);
             textarea.setText("测试1");
             textarea.setFontSize(20F);
             textarea.render();
-            
+
             textarea = new Textarea(page);
             textarea.setText("下标");
             textarea.setFontSize(10F);
             textarea.render();
-            
+
             textarea = new Textarea(page);
             textarea.setText("测试2");
             textarea.setFontSize(20F);
             textarea.setIsWrap(true);
             textarea.render();
-            
+
             textarea = new Textarea(page);
             textarea.setText("上标");
             textarea.setFontSize(10F);
             textarea.setRise(10F);
             textarea.render();
-            
+
             textarea = new Textarea(page);
             textarea.setText("                 ");
             textarea.setFontSize(10F);
             textarea.setIsUnderline(true);
             textarea.setUnderlineColor(Color.BLACK);
             textarea.render();
-            
+
             document.appendPage(page);
             document.save("E:\\PDF\\pdfbox\\textarea\\riseTest.pdf");
             document.close();
         });
     }
-    
+
     /**
      * 特殊字体测试
      */
@@ -87,17 +87,17 @@ public class TextareaTest extends BaseTest {
     public void specialFontTest() {
         this.test(() -> {
             PdfHandler.getFontHandler().addFont(Paths.get("E:\\PDF\\pdfbox\\textarea\\NotoEmoji-VariableFont_wght.ttf").toFile());
-            
+
             Document document = PdfHandler.getDocumentHandler().create();
             document.setSpecialFontNames("Noto Emoji Regular");
-            
+
             Page page = new Page(document);
-            
+
             Textarea textarea = new Textarea(page);
             textarea.setText("第一个页面，包含emoji字符：\uD83E\uDEE0，测试");
             textarea.setFontSize(20F);
             textarea.render();
-            
+
             document.appendPage(page);
             document.save("E:\\PDF\\pdfbox\\textarea\\specialFontTest.pdf");
             document.close();
@@ -277,7 +277,7 @@ public class TextareaTest extends BaseTest {
             textarea.setFontSlope(0.5F);
             textarea.setText("贵阳x-easypdf（ITALIC_STROKE）");
             textarea.render();
-            
+
             document.appendPage(page);
             document.save("E:\\PDF\\pdfbox\\textarea\\fontStyleTest.pdf");
             document.close();
@@ -329,7 +329,6 @@ public class TextareaTest extends BaseTest {
             Page page = new Page(document);
 
             Textarea textarea = new Textarea(page);
-            textarea.setUnderlineWidth(2F);
             textarea.setUnderlineColor(Color.CYAN);
             textarea.setIsUnderline(true);
             textarea.setText("这是\n下划线文本");
@@ -345,6 +344,39 @@ public class TextareaTest extends BaseTest {
 
             document.appendPage(page);
             document.save("E:\\PDF\\pdfbox\\textarea\\underlineTest.pdf");
+            document.close();
+        });
+    }
+
+
+    /**
+     * 波浪线测试
+     */
+    @Test
+    public void wavyLineTest() {
+        this.test(() -> {
+            Document document = PdfHandler.getDocumentHandler().create();
+            document.setMargin(50F);
+            document.setFontSize(30F);
+
+            Page page = new Page(document);
+
+            Textarea textarea = new Textarea(page);
+            textarea.setWavyLineColor(Color.CYAN);
+            textarea.setIsWavyLine(true);
+            textarea.setText("这是\n波浪线文本");
+            textarea.render();
+
+            textarea.setIsWavyLine(false);
+            textarea.setText("关闭\n波浪线文本");
+            textarea.render();
+
+            textarea.setIsWavyLine(true);
+            textarea.setText("开启\n波浪线文本");
+            textarea.render();
+
+            document.appendPage(page);
+            document.save("E:\\PDF\\pdfbox\\textarea\\wavyLineTest.pdf");
             document.close();
         });
     }

@@ -48,7 +48,8 @@ public class CommentProcessor extends AbstractProcessor {
     }
 
     /**
-     * 获取评论字典（key=页面索引，value=评论列表）
+     * 获取评论字典
+     * <p>key=页面索引，value=评论列表</p>
      *
      * @return 返回评论字典
      */
