@@ -21,7 +21,7 @@
 ---
 
 #### 当前版本
-> v3.4.2
+> v3.4.3
 
 ---
 
@@ -34,7 +34,7 @@
 
 ##### fop模块
 
-以创建功能为主，基于 xsl-fo 模板生成 pdf 文档，以数据源的方式进行模板渲染。
+支持创建功能，基于 xsl-fo 模板生成 pdf 文档，以数据源的方式进行模板渲染。
 - 基于模板生成
 - 内置多种数据源（xml 数据源、thymeleaf 数据源、freemarker 数据源、jte 数据源、document 数据源）
 - 提供面向对象的方式生成模板（document 数据源）
@@ -42,12 +42,19 @@
 
 ##### pdfbox模块
 
-以编辑功能为主，对标准的 pdfbox 进行扩展，添加了成吨的功能。
-- 超出页面宽度自动换行，超出页面高度自动分页
-- 内置华为鸿蒙字体，天然支持中文文本
-- 内置页眉页脚，简单快捷
-- 内置多个组件，满足不同的需求
-- 内置多种扩展器，方便解析、提取与处理文档内容
+支持创建与编辑功能，对标准的 pdfbox 进行扩展，添加了成吨的功能。
+- 换行与分页：超出页面宽度自动换行，超出页面高度自动分页
+- 中文支持：内置华为鸿蒙字体，天然支持中文文本
+- 页眉页脚：内置页眉页脚，简单快捷
+- 内置组件：内置多个组件，包含文本、图像、条形码、表格、矩形、圆形、线条
+- 内置水印：支持文本水印与图像水印
+- 文档分析：支持文本分析、图像分析、书签分析、评论分析、表单分析
+- 文档比较：支持文本比较与图像比较
+- 文档提取：支持文本提取、图像提取、书签提取、评论提取、表单提取
+- 文档解析：支持 AI 解析文档内容,适配智谱（glm）、腾讯（hunyuan）、阿里（qwen）、字节跳动（doubao）、月之暗面（kimi）、深度求索（deepseek）、昆仑万维（tiangong）、科大讯飞（spark）、开源中国（gitee）等大模型
+- 文档处理：支持合并处理、拆分处理、渲染处理、页面处理、元数据处理、打印处理、替换处理、书签处理、评论处理、附件处理、线性化处理、表单处理、签名处理
+- 文件转换：支持 office 文件转 pdf 、 html 转 pdf 、图像转 pdf
+- 模板引擎：支持 html 模板渲染为 pdf , 适配 freemarker 、thymeleaf 、jte 、 beetl 、 enjoy 、 velocity 等模板引擎
 - 支持自定义组件与扩展
 
 ---
@@ -58,7 +65,7 @@
 <dependency>
     <groupId>org.dromara</groupId>
     <artifactId>x-easypdf</artifactId>
-    <version>3.4.2</version>
+    <version>3.4.3</version>
 </dependency>
 ```
 
@@ -67,7 +74,7 @@
 <dependency>
     <groupId>org.dromara</groupId>
     <artifactId>x-easypdf-pdfbox</artifactId>
-    <version>3.4.2</version>
+    <version>3.4.3</version>
 </dependency>
 ```
 
@@ -76,7 +83,7 @@
 <dependency>
     <groupId>org.dromara</groupId>
     <artifactId>x-easypdf-fop</artifactId>
-    <version>3.4.2</version>
+    <version>3.4.3</version>
 </dependency>
 ```
 

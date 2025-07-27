@@ -16,10 +16,6 @@
     <description>A framework based on pdfbox</description>
 
     <properties>
-        <documents4j.version>1.1.12</documents4j.version>
-        <playwright.version>1.53.0</playwright.version>
-        <okhttp.version>4.12.0</okhttp.version>
-        <fastjson.version>2.0.57</fastjson.version>
         <skipTests>true</skipTests>
     </properties>
 
@@ -208,31 +204,26 @@
         <dependency>
             <groupId>com.documents4j</groupId>
             <artifactId>documents4j-local</artifactId>
-            <version>${documents4j.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.documents4j</groupId>
             <artifactId>documents4j-transformer-msoffice-word</artifactId>
-            <version>${documents4j.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.documents4j</groupId>
             <artifactId>documents4j-transformer-msoffice-excel</artifactId>
-            <version>${documents4j.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.documents4j</groupId>
             <artifactId>documents4j-transformer-msoffice-powerpoint</artifactId>
-            <version>${documents4j.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.microsoft.playwright</groupId>
             <artifactId>playwright</artifactId>
-            <version>${playwright.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -268,19 +259,12 @@
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
-            <version>${okhttp.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>${fastjson.version}</version>
             <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>

@@ -54,8 +54,11 @@ public class ImageUtil {
     public static BufferedImage read(File imageFile) {
         // 如果图片文件为空，则提示错误信息
         Objects.requireNonNull(imageFile, "the image file can not be null");
-        // 读取图片
-        return ImageIO.read(imageFile);
+        // 创建输入流
+        try (InputStream inputStream = Files.newInputStream(imageFile.toPath())) {
+            // 读取图片
+            return read(inputStream);
+        }
     }
 
     /**
@@ -66,10 +69,7 @@ public class ImageUtil {
      */
     @SneakyThrows
     public static BufferedImage read(InputStream imageStream) {
-        // 如果图片数据流为空，则提示错误信息
-        Objects.requireNonNull(imageStream, "the image stream can not be null");
-        // 读取图片
-        return ImageIO.read(new BufferedInputStream(imageStream));
+        return read(CommonUtil.toBytes(imageStream));
     }
 
     /**
@@ -83,7 +83,7 @@ public class ImageUtil {
         // 如果图片数据流为空，则提示错误信息
         Objects.requireNonNull(bytes, "the image bytes can not be null");
         // 创建输入流
-        try (InputStream inputStream = new BufferedInputStream(new ByteArrayInputStream(bytes))) {
+        try (InputStream inputStream = new BufferedInputStream(new ByteArrayInputStream(resetBytes(bytes)))) {
             // 读取图片
             return ImageIO.read(inputStream);
         }
@@ -371,17 +371,28 @@ public class ImageUtil {
      * @return 返回图片列表
      */
     public static List<BufferedImage> splitForHorizontal(BufferedImage image, int width) {
+        // 检查参数
         Objects.requireNonNull(image, "the image can not be null");
+        // 定义拆分图像列表
         List<BufferedImage> imageList = new ArrayList<>(16);
+        // 获取图像的宽度
         int imageWidth = image.getWidth();
+        // 获取图像的高度
         int imageHeight = image.getHeight();
+        // 初始化x为0
         int x = 0;
+        // 计算w的值，取width和imageWidth的最小值
         int w = Math.min(width, imageWidth);
+        // 当x小于等于imageWidth且w大于0时，循环执行
         while (x <= imageWidth && w > 0) {
+            // 将image的子图像添加到拆分图像列表
             imageList.add(image.getSubimage(x, 0, w, imageHeight));
+            // x的值增加w
             x = x + w;
+            // 计算w的值，取width和imageWidth减去x的绝对值的最大值
             w = Math.min(width, Math.abs(imageWidth - x));
         }
+        // 返回imageList
         return imageList;
     }
 
@@ -393,21 +404,33 @@ public class ImageUtil {
      * @return 返回图片列表
      */
     public static List<BufferedImage> splitForVertical(BufferedImage image, int height) {
+        // 检查参数
         Objects.requireNonNull(image, "the image can not be null");
+        // 定义拆分图像列表
         List<BufferedImage> imageList = new ArrayList<>(16);
+        // 获取图像的宽度
         int imageWidth = image.getWidth();
+        // 获取图像的高度
         int imageHeight = image.getHeight();
+        // 初始化y为0
         int y = 0;
+        // 计算分割后的图像的高度，取height和imageHeight的最小值
         int h = Math.min(height, imageHeight);
+        // 当y+h小于imageHeight时，继续分割图像
         while (y + h < imageHeight) {
+            // 将分割后的图像添加到拆分图像列表
             imageList.add(image.getSubimage(0, y, imageWidth, h));
+            // 更新y的值
             y = y + h;
+            // 如果y+h大于imageHeight，则更新h和y的值
             if (y + h > imageHeight) {
                 h = Math.abs(imageHeight - y);
                 y = imageHeight - h;
+                // 将分割后的图像添加到拆分图像列表
                 imageList.add(image.getSubimage(0, y, imageWidth, h));
             }
         }
+        // 返回分割后的图像列表
         return imageList;
     }
 
