@@ -447,15 +447,15 @@ public class TableTest extends BaseTest {
     public void test() {
         // 定义输出路径
         String outputPath = "E:\\PDF\\fop\\table\\test.pdf";
-// 创建文档
+        // 创建文档
         Document document = TemplateHandler.Document.build();
-// 创建页面
+        // 创建页面
         Page page = TemplateHandler.Page.build();
-// 创建表格
+        // 创建表格
         Table table = TemplateHandler.Table.build();
-// 创建表格体
+        // 创建表格体
         TableBody tableBody = TemplateHandler.Table.Body.build();
-// 循环创建表格行
+        // 循环创建表格行
         for (int i = 1; i <= 3; i++) {
             // 创建表格行
             TableRow row = TemplateHandler.Table.Row.build();
@@ -490,14 +490,71 @@ public class TableTest extends BaseTest {
             // 添加行
             tableBody.addRow(row);
         }
-// 设置表格体
+        // 设置表格体
         table.setBody(tableBody);
-// 添加表格
+        // 添加表格
         page.addBodyComponent(table);
-// 添加页面
+        // 添加页面
         document.addPage(page);
-// 转换pdf
+        // 转换pdf
         document.transform(outputPath);
 
+    }
+
+    @Test
+    public void tableTest() {
+        this.test(() -> {
+            // 定义输出路径
+            String outputPath = "E:\\PDF\\fop\\table\\tableTest2.pdf";
+            // 创建文档
+            Document document = TemplateHandler.Document.build();
+            // 创建页面（空白页）
+            Page page = TemplateHandler.Page.build();
+            // 创建表格
+            Table table = TemplateHandler.Table.build();
+            // 创建表格体
+            TableBody tableBody = TemplateHandler.Table.Body.build();
+            // 行数
+            int rows = 10;
+            for (int i = 1; i <= rows; i++) {
+                // 创建表格行
+                TableRow row = TemplateHandler.Table.Row.build();
+                for (int j = 1; j <= 4; j++) {
+                    // 创建表格单元格
+                    TableCell cell = TemplateHandler.Table.Cell.build();
+                    // 设置单元格边框
+                    cell.setBorder("1 solid black");
+                    // 创建文本
+                    Text text = TemplateHandler.Text.build().setText("");
+                    if (j == 1) {
+                        if (i == 1) {
+                            // 合并行
+                            cell.setRowSpan(rows);
+                        } else {
+                            continue;
+                        }
+                    } else if (j == 2) {
+                        // 设置单元格边框
+                        cell.setBorder("0 solid black");
+                    } else {
+                        text.setText(String.format("%s-hello-world-%s", i, j));
+                    }
+                    // 添加文本
+                    cell.addComponent(text);
+                    // 添加单元格
+                    row.addCell(cell);
+                }
+                // 添加行
+                tableBody.addRow(row);
+            }
+            // 设置表格体
+            table.setBody(tableBody);
+            // 添加表格
+            page.addBodyComponent(table);
+            // 添加页面
+            document.addPage(page);
+            // 转换pdf
+            document.transform(outputPath);
+        });
     }
 }

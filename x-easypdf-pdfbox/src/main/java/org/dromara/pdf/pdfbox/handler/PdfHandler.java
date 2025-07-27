@@ -10,6 +10,7 @@ import org.dromara.pdf.pdfbox.core.ext.convertor.DocumentConvertor;
 import org.dromara.pdf.pdfbox.core.ext.extractor.DocumentExtractor;
 import org.dromara.pdf.pdfbox.core.ext.parser.ai.DocumentAIParser;
 import org.dromara.pdf.pdfbox.core.ext.processor.DocumentProcessor;
+import org.dromara.pdf.pdfbox.core.ext.templater.DocumentTemplater;
 import org.dromara.pdf.pdfbox.support.Constants;
 import org.dromara.pdf.pdfbox.util.FileUtil;
 
@@ -122,6 +123,15 @@ public class PdfHandler {
      */
     public static DocumentConvertor getDocumentConvertor(Document document) {
         return new DocumentConvertor(document);
+    }
+
+    /**
+     * 获取文档模板引擎
+     *
+     * @return 返回文档模板引擎
+     */
+    public static DocumentTemplater getDocumentTemplater() {
+        return new DocumentTemplater(null);
     }
 
     /**

@@ -11,8 +11,7 @@ import org.apache.pdfbox.pdmodel.font.PDFontDescriptor;
 import org.apache.pdfbox.pdmodel.interactive.action.PDAction;
 import org.apache.pdfbox.pdmodel.interactive.action.PDActionGoTo;
 import org.apache.pdfbox.pdmodel.interactive.action.PDActionURI;
-import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationLink;
-import org.apache.pdfbox.pdmodel.interactive.annotation.PDBorderStyleDictionary;
+import org.apache.pdfbox.pdmodel.interactive.annotation.*;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.destination.PDPageXYZDestination;
 import org.apache.pdfbox.util.Matrix;
 import org.dromara.pdf.pdfbox.core.base.*;
@@ -25,14 +24,11 @@ import org.dromara.pdf.pdfbox.core.ext.handler.AbstractTextHandler;
 import org.dromara.pdf.pdfbox.core.ext.handler.tokenizer.AbstractTokenizer;
 import org.dromara.pdf.pdfbox.core.info.CatalogInfo;
 import org.dromara.pdf.pdfbox.support.Constants;
-import org.dromara.pdf.pdfbox.util.BorderUtil;
-import org.dromara.pdf.pdfbox.util.CommonUtil;
-import org.dromara.pdf.pdfbox.util.IdUtil;
-import org.dromara.pdf.pdfbox.util.TextUtil;
+import org.dromara.pdf.pdfbox.util.*;
 
 import java.awt.*;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 
 /**
  * 文本域组件
@@ -64,6 +60,10 @@ public class Textarea extends AbstractComponent {
      * 目录
      */
     protected CatalogInfo catalog;
+    /**
+     * 注解
+     */
+    protected List<PDAnnotation> annotations;
     /**
      * 文本助手
      */
@@ -101,10 +101,6 @@ public class Textarea extends AbstractComponent {
      */
     protected Boolean isHighlight;
     /**
-     * 下划线宽度
-     */
-    protected Float underlineWidth;
-    /**
      * 下划线颜色
      */
     protected Color underlineColor;
@@ -113,9 +109,13 @@ public class Textarea extends AbstractComponent {
      */
     protected Boolean isUnderline;
     /**
-     * 删除线宽度
+     * 波浪线颜色
      */
-    protected Float deleteLineWidth;
+    protected Color wavyLineColor;
+    /**
+     * 是否波浪线
+     */
+    protected Boolean isWavyLine;
     /**
      * 删除线颜色
      */
@@ -185,30 +185,6 @@ public class Textarea extends AbstractComponent {
             throw new IllegalArgumentException("the size can not be less than 0");
         }
         this.tabSize = size;
-    }
-
-    /**
-     * 设置下划线宽度
-     *
-     * @param width 宽度
-     */
-    public void setUnderlineWidth(float width) {
-        if (width < 1) {
-            throw new IllegalArgumentException("the underline width can not be less than 1");
-        }
-        this.underlineWidth = width;
-    }
-
-    /**
-     * 设置删除线宽度
-     *
-     * @param width 宽度
-     */
-    public void setDeleteLineWidth(float width) {
-        if (width < 1) {
-            throw new IllegalArgumentException("the delete line width can not be less than 1");
-        }
-        this.deleteLineWidth = width;
     }
 
     /**
@@ -433,10 +409,13 @@ public class Textarea extends AbstractComponent {
     /**
      * 初始化
      */
+    @SneakyThrows
     @Override
     protected void init() {
         // 初始化
         super.init();
+        // 初始化注解
+        this.annotations = this.getPage().getTarget().getAnnotations();
         // 初始化文本助手
         if (Objects.isNull(this.textHandler)) {
             this.textHandler = this.getContext().getTextHandler();
@@ -461,10 +440,6 @@ public class Textarea extends AbstractComponent {
         if (Objects.isNull(this.isHighlight)) {
             this.isHighlight = Boolean.FALSE;
         }
-        // 初始化下划线宽度
-        if (Objects.isNull(this.underlineWidth)) {
-            this.underlineWidth = 1F;
-        }
         // 初始化下划线颜色
         if (Objects.isNull(this.underlineColor)) {
             this.underlineColor = this.getFontColor();
@@ -473,9 +448,13 @@ public class Textarea extends AbstractComponent {
         if (Objects.isNull(this.isUnderline)) {
             this.isUnderline = Boolean.FALSE;
         }
-        // 初始化删除线宽度
-        if (Objects.isNull(this.deleteLineWidth)) {
-            this.deleteLineWidth = 1F;
+        // 初始化波浪线颜色
+        if (Objects.isNull(this.wavyLineColor)) {
+            this.wavyLineColor = this.getFontColor();
+        }
+        // 初始化是否波浪线
+        if (Objects.isNull(this.isWavyLine)) {
+            this.isWavyLine = Boolean.FALSE;
         }
         // 初始化删除线颜色
         if (Objects.isNull(this.deleteLineColor)) {
@@ -681,7 +660,7 @@ public class Textarea extends AbstractComponent {
             }
         }
         // 重置
-        super.reset(this.getType(), position.getX(), position.getY());
+        this.reset(this.getType(), position.getX(), position.getY());
     }
 
     /**
@@ -729,7 +708,7 @@ public class Textarea extends AbstractComponent {
             this.resetPagePosition(position, textWidth);
         }
         // 重置
-        super.reset(this.getType(), position.getX(), position.getY());
+        this.reset(this.getType(), position.getX(), position.getY());
     }
 
     /**
@@ -758,15 +737,18 @@ public class Textarea extends AbstractComponent {
             // 检查分页
             contentStream = this.checkPaging(contentStream, position);
             // 获取尺寸
-            PDRectangle lineRectangle = this.getLineRectangle(text.getWidth(), position);
+            PDRectangle textRectangle = this.getLineRectangle(text.getWidth(), position);
+            PDRectangle lineRectangle = new PDRectangle(textRectangle.getLowerLeftX(), textRectangle.getLowerLeftY() + this.getFontDescent(), textRectangle.getWidth(), textRectangle.getHeight());
             // 添加高亮
-            this.addHighlight(lineRectangle, contentStream);
+            this.addHighlight(lineRectangle);
             // 添加文本
-            this.addText(text, lineRectangle, contentStream);
+            this.addText(text, textRectangle, contentStream);
             // 添加删除线
-            this.addDeleteLine(lineRectangle, contentStream);
+            this.addDeleteLine(lineRectangle);
             // 添加下划线
-            this.addUnderline(lineRectangle, contentStream);
+            this.addUnderline(lineRectangle);
+            // 添加下划线
+            this.addWavyLine(lineRectangle);
             // 添加内部目标
             this.addInnerDest(lineRectangle);
             // 添加外部目标
@@ -861,21 +843,18 @@ public class Textarea extends AbstractComponent {
     /**
      * 添加高亮（不支持旋转）
      *
-     * @param rectangle     尺寸
-     * @param contentStream 内容流
+     * @param rectangle 尺寸
      */
     @SneakyThrows
-    protected void addHighlight(PDRectangle rectangle, PDPageContentStream contentStream) {
+    protected void addHighlight(PDRectangle rectangle) {
         // 开启高亮
         if (this.getIsHighlight()) {
-            // 绘制矩形
-            contentStream.addRect(rectangle.getLowerLeftX(), rectangle.getLowerLeftY() + this.getFontDescent(), rectangle.getWidth(), rectangle.getHeight());
-            // 设置矩形颜色
-            contentStream.setNonStrokingColor(this.getHighlightColor());
-            // 填充矩形
-            contentStream.fill();
-            // 重置矩形颜色
-            contentStream.setNonStrokingColor(this.getContext().getPage().getBackgroundColor());
+            PDAnnotationHighlight annotation = new PDAnnotationHighlight();
+            annotation.setAnnotationName(IdUtil.get());
+            annotation.setColor(ColorUtil.toPDColor(this.getHighlightColor()));
+            annotation.setPage(this.getPage().getTarget());
+            annotation.setQuadPoints(CommonUtil.getQuadPoints(rectangle));
+            this.annotations.add(annotation);
         }
     }
 
@@ -904,26 +883,16 @@ public class Textarea extends AbstractComponent {
      * 添加删除线
      *
      * @param rectangle 尺寸
-     * @param stream    内容流
      */
     @SneakyThrows
-    protected void addDeleteLine(PDRectangle rectangle, PDPageContentStream stream) {
+    protected void addDeleteLine(PDRectangle rectangle) {
         // 开启删除线
         if (this.getIsDeleteLine()) {
-            // 计算偏移量，删除线宽度/2+字体高度/2+字体下降值
-            float offset = this.getDeleteLineWidth() / 2 + this.getFontHeight() / 2 + this.getFontDescent();
-            // 初始化Y轴起始坐标为Y轴起始坐标+偏移量
-            float beginY = rectangle.getLowerLeftY() + offset;
-            // 设置颜色
-            stream.setStrokingColor(this.getDeleteLineColor());
-            // 设置线宽
-            stream.setLineWidth(this.getDeleteLineWidth());
-            // 设置定位
-            stream.moveTo(rectangle.getLowerLeftX(), beginY);
-            // 连线
-            stream.lineTo(rectangle.getUpperRightX(), beginY);
-            // 结束
-            stream.stroke();
+            PDAnnotationStrikeout annotation = new PDAnnotationStrikeout();
+            annotation.setAnnotationName(IdUtil.get());
+            annotation.setColor(ColorUtil.toPDColor(this.getDeleteLineColor()));
+            annotation.setQuadPoints(CommonUtil.getQuadPoints(rectangle));
+            this.annotations.add(annotation);
         }
     }
 
@@ -931,24 +900,33 @@ public class Textarea extends AbstractComponent {
      * 添加下划线
      *
      * @param rectangle 尺寸
-     * @param stream    内容流
      */
     @SneakyThrows
-    protected void addUnderline(PDRectangle rectangle, PDPageContentStream stream) {
+    protected void addUnderline(PDRectangle rectangle) {
         // 开启下划线
         if (this.getIsUnderline()) {
-            // 获取Y轴坐标
-            float y = rectangle.getLowerLeftY() + this.getFontDescent();
-            // 设置颜色
-            stream.setStrokingColor(this.getUnderlineColor());
-            // 设置线宽
-            stream.setLineWidth(this.getUnderlineWidth());
-            // 设置定位
-            stream.moveTo(rectangle.getLowerLeftX(), y);
-            // 连线
-            stream.lineTo(rectangle.getUpperRightX(), y);
-            // 结束
-            stream.stroke();
+            PDAnnotationUnderline annotation = new PDAnnotationUnderline();
+            annotation.setAnnotationName(IdUtil.get());
+            annotation.setColor(ColorUtil.toPDColor(this.getUnderlineColor()));
+            annotation.setQuadPoints(CommonUtil.getQuadPoints2(rectangle));
+            this.annotations.add(annotation);
+        }
+    }
+
+    /**
+     * 添加波浪线
+     *
+     * @param rectangle 尺寸
+     */
+    @SneakyThrows
+    protected void addWavyLine(PDRectangle rectangle) {
+        // 开启波浪线
+        if (this.getIsWavyLine()) {
+            PDAnnotationSquiggly annotation = new PDAnnotationSquiggly();
+            annotation.setAnnotationName(IdUtil.get());
+            annotation.setColor(ColorUtil.toPDColor(this.getWavyLineColor()));
+            annotation.setQuadPoints(CommonUtil.getQuadPoints2(rectangle));
+            this.annotations.add(annotation);
         }
     }
 
@@ -1025,7 +1003,7 @@ public class Textarea extends AbstractComponent {
         // 设置页面
         link.setPage(page);
         // 添加链接
-        page.getAnnotations().add(link);
+        this.annotations.add(link);
     }
 
     /**
@@ -1180,5 +1158,19 @@ public class Textarea extends AbstractComponent {
             // 设置Y轴坐标
             this.getCatalog().setEndY(position.getY());
         }
+    }
+
+    /**
+     * 重置
+     *
+     * @param type 类型
+     * @param x    x轴坐标
+     * @param y    y轴坐标
+     */
+    @Override
+    protected void reset(ComponentType type, float x, float y) {
+        super.reset(type, x, y);
+        this.getPage().getTarget().setAnnotations(this.getAnnotations());
+        this.annotations = null;
     }
 }

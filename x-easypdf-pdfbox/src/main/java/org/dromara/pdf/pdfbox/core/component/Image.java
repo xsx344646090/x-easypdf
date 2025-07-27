@@ -3,7 +3,6 @@ package org.dromara.pdf.pdfbox.core.component;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
-import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.dromara.pdf.pdfbox.core.base.BorderData;
@@ -15,8 +14,6 @@ import org.dromara.pdf.pdfbox.util.CommonUtil;
 import org.dromara.pdf.pdfbox.util.ImageUtil;
 
 import java.awt.image.BufferedImage;
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -110,7 +107,7 @@ public class Image extends AbstractComponent {
     @SneakyThrows
     public void setImage(File file) {
         Objects.requireNonNull(file, "the image file can not be null");
-        this.setImage(Files.newInputStream(file.toPath()));
+        this.setImage(Files.readAllBytes(file.toPath()));
     }
 
     /**
@@ -120,7 +117,6 @@ public class Image extends AbstractComponent {
      */
     @SneakyThrows
     public void setImage(BufferedImage image) {
-        Objects.requireNonNull(image, "the image can not be null");
         this.setImage(ImageUtil.toBytes(image, ImageType.PNG.getType()));
     }
 
@@ -131,14 +127,7 @@ public class Image extends AbstractComponent {
      */
     @SneakyThrows
     public void setImage(InputStream inputStream) {
-        Objects.requireNonNull(inputStream, "the image input stream can not be null");
-        try (
-                BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
-                ByteArrayOutputStream outputStream = new ByteArrayOutputStream(8192)
-        ) {
-            IOUtils.copy(bufferedInputStream, outputStream);
-            this.setImage(outputStream.toByteArray());
-        }
+        this.setImage(CommonUtil.toBytes(inputStream));
     }
 
     /**

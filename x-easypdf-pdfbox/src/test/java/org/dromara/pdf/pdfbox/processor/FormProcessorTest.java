@@ -1,5 +1,6 @@
 package org.dromara.pdf.pdfbox.processor;
 
+import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 import org.dromara.pdf.pdfbox.base.BaseTest;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.base.Page;
@@ -15,6 +16,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,23 +38,76 @@ import java.util.Map;
 public class FormProcessorTest extends BaseTest {
 
     /**
+     * 测试获取字段
+     */
+    @Test
+    public void getFieldsTest() {
+        this.test(() -> {
+            try (
+                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\hello-world.pdf")
+            ) {
+                FormProcessor processor = PdfHandler.getDocumentProcessor(document).getFormProcessor();
+                List<PDField> fields = processor.getFields();
+                fields.forEach(System.out::println);
+
+            }
+        });
+    }
+
+    /**
+     * 测试替换关键字
+     */
+    @Test
+    public void replaceKeyTest() {
+        this.test(() -> {
+            try (
+                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\hello-world.pdf")
+            ) {
+                FormProcessor processor = PdfHandler.getDocumentProcessor(document).getFormProcessor();
+                Map<String, String> keyMap = new HashMap<>();
+                keyMap.put("test", "测试");
+                processor.replaceKey(keyMap);
+                processor.flush();
+                document.save("E:\\PDF\\pdfbox\\processor\\form\\replaceKeyTest.pdf");
+            }
+        });
+    }
+
+    /**
+     * 测试移除字段
+     */
+    @Test
+    public void removeTest() {
+        this.test(() -> {
+            try (
+                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\hello-world.pdf")
+            ) {
+                FormProcessor processor = PdfHandler.getDocumentProcessor(document).getFormProcessor();
+                processor.remove("test1", "test2");
+                processor.flush();
+                document.save("E:\\PDF\\pdfbox\\processor\\form\\removeTest.pdf");
+            }
+        });
+    }
+
+    /**
      * 测试文本填写
      */
     @Test
     public void fillTextTest() {
         this.test(() -> {
             try (
-                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\analyzer\\hello-world.pdf")
+                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\hello-world.pdf")
             ) {
-                FormProcessor processor = new FormProcessor(document);
+                FormProcessor processor = PdfHandler.getDocumentProcessor(document).getFormProcessor();
                 processor.setFont("微软雅黑", 12F, Color.BLACK);
 
                 Map<String, String> map = new HashMap<>(1);
                 map.put("test2", "其他");
                 processor.fillText(map);
-                processor.readOnly();
+                processor.flush();
 
-                document.save("E:\\PDF\\pdfbox\\analyzer\\hello-world3.pdf");
+                document.save("E:\\PDF\\pdfbox\\processor\\form\\fillTextTest.pdf");
             }
         });
     }
@@ -64,15 +119,16 @@ public class FormProcessorTest extends BaseTest {
     public void fillImageTest() {
         this.test(() -> {
             try (
-                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\form\\addImageFieldTest.pdf")
+                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\hello-world.pdf")
             ) {
-                FormProcessor processor = new FormProcessor(document);
+                FormProcessor processor = PdfHandler.getDocumentProcessor(document).getFormProcessor();
 
                 Map<String, BufferedImage> map = new HashMap<>(1);
                 map.put("test", ImageUtil.read(new File("E:\\PDF\\pdfbox\\image\\test.png")));
                 processor.fillImage(map);
+                processor.flush();
 
-                document.save("E:\\PDF\\pdfbox\\form\\fillImageTest.pdf");
+                document.save("E:\\PDF\\pdfbox\\processor\\form\\fillImageTest.pdf");
             }
         });
     }
@@ -84,13 +140,14 @@ public class FormProcessorTest extends BaseTest {
     public void fillRadioTest() {
         this.test(() -> {
             try (
-                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\form\\addRadioFieldTest.pdf")
+                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\hello-world.pdf")
             ) {
-                FormProcessor processor = new FormProcessor(document);
+                FormProcessor processor = PdfHandler.getDocumentProcessor(document).getFormProcessor();
 
                 processor.fillRadio("test", 2);
+                processor.flush();
 
-                document.save("E:\\PDF\\pdfbox\\form\\fillRadioFieldTest.pdf");
+                document.save("E:\\PDF\\pdfbox\\processor\\form\\fillRadioFieldTest.pdf");
             }
         });
     }
@@ -102,17 +159,54 @@ public class FormProcessorTest extends BaseTest {
     public void fillCheckBoxTest() {
         this.test(() -> {
             try (
-                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\form\\addCheckBoxFieldTest.pdf")
+                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\hello-world.pdf")
             ) {
-                FormProcessor processor = new FormProcessor(document);
+                FormProcessor processor = PdfHandler.getDocumentProcessor(document).getFormProcessor();
                 Map<String, Boolean> map = new HashMap<>(3);
                 map.put("test1", false);
                 map.put("test2", false);
                 map.put("test3", false);
 
                 processor.fillCheckBox(map);
+                processor.flush();
 
-                document.save("E:\\PDF\\pdfbox\\form\\fillCheckBoxTest.pdf");
+                document.save("E:\\PDF\\pdfbox\\processor\\form\\fillCheckBoxTest.pdf");
+            }
+        });
+    }
+
+    /**
+     * 测试扁平化表单
+     */
+    @Test
+    public void readOnlyTest() {
+        this.test(() -> {
+            try (
+                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\hello-world.pdf")
+            ) {
+                FormProcessor processor = PdfHandler.getDocumentProcessor(document).getFormProcessor();
+                processor.readOnly("test1", "test2");
+                processor.flush();
+
+                document.save("E:\\PDF\\pdfbox\\processor\\form\\readOnlyTest.pdf");
+            }
+        });
+    }
+
+    /**
+     * 测试扁平化表单
+     */
+    @Test
+    public void flattenTest() {
+        this.test(() -> {
+            try (
+                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\hello-world.pdf")
+            ) {
+                FormProcessor processor = PdfHandler.getDocumentProcessor(document).getFormProcessor();
+                processor.flatten(true);
+                processor.flush();
+
+                document.save("E:\\PDF\\pdfbox\\processor\\form\\flattenTest.pdf");
             }
         });
     }
@@ -128,7 +222,7 @@ public class FormProcessorTest extends BaseTest {
             // 需要先添加页面
             document.appendPage(page);
 
-            FormProcessor processor = new FormProcessor(document);
+            FormProcessor processor = PdfHandler.getDocumentProcessor(document).getFormProcessor();
 
             TextFieldBuilder builder = TextFieldBuilder.builder(document, page, Size.create(0F, 100F, 0F, 50F));
             builder.setName("test");
@@ -137,8 +231,9 @@ public class FormProcessorTest extends BaseTest {
             builder.setIsMultiline(true);
 
             processor.addField(builder);
+            processor.flush();
 
-            document.saveAndClose("E:\\PDF\\pdfbox\\form\\addTextFieldTest.pdf");
+            document.saveAndClose("E:\\PDF\\pdfbox\\processor\\form\\addTextFieldTest.pdf");
         });
     }
 
@@ -153,7 +248,7 @@ public class FormProcessorTest extends BaseTest {
             // 需要先添加页面
             document.appendPage(page);
 
-            FormProcessor processor = new FormProcessor(document);
+            FormProcessor processor = PdfHandler.getDocumentProcessor(document).getFormProcessor();
 
             ImageFieldBuilder builder = ImageFieldBuilder.builder(document, page, Size.create(0F, 50F, 0F, 50F));
             builder.setName("test");
@@ -161,8 +256,9 @@ public class FormProcessorTest extends BaseTest {
             builder.setLayout(ImageFieldLayout.IMAGE_BEHIND);
 
             processor.addField(builder);
+            processor.flush();
 
-            document.saveAndClose("E:\\PDF\\pdfbox\\form\\addImageFieldTest.pdf");
+            document.saveAndClose("E:\\PDF\\pdfbox\\processor\\form\\addImageFieldTest.pdf");
         });
     }
 
@@ -177,7 +273,7 @@ public class FormProcessorTest extends BaseTest {
             // 需要先添加页面
             document.appendPage(page);
 
-            FormProcessor processor = new FormProcessor(document);
+            FormProcessor processor = PdfHandler.getDocumentProcessor(document).getFormProcessor();
 
             float leftX = 100F;
             float rightX = 120F;
@@ -194,8 +290,9 @@ public class FormProcessorTest extends BaseTest {
                 rightX = rightX + 30F;
             }
             processor.addField(builder);
+            processor.flush();
 
-            document.saveAndClose("E:\\PDF\\pdfbox\\form\\addRadioFieldTest.pdf");
+            document.saveAndClose("E:\\PDF\\pdfbox\\processor\\form\\addRadioFieldTest.pdf");
         });
     }
 
@@ -227,8 +324,9 @@ public class FormProcessorTest extends BaseTest {
                 leftX = leftX + 30F;
                 rightX = rightX + 30F;
             }
+            processor.flush();
 
-            document.saveAndClose("E:\\PDF\\pdfbox\\form\\addCheckBoxFieldTest.pdf");
+            document.saveAndClose("E:\\PDF\\pdfbox\\processor\\form\\addCheckBoxFieldTest.pdf");
         });
     }
 }
