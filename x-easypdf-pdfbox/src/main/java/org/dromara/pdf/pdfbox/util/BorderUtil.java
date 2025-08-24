@@ -99,7 +99,7 @@ public class BorderUtil {
         // 计算线条数量（向下取整，至少为1）
         int count = Math.max((int) (totalLength / (lineWidth)), 1);
         // 计算偏移量（居中计算）
-        float offset = Math.abs((totalLength - (count * lineWidth) + dottedSpacing) / 2);
+        float offset = Math.abs((totalLength - (count * lineWidth) + dottedSpacing ) / 2);
         // 如果点线长度大于总长度，则重置点线长度 = 总长度
         if (dottedLength > totalLength) {
             // 重置点线长度 = 总长度
@@ -136,9 +136,11 @@ public class BorderUtil {
                 beginY = beginY - dottedLength;
                 // 连线
                 stream.lineTo(beginX, beginY);
-                // 重置Y轴坐标 = Y轴坐标 - 点线长度 - 点线间隔
-                beginY = beginY - dottedLength - dottedSpacing;
+                // 重置Y轴坐标 = Y轴坐标 - 点线间隔
+                beginY = beginY - dottedSpacing;
             }
+            // 关闭和描边
+            stream.closeAndStroke();
         }
     }
 
@@ -167,10 +169,10 @@ public class BorderUtil {
         );
         // 绘制常规边框
         drawNormalBorder(stream, rectangle, data, backgroundColor);
-        stream.closePath();
-        stream.fillAndStroke();
         // 关闭内容流
         stream.close();
+        // 绘制加粗边框
+        drawBolderBorder(rectangle, data);
     }
 
     /**
@@ -198,6 +200,140 @@ public class BorderUtil {
         line(stream, rectangle, data);
     }
 
+    /**
+     * 绘制加粗边框
+     *
+     * @param rectangle pdfbox尺寸
+     * @param data      边框数据
+     */
+    @SneakyThrows
+    public static void drawBolderBorder(PDRectangle rectangle, BorderData data) {
+        Context context = data.getContext();
+        switch (data.getBorderLineStyle()) {
+            // 实线
+            case SOLID: {
+                if (data.getIsBorderTop() && data.getBorderTopLineWidth() > data.getBorderLineWidth()) {
+                    drawBolderSolidLine(context, data, data.getBorderTopColor(), data.getBorderTopLineWidth(), rectangle.getLowerLeftX(), rectangle.getUpperRightY(), rectangle.getUpperRightX(), rectangle.getUpperRightY());
+                }
+                if (data.getIsBorderBottom() && data.getBorderBottomLineWidth() > data.getBorderLineWidth()) {
+                    drawBolderSolidLine(context, data, data.getBorderBottomColor(), data.getBorderBottomLineWidth(), rectangle.getLowerLeftX(), rectangle.getLowerLeftY(), rectangle.getUpperRightX(), rectangle.getLowerLeftY());
+                }
+                if (data.getIsBorderLeft() && data.getBorderLeftLineWidth() > data.getBorderLineWidth()) {
+                    drawBolderSolidLine(context, data, data.getBorderLeftColor(), data.getBorderLeftLineWidth(), rectangle.getLowerLeftX(), rectangle.getUpperRightY(), rectangle.getLowerLeftX(), rectangle.getLowerLeftY());
+                }
+                if (data.getIsBorderRight() && data.getBorderRightLineWidth() > data.getBorderLineWidth()) {
+                    drawBolderSolidLine(context, data, data.getBorderRightColor(), data.getBorderRightLineWidth(), rectangle.getUpperRightX(), rectangle.getUpperRightY(), rectangle.getUpperRightX(), rectangle.getLowerLeftY());
+                }
+                break;
+            }
+            // 虚线
+            case DOTTED: {
+                if (data.getIsBorderTop() && data.getBorderTopLineWidth() > data.getBorderLineWidth()) {
+                    drawBolderDottedLine(context, data, data.getBorderTopColor(), data.getBorderTopLineWidth(), data.getBorderLineLength(), data.getBorderDottedSpacing(), rectangle.getLowerLeftX(), rectangle.getUpperRightY(), rectangle.getUpperRightX(), rectangle.getUpperRightY());
+                }
+                if (data.getIsBorderBottom() && data.getBorderBottomLineWidth() > data.getBorderLineWidth()) {
+                    drawBolderDottedLine(context, data, data.getBorderBottomColor(), data.getBorderBottomLineWidth(), data.getBorderLineLength(), data.getBorderDottedSpacing(), rectangle.getLowerLeftX(), rectangle.getLowerLeftY(), rectangle.getUpperRightX(), rectangle.getLowerLeftY());
+                }
+                if (data.getIsBorderLeft() && data.getBorderLeftLineWidth() > data.getBorderLineWidth()) {
+                    drawBolderDottedLine(context, data, data.getBorderLeftColor(), data.getBorderLeftLineWidth(), data.getBorderLineLength(), data.getBorderDottedSpacing(), rectangle.getLowerLeftX(), rectangle.getUpperRightY(), rectangle.getLowerLeftX(), rectangle.getLowerLeftY());
+                }
+                if (data.getIsBorderRight() && data.getBorderRightLineWidth() > data.getBorderLineWidth()) {
+                    drawBolderDottedLine(context, data, data.getBorderRightColor(), data.getBorderRightLineWidth(), data.getBorderLineLength(), data.getBorderDottedSpacing(), rectangle.getUpperRightX(), rectangle.getUpperRightY(), rectangle.getUpperRightX(), rectangle.getLowerLeftY());
+                }
+                break;
+            }
+        }
+    }
+
+    /**
+     * 绘制加粗实线边框
+     *
+     * @param context 上下文
+     * @param data    边框数据
+     * @param color   颜色
+     * @param width   宽度
+     * @param beginX  起始X轴坐标
+     * @param beginY  起始Y轴坐标
+     * @param endX    结束X轴坐标
+     * @param endY    结束Y轴坐标
+     */
+    @SneakyThrows
+    public static void drawBolderSolidLine(
+            Context context,
+            BorderData data,
+            Color color,
+            float width,
+            float beginX,
+            float beginY,
+            float endX,
+            float endY
+    ) {
+        // 初始化内容流
+        PDPageContentStream stream = new PDPageContentStream(
+                context.getTargetDocument(),
+                context.getTargetPage(),
+                data.getContentMode().getMode(),
+                true,
+                data.getIsResetContentStream()
+        );
+        // 设置线宽
+        stream.setLineWidth(width);
+        // 设置线帽样式
+        stream.setLineCapStyle(data.getBorderLineCapStyle().getType());
+        // 连线
+        drawSolidLine(stream, color, beginX, beginY, endX, endY);
+        // 描边
+        stream.stroke();
+        // 关闭
+        stream.close();
+    }
+
+    /**
+     * 绘制加粗实线边框
+     *
+     * @param context       上下文
+     * @param data          边框数据
+     * @param color         颜色
+     * @param width         宽度
+     * @param dottedLength  点线长度
+     * @param dottedSpacing 点线间隔
+     * @param beginX        X轴起始坐标
+     * @param beginY        Y轴起始坐标
+     * @param endX          X轴结束坐标
+     * @param endY          Y轴结束坐标
+     */
+    @SneakyThrows
+    public static void drawBolderDottedLine(
+            Context context,
+            BorderData data,
+            Color color,
+            float width,
+            float dottedLength,
+            float dottedSpacing,
+            float beginX,
+            float beginY,
+            float endX,
+            float endY
+    ) {
+        // 初始化内容流
+        PDPageContentStream stream = new PDPageContentStream(
+                context.getTargetDocument(),
+                context.getTargetPage(),
+                data.getContentMode().getMode(),
+                true,
+                data.getIsResetContentStream()
+        );
+        // 设置线宽
+        stream.setLineWidth(width);
+        // 设置线帽样式
+        stream.setLineCapStyle(data.getBorderLineCapStyle().getType());
+        // 连线
+        drawDottedLine(stream, color, dottedLength, dottedSpacing, beginX, beginY, endX, endY);
+        // 描边
+        stream.stroke();
+        // 关闭
+        stream.close();
+    }
 
     /**
      * 获取圆形数据坐标点
@@ -275,11 +411,18 @@ public class BorderUtil {
      */
     private static void line(PDPageContentStream stream, PDRectangle rectangle, BorderData data) {
         switch (data.getBorderLineStyle()) {
+            // 实线
             case SOLID: {
-                // 绘制实线
-                drawSolidLine(stream, rectangle, data);
+                if (data.getBorderLineCapStyle() == LineCapStyle.ROUND && data.getBorderRadius() > 0) {
+                    // 绘制圆角线
+                    drawRoundLine(stream, rectangle, data);
+                }else {
+                    // 绘制实线
+                    drawSolidLine(stream, rectangle, data);
+                }
                 break;
             }
+            // 虚线
             case DOTTED: {
                 // 绘制虚线
                 drawDottedLine(stream, rectangle, data);
@@ -297,61 +440,83 @@ public class BorderUtil {
      */
     @SneakyThrows
     private static void drawSolidLine(PDPageContentStream stream, PDRectangle rectangle, BorderData data) {
-        // 定义补偿
-        float offset = 0F;
-        // 是否圆角
-        boolean isRound = data.getBorderLineCapStyle() == LineCapStyle.ROUND && data.getBorderRadius() > 0;
-        // 计算补偿
-        if (isRound) {
-            offset = data.getBorderRadius() * Constants.BEZIER_COEF;
-        }
-        // 移动到x,y坐标点
-        stream.moveTo(rectangle.getLowerLeftX() + data.getBorderRadius(), rectangle.getUpperRightY());
         // 绘制上边框
         if (data.getIsBorderTop()) {
-            if (isRound) {
-                stream.setStrokingColor(data.getBorderTopColor());
-                stream.lineTo(rectangle.getUpperRightX() - data.getBorderRadius(), rectangle.getUpperRightY());
-            } else {
-                stream.setStrokingColor(data.getBorderTopColor());
-                stream.lineTo(rectangle.getUpperRightX(), rectangle.getUpperRightY());
-            }
+            drawSolidLine(
+                    stream,
+                    data.getBorderTopColor(),
+                    rectangle.getLowerLeftX(),
+                    rectangle.getUpperRightY(),
+                    rectangle.getUpperRightX(),
+                    rectangle.getUpperRightY()
+            );
         }
         // 绘制右边框
         if (data.getIsBorderRight()) {
-            if (isRound) {
-                drawArcForRightTop(stream, data.getBorderRadius(), offset, rectangle.getUpperRightX() - data.getBorderRadius(), rectangle.getUpperRightY());
-                stream.setStrokingColor(data.getBorderRightColor());
-                stream.lineTo(rectangle.getUpperRightX(), rectangle.getLowerLeftY() + data.getBorderRadius());
-                drawArcForRightBottom(stream, data.getBorderRadius(), offset, rectangle.getUpperRightX(), rectangle.getLowerLeftY() + data.getBorderRadius());
-            } else {
-                stream.setStrokingColor(data.getBorderRightColor());
-                stream.lineTo(rectangle.getUpperRightX(), rectangle.getLowerLeftY());
-
-            }
+            drawSolidLine(
+                    stream,
+                    data.getBorderRightColor(),
+                    rectangle.getUpperRightX(),
+                    rectangle.getUpperRightY(),
+                    rectangle.getUpperRightX(),
+                    rectangle.getLowerLeftY()
+            );
         }
         // 绘制下边框
         if (data.getIsBorderBottom()) {
-            if (isRound) {
-                stream.setStrokingColor(data.getBorderBottomColor());
-                stream.lineTo(rectangle.getLowerLeftX() + data.getBorderRadius(), rectangle.getLowerLeftY());
-            } else {
-                stream.setStrokingColor(data.getBorderBottomColor());
-                stream.lineTo(rectangle.getLowerLeftX(), rectangle.getLowerLeftY());
-            }
+            drawSolidLine(
+                    stream,
+                    data.getBorderRightColor(),
+                    rectangle.getUpperRightX(),
+                    rectangle.getLowerLeftY(),
+                    rectangle.getLowerLeftX(),
+                    rectangle.getLowerLeftY()
+            );
         }
         // 绘制左边框
         if (data.getIsBorderLeft()) {
-            if (isRound) {
-                drawArcForLeftBottom(stream, data.getBorderRadius(), offset, rectangle.getLowerLeftX() + data.getBorderRadius(), rectangle.getLowerLeftY());
-                stream.setStrokingColor(data.getBorderLeftColor());
-                stream.lineTo(rectangle.getLowerLeftX(), rectangle.getUpperRightY() - data.getBorderRadius());
-                drawArcForLeftTop(stream, data.getBorderRadius(), offset, rectangle.getLowerLeftX(), rectangle.getUpperRightY() - data.getBorderRadius());
-            } else {
-                stream.setStrokingColor(data.getBorderLeftColor());
-                stream.lineTo(rectangle.getLowerLeftX(), rectangle.getUpperRightY());
-            }
+            drawSolidLine(
+                    stream,
+                    data.getBorderRightColor(),
+                    rectangle.getLowerLeftX(),
+                    rectangle.getLowerLeftY(),
+                    rectangle.getLowerLeftX(),
+                    rectangle.getUpperRightY()
+            );
         }
+        // 描边
+        stream.stroke();
+    }
+
+    /**
+     * 绘制圆角线
+     * @param stream
+     * @param rectangle
+     * @param data
+     */
+    @SneakyThrows
+    private static void drawRoundLine(PDPageContentStream stream, PDRectangle rectangle, BorderData data) {
+        // 定义补偿
+        float offset = data.getBorderRadius() * Constants.BEZIER_COEF;
+        // 上
+        stream.moveTo(rectangle.getLowerLeftX() + data.getBorderRadius(), rectangle.getUpperRightY());
+        stream.setStrokingColor(data.getBorderTopColor());
+        stream.lineTo(rectangle.getUpperRightX() - data.getBorderRadius(), rectangle.getUpperRightY());
+        // 右
+        stream.setStrokingColor(data.getBorderRightColor());
+        drawArcForRightTop(stream, data.getBorderRadius(), offset, rectangle.getUpperRightX() - data.getBorderRadius(), rectangle.getUpperRightY());
+        stream.lineTo(rectangle.getUpperRightX(), rectangle.getLowerLeftY() + data.getBorderRadius());
+        drawArcForRightBottom(stream, data.getBorderRadius(), offset, rectangle.getUpperRightX(), rectangle.getLowerLeftY() + data.getBorderRadius());
+        // 下
+        stream.setStrokingColor(data.getBorderBottomColor());
+        stream.lineTo(rectangle.getLowerLeftX() + data.getBorderRadius(), rectangle.getLowerLeftY());
+        // 左
+        stream.setStrokingColor(data.getBorderLeftColor());
+        drawArcForLeftBottom(stream, data.getBorderRadius(), offset, rectangle.getLowerLeftX() + data.getBorderRadius(), rectangle.getLowerLeftY());
+        stream.lineTo(rectangle.getLowerLeftX(), rectangle.getUpperRightY() - data.getBorderRadius());
+        drawArcForLeftTop(stream, data.getBorderRadius(), offset, rectangle.getLowerLeftX(), rectangle.getUpperRightY() - data.getBorderRadius());
+        stream.closePath();
+        stream.fillAndStroke();
     }
 
     /**
@@ -368,7 +533,7 @@ public class BorderUtil {
             drawDottedLine(
                     stream,
                     data.getBorderTopColor(),
-                    data.getBorderLineWidth(),
+                    data.getBorderLineLength(),
                     data.getBorderDottedSpacing(),
                     rectangle.getLowerLeftX(),
                     rectangle.getUpperRightY(),
@@ -381,7 +546,7 @@ public class BorderUtil {
             drawDottedLine(
                     stream,
                     data.getBorderBottomColor(),
-                    data.getBorderLineWidth(),
+                    data.getBorderLineLength(),
                     data.getBorderDottedSpacing(),
                     rectangle.getLowerLeftX(),
                     rectangle.getLowerLeftY(),
@@ -394,7 +559,7 @@ public class BorderUtil {
             drawDottedLine(
                     stream,
                     data.getBorderLeftColor(),
-                    data.getBorderLineWidth(),
+                    data.getBorderLineLength(),
                     data.getBorderDottedSpacing(),
                     rectangle.getLowerLeftX(),
                     rectangle.getUpperRightY(),
@@ -407,7 +572,7 @@ public class BorderUtil {
             drawDottedLine(
                     stream,
                     data.getBorderRightColor(),
-                    data.getBorderLineWidth(),
+                    data.getBorderLineLength(),
                     data.getBorderDottedSpacing(),
                     rectangle.getUpperRightX(),
                     rectangle.getUpperRightY(),
@@ -415,6 +580,7 @@ public class BorderUtil {
                     rectangle.getLowerLeftY()
             );
         }
+        stream.stroke();
     }
 
     /**

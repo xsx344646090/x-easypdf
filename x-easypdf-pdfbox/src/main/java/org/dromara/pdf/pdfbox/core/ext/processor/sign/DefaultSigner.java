@@ -5,9 +5,11 @@ import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureInterface
 import org.bouncycastle.cert.jcajce.JcaCertStore;
 import org.bouncycastle.cms.CMSSignedDataGenerator;
 import org.bouncycastle.cms.CMSTypedData;
+import org.bouncycastle.cms.SignerInfoGenerator;
 import org.bouncycastle.cms.jcajce.JcaSignerInfoGeneratorBuilder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.ContentSigner;
+import org.bouncycastle.operator.DigestCalculatorProvider;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 
@@ -50,7 +52,7 @@ public class DefaultSigner implements SignatureInterface {
     /**
      * 私钥
      */
-    private final PrivateKey key;
+    private final PrivateKey privateKey;
     /**
      * 证书
      */
@@ -66,8 +68,8 @@ public class DefaultSigner implements SignatureInterface {
      * @param options 签名选项
      */
     public DefaultSigner(SignOptions options) {
-        this.key = options.getKey();
-        this.certificates = options.getCertificates();
+        this.privateKey = options.getCertificate().getPrivateKey();
+        this.certificates = options.getCertificate().getChain();
         this.algorithm = options.getAlgorithm();
     }
 
@@ -83,17 +85,17 @@ public class DefaultSigner implements SignatureInterface {
         // 定义cms签名器
         CMSSignedDataGenerator generator = new CMSSignedDataGenerator();
         // 定义内容签名器
-        ContentSigner sha1Signer = new JcaContentSignerBuilder(this.algorithm).setProvider(PROVIDER).build(this.key);
+        ContentSigner signer = new JcaContentSignerBuilder(this.algorithm).setProvider(PROVIDER).build(this.privateKey);
+        // 定义摘要提供者
+        DigestCalculatorProvider provider = new JcaDigestCalculatorProviderBuilder().setProvider(PROVIDER).build();
+        // 定义签名信息生成器
+        SignerInfoGenerator infoGenerator = new JcaSignerInfoGeneratorBuilder(provider).build(signer, (X509Certificate) this.certificates[0]);
         // 添加签名信息
-        generator.addSignerInfoGenerator(
-                new JcaSignerInfoGeneratorBuilder(
-                        new JcaDigestCalculatorProviderBuilder().setProvider(PROVIDER).build()
-                ).build(sha1Signer, (X509Certificate) this.certificates[0])
-        );
+        generator.addSignerInfoGenerator(infoGenerator);
         // 添加证书
         generator.addCertificates(new JcaCertStore(Arrays.asList(this.certificates)));
         // 返回签名字节数组
-        return generator.generate(this.getCMSData(content), true).getEncoded();
+        return generator.generate(this.getCMSData(content), false).getEncoded();
     }
 
     /**

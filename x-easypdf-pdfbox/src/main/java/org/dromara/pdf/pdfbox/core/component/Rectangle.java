@@ -4,9 +4,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.dromara.pdf.pdfbox.core.base.BorderData;
 import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.enums.ComponentType;
+import org.dromara.pdf.pdfbox.core.enums.LineCapStyle;
 import org.dromara.pdf.pdfbox.util.BorderUtil;
 import org.dromara.pdf.pdfbox.util.CommonUtil;
 
@@ -152,16 +154,18 @@ public class Rectangle extends AbstractComponent {
                     true,
                     this.getIsResetContentStream()
             );
+            // 创建矩形
+            PDRectangle rectangle = CommonUtil.getRectangle(this.getWidth(), this.getHeight());
             // 初始化矩阵
             CommonUtil.initMatrix(contentStream, this.getBeginX(), this.getBeginY(), this.getRelativeBeginX(), this.getRelativeBeginY(), this.getWidth(), this.getHeight(), this.getAngle(), this.getAlpha());
             // 添加边框
-            BorderUtil.drawNormalBorder(contentStream, CommonUtil.getRectangle(this.getWidth(), this.getHeight()), BorderData.create(this, this.getBorderConfiguration()), this.getBackgroundColor());
-            // 填充
-            if (this.getBorderConfiguration().hasAllBorder()) {
-                contentStream.closePath();
-                contentStream.fillAndStroke();
-            } else {
-                contentStream.stroke();
+            BorderUtil.drawNormalBorder(contentStream, rectangle, BorderData.create(this, this.getBorderConfiguration()), this.getBackgroundColor());
+            // 非圆角
+            if (this.getBorderLineCapStyle() != LineCapStyle.ROUND) {
+                // 设置背景颜色
+                contentStream.setNonStrokingColor(this.getBackgroundColor());
+                // 添加矩形
+                contentStream.addRect(rectangle.getLowerLeftX(), rectangle.getLowerLeftY(), rectangle.getWidth(), rectangle.getHeight());
             }
             // 恢复图形状态
             contentStream.restoreGraphicsState();

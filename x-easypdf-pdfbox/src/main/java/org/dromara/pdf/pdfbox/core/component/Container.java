@@ -10,11 +10,10 @@ import org.dromara.pdf.pdfbox.core.base.PagingEvent;
 import org.dromara.pdf.pdfbox.core.enums.ComponentType;
 import org.dromara.pdf.pdfbox.core.enums.HorizontalAlignment;
 import org.dromara.pdf.pdfbox.core.enums.VerticalAlignment;
-import org.dromara.pdf.pdfbox.util.BorderUtil;
 
 import java.awt.*;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -431,7 +430,7 @@ public class Container extends AbstractComponent {
             // 非虚拟渲染
             if (!this.getContext().getIsVirtualRender()) {
                 // 绘制边框
-                BorderUtil.drawBorderWithData(info, rectangle, info.getBackgroundColor());
+                // BorderUtil.drawBorderWithData(info, rectangle, info.getBackgroundColor());
             }
             // 返回Y轴起始坐标
             return rectangle.getLowerLeftY();
