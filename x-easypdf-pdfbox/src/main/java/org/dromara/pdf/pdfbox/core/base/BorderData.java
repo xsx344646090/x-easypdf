@@ -139,12 +139,30 @@ public class BorderData extends AbstractBase {
     }
 
     /**
+     * 设置上边框宽度
+     *
+     * @param width 宽度
+     */
+    public void setBorderTopLineWidth(Float width) {
+        this.borderConfiguration.setBorderTopLineWidth(width);
+    }
+
+    /**
      * 设置下边框颜色
      *
      * @param color 颜色
      */
     public void setBorderBottomColor(Color color) {
         this.borderConfiguration.setBorderBottomColor(color);
+    }
+
+    /**
+     * 设置下边框宽度
+     *
+     * @param width 宽度
+     */
+    public void setBorderBottomLineWidth(Float width) {
+        this.borderConfiguration.setBorderBottomLineWidth(width);
     }
 
     /**
@@ -157,12 +175,30 @@ public class BorderData extends AbstractBase {
     }
 
     /**
+     * 设置左边框宽度
+     *
+     * @param width 宽度
+     */
+    public void setBorderLeftLineWidth(Float width) {
+        this.borderConfiguration.setBorderLeftLineWidth(width);
+    }
+
+    /**
      * 设置右边框颜色
      *
      * @param color 颜色
      */
     public void setBorderRightColor(Color color) {
         this.borderConfiguration.setBorderRightColor(color);
+    }
+
+    /**
+     * 设置右边框宽度
+     *
+     * @param width 宽度
+     */
+    public void setBorderRightLineWidth(Float width) {
+        this.borderConfiguration.setBorderRightLineWidth(width);
     }
 
     /**
@@ -274,12 +310,30 @@ public class BorderData extends AbstractBase {
     }
 
     /**
+     * 获取上边框线宽
+     *
+     * @return 返回上边框线宽
+     */
+    public Float getBorderTopLineWidth() {
+        return this.borderConfiguration.getBorderTopLineWidth();
+    }
+
+    /**
      * 获取下边框颜色
      *
      * @return 返回下边框颜色
      */
     public Color getBorderBottomColor() {
         return this.borderConfiguration.getBorderBottomColor();
+    }
+
+    /**
+     * 获取下边框线宽
+     *
+     * @return 返回下边框线宽
+     */
+    public Float getBorderBottomLineWidth() {
+        return this.borderConfiguration.getBorderBottomLineWidth();
     }
 
     /**
@@ -292,12 +346,30 @@ public class BorderData extends AbstractBase {
     }
 
     /**
+     * 获取左边框线宽
+     *
+     * @return 返回左边框线宽
+     */
+    public Float getBorderLeftLineWidth() {
+        return this.borderConfiguration.getBorderLeftLineWidth();
+    }
+
+    /**
      * 获取右边框颜色
      *
      * @return 返回右边框颜色
      */
     public Color getBorderRightColor() {
         return this.borderConfiguration.getBorderRightColor();
+    }
+
+    /**
+     * 获取右边框线宽
+     *
+     * @return 返回右边框线宽
+     */
+    public Float getBorderRightLineWidth() {
+        return this.borderConfiguration.getBorderRightLineWidth();
     }
 
     /**

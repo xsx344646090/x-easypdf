@@ -214,6 +214,10 @@ public class TableRow extends BorderData {
 
     /**
      * 虚拟渲染
+     *
+     * @param page   页面
+     * @param beginX 起始X轴坐标
+     * @param beginY 起始Y轴坐标
      */
     protected void virtualRender(Page page, Float beginX, Float beginY) {
         // 初始化页面
@@ -241,6 +245,10 @@ public class TableRow extends BorderData {
 
     /**
      * 渲染
+     *
+     * @param page   页面
+     * @param beginX 起始X轴坐标
+     * @param beginY 起始Y轴坐标
      */
     protected void render(Page page, Float beginX, Float beginY) {
         // 初始化页面
@@ -435,7 +443,7 @@ public class TableRow extends BorderData {
             // 设置上下文为手动分页
             this.getContext().setIsManualBreak(true);
             // 处理分页
-            this.table.processBreak();
+            this.table.executeBreak();
             // 设置上下文为非手动分页
             this.getContext().setIsManualBreak(false);
             // 获取当前页面

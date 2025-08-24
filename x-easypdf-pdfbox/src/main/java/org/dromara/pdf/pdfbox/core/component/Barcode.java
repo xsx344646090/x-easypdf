@@ -414,7 +414,6 @@ public class Barcode extends AbstractComponent {
             contentStream.drawImage(this.getImageXObject(), 0, 0, this.getWidth(), this.getHeight());
             // 添加边框
             BorderUtil.drawNormalBorder(contentStream, CommonUtil.getRectangle(this.getWidth(), this.getHeight()), BorderData.create(this, this.getBorderConfiguration()), this.getPage().getBackgroundColor());
-            contentStream.stroke();
             // 关闭内容流
             contentStream.close();
         }

@@ -13,6 +13,7 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImage;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 import org.apache.pdfbox.util.Matrix;
 import org.dromara.pdf.pdfbox.core.base.Context;
+import org.dromara.pdf.pdfbox.core.component.TableRow;
 import org.dromara.pdf.pdfbox.core.enums.ContentMode;
 import org.dromara.pdf.pdfbox.core.enums.FontStyle;
 
@@ -270,6 +271,31 @@ public class CommonUtil {
     public static PDRectangle getRectangle(float width, float height) {
         // 返回尺寸
         return new PDRectangle(width, height);
+    }
+
+    /**
+     * 初始化行
+     *
+     * @param rows 行列表
+     */
+    public static void initTableRows(List<TableRow> rows) {
+        // 获取行的最后一个元素的索引
+        int last = rows.size() - 1;
+        // 遍历行
+        for (int i = 0; i < rows.size(); i++) {
+            // 获取当前元素
+            TableRow tableRow = rows.get(i);
+            // 设置当前元素的索引
+            tableRow.setIndex(i);
+            // 如果当前元素不是第一个元素，则设置当前元素的前一个元素
+            if (i > 0) {
+                tableRow.setPrevious(rows.get(i - 1));
+            }
+            // 如果当前元素不是最后一个元素，则设置当前元素的下一个元素
+            if (i < last) {
+                tableRow.setNext(rows.get(i + 1));
+            }
+        }
     }
 
     /**

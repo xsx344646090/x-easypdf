@@ -3,6 +3,7 @@ package org.dromara.pdf.pdfbox.core.component;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.dromara.pdf.pdfbox.core.base.BorderData;
 import org.dromara.pdf.pdfbox.core.base.Context;
@@ -10,12 +11,13 @@ import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.base.PagingEvent;
 import org.dromara.pdf.pdfbox.core.base.config.BorderConfiguration;
 import org.dromara.pdf.pdfbox.core.enums.HorizontalAlignment;
+import org.dromara.pdf.pdfbox.core.enums.LineCapStyle;
 import org.dromara.pdf.pdfbox.core.enums.VerticalAlignment;
 import org.dromara.pdf.pdfbox.util.BorderUtil;
 
 import java.awt.*;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 
 /**
  * 表格单元格组件
@@ -491,8 +493,10 @@ public class TableCell extends BorderData {
                     info.getWidth(),
                     info.getHeight()
             );
+            // 添加背景颜色
+            this.addBackgroundColor(info, rectangle);
             // 绘制边框
-            BorderUtil.drawBorderWithData(info, rectangle, Optional.ofNullable(info.getBackgroundColor()).orElse(this.getPage().getBackgroundColor()));
+            BorderUtil.drawBorderWithData(info, rectangle, info.getBackgroundColor());
             // 返回尺寸
             return rectangle;
         }
@@ -530,6 +534,35 @@ public class TableCell extends BorderData {
                 // 渲染下对角线
                 line.render();
             }
+        }
+    }
+
+    /**
+     * 添加背景颜色
+     *
+     * @param info      边框信息
+     * @param rectangle 矩形
+     */
+    @SneakyThrows
+    protected void addBackgroundColor(BorderInfo info, PDRectangle rectangle) {
+        // 非圆角边框，非页面背景颜色
+        if (info.getBorderLineCapStyle() != LineCapStyle.ROUND && !Objects.equals(info.getBackgroundColor(), context.getPage().getBackgroundColor())) {
+            // 初始化内容流
+            PDPageContentStream stream = new PDPageContentStream(
+                    this.getContext().getTargetDocument(),
+                    this.getContext().getTargetPage(),
+                    info.getContentMode().getMode(),
+                    true,
+                    info.getIsResetContentStream()
+            );
+            // 设置背景颜色
+            stream.setNonStrokingColor(info.getBackgroundColor());
+            // 添加矩形
+            stream.addRect(rectangle.getLowerLeftX(), rectangle.getLowerLeftY(), rectangle.getWidth(), rectangle.getHeight());
+            // 填充
+            stream.fill();
+            // 关闭
+            stream.close();
         }
     }
 }

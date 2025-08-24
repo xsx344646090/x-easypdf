@@ -24,8 +24,8 @@ import org.dromara.pdf.pdfbox.util.ImageUtil;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 
 /**
  * 表单处理器
@@ -48,7 +48,7 @@ import java.util.*;
 @Getter
 @EqualsAndHashCode(callSuper = true)
 public class FormProcessor extends AbstractProcessor {
-    
+
     /**
      * 表单
      */
@@ -65,7 +65,7 @@ public class FormProcessor extends AbstractProcessor {
      * 字体颜色
      */
     protected Color fontColor;
-    
+
     /**
      * 有参构造
      *
@@ -74,7 +74,7 @@ public class FormProcessor extends AbstractProcessor {
     public FormProcessor(Document document) {
         this(document, false, false);
     }
-    
+
     /**
      * 有参构造
      *
@@ -84,7 +84,7 @@ public class FormProcessor extends AbstractProcessor {
         super(document);
         this.form = this.initForm(document.getTarget(), isFixForm, isNeedAppearance);
     }
-    
+
     /**
      * 获取字段
      *
@@ -93,7 +93,7 @@ public class FormProcessor extends AbstractProcessor {
     public List<PDField> getFields() {
         return this.form.getFields();
     }
-    
+
     /**
      * 设置字体
      *
@@ -109,7 +109,7 @@ public class FormProcessor extends AbstractProcessor {
         // 初始化字体颜色
         this.fontColor = fontColor;
     }
-    
+
     /**
      * 添加字段
      *
@@ -121,7 +121,7 @@ public class FormProcessor extends AbstractProcessor {
             fields.add(builder.build(this.form));
         }
     }
-    
+
     /**
      * 替换关键字
      *
@@ -139,7 +139,7 @@ public class FormProcessor extends AbstractProcessor {
             }
         });
     }
-    
+
     /**
      * 移除字段
      *
@@ -168,7 +168,7 @@ public class FormProcessor extends AbstractProcessor {
             this.form.setFields(new ArrayList<>(0));
         }
     }
-    
+
     /**
      * 填写文本
      *
@@ -218,7 +218,7 @@ public class FormProcessor extends AbstractProcessor {
             }
         }
     }
-    
+
     /**
      * 填写图像
      *
@@ -289,7 +289,7 @@ public class FormProcessor extends AbstractProcessor {
             }
         }
     }
-    
+
     /**
      * 填写单选
      *
@@ -320,7 +320,7 @@ public class FormProcessor extends AbstractProcessor {
             log.warn("the field['" + key + "'] is not exist, will be ignored");
         }
     }
-    
+
     /**
      * 填写多选
      *
@@ -353,7 +353,7 @@ public class FormProcessor extends AbstractProcessor {
             }
         }
     }
-    
+
     /**
      * 扁平化表单
      *
@@ -385,7 +385,7 @@ public class FormProcessor extends AbstractProcessor {
         // 扁平化
         this.form.flatten(fields, refreshAppearances);
     }
-    
+
     /**
      * 只读
      *
@@ -412,7 +412,7 @@ public class FormProcessor extends AbstractProcessor {
             this.getFields().forEach(field -> field.setReadOnly(true));
         }
     }
-    
+
     /**
      * 刷新
      */
@@ -420,7 +420,7 @@ public class FormProcessor extends AbstractProcessor {
     public void flush() {
         this.getDocument().getDocumentCatalog().setAcroForm(this.form);
     }
-    
+
     /**
      * 初始化表单
      *
@@ -454,7 +454,7 @@ public class FormProcessor extends AbstractProcessor {
         // 返回表单
         return acroForm;
     }
-    
+
     /**
      * 是否添加外观
      *
@@ -463,7 +463,7 @@ public class FormProcessor extends AbstractProcessor {
     protected boolean isAddAppearance() {
         return Objects.nonNull(this.fontName);
     }
-    
+
     /**
      * 创建默认样式字符串
      *

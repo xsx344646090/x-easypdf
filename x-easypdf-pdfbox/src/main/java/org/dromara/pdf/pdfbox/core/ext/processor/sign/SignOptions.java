@@ -2,12 +2,11 @@ package org.dromara.pdf.pdfbox.core.ext.processor.sign;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureOptions;
 
-import java.security.PrivateKey;
-import java.security.cert.Certificate;
 import java.util.Objects;
 
 /**
@@ -36,21 +35,13 @@ public class SignOptions {
      */
     private Integer pageIndex;
     /**
-     * 私钥
-     */
-    private PrivateKey key;
-    /**
      * 证书
      */
-    private Certificate[] certificates;
+    private CertificateInfo certificate;
     /**
      * 算法
      */
     private String algorithm;
-    /**
-     * 签名内存大小
-     */
-    private Integer preferredSignatureSize;
     /**
      * 签名权限
      */
@@ -65,34 +56,29 @@ public class SignOptions {
      */
     protected void init() {
         Objects.requireNonNull(this.pageIndex, "the page index can not be null");
-        Objects.requireNonNull(this.key, "the key can not be null");
-        Objects.requireNonNull(this.certificates, "the certificates can not be null");
+        Objects.requireNonNull(this.certificate, "the certificate can not be null");
         Objects.requireNonNull(this.algorithm, "the algorithm can not be null");
-        if (Objects.isNull(this.preferredSignatureSize)) {
-            this.preferredSignatureSize = SignatureOptions.DEFAULT_SIGNATURE_SIZE;
-        }
         if (Objects.isNull(this.permission)) {
             this.permission = SignPermission.NONE_LIMIT;
         }
     }
 
     /**
-     * 初始化
+     * 初始化签名选项
      *
      * @param document  文档
      * @param signature 签名
      * @return 返回签名选项
      */
-    protected SignatureOptions createOptions(PDDocument document, PDSignature signature) {
+    @SneakyThrows
+    protected SignatureOptions initOptions(PDDocument document, PDSignature signature) {
         // 创建签名选项
         SignatureOptions signatureOptions = new SignatureOptions();
         // 设置页码
         signatureOptions.setPage(this.pageIndex);
-        // 设置签名内存大小
-        signatureOptions.setPreferredSignatureSize(this.preferredSignatureSize);
         // 初始化可视化签名属性
         if (Objects.nonNull(this.visualOptions)) {
-            this.visualOptions.initVisualOptions(document, signature, signatureOptions);
+            signatureOptions.setVisualSignature(this.visualOptions.initVisualSignature(document, signature, this.pageIndex));
         }
         // 返回签名选项
         return signatureOptions;

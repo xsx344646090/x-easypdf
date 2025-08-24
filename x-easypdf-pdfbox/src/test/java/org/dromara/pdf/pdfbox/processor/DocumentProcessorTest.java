@@ -4,7 +4,6 @@ import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationFreeText;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
-import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureOptions;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 import org.dromara.pdf.pdfbox.base.BaseTest;
 import org.dromara.pdf.pdfbox.core.base.*;
@@ -14,13 +13,11 @@ import org.dromara.pdf.pdfbox.core.enums.ImageType;
 import org.dromara.pdf.pdfbox.core.enums.PageJoinType;
 import org.dromara.pdf.pdfbox.core.ext.processor.*;
 import org.dromara.pdf.pdfbox.core.ext.processor.form.FormProcessor;
-import org.dromara.pdf.pdfbox.core.ext.processor.sign.EncryptAlgorithm;
-import org.dromara.pdf.pdfbox.core.ext.processor.sign.KeyStoreType;
-import org.dromara.pdf.pdfbox.core.ext.processor.sign.SignOptions;
-import org.dromara.pdf.pdfbox.core.ext.processor.sign.SignProcessor;
+import org.dromara.pdf.pdfbox.core.ext.processor.sign.*;
 import org.dromara.pdf.pdfbox.core.info.ReplaceInfo;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.dromara.pdf.pdfbox.util.ColorUtil;
+import org.dromara.pdf.pdfbox.util.FileUtil;
 import org.dromara.pdf.pdfbox.util.ImageUtil;
 import org.junit.Test;
 
@@ -30,11 +27,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.security.KeyStore;
-import java.security.PrivateKey;
-import java.security.cert.Certificate;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -386,29 +380,18 @@ public class DocumentProcessorTest extends BaseTest {
         this.test(() -> {
             try (
                     Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\processor\\replaceTest.pdf");
-                    OutputStream outputStream = Files.newOutputStream(Paths.get("E:\\PDF\\pdfbox\\processor\\signTest.pdf"));
+                    OutputStream outputStream = Files.newOutputStream(FileUtil.createDirectories(Paths.get("E:\\PDF\\pdfbox\\processor\\sign\\signTest.pdf")));
+                    InputStream inputStream = Files.newInputStream(Paths.get("E:\\PDF\\pdfbox\\processor\\x-easypdf.pfx"))
             ) {
-
-                // 获取密码字符数组
-                char[] passwordCharArray = "123456".toCharArray();
-                // 获取密钥库
-                KeyStore keyStore = KeyStore.getInstance(KeyStoreType.PKCS12.name());
-                // 定义证书文件流
-                try (InputStream inputStream = Files.newInputStream(Paths.get("E:\\PDF\\pdfbox\\processor\\x-easypdf.pfx"))) {
-                    // 加载证书
-                    keyStore.load(inputStream, passwordCharArray);
-                }
-                // 证书获取别名
-                String alias = keyStore.aliases().nextElement();
-                // 获取证书链
-                Certificate[] certificateChain = keyStore.getCertificateChain(alias);
+                VisualOptions visualOptions = VisualOptions.builder()
+                        .image(ImageUtil.read(Paths.get("E:\\PDF\\pdfbox\\test.jpg").toFile()))
+                        .build();
                 SignOptions options = SignOptions.builder()
-                                              .key((PrivateKey) keyStore.getKey(alias, passwordCharArray))
-                                              .certificates(certificateChain)
-                                              .algorithm(EncryptAlgorithm.SHA256withRSA.name())
-                                              .pageIndex(1)
-                                              .preferredSignatureSize(SignatureOptions.DEFAULT_SIGNATURE_SIZE * 2)
-                                              .build();
+                        .certificate(new CertificateInfo(KeyStoreType.PKCS12, inputStream, "123456", null))
+                        .algorithm(EncryptAlgorithm.SHA256withRSA.name())
+                        .pageIndex(0)
+                        .visualOptions(visualOptions)
+                        .build();
 
                 PDSignature signature = new PDSignature();
                 signature.setName("x-easypdf");
@@ -418,7 +401,6 @@ public class DocumentProcessorTest extends BaseTest {
                 signature.setFilter(PDSignature.FILTER_ADOBE_PPKLITE);
                 signature.setSubFilter(PDSignature.SUBFILTER_ADBE_PKCS7_DETACHED);
                 signature.setSignDate(Calendar.getInstance());
-
                 SignProcessor processor = PdfHandler.getDocumentProcessor(document).getSignProcessor();
                 processor.sign(signature, options, outputStream);
             }
@@ -430,29 +412,15 @@ public class DocumentProcessorTest extends BaseTest {
         this.test(() -> {
             try (
                     Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\processor\\replaceTest.pdf");
-                    OutputStream outputStream = Files.newOutputStream(Paths.get("E:\\PDF\\pdfbox\\processor\\signTest.pdf"));
+                    OutputStream outputStream = Files.newOutputStream(Paths.get("E:\\PDF\\pdfbox\\processor\\sign\\signTest.pdf"));
+                    InputStream inputStream = Files.newInputStream(Paths.get("E:\\PDF\\pdfbox\\processor\\x-easypdf.pfx"))
             ) {
 
-                // 获取密码字符数组
-                char[] passwordCharArray = "123456".toCharArray();
-                // 获取密钥库
-                KeyStore keyStore = KeyStore.getInstance(KeyStoreType.PKCS12.name());
-                // 定义证书文件流
-                try (InputStream inputStream = Files.newInputStream(Paths.get("E:\\PDF\\pdfbox\\processor\\x-easypdf.p12"))) {
-                    // 加载证书
-                    keyStore.load(inputStream, passwordCharArray);
-                }
-                // 证书获取别名
-                String alias = keyStore.aliases().nextElement();
-                // 获取证书链
-                Certificate[] certificateChain = keyStore.getCertificateChain(alias);
                 SignOptions options = SignOptions.builder()
-                                              .key((PrivateKey) keyStore.getKey(alias, passwordCharArray))
-                                              .certificates(certificateChain)
-                                              .algorithm(EncryptAlgorithm.SHA256withRSA.name())
-                                              .pageIndex(1)
-                                              .preferredSignatureSize(SignatureOptions.DEFAULT_SIGNATURE_SIZE * 2)
-                                              .build();
+                        .certificate(new CertificateInfo(KeyStoreType.PKCS12, inputStream, "123456", null))
+                        .algorithm(EncryptAlgorithm.SHA256withRSA.name())
+                        .pageIndex(1)
+                        .build();
 
                 PDSignature signature = new PDSignature();
                 signature.setName("x-easypdf");
@@ -476,7 +444,6 @@ public class DocumentProcessorTest extends BaseTest {
                 signature.setFilter(PDSignature.FILTER_ADOBE_PPKLITE);
                 signature.setSubFilter(PDSignature.SUBFILTER_ADBE_PKCS7_DETACHED);
                 signature.setSignDate(Calendar.getInstance());
-                options.setPreferredSignatureSize(SignatureOptions.DEFAULT_SIGNATURE_SIZE * 6);
                 processor.sign(signature, options, outputStream);
             }
         });

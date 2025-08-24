@@ -244,7 +244,7 @@ public class Table extends AbstractComponent {
         // 初始化
         super.init();
         // 初始化分页事件
-        this.pagingEvent = new DefaultContainerPagingEvent();
+        this.pagingEvent = new DefaultTablePagingEvent();
         // 初始化背景颜色
         if (Objects.isNull(this.backgroundColor)) {
             this.backgroundColor = this.getPage().getBackgroundColor();
@@ -258,7 +258,7 @@ public class Table extends AbstractComponent {
             this.isPagingBorder = Boolean.FALSE;
         }
         // 重置Y轴相对坐标
-        if (!this.isCustomY && this.relativeBeginY == 0F && this.getContext().getIsFirstComponent() && !this.getContext().hasPageHeader()) {
+        if (this.isResetRelativeBeginY()) {
             this.relativeBeginY = this.getFirstRowHeight();
         }
         // 初始化内容上边距
@@ -285,8 +285,6 @@ public class Table extends AbstractComponent {
         if (Objects.isNull(this.contentVerticalAlignment)) {
             this.contentVerticalAlignment = VerticalAlignment.TOP;
         }
-        // 添加表格分页事件
-        this.pagingEvents.add(new DefaultTablePagingEvent());
         // 初始化表格行
         this.initRows();
         // 检查换行
@@ -308,23 +306,7 @@ public class Table extends AbstractComponent {
     protected void initRows() {
         // 判断行是否为空
         if (Objects.nonNull(this.rows)) {
-            // 获取行的最后一个元素的索引
-            int last = this.rows.size() - 1;
-            // 遍历行
-            for (int i = 0; i < this.rows.size(); i++) {
-                // 获取当前元素
-                TableRow tableRow = this.rows.get(i);
-                // 设置当前元素的索引
-                tableRow.setIndex(i);
-                // 如果当前元素不是第一个元素，则设置当前元素的前一个元素
-                if (i > 0) {
-                    tableRow.setPrevious(this.rows.get(i - 1));
-                }
-                // 如果当前元素不是最后一个元素，则设置当前元素的下一个元素
-                if (i < last) {
-                    tableRow.setNext(this.rows.get(i + 1));
-                }
-            }
+            CommonUtil.initTableRows(this.rows);
         }
     }
 
@@ -360,10 +342,12 @@ public class Table extends AbstractComponent {
             // 渲染表头并重置起始Y轴坐标
             beginY = this.getHeader().render(page, beginX, beginY);
         }
+        // 获取行
+        List<TableRow> rows = this.getRows();
         // 判断是否有行
-        if (Objects.nonNull(this.getRows())) {
+        if (Objects.nonNull(rows)) {
             // 遍历行
-            for (TableRow tableRow : this.getRows()) {
+            for (TableRow tableRow : rows) {
                 // 判断是否为虚拟渲染
                 if (this.getContext().getIsVirtualRender()) {
                     // 虚拟渲染
@@ -418,11 +402,8 @@ public class Table extends AbstractComponent {
         }
         // 执行分页操作
         Page page = super.executeBreak();
-        // 自动分页
-        if (!this.getContext().getIsManualBreak()) {
-            // 如果分页事件不为空，则调用after方法
-            Optional.ofNullable(borderPagingEvent).ifPresent(event -> event.after(this));
-        }
+        // 如果分页事件不为空，则调用after方法
+        Optional.ofNullable(borderPagingEvent).ifPresent(event -> event.after(this));
         // 设置开始X坐标
         this.setBeginX(beginX);
         // 返回分页结果
@@ -462,6 +443,15 @@ public class Table extends AbstractComponent {
         beginY = top;
         // 递归
         return this.getLastHeight(beginY, height, top, bottom);
+    }
+
+    /**
+     * 是否重置Y轴相对坐标
+     *
+     * @return 返回布尔值，true为是，false为否
+     */
+    protected boolean isResetRelativeBeginY() {
+        return !this.isCustomY && this.relativeBeginY == 0F && this.getContext().getIsFirstComponent() && !this.getContext().hasPageHeader();
     }
 
     /**
