@@ -3,10 +3,12 @@ package org.dromara.pdf.pdfbox.core.ext.processor.sign;
 import lombok.SneakyThrows;
 import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceDictionary;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureInterface;
+import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureOptions;
 import org.apache.pdfbox.pdmodel.interactive.form.*;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.ext.processor.AbstractProcessor;
@@ -37,12 +39,12 @@ import java.util.stream.Collectors;
  * </p>
  */
 public class SignProcessor extends AbstractProcessor {
-    
+
     /**
      * 签名器
      */
     protected SignatureInterface signer;
-    
+
     /**
      * 有参构造
      *
@@ -51,7 +53,7 @@ public class SignProcessor extends AbstractProcessor {
     public SignProcessor(Document document) {
         super(document);
     }
-    
+
     /**
      * 获取签名字段
      *
@@ -60,21 +62,43 @@ public class SignProcessor extends AbstractProcessor {
     public List<PDSignatureField> getFields() {
         return this.getDocument().getSignatureFields();
     }
-    
+
+    /**
+     * 获取签名字段
+     *
+     * @param key 字段名称
+     * @return 返回签名字段
+     */
+    public PDSignature getSignature(String key) {
+        List<PDSignatureField> fields = this.getFields();
+        for (PDSignatureField field : fields) {
+            if (Objects.equals(key, field.getFullyQualifiedName())) {
+                return field.getSignature();
+            }
+        }
+        return null;
+    }
+
     /**
      * 追加签名字段
      *
+     * @param key       字段名称
+     * @param rectangle 字段位置
      * @param signature 签名
      * @return 返回签名字段
      */
     @SneakyThrows
-    public PDSignatureField append(PDSignature signature) {
+    public PDSignatureField append(String key, PDRectangle rectangle, PDSignature signature) {
         // 获取文档的AcroForm，如果不存在则创建一个新的PDAcroForm对象
         PDAcroForm form = Optional.ofNullable(this.getDocument().getDocumentCatalog().getAcroForm(null)).orElse(new PDAcroForm(this.getDocument()));
         // 创建一个新的PDSignatureField对象
         PDSignatureField field = new PDSignatureField(form);
+        // 设置签名名称
+        field.setPartialName(key);
         // 设置签名值
         field.setValue(signature);
+        // 设置签名位置
+        field.getWidgets().get(0).setRectangle(rectangle);
         // 获取AcroForm中的字段列表
         List<PDField> fields = form.getFields();
         // 将新的签名字段添加到字段列表中
@@ -86,40 +110,31 @@ public class SignProcessor extends AbstractProcessor {
         // 返回签名字段
         return field;
     }
-    
+
     /**
      * 移除签名字段
      *
-     * @param index 字段索引
+     * @param key 字段名称
      */
-    public void remove(int index) {
+    public void remove(String key) {
         // 获取文档的表单
         PDAcroForm form = Optional.ofNullable(this.getDocument().getDocumentCatalog().getAcroForm(null)).orElse(new PDAcroForm(this.getDocument()));
         // 获取表单中的字段
         List<PDField> fields = form.getFields();
-        // 如果索引超出范围，则提示信息并返回
-        if (fields.size() <= index) {
-            // 提示信息
-            log.warn("the index['" + index + "'] is invalid, will be ignored");
-            return;
-        }
         // 创建一个新的字段列表
         List<PDField> newFields = new ArrayList<>(fields.size());
-        // 遍历字段列表
-        int i = 0;
+        // 遍历字段
         for (PDField field : fields) {
-            // 如果索引不等于当前字段索引，则将字段添加到新字段列表中
-            if (index != i) {
+            if (!(field instanceof PDSignatureField) || !Objects.equals(key, field.getFullyQualifiedName())) {
                 newFields.add(field);
             }
-            i++;
         }
         // 设置新字段列表
         form.setFields(newFields);
         // 将新表单设置到文档目录中
         this.getDocument().getDocumentCatalog().setAcroForm(form);
     }
-    
+
     /**
      * 签名
      *
@@ -135,22 +150,27 @@ public class SignProcessor extends AbstractProcessor {
         Objects.requireNonNull(options, "the options can not be null");
         // 检查输出流是否为空，如果为空则抛出异常
         Objects.requireNonNull(outputStream, "the outputStream can not be null");
+        // 初始化选项
+        options.init();
         // 如果签名者对象为空，则创建一个新的默认签名者
         if (Objects.isNull(this.signer)) {
             this.signer = new DefaultSigner(options);
         }
-        // 初始化选项
-        options.init();
         // 设置文档的权限
-        this.setMdpPermission(this.getDocument(), signature, options.getPermission());
-        // 锁定签名字段
-        this.lockSignFields(this.getDocument(), signature);
-        // 添加签名到文档
-        this.getDocument().addSignature(signature, this.signer, options.createOptions(this.getDocument(), signature));
-        // 保存文档
-        this.getDocument().saveIncremental(outputStream);
+        // this.setMdpPermission(this.getDocument(), signature, options.getPermission());
+        // 检查权限
+        if (this.getMdpPermission(this.getDocument()) == 1) {
+            throw new IllegalStateException("The document is not allowed to be signed");
+        }
+        // 签名
+        try (SignatureOptions signatureOptions = options.initOptions(this.getDocument(), signature)) {
+            // 添加签名到文档
+            this.getDocument().addSignature(signature, this.signer, signatureOptions);
+            // 保存文档
+            this.getDocument().saveIncremental(outputStream);
+        }
     }
-    
+
     /**
      * 多重签名
      * <p>注：多次签名时，使用此方法</p>
@@ -162,17 +182,10 @@ public class SignProcessor extends AbstractProcessor {
     @SneakyThrows
     public void multiSign(PDSignature signature, SignOptions options, ByteArrayOutputStream outputStream) {
         this.sign(signature, options, outputStream);
-        this.release();
+        this.document.close();
         this.document = PdfHandler.getDocumentHandler().load(outputStream.toByteArray());
     }
-    
-    /**
-     * 释放
-     */
-    public void release() {
-        this.document.close();
-    }
-    
+
     /**
      * 获取mdp权限
      *
@@ -232,7 +245,7 @@ public class SignProcessor extends AbstractProcessor {
         // 如果没有找到符合条件的权限，则返回0
         return 0;
     }
-    
+
     /**
      * 设置mdp权限
      *
@@ -255,10 +268,10 @@ public class SignProcessor extends AbstractProcessor {
                 return;
             }
         }
-        
+
         // 获取签名字典
         COSDictionary sigDict = signature.getCOSObject();
-        
+
         // 创建转换参数字典
         COSDictionary transformParameters = new COSDictionary();
         // 设置转换参数类型为TransformParams
@@ -269,7 +282,7 @@ public class SignProcessor extends AbstractProcessor {
         transformParameters.setName(COSName.V, "1.2");
         // 设置转换参数需要更新
         transformParameters.setNeedToBeUpdated(true);
-        
+
         // 创建签名引用字典
         COSDictionary referenceDict = new COSDictionary();
         // 设置签名引用类型为SigRef
@@ -282,7 +295,7 @@ public class SignProcessor extends AbstractProcessor {
         referenceDict.setItem("TransformParams", transformParameters);
         // 设置签名引用需要更新
         referenceDict.setNeedToBeUpdated(true);
-        
+
         // 创建签名引用数组
         COSArray referenceArray = new COSArray();
         // 将签名引用字典添加到签名引用数组中
@@ -291,7 +304,7 @@ public class SignProcessor extends AbstractProcessor {
         sigDict.setItem("Reference", referenceArray);
         // 设置签名引用数组需要更新
         referenceArray.setNeedToBeUpdated(true);
-        
+
         // 获取文档目录
         COSDictionary catalogDict = document.getDocumentCatalog().getCOSObject();
         // 创建权限字典
@@ -305,7 +318,7 @@ public class SignProcessor extends AbstractProcessor {
         // 设置权限字典需要更新
         permsDict.setNeedToBeUpdated(true);
     }
-    
+
     /**
      * 锁定签名字段
      *
@@ -345,7 +358,7 @@ public class SignProcessor extends AbstractProcessor {
             }
         }
     }
-    
+
     /**
      * 获取锁定签名字段名称
      *
@@ -361,13 +374,13 @@ public class SignProcessor extends AbstractProcessor {
             // 否则，将FIELDS数组转换为列表，并过滤出COSString类型的元素，将其转换为字符串，并收集到一个新的列表中
         } else {
             return fields.toList()
-                           .stream()
-                           .filter(c -> (c instanceof COSString))
-                           .map(s -> ((COSString) s).getString())
-                           .collect(Collectors.toList());
+                    .stream()
+                    .filter(c -> (c instanceof COSString))
+                    .map(s -> ((COSString) s).getString())
+                    .collect(Collectors.toList());
         }
     }
-    
+
     /**
      * 锁定签名字段
      *
@@ -425,7 +438,7 @@ public class SignProcessor extends AbstractProcessor {
         // 返回是否更新
         return isUpdated;
     }
-    
+
     /**
      * 重置签名表单
      *

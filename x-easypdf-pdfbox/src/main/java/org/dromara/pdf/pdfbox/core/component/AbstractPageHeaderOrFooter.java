@@ -10,7 +10,9 @@ import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.base.PagingEvent;
 import org.dromara.pdf.pdfbox.core.base.config.BorderConfiguration;
 import org.dromara.pdf.pdfbox.core.base.config.MarginConfiguration;
-import org.dromara.pdf.pdfbox.core.enums.*;
+import org.dromara.pdf.pdfbox.core.enums.ComponentType;
+import org.dromara.pdf.pdfbox.core.enums.LineCapStyle;
+import org.dromara.pdf.pdfbox.core.enums.LineStyle;
 import org.dromara.pdf.pdfbox.util.BorderUtil;
 import org.dromara.pdf.pdfbox.util.CommonUtil;
 

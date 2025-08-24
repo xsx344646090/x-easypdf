@@ -56,17 +56,33 @@ public class BorderConfiguration {
      */
     protected Color borderTopColor;
     /**
+     * 上边框线宽
+     */
+    protected Float borderTopLineWidth;
+    /**
      * 下边框颜色
      */
     protected Color borderBottomColor;
+    /**
+     * 下边框线宽
+     */
+    protected Float borderBottomLineWidth;
     /**
      * 左边框颜色
      */
     protected Color borderLeftColor;
     /**
+     * 左边框线宽
+     */
+    protected Float borderLeftLineWidth;
+    /**
      * 右边框颜色
      */
     protected Color borderRightColor;
+    /**
+     * 右边框线宽
+     */
+    protected Float borderRightLineWidth;
     /**
      * 是否上边框
      */
@@ -145,6 +161,10 @@ public class BorderConfiguration {
             throw new IllegalArgumentException("the border line width must be greater than 0");
         }
         this.borderLineWidth = width;
+        this.borderTopLineWidth = width;
+        this.borderBottomLineWidth = width;
+        this.borderLeftLineWidth = width;
+        this.borderRightLineWidth = width;
     }
 
     /**
@@ -205,29 +225,49 @@ public class BorderConfiguration {
         if (Objects.isNull(this.borderRadius)) {
             this.borderRadius = 0F;
         }
+        // 初始化边框线长
+        if (Objects.isNull(this.borderLineLength)) {
+            this.borderLineLength = 1F;
+        }
         // 初始化边框线宽
         if (Objects.isNull(this.borderLineWidth)) {
             this.borderLineWidth = 1F;
         }
         // 初始化边框点线间隔
         if (Objects.isNull(this.borderDottedSpacing)) {
-            this.borderDottedSpacing = 1F;
+            this.borderDottedSpacing = 2F;
         }
         // 初始化上边框颜色
         if (Objects.isNull(this.borderTopColor)) {
             this.borderTopColor = Color.GRAY;
         }
+        // 初始化上边框线宽
+        if (Objects.isNull(this.borderTopLineWidth)) {
+            this.borderTopLineWidth = this.borderLineWidth;
+        }
         // 初始化下边框颜色
         if (Objects.isNull(this.borderBottomColor)) {
             this.borderBottomColor = Color.GRAY;
+        }
+        // 初始化下边框线宽
+        if (Objects.isNull(this.borderBottomLineWidth)) {
+            this.borderBottomLineWidth = this.borderLineWidth;
         }
         // 初始化左边框颜色
         if (Objects.isNull(this.borderLeftColor)) {
             this.borderLeftColor = Color.GRAY;
         }
+        // 初始化左边框线宽
+        if (Objects.isNull(this.borderLeftLineWidth)) {
+            this.borderLeftLineWidth = this.borderLineWidth;
+        }
         // 初始化右边框颜色
         if (Objects.isNull(this.borderRightColor)) {
             this.borderRightColor = Color.GRAY;
+        }
+        // 初始化右边框线宽
+        if (Objects.isNull(this.borderRightLineWidth)) {
+            this.borderRightLineWidth = this.borderLineWidth;
         }
         // 初始化是否上边框
         if (Objects.isNull(this.isBorderTop)) {
@@ -281,17 +321,33 @@ public class BorderConfiguration {
         if (Objects.isNull(this.borderTopColor)) {
             this.borderTopColor = base.borderTopColor;
         }
+        // 初始化上边框宽度
+        if (Objects.isNull(this.borderTopLineWidth)) {
+            this.borderTopLineWidth = base.borderTopLineWidth;
+        }
         // 初始化下边框颜色
         if (Objects.isNull(this.borderBottomColor)) {
             this.borderBottomColor = base.borderBottomColor;
+        }
+        // 初始化下边框宽度
+        if (Objects.isNull(this.borderBottomLineWidth)) {
+            this.borderBottomLineWidth = base.borderBottomLineWidth;
         }
         // 初始化左边框颜色
         if (Objects.isNull(this.borderLeftColor)) {
             this.borderLeftColor = base.borderLeftColor;
         }
+        // 初始化左边框宽度
+        if (Objects.isNull(this.borderLeftLineWidth)) {
+            this.borderLeftLineWidth = base.borderLeftLineWidth;
+        }
         // 初始化右边框颜色
         if (Objects.isNull(this.borderRightColor)) {
             this.borderRightColor = base.borderRightColor;
+        }
+        // 初始化右边框宽度
+        if (Objects.isNull(this.borderRightLineWidth)) {
+            this.borderRightLineWidth = base.borderRightLineWidth;
         }
         // 初始化是否上边框
         if (Objects.isNull(this.isBorderTop)) {

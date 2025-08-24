@@ -741,23 +741,24 @@ public class Textarea extends AbstractComponent {
             PDRectangle lineRectangle = new PDRectangle(textRectangle.getLowerLeftX(), textRectangle.getLowerLeftY() + this.getFontDescent(), textRectangle.getWidth(), textRectangle.getHeight());
             // 添加高亮
             this.addHighlight(lineRectangle);
-            // 添加文本
-            this.addText(text, textRectangle, contentStream);
             // 添加删除线
             this.addDeleteLine(lineRectangle);
             // 添加下划线
             this.addUnderline(lineRectangle);
-            // 添加下划线
+            // 添加波浪线
             this.addWavyLine(lineRectangle);
             // 添加内部目标
             this.addInnerDest(lineRectangle);
             // 添加外部目标
             this.addOuterDest(lineRectangle);
+            // 添加文本
+            this.addText(text, textRectangle, contentStream);
             // 添加边框
             this.addBorder(lineRectangle, contentStream);
             // 重置X轴坐标
             position.setX(lineRectangle.getLowerLeftX());
         }
+        // 返回内容流
         return contentStream;
     }
 
@@ -1017,8 +1018,6 @@ public class Textarea extends AbstractComponent {
         if (this.getBorderConfiguration().hasBorder()) {
             // 绘制边框
             BorderUtil.drawNormalBorder(stream, rectangle, new BorderData(this, this.getBorderConfiguration()), this.getPage().getBackgroundColor());
-            // 描边
-            stream.stroke();
         }
     }
 

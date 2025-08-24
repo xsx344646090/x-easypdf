@@ -2,7 +2,13 @@ package org.dromara.pdf.pdfbox.core.component;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.SneakyThrows;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.dromara.pdf.pdfbox.core.base.Context;
+import org.dromara.pdf.pdfbox.core.base.Cursor;
+import org.dromara.pdf.pdfbox.core.enums.LineCapStyle;
+import org.dromara.pdf.pdfbox.util.BorderUtil;
+import org.dromara.pdf.pdfbox.util.CommonUtil;
 
 import java.util.Objects;
 
@@ -35,7 +41,62 @@ public class DefaultTablePagingEvent extends AbstractPagingEvent {
      */
     @Override
     public void before(Component component) {
-
+        // 获取组件的上下文
+        Context context = component.getContext();
+        // 获取边框信息
+        BorderInfo info = context.getBorderInfo();
+        // 如果边框还没有被渲染
+        if (!info.getIsAlreadyRendered()) {
+            // 获取边框的起始Y坐标
+            Float beginY = info.getBeginY();
+            // 获取边框的高度
+            Float height = info.getHeight();
+            // 获取页脚的高度和页面的底部边距
+            float bottom = context.getPageFooterHeight() + context.getPage().getMarginBottom();
+            // 设置边框的高度
+            info.setHeight(Math.abs(beginY - bottom));
+            // 获取边框是否在顶部
+            Boolean isBorderTop = info.getIsBorderTop();
+            // 获取边框是否在底部
+            Boolean isBorderBottom = info.getIsBorderBottom();
+            // 如果边框是分页边框
+            if (info.getIsPagingBorder()) {
+                // 设置边框在顶部和底部
+                info.setIsBorderTop(Boolean.TRUE);
+                info.setIsBorderBottom(Boolean.TRUE);
+            } else {
+                // 如果边框是分页
+                if (info.isPaging()) {
+                    // 设置边框不在顶部
+                    info.setIsBorderTop(Boolean.FALSE);
+                }
+                // 设置边框不在底部
+                info.setIsBorderBottom(Boolean.FALSE);
+            }
+            // 创建一个矩形
+            PDRectangle rectangle = new PDRectangle(
+                    info.getBeginX(),
+                    beginY - info.getHeight(),
+                    info.getWidth(),
+                    info.getHeight()
+            );
+            // 如果非虚拟渲染
+            if (!context.getIsVirtualRender()) {
+                // 添加背景颜色
+                this.addBackgroundColor(context, info, rectangle);
+                // 绘制边框
+                BorderUtil.drawBorderWithData(info, rectangle, info.getBackgroundColor());
+            }
+            // 恢复边框的顶部和底部
+            info.setIsBorderTop(isBorderTop);
+            info.setIsBorderBottom(isBorderBottom);
+            // 更新边框的高度
+            info.setHeight(height - info.getHeight());
+            // 更新分页计数
+            info.pagingCount();
+        }
+        // 设置是否已经分页
+        context.setIsAlreadyPaging(false);
     }
 
     /**
@@ -49,10 +110,12 @@ public class DefaultTablePagingEvent extends AbstractPagingEvent {
         Context context = component.getContext();
         // 获取边框信息
         BorderInfo borderInfo = context.getBorderInfo();
-        // 设置边框的起始Y坐标
-        if (Objects.nonNull(borderInfo)) {
-            borderInfo.setBeginY(borderInfo.getBeginY() - this.processTableHeader(context, component));
-        }
+        // 设置Y轴起始坐标
+        borderInfo.setBeginY(context.getCursor().getY() - this.processTableHeader(context, component));
+        // 设置边框是否已经渲染
+        borderInfo.setIsAlreadyRendered(false);
+        // 设置是否已经分页
+        context.setIsAlreadyPaging(true);
     }
 
     /**
@@ -68,10 +131,12 @@ public class DefaultTablePagingEvent extends AbstractPagingEvent {
         TableHeader header = table.getHeader();
         // 表头非空
         if (Objects.nonNull(header)) {
+            // 获取光标
+            Cursor cursor = context.getCursor();
             // 获取起始X轴坐标
-            float beginX = table.getBeginX() + table.getRelativeBeginX();
+            float beginX = cursor.getX() + table.getRelativeBeginX();
             // 获取起始Y轴坐标
-            float beginY = context.getCursor().getY();
+            float beginY = cursor.getY();
             // 渲染
             header.render(context.getPage(), beginX, beginY);
             // 返回表头高度
@@ -79,5 +144,21 @@ public class DefaultTablePagingEvent extends AbstractPagingEvent {
         }
         // 返回0
         return 0F;
+    }
+
+    /**
+     * 添加背景颜色
+     *
+     * @param context   上下文
+     * @param info      边框信息
+     * @param rectangle 矩形
+     */
+    @SneakyThrows
+    protected void addBackgroundColor(Context context, BorderInfo info, PDRectangle rectangle) {
+        // 非圆角边框，非页面背景颜色
+        if (info.getBorderLineCapStyle() != LineCapStyle.ROUND && !Objects.equals(info.getBackgroundColor(), context.getPage().getBackgroundColor())) {
+            // 添加背景颜色
+            CommonUtil.addBackgroundColor(context, info.getContentMode(), info.getIsResetContentStream(), rectangle, info.getBackgroundColor());
+        }
     }
 }

@@ -369,6 +369,24 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     }
 
     /**
+     * 获取上边框宽度
+     *
+     * @return 返回上边框宽度
+     */
+    public Float getBorderTopLineWidth() {
+        return this.borderConfiguration.getBorderTopLineWidth();
+    }
+
+    /**
+     * 设置上边框宽度
+     *
+     * @param width 宽度
+     */
+    public void setBorderTopLineWidth(float width) {
+        this.borderConfiguration.setBorderTopLineWidth(width);
+    }
+
+    /**
      * 获取下边框颜色
      *
      * @return 返回下边框颜色
@@ -384,6 +402,24 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
      */
     public void setBorderBottomColor(Color color) {
         this.borderConfiguration.setBorderBottomColor(color);
+    }
+
+    /**
+     * 获取下边框宽度
+     *
+     * @return 返回下边框宽度
+     */
+    public Float getBorderBottomLineWidth() {
+        return this.borderConfiguration.getBorderBottomLineWidth();
+    }
+
+    /**
+     * 设置下边框宽度
+     *
+     * @param width 宽度
+     */
+    public void setBorderBottomLineWidth(float width) {
+        this.borderConfiguration.setBorderBottomLineWidth(width);
     }
 
     /**
@@ -405,6 +441,24 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     }
 
     /**
+     * 获取左边框宽度
+     *
+     * @return 返回左边框宽度
+     */
+    public Float getBorderLeftLineWidth() {
+        return this.borderConfiguration.getBorderLeftLineWidth();
+    }
+
+    /**
+     * 设置左边框宽度
+     *
+     * @param width 宽度
+     */
+    public void setBorderLeftLineWidth(float width) {
+        this.borderConfiguration.setBorderLeftLineWidth(width);
+    }
+
+    /**
      * 获取右边框颜色
      *
      * @return 返回右边框颜色
@@ -423,12 +477,21 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     }
 
     /**
-     * 设置是否上边框
+     * 获取右边框宽度
      *
-     * @param flag 是否上边框
+     * @return 返回右边框宽度
      */
-    public void setBorderRightColor(boolean flag) {
-        this.borderConfiguration.setIsBorderTop(flag);
+    public Float getBorderRightLineWidth() {
+        return this.borderConfiguration.getBorderRightLineWidth();
+    }
+
+    /**
+     * 设置右边框宽度
+     *
+     * @param width 宽度
+     */
+    public void setBorderRightLineWidth(float width) {
+        this.borderConfiguration.setBorderRightLineWidth(width);
     }
 
     /**

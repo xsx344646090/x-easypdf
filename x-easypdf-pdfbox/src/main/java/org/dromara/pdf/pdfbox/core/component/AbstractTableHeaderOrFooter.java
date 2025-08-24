@@ -7,6 +7,7 @@ import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.base.config.BorderConfiguration;
 import org.dromara.pdf.pdfbox.core.enums.HorizontalAlignment;
 import org.dromara.pdf.pdfbox.core.enums.VerticalAlignment;
+import org.dromara.pdf.pdfbox.util.CommonUtil;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ import java.util.Objects;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public abstract class AbstractTableHeaderOrFooter extends BorderData {
-    
+
     /**
      * 背景颜色
      */
@@ -84,8 +85,8 @@ public abstract class AbstractTableHeaderOrFooter extends BorderData {
      * 内容垂直对齐方式
      */
     protected VerticalAlignment contentVerticalAlignment;
-    
-    
+
+
     /**
      * 有参构造
      *
@@ -95,14 +96,14 @@ public abstract class AbstractTableHeaderOrFooter extends BorderData {
         this.table = table;
         this.borderConfiguration = new BorderConfiguration(false);
     }
-    
+
     /**
      * 无参构造
      */
     protected AbstractTableHeaderOrFooter() {
-    
+
     }
-    
+
     /**
      * 设置内容边距（上下左右）
      *
@@ -114,7 +115,7 @@ public abstract class AbstractTableHeaderOrFooter extends BorderData {
         this.contentMarginLeft = margin;
         this.contentMarginRight = margin;
     }
-    
+
     /**
      * 设置行
      *
@@ -124,7 +125,7 @@ public abstract class AbstractTableHeaderOrFooter extends BorderData {
     public void setRows(List<TableRow> rows) {
         this.rows = rows;
     }
-    
+
     /**
      * 设置行
      *
@@ -138,7 +139,7 @@ public abstract class AbstractTableHeaderOrFooter extends BorderData {
             this.rows = null;
         }
     }
-    
+
     /**
      * 添加行
      *
@@ -153,7 +154,7 @@ public abstract class AbstractTableHeaderOrFooter extends BorderData {
             }
         }
     }
-    
+
     /**
      * 添加行
      *
@@ -167,7 +168,7 @@ public abstract class AbstractTableHeaderOrFooter extends BorderData {
             Collections.addAll(this.rows, rows);
         }
     }
-    
+
     /**
      * 获取高度
      *
@@ -179,7 +180,7 @@ public abstract class AbstractTableHeaderOrFooter extends BorderData {
         }
         return (float) this.rows.stream().mapToDouble(TableRow::getHeight).sum();
     }
-    
+
     /**
      * 渲染
      *
@@ -210,7 +211,7 @@ public abstract class AbstractTableHeaderOrFooter extends BorderData {
         // 返回Y轴坐标
         return beginY;
     }
-    
+
     /**
      * 初始化
      */
@@ -259,39 +260,23 @@ public abstract class AbstractTableHeaderOrFooter extends BorderData {
         this.initBorder();
         // 初始化行
         this.initRows();
-        
+
     }
-    
+
     /**
      * 初始化边框
      */
     protected void initBorder() {
         super.init(this.table, this.table.getBorderConfiguration());
     }
-    
+
     /**
      * 初始化行
      */
     protected void initRows() {
         // 判断行是否为空
         if (Objects.nonNull(this.rows)) {
-            // 获取行的最后一个元素的索引
-            int last = this.rows.size() - 1;
-            // 遍历行
-            for (int i = 0; i < this.rows.size(); i++) {
-                // 获取当前元素
-                TableRow tableRow = this.rows.get(i);
-                // 设置当前元素的索引
-                tableRow.setIndex(i);
-                // 如果当前元素不是第一个元素，则设置当前元素的前一个元素
-                if (i > 0) {
-                    tableRow.setPrevious(this.rows.get(i - 1));
-                }
-                // 如果当前元素不是最后一个元素，则设置当前元素的下一个元素
-                if (i < last) {
-                    tableRow.setNext(this.rows.get(i + 1));
-                }
-            }
+            CommonUtil.initTableRows(this.rows);
         }
     }
 }

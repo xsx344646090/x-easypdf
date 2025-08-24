@@ -5,11 +5,12 @@ import lombok.Data;
 import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
-import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureOptions;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.visible.PDVisibleSigProperties;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.visible.PDVisibleSignDesigner;
 
 import java.awt.image.BufferedImage;
+import java.io.InputStream;
+import java.util.Objects;
 
 /**
  * 可视化签名选项
@@ -50,26 +51,34 @@ public class VisualOptions {
     private Float imageScalePercent;
 
     /**
-     * 初始化可见配置
+     * 初始化可视化签名
      *
-     * @param document         文档
-     * @param signature        签名
-     * @param signatureOptions 签名选项
+     * @param document  文档
+     * @param signature 签名
+     * @param pageIndex 页面索引
      */
     @SneakyThrows
-    protected void initVisualOptions(PDDocument document, PDSignature signature, SignatureOptions signatureOptions) {
+    protected InputStream initVisualSignature(PDDocument document, PDSignature signature, int pageIndex) {
+        if (Objects.isNull(this.imageMarginLeft)) {
+            this.imageMarginLeft = 0F;
+        }
+        if (Objects.isNull(this.imageMarginTop)) {
+            this.imageMarginTop = 0F;
+        }
+        if (Objects.isNull(this.imageScalePercent)) {
+            this.imageScalePercent = 0F;
+        }
         // 定义可视化签名属性
         PDVisibleSigProperties signatureProperty = new PDVisibleSigProperties();
         // 定义可视化签名者
-        PDVisibleSignDesigner designer = new PDVisibleSignDesigner(document, this.image, signatureOptions.getPage() + 1);
+        PDVisibleSignDesigner designer = new PDVisibleSignDesigner(document, this.image, pageIndex + 1);
         // 设置签名图片缩放比例
         designer.zoom(this.imageScalePercent);
-        // 设置签名图片左偏移
-        designer.xAxis(this.imageMarginLeft);
-        // 设置签名图片上偏移
-        designer.yAxis(this.imageMarginTop);
+        // 设置签名图片偏移
+        designer.coordinates(this.imageMarginLeft, this.imageMarginTop);
         // 调整旋转
         designer.adjustForRotation();
+
         // 设置签名者名称
         signatureProperty.signerName(signature.getName())
                 // 设置签名位置
@@ -77,14 +86,14 @@ public class VisualOptions {
                 // 设置签名原因
                 .signatureReason(signature.getReason())
                 // 设置签名页面索引
-                .page(signatureOptions.getPage() + 1)
+                .page(pageIndex + 1)
                 // 开启可视化
                 .visualSignEnabled(true)
                 // 开启签名者
                 .setPdVisibleSignature(designer)
                 // 构建签名
                 .buildSignature();
-        // 设置可视化签名属性
-        signatureOptions.setVisualSignature(signatureProperty);
+        // 返回可视化签名
+        return signatureProperty.getVisibleSignature();
     }
 }
