@@ -365,6 +365,20 @@ public class CommonUtil {
     }
 
     /**
+     * 转字符型型数组
+     *
+     * @param list 字符列表
+     * @return 返回数组
+     */
+    public static char[] toCharacterArray(List<Character> list) {
+        char[] array = new char[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            array[i] = list.get(i);
+        }
+        return array;
+    }
+
+    /**
      * 转字符型列表
      *
      * @param array 数组

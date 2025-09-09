@@ -7,6 +7,7 @@ import java.util.*;
 
 /**
  * 单词分词器
+ * <p>注：仅适用于非中文</p>
  *
  * @author xsx
  * @date 2025/4/19
@@ -47,30 +48,32 @@ public class WordsTokenizer extends AbstractTokenizer {
             // 返回空字符串
             return null;
         }
-        // 定义临时文本
-        String temp;
         // 定义宽度
         float width = 0F;
         // 定义前一次宽度
         float lastWidth = 0F;
+        // 获取空白宽度
+        float blankWidth = this.getBlankWidth(fontConfiguration);
         // 定义连接器
         StringJoiner joiner = new StringJoiner(" ");
         // 遍历词组
         for (String word : words) {
-            // 添加单词
-            joiner.add(word);
-            // 获取当前文本
-            temp = joiner.toString();
+            // 计算当前词组宽度
+            float wordWidth = this.getTextWidth(fontConfiguration, word);
             // 计算当前文本真实宽度
-            width = this.getTextWidth(fontConfiguration, temp);
+            width += wordWidth;
             // 真实宽度大于行宽度
             if (width > lineWidth) {
-                // 返回截取字符串
-                return new TextLineInfo(temp.substring(0, temp.length() - word.length() - 1), lastWidth);
+                // 返回字符串
+                return new TextLineInfo(joiner.toString(), lastWidth);
             } else {
                 // 重置前一次宽度
                 lastWidth = width;
+                // 计算空白宽度
+                width += blankWidth;
             }
+            // 添加单词
+            joiner.add(word);
         }
         // 返回文本
         return new TextLineInfo(text, width);
@@ -104,30 +107,32 @@ public class WordsTokenizer extends AbstractTokenizer {
         float lastWidth = 0F;
         // 定义宽度
         float width = 0F;
-        // 定义起始索引
-        int beginIndex = 0;
+        // 获取空白宽度
+        float blankWidth = this.getBlankWidth(fontConfiguration);
         // 定义连接器
         StringJoiner joiner = new StringJoiner(" ");
         // 遍历词组
-        while (beginIndex < words.length) {
-            // 添加单词
-            joiner.add(words[beginIndex]);
+        for (String word : words) {
+            // 计算当前词组宽度
+            float wordWidth = this.getTextWidth(fontConfiguration, word);
             // 计算当前文本真实宽度
-            width = this.getTextWidth(fontConfiguration, joiner.toString());
-            // 如果真实宽度大于行宽度，则减少一个字符
+            width += wordWidth;
+            // 真实宽度大于行宽度
             if (width > lineWidth) {
-                // 获取当前文本
-                String temp = joiner.toString();
                 // 加入文本列表
-                lineList.add(new TextLineInfo(temp.substring(0, temp.length() - words[beginIndex].length() - 1), lastWidth));
-                // 重置开始索引
-                beginIndex = beginIndex - 1;
+                lineList.add(new TextLineInfo(joiner.toString(), lastWidth));
                 // 重置连接器
                 joiner = new StringJoiner(" ");
+                // 重置宽度
+                width = wordWidth;
             } else {
+                // 重置前一次宽度
                 lastWidth = width;
+                // 计算空白宽度
+                width += blankWidth;
             }
-            beginIndex++;
+            // 添加单词
+            joiner.add(word);
         }
         // 如果连接器文本长度大于1，则为最后一行，加入文本列表
         if (joiner.length() > 1) {

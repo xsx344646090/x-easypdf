@@ -1,8 +1,6 @@
 package org.dromara.pdf.pdfbox.core.base;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
+import org.dromara.pdf.pdfbox.support.Constants;
 
 /**
  * 标语
@@ -28,10 +26,6 @@ public class Banner {
      */
     private static final String BANNER_KEY = "x-easypdf.banner";
     /**
-     * 当前版本
-     */
-    private static final String VERSION = initVersion();
-    /**
      * 文本
      */
     private static final String TEXT = "\n" +
@@ -41,7 +35,7 @@ public class Banner {
             "   > `' <|______||  _| _    / ___ \\   _.____`.   \\ \\/ /     |  ___/  | |  | | |  _|    \n" +
             " _/ /'`\\ \\_     _| |__/ | _/ /   \\ \\_| \\____) |  _|  |_    _| |_    _| |_.' /_| |_     \n" +
             "|____||____|   |________||____| |____|\\______.' |______|  |_____|  |______.'|_____|    \n" +
-            "# Version: " + VERSION + "\n" +
+            "# Version: " + Constants.VERSION + "\n" +
             "# Website: https://x-easypdf.cn\n" +
             "# Repository: https://gitee.com/dromara/x-easypdf\n" +
             "# If you find it useful, please give a star.\n";
@@ -60,21 +54,6 @@ public class Banner {
         String flag = System.getProperty(BANNER_KEY, "true");
         if ("true".equals(flag)) {
             System.out.println(TEXT);
-        }
-    }
-
-    /**
-     * 初始化版本
-     *
-     * @return 返回版本
-     */
-    private static String initVersion() {
-        try (InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("x-easypdf.properties")) {
-            Properties properties = new Properties();
-            properties.load(inputStream);
-            return "v" + properties.getProperty("version", "unknown");
-        } catch (IOException e) {
-            return "unknown";
         }
     }
 }

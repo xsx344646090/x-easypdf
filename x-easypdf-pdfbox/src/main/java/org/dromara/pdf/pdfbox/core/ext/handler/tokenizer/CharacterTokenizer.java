@@ -39,7 +39,7 @@ public class CharacterTokenizer extends AbstractTokenizer {
     @Override
     public TextLineInfo splitText(FontConfiguration fontConfiguration, String text, float lineWidth) {
         // 如果待输入文本为空，或文本长度为0，或字符宽度大于行宽，则直接返回空
-        if (Objects.isNull(text) || text.isEmpty() || this.getTextWidth(fontConfiguration, String.valueOf(text.charAt(0))) > lineWidth) {
+        if (Objects.isNull(text) || text.isEmpty() || this.getCharacterWidth(fontConfiguration, text.charAt(0)) > lineWidth) {
             // 返回空字符串
             return null;
         }
@@ -86,7 +86,7 @@ public class CharacterTokenizer extends AbstractTokenizer {
     @Override
     public List<TextLineInfo> splitLines(FontConfiguration fontConfiguration, String text, float lineWidth) {
         // 如果待输入文本为空，或文本长度为0，或字符宽度大于行宽，则直接返回空列表
-        if (Objects.isNull(text) || text.isEmpty() || this.getTextWidth(fontConfiguration, String.valueOf(text.charAt(0))) > lineWidth) {
+        if (Objects.isNull(text) || text.isEmpty() || this.getCharacterWidth(fontConfiguration, text.charAt(0)) > lineWidth) {
             // 返回空列表
             return new ArrayList<>(0);
         }

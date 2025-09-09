@@ -323,7 +323,7 @@ public class Document extends AbstractBase implements Closeable {
      * @param fontNames 字体名称
      */
     public void setSpecialFontNames(String... fontNames) {
-        this.getContext().addFontCache(fontNames);
+        this.getContext().addFontCaches(fontNames);
         if (Objects.isNull(this.fontConfiguration.getSpecialFontNames())) {
             this.fontConfiguration.setSpecialFontNames(new ArrayList<>(10));
         }

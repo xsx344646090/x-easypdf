@@ -32,6 +32,57 @@ import java.util.Set;
 public class TextUtil {
 
     /**
+     * 获取字符宽度
+     *
+     * @param character        字符
+     * @param context          上下文
+     * @param specialFontNames 获取特殊字体名称
+     * @param fontName         字体名称
+     * @param fontSize         字体大小
+     * @return 返回文本宽度
+     */
+    @SneakyThrows
+    public static float getCharacterWidth(char character, Context context, List<String> specialFontNames, String fontName, float fontSize) {
+        // 参数检查
+        Objects.requireNonNull(context, "the context can not be null");
+        Objects.requireNonNull(fontName, "the font name can not be null");
+        // 获取字体
+        PDFont font = context.getFont(fontName);
+        // 定义字符宽度
+        float width = 0F;
+        try {
+            // 计算字符宽度
+            width = font.getCharacterWidth(character);
+        } catch (Exception e) {
+            // 定义异常标识
+            boolean flag = true;
+            // 特殊字体名称不为空
+            if (Objects.nonNull(specialFontNames)) {
+                // 遍历特殊字体
+                for (String specialFontName : specialFontNames) {
+                    try {
+                        // 再次计算字符宽度
+                        width = context.getFont(specialFontName).getCharacterWidth(character);
+                        // 重置异常标识
+                        flag = false;
+                        // 结束
+                        break;
+                    } catch (Exception ignore) {
+                        // ignore
+                    }
+                }
+            }
+            // 未解析成功
+            if (flag) {
+                // 使用未知字符代替
+                width = font.getCharacterWidth(Constants.DEFAULT_UNKNOWN_CHARACTER);
+            }
+        }
+        // 返回真实字符宽度
+        return width == 0F ? 0F : fontSize * width / 1000;
+    }
+
+    /**
      * 获取文本宽度
      *
      * @param text             文本
@@ -116,7 +167,7 @@ public class TextUtil {
                 // 未解析成功
                 if (flag) {
                     // 使用未知字符代替
-                    width = width + context.getFont(Constants.DEFAULT_FONT_NAME).getCharacterWidth(Constants.DEFAULT_UNKNOWN_CHARACTER);
+                    width = width + font.getCharacterWidth(Constants.DEFAULT_UNKNOWN_CHARACTER);
                 }
             }
         }
