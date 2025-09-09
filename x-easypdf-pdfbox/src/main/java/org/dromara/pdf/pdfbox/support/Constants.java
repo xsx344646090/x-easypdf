@@ -3,8 +3,12 @@ package org.dromara.pdf.pdfbox.support;
 import org.dromara.pdf.pdfbox.core.enums.FontStyle;
 
 import java.awt.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Properties;
 
 /**
  * 常量
@@ -38,6 +42,10 @@ public final class Constants {
      * 生产者
      */
     public static final String PRODUCER = "x-easypdf/pdfbox";
+    /**
+     * 当前版本
+     */
+    public static final String VERSION = initVersion();
     /**
      * 格式类型
      */
@@ -134,4 +142,28 @@ public final class Constants {
      * 字体缓存文件后缀名
      */
     public static final String FONT_CACHE_SUFFIX_NAME = ".pdfbox.cache";
+    /**
+     * 签名提供者
+     */
+    public static final String SIGN_PROVIDER = "BC";
+    /**
+     * 证书类型
+     */
+    public static final String CERT_TYPE = "X.509";
+
+    /**
+     * 初始化版本
+     *
+     * @return 返回版本
+     */
+    private static String initVersion() {
+        try (InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("x-easypdf.properties")) {
+            Properties properties = new Properties();
+            properties.load(inputStream);
+            String version = properties.getProperty("version");
+            return Objects.equals(version, "${project.version}") ? "beta" : "v" + version;
+        } catch (IOException e) {
+            return "beta";
+        }
+    }
 }

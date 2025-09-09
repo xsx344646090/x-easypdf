@@ -6,15 +6,17 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceDictionary;
+import org.apache.pdfbox.pdmodel.interactive.digitalsignature.ExternalSigningSupport;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
-import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureInterface;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureOptions;
 import org.apache.pdfbox.pdmodel.interactive.form.*;
+import org.apache.pdfbox.util.Hex;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.ext.processor.AbstractProcessor;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
 import java.util.function.Predicate;
@@ -43,7 +45,7 @@ public class SignProcessor extends AbstractProcessor {
     /**
      * 签名器
      */
-    protected SignatureInterface signer;
+    protected Signer signer;
 
     /**
      * 有参构造
@@ -162,12 +164,19 @@ public class SignProcessor extends AbstractProcessor {
         if (this.getMdpPermission(this.getDocument()) == 1) {
             throw new IllegalStateException("The document is not allowed to be signed");
         }
-        // 签名
+        // 初始化签名选项
         try (SignatureOptions signatureOptions = options.initOptions(this.getDocument(), signature)) {
+            // 设置签名大小
+            signatureOptions.setPreferredSignatureSize(this.getSignatureSize(signature, options));
             // 添加签名到文档
             this.getDocument().addSignature(signature, this.signer, signatureOptions);
-            // 保存文档
-            this.getDocument().saveIncremental(outputStream);
+            // 获取签名支持
+            ExternalSigningSupport signingSupport = this.getDocument().saveIncrementalForExternalSigning(outputStream);
+            // 获取签名内容
+            try (InputStream content = signingSupport.getContent()) {
+                // 签名
+                signingSupport.setSignature(this.signer.sign(content));
+            }
         }
     }
 
@@ -179,11 +188,39 @@ public class SignProcessor extends AbstractProcessor {
      * @param options      签名选项
      * @param outputStream 输出流
      */
-    @SneakyThrows
     public void multiSign(PDSignature signature, SignOptions options, ByteArrayOutputStream outputStream) {
         this.sign(signature, options, outputStream);
         this.document.close();
         this.document = PdfHandler.getDocumentHandler().load(outputStream.toByteArray());
+    }
+
+    /**
+     * 验证签名
+     * <p>注：当未封装签名数据时，无法验证签名</p>
+     */
+    public void verifySignature(PDSignature signature) {
+        // 检查签名是否为空，如果为空则抛出异常
+        Objects.requireNonNull(signature, "the signature can not be null");
+        // 如果签名者对象为空，则创建一个新的默认签名者
+        if (Objects.isNull(this.signer)) {
+            this.signer = new DefaultSigner();
+        }
+        // 验证签名
+        this.signer.verifySignature(signature);
+    }
+
+    /**
+     * 验证证书
+     */
+    public void verifyCertificate(PDSignature signature) {
+        // 检查签名是否为空，如果为空则抛出异常
+        Objects.requireNonNull(signature, "the signature can not be null");
+        // 如果签名者对象为空，则创建一个新的默认签名者
+        if (Objects.isNull(this.signer)) {
+            this.signer = new DefaultSigner();
+        }
+        // 验证签名
+        this.signer.verifyCertificate(signature);
     }
 
     /**
@@ -317,6 +354,38 @@ public class SignProcessor extends AbstractProcessor {
         catalogDict.setNeedToBeUpdated(true);
         // 设置权限字典需要更新
         permsDict.setNeedToBeUpdated(true);
+    }
+
+    /**
+     * 获取签名大小
+     *
+     * @param signature 签名
+     * @param options   签名选项
+     * @return 返回签名大小
+     */
+    @SneakyThrows
+    protected int getSignatureSize(PDSignature signature, SignOptions options) {
+        // 检查是否被封装
+        if (options.getIsEncapsulated()) {
+            // 创建一个8192字节的ByteArrayOutputStream
+            try (ByteArrayOutputStream bos = new ByteArrayOutputStream(8192)) {
+                // 创建一个临时PDDocument，使用原始文档的文档对象和PDF源
+                PDDocument temp = new PDDocument(this.getDocument().getDocument(), this.getDocument().getPdfSource());
+                // 初始化签名选项
+                SignatureOptions so = options.initOptions(temp, signature);
+                // 将签名添加到临时文档中
+                temp.addSignature(signature, this.signer, so);
+                // 为外部签名保存增量文档，并获取外部签名支持对象
+                ExternalSigningSupport tempSupport = temp.saveIncrementalForExternalSigning(bos);
+                // 获取待签名的内容流
+                try (InputStream content = tempSupport.getContent()) {
+                    // 计算签名后的字节数（十六进制表示的长度除以2再加上2）
+                    return Hex.getBytes(this.signer.sign(content)).length / 2 + 2;
+                }
+            }
+        }
+        // 如果未封装，返回0
+        return 0;
     }
 
     /**

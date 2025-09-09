@@ -56,6 +56,19 @@ public abstract class AbstractTokenizer {
     public abstract List<TextLineInfo> splitLines(FontConfiguration fontConfiguration, String text, float lineWidth);
 
     /**
+     * 获取字符宽度
+     *
+     * @param fontConfiguration 字体配置
+     * @param character         字符
+     * @return 返回字符宽度
+     */
+    @SneakyThrows
+    public float getCharacterWidth(FontConfiguration fontConfiguration, char character) {
+        // 返回真实文本宽度
+        return TextUtil.getCharacterWidth(character, this.context, fontConfiguration.getSpecialFontNames(), fontConfiguration.getFontName(), fontConfiguration.getFontSize());
+    }
+
+    /**
      * 获取文本宽度
      *
      * @param fontConfiguration 字体配置
@@ -66,5 +79,15 @@ public abstract class AbstractTokenizer {
     public float getTextWidth(FontConfiguration fontConfiguration, String text) {
         // 返回真实文本宽度
         return TextUtil.getTextWidth(text, this.context, fontConfiguration.getSpecialFontNames(), fontConfiguration.getFontName(), fontConfiguration.getFontSize(), fontConfiguration.getCharacterSpacing());
+    }
+
+    /**
+     * 获取空格宽度
+     *
+     * @param fontConfiguration 字体配置
+     * @return 返回空格宽度
+     */
+    public float getBlankWidth(FontConfiguration fontConfiguration) {
+        return getTextWidth(fontConfiguration, " ");
     }
 }

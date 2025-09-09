@@ -202,7 +202,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
      * @param fontNames 字体名称
      */
     public void setSpecialFontNames(String... fontNames) {
-        this.getContext().addFontCache(fontNames);
+        this.getContext().addFontCaches(fontNames);
         Collections.addAll(this.fontConfiguration.getSpecialFontNames(), fontNames);
     }
 

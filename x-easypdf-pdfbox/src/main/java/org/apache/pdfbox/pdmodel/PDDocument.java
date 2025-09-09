@@ -1274,4 +1274,8 @@ public class PDDocument implements Closeable {
     public void setResourceCache(ResourceCache resourceCache) {
         this.resourceCache = resourceCache;
     }
+
+    public RandomAccessRead getPdfSource() {
+        return pdfSource;
+    }
 }
