@@ -1,5 +1,6 @@
 package org.apache.pdfbox.pdmodel.font;
 
+import lombok.SneakyThrows;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.fontbox.afm.FontMetrics;
@@ -272,11 +273,30 @@ public abstract class PDFont implements COSObjectable, PDFontLike {
      * @throws IOException              If the text could not be encoded.
      * @throws IllegalArgumentException if a character isn't supported by the font.
      */
-    public final byte[] encode(char character) throws IOException {
+    @SneakyThrows
+    public final byte[] encode(char character) {
         CharacterWrapper wrapper = new CharacterWrapper(character);
         byte[] bytes = this.encodeMap.get(wrapper);
         if (Objects.isNull(bytes)) {
             bytes = encode(Character.codePointAt(new char[]{character}, 0, 1));
+            this.encodeMap.put(wrapper, bytes);
+        }
+        return bytes;
+    }
+
+    /**
+     * Encodes the given character for use in a PDF content stream.
+     *
+     * @param wrapper Any Unicode character.
+     * @return Array of PDF content stream bytes.
+     * @throws IOException              If the text could not be encoded.
+     * @throws IllegalArgumentException if a character isn't supported by the font.
+     */
+    @SneakyThrows
+    public final byte[] encode(CharacterWrapper wrapper) {
+        byte[] bytes = this.encodeMap.get(wrapper);
+        if (Objects.isNull(bytes)) {
+            bytes = encode(Character.codePointAt(new char[]{wrapper.getC()}, 0, 1));
             this.encodeMap.put(wrapper, bytes);
         }
         return bytes;
@@ -324,19 +344,22 @@ public abstract class PDFont implements COSObjectable, PDFontLike {
             this.codeMap = FontHandler.getInstance().getCodeMap(this.getName());
         }
         CharacterWrapper wrapper = new CharacterWrapper(character);
-        Float charWidth = this.codeMap.get(wrapper);
-        if (Objects.nonNull(charWidth)) {
-            return charWidth;
+        Float width = this.codeMap.get(wrapper);
+        if (Objects.nonNull(width)) {
+            return width;
         }
-        charWidth = 0F;
-        try (ByteArrayInputStream in = new ByteArrayInputStream(this.encode(character))) {
-            while (in.available() > 0) {
-                int code = readCode(in);
-                charWidth += getWidth(code);
+        return this.codeMap.computeIfAbsent(wrapper, k -> {
+            float charWidth = 0;
+            try (ByteArrayInputStream in = new ByteArrayInputStream(this.encode(wrapper))) {
+                while (in.available() > 0) {
+                    int code = readCode(in);
+                    charWidth += getWidth(code);
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-        }
-        this.codeMap.put(wrapper, charWidth);
-        return charWidth;
+            return charWidth;
+        });
     }
 
     /**
