@@ -4,16 +4,19 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.dromara</groupId>
     <artifactId>x-easypdf-parent</artifactId>
-    <version>3.4.5</version>
+    <version>${project.build.version}</version>
     <packaging>pom</packaging>
     <name>x-easypdf-parent</name>
     <url>https://www.x-easypdf.cn</url>
     <description>Parent module for x-easypdf</description>
 
     <properties>
+        <project.build.version>3.4.5</project.build.version>
         <java.version>1.8</java.version>
         <lombok.version>1.18.36</lombok.version>
         <pdfbox.version>3.0.5</pdfbox.version>
+        <jbig2-imageio.version>3.0.4</jbig2-imageio.version>
+        <jai-imageio.version>1.4.0</jai-imageio.version>
         <zxing.core.version>3.5.3</zxing.core.version>
         <bouncycastle.version>1.80</bouncycastle.version>
         <batik.version>1.18</batik.version>
@@ -231,9 +234,21 @@
                 <optional>true</optional>
             </dependency>
             <dependency>
-                <groupId>edu.ucar</groupId>
-                <artifactId>jj2000</artifactId>
-                <version>${jj2000.version}</version>
+                <groupId>com.github.jai-imageio</groupId>
+                <artifactId>jai-imageio-core</artifactId>
+                <version>${jai-imageio.version}</version>
+                <optional>true</optional>
+            </dependency>
+            <dependency>
+                <groupId>com.github.jai-imageio</groupId>
+                <artifactId>jai-imageio-jpeg2000</artifactId>
+                <version>${jai-imageio.version}</version>
+                <optional>true</optional>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.pdfbox</groupId>
+                <artifactId>jbig2-imageio</artifactId>
+                <version>${jbig2-imageio.version}</version>
                 <optional>true</optional>
             </dependency>
             <dependency>

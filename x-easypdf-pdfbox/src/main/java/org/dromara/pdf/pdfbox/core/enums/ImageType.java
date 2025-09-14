@@ -26,9 +26,7 @@ public enum ImageType {
      * jpeg
      */
     JPEG("jpeg"),
-    /**
-     * jpeg
-     */
+    JPE("jpeg"),
     JPG("jpeg"),
     /**
      * png
@@ -45,7 +43,16 @@ public enum ImageType {
     /**
      * gif
      */
-    GIF("gif");
+    GIF("gif"),
+    /**
+     * jpeg2000
+     */
+    JP2("JPEG2000"),
+    JPC("JPEG2000"),
+    JPF("JPEG2000"),
+    JPX("JPEG2000"),
+    J2C("JPEG2000"),
+    J2K("JPEG2000");
 
     /**
      * 类型

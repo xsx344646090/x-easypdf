@@ -439,11 +439,7 @@ public class Barcode extends AbstractComponent {
      */
     @SneakyThrows
     protected PDImageXObject getImageXObject() {
-        return PDImageXObject.createFromByteArray(
-                this.getContext().getTargetDocument(),
-                ImageUtil.toBytes(this.getBarcodeImage(), ImageType.PNG.getType()),
-                ImageType.PNG.getType()
-        );
+        return CommonUtil.createImage(this.getContext(), this.getBarcodeImage());
     }
 
     /**
