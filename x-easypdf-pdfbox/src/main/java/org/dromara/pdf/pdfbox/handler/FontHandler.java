@@ -52,7 +52,7 @@ public class FontHandler {
     /**
      * 字符宽度字典
      */
-    private final Map<String, Map<CharacterWrapper, Float>> codeWithMap = new ConcurrentHashMap<>(16);
+    private static final Map<String, Map<CharacterWrapper, Float>> CODE_WITH_MAP = new ConcurrentHashMap<>(16);
 
     /**
      * 无参构造
@@ -75,33 +75,21 @@ public class FontHandler {
     }
 
     /**
-     * 初始化字符字典
-     *
-     * @param fontName 字体名称
-     */
-    public void initCodeMap(String fontName) {
-        Map<String, FontInfo> fontInfoByName = FontMapperImpl.getInstance().getFontInfoByName();
-        FontInfo fontInfo = fontInfoByName.get(fontName);
-        if (Objects.isNull(fontInfo)) {
-            this.codeWithMap.putIfAbsent(fontName, new ConcurrentHashMap<>(2048, 1.0F));
-        } else {
-            this.codeWithMap.putIfAbsent(fontInfo.getPostScriptName(), new ConcurrentHashMap<>(2048, 1.0F));
-        }
-    }
-
-    /**
      * 获取字符字典
      *
      * @param fontName 字体名称
      * @return 返回字符字典
      */
     public Map<CharacterWrapper, Float> getCodeMap(String fontName) {
-        Map<CharacterWrapper, Float> map = this.codeWithMap.get(fontName);
-        if (Objects.isNull(map)) {
-            this.initCodeMap(fontName);
-            map = this.codeWithMap.get(fontName);
-        }
-        return map;
+        return CODE_WITH_MAP.computeIfAbsent(fontName, k -> {
+            Map<CharacterWrapper, Float> map = new ConcurrentHashMap<>(2048, 1.5F);
+            Map<String, FontInfo> fontInfoByName = FontMapperImpl.getInstance().getFontInfoByName();
+            FontInfo fontInfo = fontInfoByName.get(fontName);
+            if (Objects.nonNull(fontInfo) && !Objects.equals(fontName, fontInfo.getPostScriptName())) {
+                CODE_WITH_MAP.put(fontInfo.getPostScriptName(), map);
+            }
+            return map;
+        });
     }
 
     /**

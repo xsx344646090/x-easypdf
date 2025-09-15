@@ -4,6 +4,7 @@ import lombok.Data;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.dromara.pdf.pdfbox.core.component.BorderInfo;
 import org.dromara.pdf.pdfbox.core.enums.ComponentType;
 import org.dromara.pdf.pdfbox.core.ext.handler.AbstractTextHandler;
@@ -11,6 +12,7 @@ import org.dromara.pdf.pdfbox.core.ext.handler.TextHandler;
 import org.dromara.pdf.pdfbox.core.info.CatalogInfo;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 
+import java.awt.image.BufferedImage;
 import java.util.*;
 
 /**
@@ -110,6 +112,10 @@ public class Context {
      * 字体字典
      */
     protected Map<String, PDFont> fontMap;
+    /**
+     * 图片字典
+     */
+    protected Map<BufferedImage, PDImageXObject> imageMap = new HashMap<>(16);
 
     /**
      * 有参构造
@@ -163,12 +169,7 @@ public class Context {
      * @return 返回字体
      */
     public PDFont getFont(String fontName) {
-        PDFont font = this.fontMap.get(fontName);
-        if (Objects.isNull(font)) {
-            this.addFontCache(fontName);
-            font = this.fontMap.get(fontName);
-        }
-        return font;
+        return this.addFontCache(fontName);
     }
 
     /**
@@ -246,14 +247,23 @@ public class Context {
     /**
      * 添加字体缓存
      *
+     * @param fontName 字体名称
+     * @return 返回字体
+     */
+    public PDFont addFontCache(String fontName) {
+        Objects.requireNonNull(fontName, "the font name can not be null");
+        return this.fontMap.computeIfAbsent(fontName, v -> PdfHandler.getFontHandler().getPDFont(this.getTargetDocument(), v, true));
+    }
+
+    /**
+     * 添加字体缓存
+     *
      * @param fontNames 字体名称
      */
-    public void addFontCache(String... fontNames) {
+    public void addFontCaches(String... fontNames) {
         Objects.requireNonNull(fontNames, "the font names can not be null");
         for (String fontName : fontNames) {
-            if (!this.fontMap.containsKey(fontName)) {
-                this.fontMap.put(fontName, PdfHandler.getFontHandler().getPDFont(this.getTargetDocument(), fontName, true));
-            }
+            this.addFontCache(fontName);
         }
     }
 
@@ -428,5 +438,7 @@ public class Context {
         this.borderInfo = null;
         // 清理字体
         this.fontMap.clear();
+        // 清理图像
+        this.imageMap.clear();
     }
 }

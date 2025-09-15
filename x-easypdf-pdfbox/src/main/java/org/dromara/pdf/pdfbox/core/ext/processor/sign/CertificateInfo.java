@@ -10,7 +10,6 @@ import java.security.PrivateKey;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -100,9 +99,7 @@ public class CertificateInfo {
         Certificate cert = keyStore.getCertificate(this.alias);
         // 检查证书是否过期
         try (ByteArrayInputStream stream = new ByteArrayInputStream(cert.getEncoded())) {
-            if (((X509Certificate) cf.generateCertificate(stream)).getNotAfter().before(new Date())) {
-                throw new IllegalStateException("The certificate has expired");
-            }
+            ((X509Certificate) cf.generateCertificate(stream)).checkValidity();
         }
         // 初始化证书链
         this.chain = keyStore.getCertificateChain(this.alias);

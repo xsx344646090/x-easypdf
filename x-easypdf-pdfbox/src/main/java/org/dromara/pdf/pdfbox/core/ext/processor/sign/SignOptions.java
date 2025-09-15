@@ -50,6 +50,10 @@ public class SignOptions {
      * 可视化选项
      */
     private VisualOptions visualOptions;
+    /**
+     * 是否封装签名数据
+     */
+    private Boolean isEncapsulated;
 
     /**
      * 初始化
@@ -60,6 +64,9 @@ public class SignOptions {
         Objects.requireNonNull(this.algorithm, "the algorithm can not be null");
         if (Objects.isNull(this.permission)) {
             this.permission = SignPermission.NONE_LIMIT;
+        }
+        if (Objects.isNull(this.isEncapsulated)) {
+            this.isEncapsulated = Boolean.FALSE;
         }
     }
 
