@@ -88,6 +88,6 @@ public abstract class AbstractTokenizer {
      * @return 返回空格宽度
      */
     public float getBlankWidth(FontConfiguration fontConfiguration) {
-        return getTextWidth(fontConfiguration, " ");
+        return getCharacterWidth(fontConfiguration, ' ');
     }
 }

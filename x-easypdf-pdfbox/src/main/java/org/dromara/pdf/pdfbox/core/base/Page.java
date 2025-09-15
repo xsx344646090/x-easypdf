@@ -19,10 +19,13 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.dromara.pdf.pdfbox.core.base.config.FontConfiguration;
 import org.dromara.pdf.pdfbox.core.base.config.MarginConfiguration;
-import org.dromara.pdf.pdfbox.core.enums.*;
+import org.dromara.pdf.pdfbox.core.enums.FontStyle;
+import org.dromara.pdf.pdfbox.core.enums.HorizontalAlignment;
+import org.dromara.pdf.pdfbox.core.enums.RotationAngle;
+import org.dromara.pdf.pdfbox.core.enums.VerticalAlignment;
 import org.dromara.pdf.pdfbox.support.Constants;
+import org.dromara.pdf.pdfbox.util.CommonUtil;
 import org.dromara.pdf.pdfbox.util.IdUtil;
-import org.dromara.pdf.pdfbox.util.ImageUtil;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -805,11 +808,7 @@ public class Page extends AbstractBase implements Closeable {
     @SneakyThrows
     protected void initBackgroundImage() {
         // 初始化图像
-        PDImageXObject image = PDImageXObject.createFromByteArray(
-                this.getContext().getTargetDocument(),
-                ImageUtil.resetBytes(ImageUtil.toBytes(this.getBackgroundImage(), ImageType.PNG.getType())),
-                "unknown"
-        );
+        PDImageXObject image = CommonUtil.createImage(this.getContext(), this.getBackgroundImage());
         // 获取宽度
         float width = Math.min(image.getWidth(), this.getWithoutMarginWidth());
         // 获取高度

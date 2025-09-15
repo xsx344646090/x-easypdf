@@ -54,11 +54,8 @@ public class ImageUtil {
     public static BufferedImage read(File imageFile) {
         // 如果图片文件为空，则提示错误信息
         Objects.requireNonNull(imageFile, "the image file can not be null");
-        // 创建输入流
-        try (InputStream inputStream = Files.newInputStream(imageFile.toPath())) {
-            // 读取图片
-            return read(inputStream);
-        }
+        // 读取图片
+        return ImageIO.read(imageFile);
     }
 
     /**
@@ -69,7 +66,7 @@ public class ImageUtil {
      */
     @SneakyThrows
     public static BufferedImage read(InputStream imageStream) {
-        return read(CommonUtil.toBytes(imageStream));
+        return ImageIO.read(imageStream);
     }
 
     /**
@@ -83,7 +80,7 @@ public class ImageUtil {
         // 如果图片数据流为空，则提示错误信息
         Objects.requireNonNull(bytes, "the image bytes can not be null");
         // 创建输入流
-        try (InputStream inputStream = new BufferedInputStream(new ByteArrayInputStream(resetBytes(bytes)))) {
+        try (InputStream inputStream = new BufferedInputStream(new ByteArrayInputStream(bytes))) {
             // 读取图片
             return ImageIO.read(inputStream);
         }
@@ -111,6 +108,30 @@ public class ImageUtil {
     @SneakyThrows
     public static void write(BufferedImage image, OutputStream outputStream) {
         ImageIOUtil.writeImage(image, ImageType.PNG.name(), outputStream);
+    }
+
+    /**
+     * 写入文件
+     *
+     * @param image        图片对象
+     * @param imageType    图片类型
+     * @param outputStream 输出流
+     */
+    @SneakyThrows
+    public static void write(BufferedImage image, ImageType imageType, OutputStream outputStream) {
+        ImageIOUtil.writeImage(image, imageType.getType(), outputStream);
+    }
+
+    /**
+     * 写入文件
+     *
+     * @param bytes        图片字节
+     * @param imageType    图片类型
+     * @param outputStream 输出流
+     */
+    @SneakyThrows
+    public static void transform(byte[] bytes, ImageType imageType, OutputStream outputStream) {
+        ImageIO.write(read(bytes), imageType.getType(), outputStream);
     }
 
     /**
@@ -165,16 +186,17 @@ public class ImageUtil {
                 // 重置字节数组
                 byteArray = outputStream.toByteArray();
             }
-            // jpeg2000格式
-        } else if (isJ2kImage(byteArray)) {
+        }
+        // j2k格式
+        else if (ImageUtil.isJ2kImage(bytes)) {
             try (
                     // 定义输入流
                     InputStream inputStream = new BufferedInputStream(new ByteArrayInputStream(bytes));
                     // 定义输出流
                     ByteArrayOutputStream outputStream = new ByteArrayOutputStream(8192)
             ) {
-                // 转码jpeg2000
-                org.dromara.pdf.pdfbox.support.image.J2kImageHandler.transcode(inputStream, outputStream, ImageType.PNG);
+                // 转码svg
+                write(read(inputStream), ImageType.PNG, outputStream);
                 // 重置字节数组
                 byteArray = outputStream.toByteArray();
             }

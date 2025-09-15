@@ -8,7 +8,6 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.dromara.pdf.pdfbox.core.base.BorderData;
 import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.enums.ComponentType;
-import org.dromara.pdf.pdfbox.core.enums.ImageType;
 import org.dromara.pdf.pdfbox.util.BorderUtil;
 import org.dromara.pdf.pdfbox.util.CommonUtil;
 import org.dromara.pdf.pdfbox.util.ImageUtil;
@@ -16,7 +15,6 @@ import org.dromara.pdf.pdfbox.util.ImageUtil;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.InputStream;
-import java.nio.file.Files;
 import java.util.Objects;
 
 /**
@@ -107,17 +105,7 @@ public class Image extends AbstractComponent {
     @SneakyThrows
     public void setImage(File file) {
         Objects.requireNonNull(file, "the image file can not be null");
-        this.setImage(Files.readAllBytes(file.toPath()));
-    }
-
-    /**
-     * 设置图片
-     *
-     * @param image 图片
-     */
-    @SneakyThrows
-    public void setImage(BufferedImage image) {
-        this.setImage(ImageUtil.toBytes(image, ImageType.PNG.getType()));
+        this.setImage(ImageUtil.read(file));
     }
 
     /**
@@ -127,7 +115,8 @@ public class Image extends AbstractComponent {
      */
     @SneakyThrows
     public void setImage(InputStream inputStream) {
-        this.setImage(CommonUtil.toBytes(inputStream));
+        Objects.requireNonNull(inputStream, "the image input stream can not be null");
+        this.setImage(ImageUtil.read(inputStream));
     }
 
     /**
@@ -138,11 +127,18 @@ public class Image extends AbstractComponent {
     @SneakyThrows
     public void setImage(byte[] bytes) {
         Objects.requireNonNull(bytes, "the image bytes can not be null");
-        this.image = PDImageXObject.createFromByteArray(
-                this.getContext().getTargetDocument(),
-                ImageUtil.resetBytes(bytes),
-                "unknown"
-        );
+        this.setImage(ImageUtil.read(bytes));
+    }
+
+    /**
+     * 设置图片
+     *
+     * @param image 图片
+     */
+    @SneakyThrows
+    public void setImage(BufferedImage image) {
+        Objects.requireNonNull(image, "the image can not be null");
+        this.image = CommonUtil.createImage(this.getContext(), image);
     }
 
     /**

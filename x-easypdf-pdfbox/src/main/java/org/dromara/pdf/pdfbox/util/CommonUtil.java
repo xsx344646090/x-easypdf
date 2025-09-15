@@ -10,17 +10,20 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.graphics.PDXObject;
 import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImage;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 import org.apache.pdfbox.util.Matrix;
 import org.dromara.pdf.pdfbox.core.base.Context;
 import org.dromara.pdf.pdfbox.core.component.TableRow;
 import org.dromara.pdf.pdfbox.core.enums.ContentMode;
 import org.dromara.pdf.pdfbox.core.enums.FontStyle;
+import org.dromara.pdf.pdfbox.core.enums.ImageType;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -202,6 +205,28 @@ public class CommonUtil {
                 extractImage(list, ((PDFormXObject) xObject).getResources());
             }
         }
+    }
+
+    /**
+     * 创建图像对象
+     *
+     * @param context 上下文
+     * @param image   图像
+     * @return 返回图像对象
+     */
+    @SneakyThrows
+    public static PDImageXObject createImage(Context context, BufferedImage image) {
+        return context.getImageMap().computeIfAbsent(image, im -> {
+            try {
+                return PDImageXObject.createFromByteArray(
+                        context.getTargetDocument(),
+                        ImageUtil.resetBytes(ImageUtil.toBytes(im, ImageType.PNG.getType())),
+                        "unknown"
+                );
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     /**

@@ -4,6 +4,7 @@ import lombok.Data;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.dromara.pdf.pdfbox.core.component.BorderInfo;
 import org.dromara.pdf.pdfbox.core.enums.ComponentType;
 import org.dromara.pdf.pdfbox.core.ext.handler.AbstractTextHandler;
@@ -11,6 +12,7 @@ import org.dromara.pdf.pdfbox.core.ext.handler.TextHandler;
 import org.dromara.pdf.pdfbox.core.info.CatalogInfo;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 
+import java.awt.image.BufferedImage;
 import java.util.*;
 
 /**
@@ -110,6 +112,10 @@ public class Context {
      * 字体字典
      */
     protected Map<String, PDFont> fontMap;
+    /**
+     * 图片字典
+     */
+    protected Map<BufferedImage, PDImageXObject> imageMap = new HashMap<>(16);
 
     /**
      * 有参构造
@@ -432,5 +438,7 @@ public class Context {
         this.borderInfo = null;
         // 清理字体
         this.fontMap.clear();
+        // 清理图像
+        this.imageMap.clear();
     }
 }
