@@ -23,6 +23,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -380,13 +381,15 @@ public class HtmlConvertor extends AbstractConvertor {
             long end = 0L;
             // 获取页面
             Page page = this.getBrowserPage();
+            // 获取导航地址
+            String navigateUrl = this.getNavigateUrl(url);
             // 打印日志
             if (log.isInfoEnabled()) {
                 begin = System.currentTimeMillis();
-                log.info("Loading page: " + url);
+                log.info("Loading page: " + navigateUrl);
             }
             // 导航地址
-            page.navigate(url);
+            page.navigate(navigateUrl);
             // 等待加载
             page.waitForLoadState(this.pageState.getState(), new Page.WaitForLoadStateOptions().setTimeout(this.requestTimeout));
             // 执行脚本
@@ -521,6 +524,20 @@ public class HtmlConvertor extends AbstractConvertor {
         }
         // 返回页面
         return newPage;
+    }
+
+    /**
+     * 获取导航地址
+     *
+     * @param url 地址
+     * @return 返回导航地址
+     */
+    protected String getNavigateUrl(String url) {
+        try {
+            return Paths.get(url).toUri().toURL().toString();
+        } catch (Exception e) {
+            return url;
+        }
     }
 
     /**

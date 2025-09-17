@@ -18,9 +18,8 @@ import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationText;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDDocumentOutline;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 import org.dromara.pdf.pdfbox.core.base.Document;
-import org.dromara.pdf.pdfbox.core.enums.ImageType;
 import org.dromara.pdf.pdfbox.core.info.ReplaceInfo;
-import org.dromara.pdf.pdfbox.util.ImageUtil;
+import org.dromara.pdf.pdfbox.util.CommonUtil;
 import org.dromara.pdf.pdfbox.util.TextTokenUtil;
 
 import java.awt.image.BufferedImage;
@@ -316,11 +315,7 @@ public class ReplaceProcessor extends AbstractProcessor {
         // 如果待替换图像不为空，则重置pdf图像
         if (Objects.nonNull(image)) {
             // 重置pdf图像
-            imageObject = PDImageXObject.createFromByteArray(
-                    this.getDocument(),
-                    ImageUtil.toBytes(image, ImageType.PNG.getType()),
-                    ImageType.PNG.getType()
-            );
+            imageObject = CommonUtil.createImage(this.getContext(), image);
         }
         // 获取页面资源
         PDResources resources = page.getResources();
