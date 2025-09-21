@@ -12,8 +12,7 @@ import org.apache.pdfbox.pdmodel.graphics.optionalcontent.PDOptionalContentGroup
 import org.apache.pdfbox.pdmodel.graphics.optionalcontent.PDOptionalContentProperties;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.base.Page;
-import org.dromara.pdf.pdfbox.core.enums.ImageType;
-import org.dromara.pdf.pdfbox.util.ImageUtil;
+import org.dromara.pdf.pdfbox.util.CommonUtil;
 
 import java.awt.image.BufferedImage;
 import java.util.Objects;
@@ -102,11 +101,7 @@ public class LayerProcessor extends AbstractProcessor {
         // 获取页面尺寸
         PDRectangle rectangle = page.getMediaBox();
         // 创建图像
-        PDImageXObject imageXObject = PDImageXObject.createFromByteArray(
-                this.getDocument(),
-                ImageUtil.toBytes(image, ImageType.PNG.getType()),
-                ImageType.PNG.getType()
-        );
+        PDImageXObject imageXObject = CommonUtil.createImage(this.getContext(), image);
         // 创建内容流
         PDPageContentStream contentStream = new PDPageContentStream(
                 this.getDocument(),
