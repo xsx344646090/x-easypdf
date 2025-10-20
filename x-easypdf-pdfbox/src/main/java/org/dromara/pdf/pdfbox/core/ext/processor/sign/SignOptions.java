@@ -4,8 +4,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDPropBuild;
+import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDPropBuildDataDict;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureOptions;
+import org.dromara.pdf.pdfbox.support.Constants;
 
 import java.util.Objects;
 
@@ -41,7 +44,7 @@ public class SignOptions {
     /**
      * 算法
      */
-    private String algorithm;
+    private EncryptAlgorithm algorithm;
     /**
      * 签名权限
      */
@@ -54,6 +57,10 @@ public class SignOptions {
      * 是否封装签名数据
      */
     private Boolean isEncapsulated;
+    /**
+     * 时间戳客户端
+     */
+    private TSAClient tsaClient;
 
     /**
      * 初始化
@@ -68,6 +75,7 @@ public class SignOptions {
         if (Objects.isNull(this.isEncapsulated)) {
             this.isEncapsulated = Boolean.FALSE;
         }
+        this.certificate.init();
     }
 
     /**
@@ -79,6 +87,8 @@ public class SignOptions {
      */
     @SneakyThrows
     protected SignatureOptions initOptions(PDDocument document, PDSignature signature) {
+        // 初始化生产者
+        this.initProducer(signature);
         // 创建签名选项
         SignatureOptions signatureOptions = new SignatureOptions();
         // 设置页码
@@ -89,5 +99,19 @@ public class SignOptions {
         }
         // 返回签名选项
         return signatureOptions;
+    }
+
+    /**
+     * 初始化生产者
+     *
+     * @param signature 签名
+     */
+    protected void initProducer(PDSignature signature) {
+        PDPropBuildDataDict app = new PDPropBuildDataDict();
+        app.setName(Constants.PRODUCER);
+        app.setVersion(Constants.VERSION);
+        PDPropBuild build = new PDPropBuild();
+        build.setPDPropBuildApp(app);
+        signature.setPropBuild(build);
     }
 }

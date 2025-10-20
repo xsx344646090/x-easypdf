@@ -77,7 +77,7 @@ public class FileSystemFontProvider extends FontProvider {
                     saveDiskCache();
                     LOG.info("Finished building on-disk font cache, found " + fontInfoList.size() + " fonts");
                 }
-            } catch (SecurityException e) {
+            } catch (Exception e) {
                 LOG.error("Error accessing the file system", e);
             }
         }
@@ -94,10 +94,10 @@ public class FileSystemFontProvider extends FontProvider {
             } else if (filePath.endsWith(".pfb")) {
                 addType1Font(file, FileUtil.parseName(file));
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOG.error("Error parsing font " + file.getPath(), e);
         }
-        return this.fontInfoList.get(this.fontInfoList.size() - 1).getFontName();
+        return this.fontInfoList.isEmpty() ? "" : this.fontInfoList.get(this.fontInfoList.size() - 1).getFontName();
     }
 
     @Override
@@ -111,10 +111,10 @@ public class FileSystemFontProvider extends FontProvider {
             } else if (filePath.endsWith(".pfb")) {
                 addType1Font(file, alias);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOG.error("Error parsing font " + file.getPath(), e);
         }
-        return this.fontInfoList.get(this.fontInfoList.size() - 1).getFontName();
+        return this.fontInfoList.isEmpty() ? "" : this.fontInfoList.get(this.fontInfoList.size() - 1).getFontName();
     }
 
     @Override
@@ -127,10 +127,10 @@ public class FileSystemFontProvider extends FontProvider {
             } else if (type == FontType.PFB) {
                 addType1Font(inputStream, alias, type);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOG.error("Error parsing font " + type, e);
         }
-        return this.fontInfoList.get(this.fontInfoList.size() - 1).getFontName();
+        return this.fontInfoList.isEmpty() ? "" : this.fontInfoList.get(this.fontInfoList.size() - 1).getFontName();
     }
 
     public File getDiskCacheFile() {
@@ -159,7 +159,7 @@ public class FileSystemFontProvider extends FontProvider {
                 LOG.warn("Installed fonts information will have to be reloaded for each start");
                 LOG.warn("You can assign a directory to the 'pdfbox.fontcache' property");
             }
-        } catch (SecurityException e) {
+        } catch (Exception e) {
             LOG.debug("Couldn't create writer for font cache file", e);
         }
     }
@@ -229,7 +229,7 @@ public class FileSystemFontProvider extends FontProvider {
         try {
             file = getDiskCacheFile();
             fileExists = file.exists();
-        } catch (SecurityException e) {
+        } catch (Exception e) {
             LOG.debug("Error checking for file existence", e);
         }
 
@@ -290,7 +290,7 @@ public class FileSystemFontProvider extends FontProvider {
                     }
                     pending.remove(fontFile.getAbsolutePath());
                 }
-            } catch (IOException e) {
+            } catch (Exception e) {
                 LOG.warn("Error loading font cache, will be re-built", e);
                 return null;
             }
@@ -308,10 +308,10 @@ public class FileSystemFontProvider extends FontProvider {
     /**
      * Adds a TTC or OTC to the file cache. To reduce memory, the parsed font is not cached.
      */
-    private void addTrueTypeCollection(final File ttcFile, String alias) throws IOException {
+    private void addTrueTypeCollection(final File ttcFile, String alias) {
         try (TrueTypeCollection ttc = new TrueTypeCollection(ttcFile)) {
             ttc.processAllFonts(ttf -> addTrueTypeFontImpl(ttf, ttcFile, alias));
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOG.error("Could not load font file: " + ttcFile);
         }
     }
@@ -319,12 +319,12 @@ public class FileSystemFontProvider extends FontProvider {
     /**
      * Adds a TTC or OTC to the file cache. To reduce memory, the parsed font is not cached.
      */
-    private void addTrueTypeCollection(InputStream inputStream, String alias, FontType type) throws IOException {
+    private void addTrueTypeCollection(InputStream inputStream, String alias, FontType type) {
         try (TrueTypeCollection ttc = new TrueTypeCollection(inputStream)) {
             File tempFile = new File(Constants.TEMP_FILE_PATH, alias + type.getSuffix());
             FileUtils.writeByteArrayToFile(tempFile, IOUtils.toByteArray(inputStream));
             ttc.processAllFonts(ttf -> addTrueTypeFontImpl(ttf, tempFile, ttf.getName()));
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOG.error("Could not load font file: " + alias + type.getSuffix());
         }
     }
@@ -332,7 +332,7 @@ public class FileSystemFontProvider extends FontProvider {
     /**
      * Adds an OTF or TTF font to the file cache. To reduce memory, the parsed font is not cached.
      */
-    private void addTrueTypeFont(File file, String alias) throws IOException {
+    private void addTrueTypeFont(File file, String alias) {
         try {
             if (file.getPath().toLowerCase().endsWith(".otf")) {
                 OTFParser parser = new OTFParser(true);
@@ -343,7 +343,7 @@ public class FileSystemFontProvider extends FontProvider {
                 TrueTypeFont ttf = parser.parse(new RandomAccessReadBufferedFile(file));
                 addTrueTypeFontImpl(ttf, file, alias);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             fontInfoList.add(new FSIgnored(file, FontFormat.TTF, "*skipexception*", "*skipexception*"));
             LOG.error("Could not load font file: " + file);
         }
@@ -352,12 +352,12 @@ public class FileSystemFontProvider extends FontProvider {
     /**
      * Adds an OTF or TTF font to the file cache. To reduce memory, the parsed font is not cached.
      */
-    private void addTrueTypeFont(InputStream inputStream, String alias, FontType type) throws IOException {
+    private void addTrueTypeFont(InputStream inputStream, String alias, FontType type) {
         try {
             File tempFile = new File(Constants.TEMP_FILE_PATH, alias + type.getSuffix());
             FileUtils.writeByteArrayToFile(tempFile, IOUtils.toByteArray(inputStream));
             addTrueTypeFont(tempFile, alias);
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOG.error("Could not load font file: " + alias + type.getSuffix());
         }
     }
@@ -365,7 +365,7 @@ public class FileSystemFontProvider extends FontProvider {
     /**
      * Adds an OTF or TTF font to the file cache. To reduce memory, the parsed font is not cached.
      */
-    private void addTrueTypeFontImpl(TrueTypeFont ttf, File file, String alias) throws IOException {
+    private void addTrueTypeFontImpl(TrueTypeFont ttf, File file, String alias) {
         try {
             // read PostScript name, if any
             if (ttf.getName() != null && ttf.getName().contains("|")) {
@@ -452,22 +452,28 @@ public class FileSystemFontProvider extends FontProvider {
                 fontInfoList.add(new FSIgnored(file, FontFormat.TTF, "*skipnoname*", "*skipnoname*"));
                 LOG.warn("Missing 'name' entry for PostScript name in font " + file);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             fontInfoList.add(new FSIgnored(file, FontFormat.TTF, "*skipexception*", "*skipexception*"));
             LOG.error("Could not load font file: " + file);
         } finally {
-            ttf.close();
+            if (ttf != null) {
+                try {
+                    ttf.close();
+                } catch (IOException e) {
+                    LOG.error("Could not close font file: " + file);
+                }
+            }
         }
     }
 
     /**
      * Adds a Type 1 font to the file cache. To reduce memory, the parsed font is not cached.
      */
-    private void addType1Font(File pfbFile, String alias) throws IOException {
+    private void addType1Font(File pfbFile, String alias) {
         try (InputStream inputStream = Files.newInputStream(pfbFile.toPath())) {
             Type1Font type1 = Type1Font.createWithPFB(inputStream);
             addType1Font(pfbFile, type1, alias);
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOG.error("Could not load font file: " + pfbFile, e);
         }
     }
@@ -475,13 +481,13 @@ public class FileSystemFontProvider extends FontProvider {
     /**
      * Adds a Type 1 font to the file cache. To reduce memory, the parsed font is not cached.
      */
-    private void addType1Font(InputStream inputStream, String alias, FontType type) throws IOException {
+    private void addType1Font(InputStream inputStream, String alias, FontType type) {
         try {
             Type1Font type1 = Type1Font.createWithPFB(inputStream);
             File tempFile = new File(Constants.TEMP_FILE_PATH, alias + type.getSuffix());
             FileUtils.writeByteArrayToFile(tempFile, IOUtils.toByteArray(inputStream));
             addType1Font(tempFile, type1, null);
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOG.error("Could not load font file: " + alias + type.getSuffix(), e);
         }
     }
@@ -489,7 +495,7 @@ public class FileSystemFontProvider extends FontProvider {
     /**
      * Adds a Type 1 font to the file cache. To reduce memory, the parsed font is not cached.
      */
-    private void addType1Font(File pfbFile, Type1Font type1, String alias) throws IOException {
+    private void addType1Font(File pfbFile, Type1Font type1, String alias) {
         try {
             if (type1.getName() == null) {
                 fontInfoList.add(new FSIgnored(pfbFile, FontFormat.PFB, "*skipnoname*", "*skipnoname*"));

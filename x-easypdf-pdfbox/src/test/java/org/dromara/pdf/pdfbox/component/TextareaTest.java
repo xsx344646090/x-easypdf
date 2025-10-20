@@ -86,7 +86,7 @@ public class TextareaTest extends BaseTest {
     @Test
     public void specialFontTest() {
         this.test(() -> {
-            PdfHandler.getFontHandler().addFont(Paths.get("E:\\PDF\\pdfbox\\textarea\\NotoEmoji-VariableFont_wght.ttf").toFile());
+            PdfHandler.getFontHandler().addFont(Paths.get("E:\\PDF\\pdfbox\\textarea\\NotoEmoji-Regular.ttf").toFile());
 
             Document document = PdfHandler.getDocumentHandler().create();
             document.setSpecialFontNames("Noto Emoji Regular");
@@ -110,7 +110,7 @@ public class TextareaTest extends BaseTest {
     @Test
     public void globalTest() {
         this.test(() -> {
-            PdfHandler.getFontHandler().addFont(Paths.get("C:\\Users\\xsx\\Downloads\\Noto_Emoji\\NotoEmoji-VariableFont_wght.ttf").toFile());
+            PdfHandler.getFontHandler().addFont(Paths.get("E:\\PDF\\pdfbox\\textarea\\NotoEmoji-Regular.ttf").toFile());
 
             Document document = PdfHandler.getDocumentHandler().create();
             document.setMargin(50F);
@@ -499,6 +499,7 @@ public class TextareaTest extends BaseTest {
 
             Textarea textarea = new Textarea(page);
             textarea.setIsHighlight(true);
+            textarea.setHighlightColor(Color.CYAN);
             textarea.setIsDeleteLine(true);
             textarea.setIsUnderline(true);
             textarea.setText(builder.toString());

@@ -6,11 +6,10 @@ import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.ext.processor.ReplaceProcessor;
 import org.dromara.pdf.pdfbox.core.info.ReplaceInfo;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
-import org.dromara.pdf.pdfbox.util.ImageUtil;
 import org.junit.Test;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -82,7 +81,7 @@ public class ReplaceProcessorTest extends BaseTest {
         this.test(() -> {
             try (Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\allTest.pdf")) {
                 ReplaceProcessor processor = PdfHandler.getDocumentProcessor(document).getReplaceProcessor();
-                BufferedImage image = ImageUtil.read(new File("E:\\PDF\\pdfbox\\test.jpg"));
+                byte[] image = Files.readAllBytes(Paths.get("E:\\PDF\\pdfbox\\test.jpg"));
                 processor.replaceImage(image, Arrays.asList(0, 1), 0);
                 document.save("E:\\PDF\\pdfbox\\processor\\replace\\replaceImageTest.pdf");
             }

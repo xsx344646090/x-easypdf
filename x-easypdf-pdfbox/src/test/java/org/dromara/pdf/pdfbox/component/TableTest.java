@@ -798,7 +798,7 @@ public class TableTest extends BaseTest {
             Document document = PdfHandler.getDocumentHandler().create();
             document.setFontName("微软雅黑");
             document.setFontSize(12F);
-            document.setMargin(50F);
+            document.setMargin(5F);
 
             Page page = new Page(document);
 

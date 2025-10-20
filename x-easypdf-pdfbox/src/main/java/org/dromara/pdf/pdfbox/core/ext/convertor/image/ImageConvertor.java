@@ -2,18 +2,13 @@ package org.dromara.pdf.pdfbox.core.ext.convertor.image;
 
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
-import org.apache.commons.io.IOUtils;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.base.PageSize;
 import org.dromara.pdf.pdfbox.core.component.Image;
 import org.dromara.pdf.pdfbox.core.ext.convertor.AbstractConvertor;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
-import org.dromara.pdf.pdfbox.util.ImageUtil;
 
-import java.awt.image.BufferedImage;
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -69,17 +64,9 @@ public class ImageConvertor extends AbstractConvertor {
      */
     @SneakyThrows
     public void toPdf(PageSize pageSize, File... files) {
-        List<BufferedImage> list = new ArrayList<>(files.length);
         for (File file : files) {
-            try (
-                    BufferedInputStream bufferedInputStream = new BufferedInputStream(Files.newInputStream(file.toPath()));
-                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream(8192)
-            ) {
-                IOUtils.copy(bufferedInputStream, outputStream);
-                list.add(ImageUtil.read(outputStream.toByteArray()));
-            }
+            this.toPdf(pageSize, Files.readAllBytes(file.toPath()));
         }
-        this.toPdf(pageSize, list);
     }
 
     /**
@@ -88,7 +75,7 @@ public class ImageConvertor extends AbstractConvertor {
      * @param images 图像
      */
     @SneakyThrows
-    public void toPdf(List<BufferedImage> images) {
+    public void toPdf(byte[]... images) {
         this.toPdf(PageSize.A4, images);
     }
 
@@ -99,28 +86,7 @@ public class ImageConvertor extends AbstractConvertor {
      * @param images   图像
      */
     @SneakyThrows
-    public void toPdf(PageSize pageSize, List<BufferedImage> images) {
-        this.toPdf(pageSize, images.toArray(new BufferedImage[0]));
-    }
-
-    /**
-     * 转为pdf
-     *
-     * @param images 图像
-     */
-    @SneakyThrows
-    public void toPdf(BufferedImage... images) {
-        this.toPdf(PageSize.A4, images);
-    }
-
-    /**
-     * 转为pdf
-     *
-     * @param pageSize 页面大小
-     * @param images   图像
-     */
-    @SneakyThrows
-    public void toPdf(PageSize pageSize, BufferedImage... images) {
+    public void toPdf(PageSize pageSize, byte[]... images) {
         // 参数检查
         Objects.requireNonNull(pageSize, "the page size can not be null");
         Objects.requireNonNull(images, "the image can not be null");
@@ -130,7 +96,7 @@ public class ImageConvertor extends AbstractConvertor {
         // 定义页面
         List<Page> pages = new ArrayList<>(images.length);
         // 遍历图像
-        for (BufferedImage image : images) {
+        for (byte[] image : images) {
             // 创建页面
             Page page = new Page(this.document, pageSize);
             // 创建图像组件

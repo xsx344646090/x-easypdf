@@ -2,6 +2,7 @@ package org.dromara.pdf.pdfbox.core.ext.processor.sign;
 
 import lombok.Data;
 import lombok.SneakyThrows;
+import org.dromara.pdf.pdfbox.support.Constants;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -49,6 +50,10 @@ public class CertificateInfo {
      */
     private String alias;
     /**
+     * 证书
+     */
+    private X509Certificate certificate;
+    /**
      * 证书链
      */
     private Certificate[] chain;
@@ -71,7 +76,6 @@ public class CertificateInfo {
         this.inputStream = inputStream;
         this.password = password;
         this.alias = alias;
-        this.init();
     }
 
     /**
@@ -86,7 +90,7 @@ public class CertificateInfo {
         // 密码转字符数组
         char[] passwordCharArray = this.password.toCharArray();
         // 获取密钥库
-        KeyStore keyStore = KeyStore.getInstance(this.type.name());
+        KeyStore keyStore = KeyStore.getInstance(this.type.name(), Constants.SIGN_PROVIDER);
         // 加载证书
         keyStore.load(this.inputStream, passwordCharArray);
         // 初始化别名
@@ -94,13 +98,15 @@ public class CertificateInfo {
             this.alias = keyStore.aliases().nextElement();
         }
         // 获取证书工厂
-        CertificateFactory cf = CertificateFactory.getInstance("X.509");
+        CertificateFactory cf = CertificateFactory.getInstance(Constants.CERT_TYPE, Constants.SIGN_PROVIDER);
         // 获取证书
         Certificate cert = keyStore.getCertificate(this.alias);
-        // 检查证书是否过期
+        // 初始化证书
         try (ByteArrayInputStream stream = new ByteArrayInputStream(cert.getEncoded())) {
-            ((X509Certificate) cf.generateCertificate(stream)).checkValidity();
+            this.certificate = ((X509Certificate) cf.generateCertificate(stream));
         }
+        // 检查证书是否过期
+        this.certificate.checkValidity();
         // 初始化证书链
         this.chain = keyStore.getCertificateChain(this.alias);
         // 初始化私钥

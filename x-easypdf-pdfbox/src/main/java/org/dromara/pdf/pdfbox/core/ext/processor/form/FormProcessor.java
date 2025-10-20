@@ -14,11 +14,13 @@ import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceCharacteristicsDictionary;
 import org.apache.pdfbox.pdmodel.interactive.form.*;
 import org.dromara.pdf.pdfbox.core.base.Document;
+import org.dromara.pdf.pdfbox.core.enums.ImageType;
 import org.dromara.pdf.pdfbox.core.ext.processor.AbstractProcessor;
 import org.dromara.pdf.pdfbox.handler.FontHandler;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.dromara.pdf.pdfbox.util.ColorUtil;
 import org.dromara.pdf.pdfbox.util.CommonUtil;
+import org.dromara.pdf.pdfbox.util.ImageUtil;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -257,7 +259,7 @@ public class FormProcessor extends AbstractProcessor {
                             // 设置图像
                             dictionary.setItem(
                                     COSName.I,
-                                    CommonUtil.createImage(this.getContext(), image).getCOSObject().getCOSObject()
+                                    CommonUtil.createImage(this.getContext(), ImageUtil.toBytes(image, ImageType.PNG.getType())).getCOSObject().getCOSObject()
                             );
                             // 图标位置
                             COSName tp = COSName.getPDFName("TP");

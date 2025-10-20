@@ -30,20 +30,21 @@ import java.util.List;
  * </p>
  */
 public class BigDataTest extends BaseTest {
+
     /**
      * 测试大数据
      */
     @Test
     public void bigDataTest1() {
-        // 单次渲染耗时：2.417s 页面数：290 耗时：3.369s 大小：448KB
-        this.test(() -> {
-            PdfHandler.disableScanSystemFonts();
-            Document document = PdfHandler.getDocumentHandler().create();
-            document.setMargin(50F);
-
-            Page page = new Page(document);
-
+        for (int i = 0; i < 1; i++) {
+            // 页面数：3465 耗时：2.531s 大小：8.56MB
             this.test(() -> {
+                PdfHandler.disableScanSystemFonts();
+                Document document = PdfHandler.getDocumentHandler().create();
+                document.setMargin(50F);
+
+                Page page = new Page(document);
+
                 StringBuilder builder = new StringBuilder();
                 for (int j = 0; j < 1000000; j++) {
                     builder.append("测试内容").append(j);
@@ -51,14 +52,13 @@ public class BigDataTest extends BaseTest {
                 Textarea textarea = new Textarea(page);
                 textarea.setText(builder.toString());
                 textarea.render();
-            }, "单次渲染");
 
-            document.appendPage(page);
-            log.info("页面数：" + document.getTotalPageNumber());
-
-            this.test(() -> document.save("E:\\PDF\\pdfbox\\document\\bigDataTest1.pdf"), "保存");
-            document.close();
-        });
+                document.appendPage(page);
+                document.save("E:\\PDF\\pdfbox\\document\\bigDataTest1.pdf");
+                System.out.println("内存占用：" + Runtime.getRuntime().totalMemory() / 1024 / 1024);
+                document.close();
+            });
+        }
     }
 
     /**
@@ -67,7 +67,7 @@ public class BigDataTest extends BaseTest {
     @Test
     public void bigDataTest2() {
         for (int k = 0; k < 10; k++) {
-            // 单次渲染耗时：0.022s 页面数：300 耗时：3.321s 大小：446KB
+            // 页面数：290 耗时：0.531s 大小：778KB
             this.test(() -> {
                 // PdfHandler.enableCompression(8);
                 PdfHandler.disableScanSystemFonts();
@@ -88,7 +88,7 @@ public class BigDataTest extends BaseTest {
                 }
 
                 document.appendPage(page);
-                // log.info("页面数：" + document.getTotalPageNumber());
+                log.info("页面数：" + document.getTotalPageNumber());
 
                 // this.test(() -> document.save("E:\\PDF\\pdfbox\\document\\bigDataTest-"+ IdUtil.get() +".pdf"), "保存");
                 document.saveAndClose("E:\\PDF\\pdfbox\\document\\bigDataTest-"+ IdUtil.get() +".pdf");

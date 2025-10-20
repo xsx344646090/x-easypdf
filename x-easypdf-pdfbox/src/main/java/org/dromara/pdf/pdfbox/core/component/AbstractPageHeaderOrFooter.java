@@ -4,10 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.dromara.pdf.pdfbox.core.base.AbstractBase;
-import org.dromara.pdf.pdfbox.core.base.BorderData;
-import org.dromara.pdf.pdfbox.core.base.Page;
-import org.dromara.pdf.pdfbox.core.base.PagingEvent;
+import org.dromara.pdf.pdfbox.core.base.*;
 import org.dromara.pdf.pdfbox.core.base.config.BorderConfiguration;
 import org.dromara.pdf.pdfbox.core.base.config.MarginConfiguration;
 import org.dromara.pdf.pdfbox.core.enums.ComponentType;
@@ -537,6 +534,12 @@ public abstract class AbstractPageHeaderOrFooter extends AbstractBase {
      * 渲染
      */
     public void render() {
+        if (this instanceof PageHeader) {
+            this.getContext().setPageHeader((PageHeader) this);
+        }
+        if (this instanceof PageFooter) {
+            this.getContext().setPageFooter((PageFooter) this);
+        }
         // 未渲染
         if (!this.getIsAlreadyRendered()) {
             // 初始化
@@ -615,7 +618,7 @@ public abstract class AbstractPageHeaderOrFooter extends AbstractBase {
         // 重置光标
         this.getContext().getCursor().reset(this.getBeginX(), this.getBeginY() - this.getHeight());
         // 重置是否第一个组件
-        this.getContext().setIsFirstComponent(!this.getContext().hasPageHeader());
+        this.getContext().setIsFirstComponent(this.getContext().hasPageHeader());
         // 重置当前执行组件类型
         this.getContext().resetExecutingComponentType(this.getType());
         // 重置换行起始坐标

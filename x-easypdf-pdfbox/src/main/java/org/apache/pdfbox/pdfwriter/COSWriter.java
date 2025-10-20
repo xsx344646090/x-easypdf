@@ -497,6 +497,7 @@ public class COSWriter implements ICOSVisitor {
                 // Include object stream in document.
                 currentObjectKey = objectStreamKey;
                 doWriteObject(objectStreamKey, objectStream);
+                stream.close();
             }
             objectStreams.clear();
             willEncrypt = false;
@@ -893,7 +894,6 @@ public class COSWriter implements ICOSVisitor {
             // signatureLength = signatureBytes.length + 2;
             // doWriteSignature2();
         }
-        System.out.println(signatureBytes.length);
 
         // overwrite the signature Contents in the buffer
         int incPartSigOffset = (int) (signatureOffset - incrementalInput.length());
@@ -1227,25 +1227,17 @@ public class COSWriter implements ICOSVisitor {
             pdDocument.getEncryption().getSecurityHandler()
                     .encryptStream(obj, currentObjectKey.getNumber(), currentObjectKey.getGeneration());
         }
-
-        InputStream input = null;
-        try {
-            // write the stream content
-            visitFromDictionary(obj);
-            getStandardOutput().write(STREAM);
-            getStandardOutput().writeCRLF();
-            if (obj.hasData()) {
-                input = obj.createRawInputStream();
+        visitFromDictionary(obj);
+        getStandardOutput().write(STREAM);
+        getStandardOutput().writeCRLF();
+        if (obj.hasData()) {
+            try(InputStream input = obj.createRawInputStream()) {
                 IOUtils.copy(input, getStandardOutput());
             }
-            getStandardOutput().writeCRLF();
-            getStandardOutput().write(ENDSTREAM);
-            getStandardOutput().writeEOL();
-        } finally {
-            if (input != null) {
-                input.close();
-            }
         }
+        getStandardOutput().writeCRLF();
+        getStandardOutput().write(ENDSTREAM);
+        getStandardOutput().writeEOL();
     }
 
     @Override

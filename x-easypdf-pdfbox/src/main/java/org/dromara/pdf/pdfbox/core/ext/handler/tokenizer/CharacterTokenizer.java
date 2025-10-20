@@ -1,5 +1,6 @@
 package org.dromara.pdf.pdfbox.core.ext.handler.tokenizer;
 
+import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.dromara.pdf.pdfbox.core.base.config.FontConfiguration;
 import org.dromara.pdf.pdfbox.core.component.TextLineInfo;
 
@@ -16,7 +17,7 @@ import java.util.Objects;
  * @since 1.8
  * <p>
  * Copyright (c) 2020 xsx All Rights Reserved.
- * x-easypdf is licensed under Mulan PSL v2.
+ * x-easypdf-pdfbox is licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  * http://license.coscl.org.cn/MulanPSL2
@@ -32,14 +33,15 @@ public class CharacterTokenizer extends AbstractTokenizer {
      * 拆分文本（单行）
      *
      * @param fontConfiguration 字体配置
+     * @param font              字体
      * @param text              文本
      * @param lineWidth         行宽
      * @return 返回文本
      */
     @Override
-    public TextLineInfo splitText(FontConfiguration fontConfiguration, String text, float lineWidth) {
+    public TextLineInfo splitText(FontConfiguration fontConfiguration, PDFont font, String text, float lineWidth) {
         // 如果待输入文本为空，或文本长度为0，或字符宽度大于行宽，则直接返回空
-        if (Objects.isNull(text) || text.isEmpty() || this.getCharacterWidth(fontConfiguration, text.charAt(0)) > lineWidth) {
+        if (Objects.isNull(text) || text.isEmpty() || this.getCharacterWidth(fontConfiguration, font, text.charAt(0)) > lineWidth) {
             // 返回空字符串
             return null;
         }
@@ -58,7 +60,7 @@ public class CharacterTokenizer extends AbstractTokenizer {
             // 截取临时文本
             tempText = text.substring(beginIndex, i);
             // 计算当前文本真实宽度
-            width = this.getTextWidth(fontConfiguration, tempText);
+            width = this.getTextWidth(fontConfiguration, font, tempText);
             // 如果真实宽度大于行宽度，则减少一个字符
             if (width > lineWidth) {
                 // 返回截取字符串
@@ -69,7 +71,7 @@ public class CharacterTokenizer extends AbstractTokenizer {
         }
         // 计算当前文本真实宽度
         if (width == 0F) {
-            width = this.getTextWidth(fontConfiguration, text);
+            width = this.getTextWidth(fontConfiguration, font, text);
         }
         // 返回文本
         return new TextLineInfo(text, width);
@@ -79,14 +81,15 @@ public class CharacterTokenizer extends AbstractTokenizer {
      * 拆分文本段落（多行）
      *
      * @param fontConfiguration 字体配置
+     * @param font              字体
      * @param text              文本
      * @param lineWidth         行宽
      * @return 返回文本列表
      */
     @Override
-    public List<TextLineInfo> splitLines(FontConfiguration fontConfiguration, String text, float lineWidth) {
+    public List<TextLineInfo> splitLines(FontConfiguration fontConfiguration, PDFont font, String text, float lineWidth) {
         // 如果待输入文本为空，或文本长度为0，或字符宽度大于行宽，则直接返回空列表
-        if (Objects.isNull(text) || text.isEmpty() || this.getCharacterWidth(fontConfiguration, text.charAt(0)) > lineWidth) {
+        if (Objects.isNull(text) || text.isEmpty() || this.getCharacterWidth(fontConfiguration, font, text.charAt(0)) > lineWidth) {
             // 返回空列表
             return new ArrayList<>(0);
         }
@@ -107,7 +110,7 @@ public class CharacterTokenizer extends AbstractTokenizer {
             // 截取临时文本
             tempText = text.substring(beginIndex, i);
             // 计算当前文本真实宽度
-            width = this.getTextWidth(fontConfiguration, tempText);
+            width = this.getTextWidth(fontConfiguration, font, tempText);
             // 如果真实宽度大于行宽度，则减少一个字符
             if (width > lineWidth) {
                 // 加入文本列表
@@ -131,7 +134,7 @@ public class CharacterTokenizer extends AbstractTokenizer {
             tempText = text.substring(beginIndex);
             // 计算当前文本真实宽度
             if (width == 0F) {
-                width = this.getTextWidth(fontConfiguration, tempText);
+                width = this.getTextWidth(fontConfiguration, font, tempText);
             }
             // 加入文本列表
             lineList.add(new TextLineInfo(tempText, width));

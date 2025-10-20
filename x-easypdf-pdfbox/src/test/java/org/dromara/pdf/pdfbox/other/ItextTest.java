@@ -8,7 +8,6 @@ import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 import org.dromara.pdf.pdfbox.base.BaseTest;
-import org.dromara.pdf.pdfbox.util.IdUtil;
 import org.junit.Test;
 
 /**
@@ -34,7 +33,7 @@ public class ItextTest extends BaseTest {
      */
     @Test
     public void itextTest() {
-        for (int k = 0; k < 10; k++) {
+        for (int k = 0; k < 5; k++) {
             this.test(this::create);
         }
     }
@@ -46,7 +45,7 @@ public class ItextTest extends BaseTest {
             PdfFont font = PdfFontFactory.createFont(fontPath, PdfEncodings.IDENTITY_H);
 
             // Creating a PdfDocument object
-            String dest = "E:\\PDF\\pdfbox\\document\\simpleTableTest-" + IdUtil.get() + ".pdf";
+            String dest = "E:\\PDF\\pdfbox\\document\\bigDataTest1-itext.pdf";
             PdfWriter writer = new PdfWriter(dest);
 
             // Creating a PdfDocument object
@@ -59,16 +58,15 @@ public class ItextTest extends BaseTest {
             Paragraph paragraph = new Paragraph().setFont(font).setMultipliedLeading(0.6F);
 
             StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < 20; i++) {
-                for (int j = 0; j < 5000; j++) {
-                    builder.append("测试内容").append(j);
-                }
+            for (int j = 0; j < 500000; j++) {
+                builder.append("测试内容").append(j);
             }
             paragraph.add(builder.toString());
 
             // Adding Paragraph to document
             doc.add(paragraph);
             // Closing the document
+            System.out.println("内存占用：" + Runtime.getRuntime().totalMemory() / 1024 / 1024);
             doc.close();
         } catch (Exception e) {
             e.printStackTrace();
