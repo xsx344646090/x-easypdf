@@ -11,6 +11,7 @@ import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureOptions;
 import org.apache.pdfbox.pdmodel.interactive.form.*;
 import org.apache.pdfbox.util.Hex;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.ext.processor.AbstractProcessor;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
@@ -18,6 +19,7 @@ import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.security.Security;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -41,6 +43,11 @@ import java.util.stream.Collectors;
  * </p>
  */
 public class SignProcessor extends AbstractProcessor {
+
+    static {
+        // 设置提供者bc
+        Security.addProvider(new BouncyCastleProvider());
+    }
 
     /**
      * 签名器
@@ -154,7 +161,7 @@ public class SignProcessor extends AbstractProcessor {
         Objects.requireNonNull(outputStream, "the outputStream can not be null");
         // 初始化选项
         options.init();
-        // 如果签名者对象为空，则创建一个新的默认签名者
+        // 初始化签名器
         if (Objects.isNull(this.signer)) {
             this.signer = new DefaultSigner(options);
         }

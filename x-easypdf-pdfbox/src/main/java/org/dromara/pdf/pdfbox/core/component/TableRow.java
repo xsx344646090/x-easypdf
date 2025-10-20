@@ -452,4 +452,8 @@ public class TableRow extends BorderData {
             this.beginY = this.getContext().getCursor().getY();
         }
     }
+
+    public boolean hasNoMergeCell() {
+        return true;
+    }
 }

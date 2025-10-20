@@ -36,18 +36,16 @@ public class TextUtil {
      *
      * @param character        字符
      * @param context          上下文
+     * @param font             字体
      * @param specialFontNames 获取特殊字体名称
-     * @param fontName         字体名称
      * @param fontSize         字体大小
      * @return 返回文本宽度
      */
     @SneakyThrows
-    public static float getCharacterWidth(char character, Context context, List<String> specialFontNames, String fontName, float fontSize) {
+    public static float getCharacterWidth(char character, Context context, PDFont font, List<String> specialFontNames, float fontSize) {
         // 参数检查
         Objects.requireNonNull(context, "the context can not be null");
-        Objects.requireNonNull(fontName, "the font name can not be null");
-        // 获取字体
-        PDFont font = context.getFont(fontName);
+        Objects.requireNonNull(font, "the font can not be null");
         // 定义字符宽度
         float width = 0F;
         try {
@@ -87,23 +85,21 @@ public class TextUtil {
      *
      * @param text             文本
      * @param context          上下文
+     * @param font             字体
      * @param specialFontNames 获取特殊字体名称
-     * @param fontName         字体名称
      * @param fontSize         字体大小
      * @param characterSpacing 字符间距
      * @return 返回文本宽度
      */
     @SneakyThrows
-    public static float getTextWidth(String text, Context context, List<String> specialFontNames, String fontName, float fontSize, float characterSpacing) {
+    public static float getTextWidth(String text, Context context, PDFont font, List<String> specialFontNames, float fontSize, float characterSpacing) {
         // 返回空宽度
         if (Objects.isNull(text)) {
             return 0F;
         }
         // 参数检查
         Objects.requireNonNull(context, "the context can not be null");
-        Objects.requireNonNull(fontName, "the font name can not be null");
-        // 获取字体
-        PDFont font = context.getFont(fontName);
+        Objects.requireNonNull(font, "the font can not be null");
         // 定义文本宽度
         float width = 0F;
         // 定义临时字符串

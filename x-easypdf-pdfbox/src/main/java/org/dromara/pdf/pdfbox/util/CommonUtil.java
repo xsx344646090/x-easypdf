@@ -3,6 +3,7 @@ package org.dromara.pdf.pdfbox.util;
 import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.PDResources;
@@ -17,17 +18,16 @@ import org.dromara.pdf.pdfbox.core.base.Context;
 import org.dromara.pdf.pdfbox.core.component.TableRow;
 import org.dromara.pdf.pdfbox.core.enums.ContentMode;
 import org.dromara.pdf.pdfbox.core.enums.FontStyle;
-import org.dromara.pdf.pdfbox.core.enums.ImageType;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.zip.CRC32;
 
 
 /**
@@ -37,7 +37,7 @@ import java.util.Objects;
  * @date 2024/6/20
  * @since 1.8
  * <p>
- * Copyright (c) 2020-2024 xsx All Rights Reserved.
+ * Copyright (c) 2020 xsx All Rights Reserved.
  * x-easypdf-pdfbox is licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
@@ -210,23 +210,28 @@ public class CommonUtil {
     /**
      * 创建图像对象
      *
-     * @param context 上下文
-     * @param image   图像
+     * @param context    上下文
+     * @param imageBytes 图像
+     * @return 返回图像对象
+     */
+    public static PDImageXObject createImage(Context context, byte[] imageBytes) {
+        return createImage(context.getTargetDocument(), CacheUtil.getImage(getImageDigest(imageBytes), () -> ImageUtil.resetBytes(imageBytes)));
+    }
+
+    /**
+     * 创建图像对象
+     *
+     * @param document   文档
+     * @param imageBytes 图像
      * @return 返回图像对象
      */
     @SneakyThrows
-    public static PDImageXObject createImage(Context context, BufferedImage image) {
-        return context.getImageMap().computeIfAbsent(image, im -> {
-            try {
-                return PDImageXObject.createFromByteArray(
-                        context.getTargetDocument(),
-                        ImageUtil.resetBytes(ImageUtil.toBytes(im, ImageType.PNG.getType())),
-                        "unknown"
-                );
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
+    public static PDImageXObject createImage(PDDocument document, byte[] imageBytes) {
+        return PDImageXObject.createFromByteArray(
+                document,
+                ImageUtil.resetBytes(imageBytes),
+                "unknown"
+        );
     }
 
     /**
@@ -467,5 +472,17 @@ public class CommonUtil {
                 rectangle.getUpperRightX(),
                 rectangle.getLowerLeftY()
         };
+    }
+
+    /**
+     * 获取图像摘要
+     *
+     * @param bytes 字节数组
+     * @return 返回摘要
+     */
+    public static String getImageDigest(byte[] bytes) {
+        CRC32 crc32 = new CRC32();
+        crc32.update(bytes);
+        return Long.toHexString(crc32.getValue());
     }
 }

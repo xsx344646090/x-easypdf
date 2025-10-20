@@ -301,6 +301,16 @@ public class Table extends AbstractComponent {
     }
 
     /**
+     * 是否需要换行
+     *
+     * @return 返回布尔值，true为是，false为否
+     */
+    protected boolean isNeedWrap() {
+        boolean flag = this.getContext().getWrapWidth() - (this.getBeginX() - this.getContext().getWrapBeginX()) < this.getMinWidth();
+        return this.getContext().getIsFirstComponent() && !this.getContext().hasPageHeader() || flag;
+    }
+
+    /**
      * 初始化行
      */
     protected void initRows() {
@@ -402,6 +412,10 @@ public class Table extends AbstractComponent {
         }
         // 执行分页操作
         Page page = super.executeBreak();
+        // 手动分页调用分页事件
+        if (this.getContext().getIsManualBreak()) {
+            Optional.ofNullable(this.pagingEvents).ifPresent(events -> events.forEach(event -> Optional.ofNullable(event).ifPresent(v -> v.after(this))));
+        }
         // 如果分页事件不为空，则调用after方法
         Optional.ofNullable(borderPagingEvent).ifPresent(event -> event.after(this));
         // 设置开始X坐标

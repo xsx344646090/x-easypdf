@@ -1,5 +1,7 @@
 package org.dromara.pdf.pdfbox.core.ext.processor.sign;
 
+import lombok.Getter;
+
 /**
  * 加密算法
  *
@@ -18,6 +20,7 @@ package org.dromara.pdf.pdfbox.core.ext.processor.sign;
  * See the Mulan PSL v2 for more details.
  * </p>
  */
+@Getter
 public enum EncryptAlgorithm {
     /**
      * RSA
@@ -35,6 +38,14 @@ public enum EncryptAlgorithm {
      */
     NONEwithDSA("DSA", "NONEwithDSA"),
     SHA1withDSA("DSA", "SHA1withDSA"),
+    SHA256withDSA("DSA", "SHA256withDSA"),
+    SHA384withDSA("DSA", "SHA384withDSA"),
+    SHA512withDSA("DSA", "SHA512withDSA"),
+
+    /**
+     * GM
+     */
+    SM3WithSM2("GM", "SM3WithSM2"),
 
     /**
      * ECDSA

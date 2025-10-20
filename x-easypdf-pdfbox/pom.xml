@@ -207,6 +207,11 @@
             <optional>true</optional>
         </dependency>
         <dependency>
+            <groupId>com.github.usefulness</groupId>
+            <artifactId>webp-imageio</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
             <groupId>com.documents4j</groupId>
             <artifactId>documents4j-local</artifactId>
             <optional>true</optional>

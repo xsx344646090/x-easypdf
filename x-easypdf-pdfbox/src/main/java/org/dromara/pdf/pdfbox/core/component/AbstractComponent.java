@@ -782,7 +782,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     protected float getBeginY(Page page, float beginY) {
         if (beginY < 0) {
             Page subPage = page.getSubPage();
-            beginY = beginY + subPage.getHeight();
+            beginY = beginY + subPage.getBodyHeight();
             if (beginY >= 0) {
                 this.getContext().setPage(subPage);
                 return beginY;

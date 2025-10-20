@@ -51,7 +51,7 @@ public class SignProcessorTest extends BaseTest {
                         .build();
                 SignOptions options = SignOptions.builder()
                         .certificate(new CertificateInfo(KeyStoreType.PKCS12, inputStream, "123456", null))
-                        .algorithm(EncryptAlgorithm.SHA1withRSA.name())
+                        .algorithm(EncryptAlgorithm.SHA1withRSA)
                         .pageIndex(0)
                         .visualOptions(visualOptions)
                         .build();
@@ -100,7 +100,7 @@ public class SignProcessorTest extends BaseTest {
 
                 SignOptions options = SignOptions.builder()
                         .certificate(new CertificateInfo(KeyStoreType.PKCS12, inputStream, "123456", null))
-                        .algorithm(EncryptAlgorithm.SHA256withRSA.name())
+                        .algorithm(EncryptAlgorithm.SHA256withRSA)
                         .pageIndex(1)
                         .build();
 

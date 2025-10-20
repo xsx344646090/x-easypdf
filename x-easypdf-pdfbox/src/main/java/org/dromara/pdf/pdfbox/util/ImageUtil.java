@@ -8,6 +8,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -43,6 +44,10 @@ public class ImageUtil {
      * jpeg2000字节码
      */
     protected static final byte[] J2K_BYTES2 = new byte[]{0x00, 0x00, 0x00, 0x0c, 0x6a, 0x50, 0x20, 0x20};
+    /**
+     * webp字节码
+     */
+    protected static final byte[] WEBP_BYTES = "RIFF".getBytes(StandardCharsets.ISO_8859_1);
 
     /**
      * 读取文件
@@ -187,15 +192,15 @@ public class ImageUtil {
                 byteArray = outputStream.toByteArray();
             }
         }
-        // j2k格式
-        else if (ImageUtil.isJ2kImage(bytes)) {
+        // j2k格式或webp
+        else if (isJ2kImage(bytes) || isWebpImage(bytes)) {
             try (
                     // 定义输入流
                     InputStream inputStream = new BufferedInputStream(new ByteArrayInputStream(bytes));
                     // 定义输出流
                     ByteArrayOutputStream outputStream = new ByteArrayOutputStream(8192)
             ) {
-                // 转码svg
+                // 转码
                 write(read(inputStream), ImageType.PNG, outputStream);
                 // 重置字节数组
                 byteArray = outputStream.toByteArray();
@@ -479,6 +484,29 @@ public class ImageUtil {
         for (int i = 0; i < J2K_BYTES2.length; i++) {
             // 字节码不一致
             if (J2K_BYTES2[i] != bytes[i]) {
+                // 重置结果
+                result = false;
+                // 结束循环
+                break;
+            }
+        }
+        // 返回结果
+        return result;
+    }
+
+    /**
+     * 是否jpeg2000图像
+     *
+     * @param bytes 字节数组
+     * @return 返回布尔值，true为是，false为否
+     */
+    public static boolean isWebpImage(byte[] bytes) {
+        // 定义结果
+        boolean result = true;
+        // 遍历字节数组
+        for (int i = 0; i < WEBP_BYTES.length; i++) {
+            // 字节码不一致
+            if (WEBP_BYTES[i] != bytes[i]) {
                 // 重置结果
                 result = false;
                 // 结束循环

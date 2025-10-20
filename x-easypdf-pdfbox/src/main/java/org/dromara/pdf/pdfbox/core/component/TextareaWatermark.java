@@ -456,6 +456,8 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
      */
     @SneakyThrows
     protected void renderText(Page page) {
+        // 获取字体
+        PDFont font = this.getContext().getFont(this.getFontName());
         // 获取X轴起始坐标
         float beginX = this.getBeginX();
         // 获取Y轴起始坐标
@@ -493,7 +495,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
                     // 重置最大宽度
                     if (initFlag) {
                         // 重置最大宽度
-                        maxWidth = Math.max(maxWidth, this.getTextHandler().getTextWidth(this.getFontConfiguration(), writeText));
+                        maxWidth = Math.max(maxWidth, this.getTextHandler().getTextWidth(this.getFontConfiguration(), font, writeText));
                     }
                 }
                 // 重置X轴起始坐标

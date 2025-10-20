@@ -33,10 +33,10 @@ public class TextareaWatermarkTest extends BaseTest {
     @Test
     public void documentTest() {
         this.test(() -> {
-            Document document = PdfHandler.getDocumentHandler().create();
+            Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\test\\test11.docx.pdf");
 
-            Page page = new Page(document);
-            document.appendPage(page);
+            // Page page = new Page(document);
+            // document.appendPage(page);
 
             TextareaWatermark watermark = new TextareaWatermark(document);
             watermark.setTextList(Arrays.asList("test\ttest", "test123"));

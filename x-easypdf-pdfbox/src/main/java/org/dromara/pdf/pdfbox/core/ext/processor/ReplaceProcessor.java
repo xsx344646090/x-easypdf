@@ -22,7 +22,6 @@ import org.dromara.pdf.pdfbox.core.info.ReplaceInfo;
 import org.dromara.pdf.pdfbox.util.CommonUtil;
 import org.dromara.pdf.pdfbox.util.TextTokenUtil;
 
-import java.awt.image.BufferedImage;
 import java.io.OutputStream;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -144,7 +143,7 @@ public class ReplaceProcessor extends AbstractProcessor {
      * @param pageIndexes  页面索引
      * @param imageIndexes 图像索引
      */
-    public void replaceImage(BufferedImage image, List<Integer> pageIndexes, int... imageIndexes) {
+    public void replaceImage(byte[] image, List<Integer> pageIndexes, int... imageIndexes) {
         // 获取页面树
         PDPageTree pageTree = this.getDocument().getPages();
         // 页面索引非空
@@ -309,7 +308,7 @@ public class ReplaceProcessor extends AbstractProcessor {
      * @param imageIndexes 图像索引
      */
     @SneakyThrows
-    protected void replaceImage(PDPage page, BufferedImage image, int... imageIndexes) {
+    protected void replaceImage(PDPage page, byte[] image, int... imageIndexes) {
         // 定义pdf图像
         PDImageXObject imageObject = null;
         // 如果待替换图像不为空，则重置pdf图像

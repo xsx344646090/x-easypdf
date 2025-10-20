@@ -1,5 +1,6 @@
 package org.dromara.pdf.pdfbox.core.ext.handler.tokenizer;
 
+import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.dromara.pdf.pdfbox.core.base.config.FontConfiguration;
 import org.dromara.pdf.pdfbox.core.component.TextLineInfo;
 
@@ -14,7 +15,7 @@ import java.util.*;
  * @since 1.8
  * <p>
  * Copyright (c) 2020 xsx All Rights Reserved.
- * x-easypdf is licensed under Mulan PSL v2.
+ * x-easypdf-pdfbox is licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  * http://license.coscl.org.cn/MulanPSL2
@@ -30,12 +31,13 @@ public class WordsTokenizer extends AbstractTokenizer {
      * 拆分文本（单行）
      *
      * @param fontConfiguration 字体配置
+     * @param font              字体
      * @param text              文本
      * @param lineWidth         行宽
      * @return 返回文本
      */
     @Override
-    public TextLineInfo splitText(FontConfiguration fontConfiguration, String text, float lineWidth) {
+    public TextLineInfo splitText(FontConfiguration fontConfiguration, PDFont font, String text, float lineWidth) {
         // 如果待输入文本为空，或文本长度为0
         if (Objects.isNull(text) || text.isEmpty()) {
             // 返回空字符串
@@ -44,7 +46,7 @@ public class WordsTokenizer extends AbstractTokenizer {
         // 拆分文本
         String[] words = text.split(" ");
         // 字符宽度大于行宽
-        if (this.getTextWidth(fontConfiguration, words[0]) > lineWidth) {
+        if (this.getTextWidth(fontConfiguration, font, words[0]) > lineWidth) {
             // 返回空字符串
             return null;
         }
@@ -53,13 +55,13 @@ public class WordsTokenizer extends AbstractTokenizer {
         // 定义前一次宽度
         float lastWidth = 0F;
         // 获取空白宽度
-        float blankWidth = this.getBlankWidth(fontConfiguration);
+        float blankWidth = this.getBlankWidth(fontConfiguration, font);
         // 定义连接器
         StringJoiner joiner = new StringJoiner(" ");
         // 遍历词组
         for (String word : words) {
             // 计算当前词组宽度
-            float wordWidth = this.getTextWidth(fontConfiguration, word);
+            float wordWidth = this.getTextWidth(fontConfiguration, font, word);
             // 计算当前文本真实宽度
             width += wordWidth;
             // 真实宽度大于行宽度
@@ -83,12 +85,13 @@ public class WordsTokenizer extends AbstractTokenizer {
      * 拆分文本段落（多行）
      *
      * @param fontConfiguration 字体配置
+     * @param font              字体
      * @param text              文本
      * @param lineWidth         行宽
      * @return 返回文本列表
      */
     @Override
-    public List<TextLineInfo> splitLines(FontConfiguration fontConfiguration, String text, float lineWidth) {
+    public List<TextLineInfo> splitLines(FontConfiguration fontConfiguration, PDFont font, String text, float lineWidth) {
         // 如果待输入文本为空，或文本长度为0
         if (Objects.isNull(text) || text.isEmpty()) {
             // 返回空列表
@@ -97,7 +100,7 @@ public class WordsTokenizer extends AbstractTokenizer {
         // 拆分文本
         String[] words = text.trim().split(" ");
         // 字符宽度大于行宽
-        if (this.getTextWidth(fontConfiguration, words[0]) > lineWidth) {
+        if (this.getTextWidth(fontConfiguration, font, words[0]) > lineWidth) {
             // 返回空列表
             return new ArrayList<>();
         }
@@ -108,13 +111,13 @@ public class WordsTokenizer extends AbstractTokenizer {
         // 定义宽度
         float width = 0F;
         // 获取空白宽度
-        float blankWidth = this.getBlankWidth(fontConfiguration);
+        float blankWidth = this.getBlankWidth(fontConfiguration, font);
         // 定义连接器
         StringJoiner joiner = new StringJoiner(" ");
         // 遍历词组
         for (String word : words) {
             // 计算当前词组宽度
-            float wordWidth = this.getTextWidth(fontConfiguration, word);
+            float wordWidth = this.getTextWidth(fontConfiguration, font, word);
             // 计算当前文本真实宽度
             width += wordWidth;
             // 真实宽度大于行宽度
