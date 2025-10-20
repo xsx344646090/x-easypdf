@@ -3,6 +3,7 @@ package org.dromara.pdf.pdfbox.core.ext.handler;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.base.config.FontConfiguration;
 import org.dromara.pdf.pdfbox.core.component.TextLineInfo;
@@ -61,35 +62,38 @@ public abstract class AbstractTextHandler extends AbstractExpander {
      * 拆分文本（单行）
      *
      * @param fontConfiguration 字体配置
+     * @param font              字体
      * @param text              文本
      * @param lineWidth         行宽
      * @return 返回文本
      */
-    public TextLineInfo splitText(FontConfiguration fontConfiguration, String text, float lineWidth) {
-        return this.tokenizer.splitText(fontConfiguration, text, lineWidth);
+    public TextLineInfo splitText(FontConfiguration fontConfiguration, PDFont font, String text, float lineWidth) {
+        return this.tokenizer.splitText(fontConfiguration, font, text, lineWidth);
     }
 
     /**
      * 拆分文本段落（多行）
      *
      * @param fontConfiguration 字体配置
+     * @param font              字体
      * @param text              文本
      * @param lineWidth         行宽
      * @return 返回文本列表
      */
-    public List<TextLineInfo> splitLines(FontConfiguration fontConfiguration, String text, float lineWidth) {
-        return this.tokenizer.splitLines(fontConfiguration, text, lineWidth);
+    public List<TextLineInfo> splitLines(FontConfiguration fontConfiguration, PDFont font, String text, float lineWidth) {
+        return this.tokenizer.splitLines(fontConfiguration, font, text, lineWidth);
     }
 
     /**
      * 获取文本宽度
      *
      * @param fontConfiguration 字体配置
+     * @param font              字体
      * @param text              文本
      * @return 返回文本宽度
      */
-    public float getTextWidth(FontConfiguration fontConfiguration, String text) {
-        return TextUtil.getTextWidth(text, this.getContext(), fontConfiguration.getSpecialFontNames(), fontConfiguration.getFontName(), fontConfiguration.getFontSize(), fontConfiguration.getCharacterSpacing());
+    public float getTextWidth(FontConfiguration fontConfiguration, PDFont font, String text) {
+        return TextUtil.getTextWidth(text, this.getContext(), font, fontConfiguration.getSpecialFontNames(), fontConfiguration.getFontSize(), fontConfiguration.getCharacterSpacing());
     }
 
     /**

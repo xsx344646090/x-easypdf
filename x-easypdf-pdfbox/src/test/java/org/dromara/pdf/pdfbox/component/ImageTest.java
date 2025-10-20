@@ -218,6 +218,7 @@ public class ImageTest extends BaseTest {
                     }
                     Textarea textarea = new Textarea(page);
                     textarea.setText(textBuilder.toString());
+                    textarea.setTokenizer(PdfHandler.getDocumentTokenizer().characterTokenizer());
                     textarea.render();
                     pages.add(page);
 

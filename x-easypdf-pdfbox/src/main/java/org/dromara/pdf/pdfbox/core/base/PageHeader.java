@@ -34,7 +34,6 @@ public class PageHeader extends AbstractPageHeaderOrFooter {
      */
     public PageHeader(Page page) {
         super(page);
-        this.getContext().setPageHeader(this);
     }
 
     /**

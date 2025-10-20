@@ -10,7 +10,6 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.enums.FontType;
-import org.dromara.pdf.pdfbox.support.CharacterWrapper;
 import org.dromara.pdf.pdfbox.support.Constants;
 import org.dromara.pdf.pdfbox.support.fonts.FontInfo;
 import org.dromara.pdf.pdfbox.support.fonts.FontMapperImpl;
@@ -18,7 +17,6 @@ import org.dromara.pdf.pdfbox.support.fonts.FontMapperImpl;
 import java.io.File;
 import java.io.InputStream;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 字体助手
@@ -50,11 +48,6 @@ public class FontHandler {
     private static final FontHandler INSTANCE = new FontHandler();
 
     /**
-     * 字符宽度字典
-     */
-    private static final Map<String, Map<CharacterWrapper, Float>> CODE_WITH_MAP = new ConcurrentHashMap<>(16);
-
-    /**
      * 无参构造
      */
     private FontHandler() {
@@ -72,24 +65,6 @@ public class FontHandler {
      */
     public static FontHandler getInstance() {
         return INSTANCE;
-    }
-
-    /**
-     * 获取字符字典
-     *
-     * @param fontName 字体名称
-     * @return 返回字符字典
-     */
-    public Map<CharacterWrapper, Float> getCodeMap(String fontName) {
-        return CODE_WITH_MAP.computeIfAbsent(fontName, k -> {
-            Map<CharacterWrapper, Float> map = new ConcurrentHashMap<>(2048, 1.5F);
-            Map<String, FontInfo> fontInfoByName = FontMapperImpl.getInstance().getFontInfoByName();
-            FontInfo fontInfo = fontInfoByName.get(fontName);
-            if (Objects.nonNull(fontInfo) && !Objects.equals(fontName, fontInfo.getPostScriptName())) {
-                CODE_WITH_MAP.put(fontInfo.getPostScriptName(), map);
-            }
-            return map;
-        });
     }
 
     /**

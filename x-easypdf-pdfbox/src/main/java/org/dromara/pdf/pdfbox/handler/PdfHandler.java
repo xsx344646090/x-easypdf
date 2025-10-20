@@ -8,6 +8,7 @@ import org.dromara.pdf.pdfbox.core.ext.analyzer.DocumentAnalyzer;
 import org.dromara.pdf.pdfbox.core.ext.comparator.DocumentComparator;
 import org.dromara.pdf.pdfbox.core.ext.convertor.DocumentConvertor;
 import org.dromara.pdf.pdfbox.core.ext.extractor.DocumentExtractor;
+import org.dromara.pdf.pdfbox.core.ext.handler.tokenizer.DocumentTokenizer;
 import org.dromara.pdf.pdfbox.core.ext.parser.ai.DocumentAIParser;
 import org.dromara.pdf.pdfbox.core.ext.processor.DocumentProcessor;
 import org.dromara.pdf.pdfbox.core.ext.templater.DocumentTemplater;
@@ -132,6 +133,15 @@ public class PdfHandler {
      */
     public static DocumentTemplater getDocumentTemplater() {
         return new DocumentTemplater(null);
+    }
+
+    /**
+     * 获取文档分词器
+     *
+     * @return 返回文档分词器
+     */
+    public static DocumentTokenizer getDocumentTokenizer() {
+        return new DocumentTokenizer();
     }
 
     /**

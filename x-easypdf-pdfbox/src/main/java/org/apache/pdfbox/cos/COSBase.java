@@ -29,6 +29,7 @@ public abstract class COSBase implements COSObjectable
 {
 
     private boolean direct;
+    private boolean allDirect;
     private boolean written;
     private boolean notObject;
     private COSObjectKey key;
@@ -78,6 +79,14 @@ public abstract class COSBase implements COSObjectable
     public void setDirect(boolean direct)
     {
         this.direct = direct;
+    }
+
+    public boolean isAllDirect() {
+        return allDirect;
+    }
+
+    public void setAllDirect(boolean allDirect) {
+        this.allDirect = allDirect;
     }
 
     public boolean isWritten() {

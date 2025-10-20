@@ -9,6 +9,7 @@ import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSFloat;
 import org.apache.pdfbox.cos.COSInteger;
 import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.io.IOUtils;
 import org.apache.pdfbox.pdfparser.PDFStreamParser;
 import org.apache.pdfbox.pdfwriter.ContentStreamWriter;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -19,18 +20,19 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.dromara.pdf.pdfbox.core.base.config.FontConfiguration;
 import org.dromara.pdf.pdfbox.core.base.config.MarginConfiguration;
-import org.dromara.pdf.pdfbox.core.enums.FontStyle;
-import org.dromara.pdf.pdfbox.core.enums.HorizontalAlignment;
-import org.dromara.pdf.pdfbox.core.enums.RotationAngle;
-import org.dromara.pdf.pdfbox.core.enums.VerticalAlignment;
+import org.dromara.pdf.pdfbox.core.enums.*;
 import org.dromara.pdf.pdfbox.support.Constants;
 import org.dromara.pdf.pdfbox.util.CommonUtil;
 import org.dromara.pdf.pdfbox.util.IdUtil;
+import org.dromara.pdf.pdfbox.util.ImageUtil;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.Closeable;
+import java.io.File;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -73,7 +75,7 @@ public class Page extends AbstractBase implements Closeable {
     /**
      * 背景图片
      */
-    protected BufferedImage backgroundImage;
+    protected PDImageXObject backgroundImage;
     /**
      * id
      */
@@ -184,12 +186,56 @@ public class Page extends AbstractBase implements Closeable {
     /**
      * 设置背景图片
      *
+     * @param file 文件
+     */
+    @SneakyThrows
+    public void setBackgroundImage(File file) {
+        if (Objects.nonNull(file)) {
+            this.setBackgroundImage(Files.readAllBytes(file.toPath()));
+        } else {
+            this.backgroundImage =  null;
+        }
+    }
+
+    /**
+     * 设置背景图片
+     *
+     * @param inputStream 输入流
+     */
+    @SneakyThrows
+    public void setBackgroundImage(InputStream inputStream) {
+        if (Objects.nonNull(inputStream)) {
+            this.setBackgroundImage(IOUtils.toByteArray(inputStream));
+        } else {
+            this.backgroundImage =  null;
+        }
+    }
+
+    /**
+     * 设置背景图片
+     *
      * @param image 图片
      */
+    @SneakyThrows
     public void setBackgroundImage(BufferedImage image) {
-        this.backgroundImage = image;
         if (Objects.nonNull(image)) {
-            this.initBackgroundImage();
+            this.setBackgroundImage(ImageUtil.toBytes(image, ImageType.PNG.getType()));
+        } else {
+            this.backgroundImage =  null;
+        }
+    }
+
+    /**
+     * 设置背景图片
+     *
+     * @param bytes 字节数组
+     */
+    @SneakyThrows
+    public void setBackgroundImage(byte[] bytes) {
+        if (Objects.nonNull(bytes)) {
+            this.backgroundImage = CommonUtil.createImage(this.getContext(), bytes);
+        } else {
+            this.backgroundImage =  null;
         }
     }
 
@@ -537,6 +583,15 @@ public class Page extends AbstractBase implements Closeable {
     }
 
     /**
+     * 获取页面体高度（排除上下边距与页眉页脚）
+     *
+     * @return 返回页面体高度
+     */
+    public Float getBodyHeight() {
+        return this.getWithoutMarginHeight() - this.getContext().getPageHeaderHeight() - this.getContext().getPageFooterHeight();
+    }
+
+    /**
      * 获取第一个父页面
      *
      * @return 返回父页面
@@ -726,7 +781,7 @@ public class Page extends AbstractBase implements Closeable {
      * @param backgroundColor     背景颜色
      * @param backgroundImage     背景图片
      */
-    protected void init(PDPage target, AbstractBase base, MarginConfiguration marginConfiguration, FontConfiguration fontConfiguration, Color backgroundColor, BufferedImage backgroundImage) {
+    protected void init(PDPage target, AbstractBase base, MarginConfiguration marginConfiguration, FontConfiguration fontConfiguration, Color backgroundColor, PDImageXObject backgroundImage) {
         // 初始化id
         this.id = IdUtil.get();
         // 初始化任务页面
@@ -808,7 +863,7 @@ public class Page extends AbstractBase implements Closeable {
     @SneakyThrows
     protected void initBackgroundImage() {
         // 初始化图像
-        PDImageXObject image = CommonUtil.createImage(this.getContext(), this.getBackgroundImage());
+        PDImageXObject image = this.getBackgroundImage();
         // 获取宽度
         float width = Math.min(image.getWidth(), this.getWithoutMarginWidth());
         // 获取高度

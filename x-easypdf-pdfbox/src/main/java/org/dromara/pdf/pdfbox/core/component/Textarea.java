@@ -3,7 +3,6 @@ package org.dromara.pdf.pdfbox.core.component;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
-import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
@@ -60,10 +59,6 @@ public class Textarea extends AbstractComponent {
      * 目录
      */
     protected CatalogInfo catalog;
-    /**
-     * 注解
-     */
-    protected List<PDAnnotation> annotations;
     /**
      * 文本助手
      */
@@ -414,8 +409,6 @@ public class Textarea extends AbstractComponent {
     protected void init() {
         // 初始化
         super.init();
-        // 初始化注解
-        this.annotations = this.getPage().getTarget().getAnnotations();
         // 初始化文本助手
         if (Objects.isNull(this.textHandler)) {
             this.textHandler = this.getContext().getTextHandler();
@@ -555,6 +548,8 @@ public class Textarea extends AbstractComponent {
         }
         // 获取上下文
         Context context = this.getContext();
+        // 获取字体
+        PDFont font = context.getFont(this.getFontName());
         // 获取首行宽度
         float firstWidth = context.getWrapWidth() + context.getWrapBeginX() - this.getBeginX();
         // 获取新行宽度
@@ -564,7 +559,7 @@ public class Textarea extends AbstractComponent {
         // 首行文本不为空
         if (Objects.nonNull(text)) {
             // 获取首行
-            TextLineInfo firstContent = this.textHandler.splitText(this.getFontConfiguration(), text, firstWidth);
+            TextLineInfo firstContent = this.textHandler.splitText(this.getFontConfiguration(), font, text, firstWidth);
             // 首行内容为空
             if (Objects.isNull(firstContent)) {
                 // 重置起始X轴坐标
@@ -572,14 +567,14 @@ public class Textarea extends AbstractComponent {
                 // 重置起始Y轴坐标
                 this.setBeginY(this.getContext().getCursor().getY() - this.getFontSize() - this.getLeading());
                 // 添加文本
-                this.infoList.addAll(this.textHandler.splitLines(this.getFontConfiguration(), text, newWidth));
+                this.infoList.addAll(this.textHandler.splitLines(this.getFontConfiguration(), font, text, newWidth));
             } else {
                 // 添加首行文本
                 this.infoList.add(firstContent);
                 // 首行内容长度小于首行文本长度
                 if (firstContent.getText().length() < text.length()) {
                     // 添加剩余文本
-                    this.infoList.addAll(this.textHandler.splitLines(this.getFontConfiguration(), text.substring(firstContent.getText().length()), newWidth));
+                    this.infoList.addAll(this.textHandler.splitLines(this.getFontConfiguration(), font, text.substring(firstContent.getText().length()), newWidth));
                 }
             }
         }
@@ -587,7 +582,7 @@ public class Textarea extends AbstractComponent {
         for (int i = 1, count = tempTextList.size(); i < count; i++) {
             String str = tempTextList.get(i);
             if (Objects.nonNull(str)) {
-                this.infoList.addAll(this.textHandler.splitLines(this.getFontConfiguration(), str, newWidth));
+                this.infoList.addAll(this.textHandler.splitLines(this.getFontConfiguration(), font, str, newWidth));
             }
         }
     }
@@ -853,9 +848,8 @@ public class Textarea extends AbstractComponent {
             PDAnnotationHighlight annotation = new PDAnnotationHighlight();
             annotation.setAnnotationName(IdUtil.get());
             annotation.setColor(ColorUtil.toPDColor(this.getHighlightColor()));
-            annotation.setPage(this.getPage().getTarget());
             annotation.setQuadPoints(CommonUtil.getQuadPoints(rectangle));
-            this.annotations.add(annotation);
+            this.addAnnotation(annotation);
         }
     }
 
@@ -893,7 +887,7 @@ public class Textarea extends AbstractComponent {
             annotation.setAnnotationName(IdUtil.get());
             annotation.setColor(ColorUtil.toPDColor(this.getDeleteLineColor()));
             annotation.setQuadPoints(CommonUtil.getQuadPoints(rectangle));
-            this.annotations.add(annotation);
+            this.addAnnotation(annotation);
         }
     }
 
@@ -910,7 +904,7 @@ public class Textarea extends AbstractComponent {
             annotation.setAnnotationName(IdUtil.get());
             annotation.setColor(ColorUtil.toPDColor(this.getUnderlineColor()));
             annotation.setQuadPoints(CommonUtil.getQuadPoints2(rectangle));
-            this.annotations.add(annotation);
+            this.addAnnotation(annotation);
         }
     }
 
@@ -927,7 +921,7 @@ public class Textarea extends AbstractComponent {
             annotation.setAnnotationName(IdUtil.get());
             annotation.setColor(ColorUtil.toPDColor(this.getWavyLineColor()));
             annotation.setQuadPoints(CommonUtil.getQuadPoints2(rectangle));
-            this.annotations.add(annotation);
+            this.addAnnotation(annotation);
         }
     }
 
@@ -987,8 +981,6 @@ public class Textarea extends AbstractComponent {
      */
     @SneakyThrows
     protected void addLink(PDAction action, String name, PDRectangle rectangle, HighlightMode mode) {
-        // 获取页面
-        PDPage page = this.getPage().getTarget();
         // 创建链接
         PDAnnotationLink link = new PDAnnotationLink();
         // 设置名称
@@ -1001,10 +993,20 @@ public class Textarea extends AbstractComponent {
         link.setRectangle(rectangle);
         // 设置边框
         link.setBorderStyle(this.getDefaultLinkBorderStyle());
-        // 设置页面
-        link.setPage(page);
         // 添加链接
-        this.annotations.add(link);
+        this.addAnnotation(link);
+    }
+
+    /**
+     * 添加注解
+     *
+     * @param annotation 注解
+     */
+    @SneakyThrows
+    protected void addAnnotation(PDAnnotation annotation) {
+        List<PDAnnotation> annotations = this.getContext().getTargetPage().getAnnotations();
+        annotations.add(annotation);
+        this.getContext().getTargetPage().setAnnotations(annotations);
     }
 
     /**
@@ -1123,7 +1125,7 @@ public class Textarea extends AbstractComponent {
             }
         }
         // 设置起始Y轴坐标
-        rectangle.setLowerLeftY(position.getY());
+        rectangle.setLowerLeftY(position.getY() - this.fontDescent);
         // 设置结束Y轴坐标
         rectangle.setUpperRightY(rectangle.getLowerLeftY() + this.getFontHeight());
         // 返回尺寸
@@ -1166,10 +1168,11 @@ public class Textarea extends AbstractComponent {
      * @param x    x轴坐标
      * @param y    y轴坐标
      */
+    @SneakyThrows
     @Override
     protected void reset(ComponentType type, float x, float y) {
         super.reset(type, x, y);
-        this.getPage().getTarget().setAnnotations(this.getAnnotations());
-        this.annotations = null;
+        // this.getPage().getTarget().setAnnotations(this.getAnnotations());
+        // this.annotations = null;
     }
 }

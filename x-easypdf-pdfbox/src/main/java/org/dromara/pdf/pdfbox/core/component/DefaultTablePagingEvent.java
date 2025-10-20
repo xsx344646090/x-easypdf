@@ -142,8 +142,8 @@ public class DefaultTablePagingEvent extends AbstractPagingEvent {
             // 返回表头高度
             return header.getHeight();
         }
-        // 返回0
-        return 0F;
+        // 返回页眉高度
+        return context.getPageHeaderHeight();
     }
 
     /**

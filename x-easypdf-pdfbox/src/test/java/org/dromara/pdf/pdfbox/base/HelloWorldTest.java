@@ -3,8 +3,8 @@ package org.dromara.pdf.pdfbox.base;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.dromara.pdf.pdfbox.core.base.*;
-import org.dromara.pdf.pdfbox.core.component.Image;
 import org.dromara.pdf.pdfbox.core.component.*;
+import org.dromara.pdf.pdfbox.core.component.Image;
 import org.dromara.pdf.pdfbox.core.enums.BarcodeType;
 import org.dromara.pdf.pdfbox.core.enums.ContentMode;
 import org.dromara.pdf.pdfbox.core.enums.HorizontalAlignment;
@@ -116,7 +116,7 @@ public class HelloWorldTest extends BaseTest {
 
             Textarea text = new Textarea(document.getCurrentPage());
             text.setTabSize(2);
-            text.setText("\t\t贵阳市，简称“筑”，别称林城、筑城，贵州省辖地级市、省会、Ⅰ型大城市，中国西南地区重要的中心城市之一、重要的区域创新中心和中国重要的生态休闲度假旅游城市。介于东经106°07′—107°17′，北纬26°11′—26°55′之间，总面积8043平方千米，地处黔中山原丘陵中部，东南与黔南布依族苗族自治州的瓮安、龙里、惠水、长顺4县接壤，西靠安顺市的平坝区和毕节市的织金县，北邻毕节市的黔西市、金沙县和遵义市的播州区。截至2022年4月，贵阳市下辖6个区、3个县，代管1个县级市。2022年末，贵阳市常住人口622.04万人");
+            text.setText("\t\t贵阳市，简称“筑”，别称林城、筑城，贵州省辖地级市、省会、Ⅰ型大城市，中国西南地区重要的中心城市之一、重要的区域创新中心和中国重要的生态休闲度假旅游城市。介于东经106°07′—107°17′，北纬26°11′—26°55′之间，总面积8043平方千米，地处黔中山原丘陵中部，东南与黔南布依族苗族自治州的瓮安、龙里、惠水、长顺4县接壤，西靠安顺市的平坝区和毕节市的织金县，北邻毕节市的黔西市、金沙县和遵义市的播州区。截至2022年4月，贵阳市下辖6个区、3个县，代管1个县级市。2022年末，贵阳市常住人口622.04万人。");
             text.setMarginTop(12F);
             text.setIsWrap(true);
             text.render();
@@ -146,7 +146,7 @@ public class HelloWorldTest extends BaseTest {
             text = new Textarea(document.getCurrentPage());
             text.setText("贵阳市行政区划");
             text.setHorizontalAlignment(HorizontalAlignment.CENTER);
-            // text.setIsBreak(true);
+            text.setIsWrap(true);
             text.setMarginTop(20F);
             text.render();
 
@@ -212,9 +212,9 @@ public class HelloWorldTest extends BaseTest {
 
             document.appendPage(page);
 
-            // TextareaWatermark watermark = new TextareaWatermark(document);
-            // watermark.setTexts("水印");
-            // watermark.render(document);
+            TextareaWatermark watermark = new TextareaWatermark(document);
+            watermark.setTexts("水印");
+            watermark.render(document);
 
             document.save("E:\\PDF\\pdfbox\\allTest.pdf");
             document.close();

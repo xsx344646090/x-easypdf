@@ -17,6 +17,7 @@ import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.enums.*;
 import org.dromara.pdf.pdfbox.handler.FontHandler;
 import org.dromara.pdf.pdfbox.util.BorderUtil;
+import org.dromara.pdf.pdfbox.util.CacheUtil;
 import org.dromara.pdf.pdfbox.util.CommonUtil;
 import org.dromara.pdf.pdfbox.util.ImageUtil;
 
@@ -28,7 +29,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 条形码组件
@@ -52,14 +52,6 @@ import java.util.concurrent.locks.ReentrantLock;
 @EqualsAndHashCode(callSuper = true)
 public class Barcode extends AbstractComponent {
 
-    /**
-     * 缓存
-     */
-    protected static final Map<Integer, BufferedImage> CACHE = new HashMap<>(16);
-    /**
-     * 缓存锁
-     */
-    protected static final ReentrantLock LOCK = new ReentrantLock();
     /**
      * 编码设置
      */
@@ -439,7 +431,10 @@ public class Barcode extends AbstractComponent {
      */
     @SneakyThrows
     protected PDImageXObject getImageXObject() {
-        return CommonUtil.createImage(this.getContext(), this.getBarcodeImage());
+        if (this.isCache) {
+            return CommonUtil.createImage(this.getContext().getTargetDocument(), CacheUtil.getImage(this.cacheKey(), () -> ImageUtil.toBytes(this.createBarcodeImage(), ImageType.PNG.getType())));
+        }
+        return CommonUtil.createImage(this.getContext().getTargetDocument(), ImageUtil.toBytes(this.createBarcodeImage(), ImageType.PNG.getType()));
     }
 
     /**
@@ -450,38 +445,7 @@ public class Barcode extends AbstractComponent {
     @SuppressWarnings("all")
     @SneakyThrows
     public BufferedImage getBarcodeImage() {
-        // 是否缓存
-        if (Optional.ofNullable(this.getIsCache()).orElse(Boolean.FALSE)) {
-            // 获取图像
-            BufferedImage bufferedImage = CACHE.get(this.cacheKey());
-            // 图像不存在
-            if (Objects.isNull(bufferedImage)) {
-                try {
-                    // 加锁
-                    LOCK.lock();
-                    // 再次获取
-                    bufferedImage = CACHE.get(this.cacheKey());
-                    // 仍然不存在
-                    if (Objects.isNull(bufferedImage)) {
-                        // 创建图像
-                        bufferedImage = this.createBarcodeImage();
-                        // 放入缓存
-                        CACHE.put(this.cacheKey(), bufferedImage);
-                        // 日志打印
-                        if (log.isDebugEnabled()) {
-                            log.debug("Added barcode image cache key: " + this.cacheKey());
-                        }
-                    }
-                } finally {
-                    // 解锁
-                    LOCK.unlock();
-                }
-            }
-            // 返回图像
-            return bufferedImage;
-        }
-        // 返回图像
-        return this.createBarcodeImage();
+        return this.getImageXObject().getImage();
     }
 
     /**
@@ -649,8 +613,8 @@ public class Barcode extends AbstractComponent {
      *
      * @return 返回缓存key
      */
-    protected int cacheKey() {
-        return Objects.hash(
+    protected String cacheKey() {
+        return Long.toHexString(Objects.hash(
                 this.encodeHints,
                 this.width,
                 this.height,
@@ -669,6 +633,6 @@ public class Barcode extends AbstractComponent {
                 this.wordsOffsetY,
                 this.isShowWords,
                 this.isNoWhiteBorder
-        );
+        ));
     }
 }

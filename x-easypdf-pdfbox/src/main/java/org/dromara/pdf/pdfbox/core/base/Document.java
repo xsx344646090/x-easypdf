@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
 import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.io.IOUtils;
 import org.apache.pdfbox.io.RandomAccessReadBuffer;
 import org.apache.pdfbox.pdfwriter.compress.CompressParameters;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -14,17 +15,21 @@ import org.apache.pdfbox.pdmodel.encryption.PublicKeyProtectionPolicy;
 import org.apache.pdfbox.pdmodel.encryption.PublicKeyRecipient;
 import org.apache.pdfbox.pdmodel.encryption.StandardProtectionPolicy;
 import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.dromara.pdf.pdfbox.core.base.config.FontConfiguration;
 import org.dromara.pdf.pdfbox.core.base.config.MarginConfiguration;
 import org.dromara.pdf.pdfbox.core.enums.FontStyle;
+import org.dromara.pdf.pdfbox.core.enums.ImageType;
 import org.dromara.pdf.pdfbox.core.enums.PWLength;
 import org.dromara.pdf.pdfbox.core.ext.processor.MetadataProcessor;
 import org.dromara.pdf.pdfbox.core.ext.processor.PageProcessor;
 import org.dromara.pdf.pdfbox.core.info.CatalogInfo;
 import org.dromara.pdf.pdfbox.support.Constants;
 import org.dromara.pdf.pdfbox.support.DefaultResourceCache;
+import org.dromara.pdf.pdfbox.util.CommonUtil;
 import org.dromara.pdf.pdfbox.util.FileUtil;
 import org.dromara.pdf.pdfbox.util.IdUtil;
+import org.dromara.pdf.pdfbox.util.ImageUtil;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -73,7 +78,7 @@ public class Document extends AbstractBase implements Closeable {
     /**
      * 背景图片
      */
-    protected BufferedImage backgroundImage;
+    protected PDImageXObject backgroundImage;
     /**
      * 任务文档
      */
@@ -482,6 +487,62 @@ public class Document extends AbstractBase implements Closeable {
     }
 
     /**
+     * 设置背景图片
+     *
+     * @param file 文件
+     */
+    @SneakyThrows
+    public void setBackgroundImage(File file) {
+        if (Objects.nonNull(file)) {
+            this.setBackgroundImage(Files.readAllBytes(file.toPath()));
+        } else {
+            this.backgroundImage =  null;
+        }
+    }
+
+    /**
+     * 设置背景图片
+     *
+     * @param inputStream 输入流
+     */
+    @SneakyThrows
+    public void setBackgroundImage(InputStream inputStream) {
+        if (Objects.nonNull(inputStream)) {
+            this.setBackgroundImage(IOUtils.toByteArray(inputStream));
+        } else {
+            this.backgroundImage =  null;
+        }
+    }
+
+    /**
+     * 设置背景图片
+     *
+     * @param image 图片
+     */
+    @SneakyThrows
+    public void setBackgroundImage(BufferedImage image) {
+        if (Objects.nonNull(image)) {
+            this.setBackgroundImage(ImageUtil.toBytes(image, ImageType.PNG.getType()));
+        } else {
+            this.backgroundImage =  null;
+        }
+    }
+
+    /**
+     * 设置背景图片
+     *
+     * @param bytes 字节数组
+     */
+    @SneakyThrows
+    public void setBackgroundImage(byte[] bytes) {
+        if (Objects.nonNull(bytes)) {
+            this.backgroundImage = CommonUtil.createImage(this.getContext(), bytes);
+        } else {
+            this.backgroundImage =  null;
+        }
+    }
+
+    /**
      * 获取总页数
      *
      * @return 返回总页数
@@ -722,7 +783,7 @@ public class Document extends AbstractBase implements Closeable {
             processor.flush();
         }
         // 保存文档
-        this.getTarget().save(outputStream, new CompressParameters(500));
+        this.getTarget().save(outputStream, new CompressParameters(300));
     }
 
     /**
