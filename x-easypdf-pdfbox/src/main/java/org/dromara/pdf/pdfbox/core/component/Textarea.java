@@ -3,16 +3,6 @@ package org.dromara.pdf.pdfbox.core.component;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.pdmodel.font.PDFontDescriptor;
-import org.apache.pdfbox.pdmodel.interactive.action.PDAction;
-import org.apache.pdfbox.pdmodel.interactive.action.PDActionGoTo;
-import org.apache.pdfbox.pdmodel.interactive.action.PDActionURI;
-import org.apache.pdfbox.pdmodel.interactive.annotation.*;
-import org.apache.pdfbox.pdmodel.interactive.documentnavigation.destination.PDPageXYZDestination;
-import org.apache.pdfbox.util.Matrix;
 import org.dromara.pdf.pdfbox.core.base.*;
 import org.dromara.pdf.pdfbox.core.base.config.FontConfiguration;
 import org.dromara.pdf.pdfbox.core.enums.ComponentType;
@@ -24,6 +14,16 @@ import org.dromara.pdf.pdfbox.core.ext.handler.tokenizer.AbstractTokenizer;
 import org.dromara.pdf.pdfbox.core.info.CatalogInfo;
 import org.dromara.pdf.pdfbox.support.Constants;
 import org.dromara.pdf.pdfbox.util.*;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.font.PDFont;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.font.PDFontDescriptor;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.action.PDAction;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.action.PDActionGoTo;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.action.PDActionURI;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.annotation.*;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.documentnavigation.destination.PDPageXYZDestination;
+import org.dromara.pdf.shade.org.apache.pdfbox.util.Matrix;
 
 import java.awt.*;
 import java.util.*;
@@ -144,6 +144,7 @@ public class Textarea extends AbstractComponent {
     public Textarea(Page page) {
         super(page);
         this.fontConfiguration = new FontConfiguration(page.getFontConfiguration());
+        this.context.addFontCache(this.fontConfiguration.getFontName());
     }
 
     /**

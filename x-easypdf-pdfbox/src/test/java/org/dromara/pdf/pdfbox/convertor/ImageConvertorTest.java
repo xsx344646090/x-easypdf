@@ -31,11 +31,24 @@ public class ImageConvertorTest extends BaseTest {
      */
     @Test
     public void toPdfTest() {
-        this.test(() -> {
-            ImageConvertor convertor = PdfHandler.getDocumentConvertor().getImageConvertor();
-            convertor.toPdf(new File("E:\\PDF\\pdfbox\\test.jpg"));
-            Document document = convertor.flush();
-            document.saveAndClose("E:\\PDF\\pdfbox\\convertor\\image\\x-easypdf.pdf");
-        });
+        for (int k = 0; k < 1; k++) {
+            this.test(() -> {
+                File[] files = new File("E:\\PDF\\pdfbox\\convertor\\image\\jpeg").listFiles();
+                ImageConvertor convertor = PdfHandler.getDocumentConvertor().getImageConvertor();
+                convertor.toPdf(files);
+                Document document = convertor.flush();
+                document.saveAndClose("E:\\PDF\\pdfbox\\convertor\\image\\x-easypdf1.pdf");
+                System.out.println("内存占用：" + Runtime.getRuntime().totalMemory() / 1024 / 1024);
+            });
+
+            this.test(() -> {
+                File[] files = new File("E:\\PDF\\pdfbox\\convertor\\image\\png").listFiles();
+                ImageConvertor convertor = PdfHandler.getDocumentConvertor().getImageConvertor();
+                convertor.toPdf(files);
+                Document document = convertor.flush();
+                document.saveAndClose("E:\\PDF\\pdfbox\\convertor\\image\\x-easypdf2.pdf");
+                System.out.println("内存占用：" + Runtime.getRuntime().totalMemory() / 1024 / 1024);
+            });
+        }
     }
 }

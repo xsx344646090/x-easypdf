@@ -1,8 +1,8 @@
 package org.dromara.pdf.pdfbox.core.ext.extractor;
 
 import lombok.EqualsAndHashCode;
-import org.apache.pdfbox.text.PDFTextStripper;
 import org.dromara.pdf.pdfbox.core.base.Document;
+import org.dromara.pdf.shade.org.apache.pdfbox.text.PDFTextStripper;
 
 import java.awt.*;
 import java.util.HashMap;

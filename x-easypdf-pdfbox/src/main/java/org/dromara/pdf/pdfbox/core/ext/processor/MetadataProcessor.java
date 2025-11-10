@@ -2,13 +2,13 @@ package org.dromara.pdf.pdfbox.core.ext.processor;
 
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
-import org.apache.pdfbox.pdmodel.common.PDMetadata;
-import org.apache.xmpbox.XMPMetadata;
-import org.apache.xmpbox.schema.*;
-import org.apache.xmpbox.xml.DomXmpParser;
-import org.apache.xmpbox.xml.XmpSerializer;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.support.Constants;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.common.PDMetadata;
+import org.dromara.pdf.shade.org.apache.xmpbox.XMPMetadata;
+import org.dromara.pdf.shade.org.apache.xmpbox.schema.*;
+import org.dromara.pdf.shade.org.apache.xmpbox.xml.DomXmpParser;
+import org.dromara.pdf.shade.org.apache.xmpbox.xml.XmpSerializer;
 
 import java.io.ByteArrayOutputStream;
 import java.util.*;

@@ -1,16 +1,16 @@
 package org.dromara.pdf.pdfbox.core.ext.extractor;
 
 import lombok.SneakyThrows;
-import org.apache.pdfbox.cos.COSName;
-import org.apache.pdfbox.pdmodel.PDResources;
-import org.apache.pdfbox.pdmodel.graphics.PDXObject;
-import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
-import org.apache.pdfbox.pdmodel.graphics.image.PDImage;
-import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
-import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceCharacteristicsDictionary;
-import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
-import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 import org.dromara.pdf.pdfbox.core.base.Document;
+import org.dromara.pdf.shade.org.apache.pdfbox.cos.COSName;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDResources;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.graphics.PDXObject;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.graphics.image.PDImage;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceCharacteristicsDictionary;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.form.PDField;
 
 import java.awt.image.BufferedImage;
 import java.util.HashMap;

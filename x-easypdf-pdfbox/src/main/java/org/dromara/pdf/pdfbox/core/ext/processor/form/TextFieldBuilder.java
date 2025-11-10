@@ -2,15 +2,15 @@ package org.dromara.pdf.pdfbox.core.ext.processor.form;
 
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
-import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
-import org.apache.pdfbox.pdmodel.interactive.form.PDField;
-import org.apache.pdfbox.pdmodel.interactive.form.PDTextField;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.base.Size;
 import org.dromara.pdf.pdfbox.core.enums.HorizontalAlignment;
 import org.dromara.pdf.pdfbox.support.Constants;
 import org.dromara.pdf.pdfbox.util.ColorUtil;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.form.PDField;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.form.PDTextField;
 
 import java.awt.*;
 import java.util.Optional;

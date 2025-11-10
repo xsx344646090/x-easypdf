@@ -1,7 +1,7 @@
 package org.dromara.pdf.pdfbox.extractor;
 
-import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
-import org.apache.pdfbox.pdmodel.interactive.form.PDField;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.form.PDField;
 import org.dromara.pdf.pdfbox.base.BaseTest;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.ext.extractor.DocumentExtractor;
@@ -146,7 +146,7 @@ public class DocumentExtractorTest extends BaseTest {
     public void extractImageTest() {
         this.test(() -> {
             try (
-                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\extractor\\hello-world.pdf");
+                    Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\document\\bigDataTest1-itext.pdf");
                     DocumentExtractor extractor = PdfHandler.getDocumentExtractor(document);
             ) {
                 Map<Integer, List<BufferedImage>> map = extractor.extractImage();

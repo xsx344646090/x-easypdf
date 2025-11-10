@@ -9,9 +9,6 @@ import org.junit.Test;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * @author xsx
@@ -38,17 +35,12 @@ public class HtmlConvertorTest extends BaseTest {
     public void toPdfWithLocalTest() {
         HtmlConvertor convertor = PdfHandler.getDocumentConvertor().getHtmlConvertor();
         convertor.setMargin(10F);
-        List<CompletableFuture<?>> list = new ArrayList<>(50);
-        for (int i = 0; i < 50; i++) {
-            int finalI = i;
-            list.add(CompletableFuture.runAsync(() -> {
-                this.test(() -> {
-                    Document document = convertor.toPdf("E:\\PDF\\pdfbox\\convertor\\html\\test1.html");
-                    document.saveAndClose("E:\\PDF\\pdfbox\\convertor\\html\\test" + finalI + ".pdf");
-                });
-            }));
+        for (int i = 0; i < 10; i++) {
+            this.test(() -> {
+                Document document = convertor.toPdf(new File("E:\\PDF\\pdfbox\\convertor\\html\\test1.html"));
+                document.saveAndClose("E:\\PDF\\pdfbox\\convertor\\html\\test.pdf");
+            });
         }
-        CompletableFuture.allOf(list.toArray(new CompletableFuture[0])).join();
     }
 
     /**

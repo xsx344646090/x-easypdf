@@ -3,8 +3,8 @@ package org.dromara.pdf.pdfbox.core.base;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.dromara.pdf.pdfbox.core.base.config.BorderConfiguration;
-import org.dromara.pdf.pdfbox.core.enums.LineStyle;
 import org.dromara.pdf.pdfbox.core.enums.LineCapStyle;
+import org.dromara.pdf.pdfbox.core.enums.LineStyle;
 
 import java.awt.*;
 import java.util.Objects;

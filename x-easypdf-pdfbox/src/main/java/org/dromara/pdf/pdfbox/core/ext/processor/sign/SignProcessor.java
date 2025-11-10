@@ -1,20 +1,20 @@
 package org.dromara.pdf.pdfbox.core.ext.processor.sign;
 
 import lombok.SneakyThrows;
-import org.apache.pdfbox.cos.*;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
-import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceDictionary;
-import org.apache.pdfbox.pdmodel.interactive.digitalsignature.ExternalSigningSupport;
-import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
-import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureOptions;
-import org.apache.pdfbox.pdmodel.interactive.form.*;
-import org.apache.pdfbox.util.Hex;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.ext.processor.AbstractProcessor;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
+import org.dromara.pdf.shade.org.apache.pdfbox.cos.*;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDDocument;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceDictionary;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.digitalsignature.ExternalSigningSupport;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureOptions;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.form.*;
+import org.dromara.pdf.shade.org.apache.pdfbox.util.Hex;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;

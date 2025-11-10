@@ -58,24 +58,26 @@ public class TextareaWatermarkTest extends BaseTest {
      */
     @Test
     public void pageTest() {
-        Document document = PdfHandler.getDocumentHandler().create();
+        this.test(()->{
+            Document document = PdfHandler.getDocumentHandler().create();
 
-        Page page = new Page(document);
-        document.appendPage(page);
-        document.appendPage(new Page(document));
+            Page page = new Page(document);
+            document.appendPage(page);
+            document.appendPage(new Page(document));
 
-        TextareaWatermark watermark = new TextareaWatermark(document);
-        watermark.setTextList(Arrays.asList("test\ttest", "test123"));
-        watermark.setBeginX(30F);
-        watermark.setBeginY(770F);
-        watermark.setLines(15);
-        watermark.setCountOfLine(5);
-        watermark.setSpacingOfLine(80F);
-        watermark.setLeading(50F);
-        watermark.setFontAlpha(0.2F);
-        watermark.setAngle(30F);
-        watermark.render(page);
+            TextareaWatermark watermark = new TextareaWatermark(document);
+            watermark.setTextList(Arrays.asList("test\ttest", "test123"));
+            watermark.setBeginX(30F);
+            watermark.setBeginY(770F);
+            watermark.setLines(15);
+            watermark.setCountOfLine(5);
+            watermark.setSpacingOfLine(80F);
+            watermark.setLeading(50F);
+            watermark.setFontAlpha(0.2F);
+            watermark.setAngle(30F);
+            watermark.render(page);
 
-        document.save("E:\\PDF\\pdfbox\\watermark\\textarea\\pageTest.pdf");
+            document.saveAndClose("E:\\PDF\\pdfbox\\watermark\\textarea\\pageTest.pdf");
+        });
     }
 }

@@ -2,8 +2,8 @@ package org.dromara.pdf.pdfbox.core.info;
 
 import lombok.Builder;
 import lombok.Data;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.interactive.form.PDField;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDPage;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.form.PDField;
 
 /**
  * 表单字段信息

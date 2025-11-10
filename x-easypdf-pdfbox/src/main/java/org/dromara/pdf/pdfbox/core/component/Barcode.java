@@ -10,16 +10,15 @@ import com.google.zxing.qrcode.encoder.QRCode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.dromara.pdf.pdfbox.core.base.BorderData;
 import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.enums.*;
 import org.dromara.pdf.pdfbox.handler.FontHandler;
 import org.dromara.pdf.pdfbox.util.BorderUtil;
-import org.dromara.pdf.pdfbox.util.CacheUtil;
 import org.dromara.pdf.pdfbox.util.CommonUtil;
 import org.dromara.pdf.pdfbox.util.ImageUtil;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -432,9 +431,12 @@ public class Barcode extends AbstractComponent {
     @SneakyThrows
     protected PDImageXObject getImageXObject() {
         if (this.isCache) {
-            return CommonUtil.createImage(this.getContext().getTargetDocument(), CacheUtil.getImage(this.cacheKey(), () -> ImageUtil.toBytes(this.createBarcodeImage(), ImageType.PNG.getType())));
+            return this.getContext().getImageCache().computeIfAbsent(
+                    this.cacheKey(),
+                    key -> CommonUtil.createImage(this.getContext().getTargetDocument(), ImageUtil.toBytes(this.createBarcodeImage(), ImageType.JPEG.getType()))
+            );
         }
-        return CommonUtil.createImage(this.getContext().getTargetDocument(), ImageUtil.toBytes(this.createBarcodeImage(), ImageType.PNG.getType()));
+        return CommonUtil.createImage(this.getContext().getTargetDocument(), ImageUtil.toBytes(this.createBarcodeImage(), ImageType.JPEG.getType()));
     }
 
     /**

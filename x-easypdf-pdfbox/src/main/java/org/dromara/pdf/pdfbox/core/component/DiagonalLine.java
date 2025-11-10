@@ -3,11 +3,11 @@ package org.dromara.pdf.pdfbox.core.component;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.enums.ComponentType;
 import org.dromara.pdf.pdfbox.core.enums.LineCapStyle;
 import org.dromara.pdf.pdfbox.util.CommonUtil;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDPageContentStream;
 
 import java.awt.*;
 import java.util.Objects;
@@ -33,7 +33,7 @@ import java.util.Objects;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class DiagonalLine extends AbstractComponent {
-    
+
     /**
      * 线宽
      */
@@ -58,7 +58,7 @@ public class DiagonalLine extends AbstractComponent {
      * Y轴结束坐标
      */
     protected Float endY;
-    
+
     /**
      * 有参构造
      *
@@ -67,7 +67,7 @@ public class DiagonalLine extends AbstractComponent {
     public DiagonalLine(Page page) {
         super(page);
     }
-    
+
     /**
      * 获取类型
      *
@@ -77,7 +77,7 @@ public class DiagonalLine extends AbstractComponent {
     public ComponentType getType() {
         return ComponentType.DIAGONAL_LINE;
     }
-    
+
     /**
      * 初始化
      */
@@ -108,7 +108,7 @@ public class DiagonalLine extends AbstractComponent {
             this.alpha = 1.0F;
         }
     }
-    
+
     /**
      * 获取最小宽度
      *
@@ -118,7 +118,7 @@ public class DiagonalLine extends AbstractComponent {
     protected float getMinWidth() {
         return 0F;
     }
-    
+
     /**
      * 写入内容
      */
@@ -131,7 +131,7 @@ public class DiagonalLine extends AbstractComponent {
             processRotation();
         }
     }
-    
+
     /**
      * 处理旋转
      */
@@ -158,7 +158,7 @@ public class DiagonalLine extends AbstractComponent {
         // 关闭内容流
         stream.close();
     }
-    
+
     /**
      * 处理非旋转
      */
@@ -175,7 +175,7 @@ public class DiagonalLine extends AbstractComponent {
         // 关闭内容流
         stream.close();
     }
-    
+
     /**
      * 重置
      */
@@ -184,7 +184,7 @@ public class DiagonalLine extends AbstractComponent {
         // 重置
         super.reset(this.getType(), this.getEndX(), this.getEndY());
     }
-    
+
     /**
      * 初始化内容流
      *

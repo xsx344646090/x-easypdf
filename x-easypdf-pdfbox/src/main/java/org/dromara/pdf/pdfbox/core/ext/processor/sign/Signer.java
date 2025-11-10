@@ -1,8 +1,8 @@
 package org.dromara.pdf.pdfbox.core.ext.processor.sign;
 
-import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
-import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureInterface;
 import org.bouncycastle.cms.CMSTypedData;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureInterface;
 
 import java.io.InputStream;
 

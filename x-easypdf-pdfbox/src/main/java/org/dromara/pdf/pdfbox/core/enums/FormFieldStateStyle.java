@@ -1,6 +1,6 @@
 package org.dromara.pdf.pdfbox.core.enums;
 
-import org.apache.pdfbox.cos.COSString;
+import org.dromara.pdf.shade.org.apache.pdfbox.cos.COSString;
 
 /**
  * 单选字段样式

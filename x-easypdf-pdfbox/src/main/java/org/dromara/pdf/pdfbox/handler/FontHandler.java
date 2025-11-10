@@ -3,16 +3,12 @@ package org.dromara.pdf.pdfbox.handler;
 import lombok.SneakyThrows;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.fontbox.ttf.TrueTypeFont;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.font.FontFormat;
-import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.enums.FontType;
 import org.dromara.pdf.pdfbox.support.Constants;
-import org.dromara.pdf.pdfbox.support.fonts.FontInfo;
-import org.dromara.pdf.pdfbox.support.fonts.FontMapperImpl;
+import org.dromara.pdf.shade.org.apache.fontbox.ttf.TrueTypeFont;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDDocument;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.font.*;
 
 import java.io.File;
 import java.io.InputStream;
@@ -131,10 +127,15 @@ public class FontHandler {
     @SneakyThrows
     public PDFont getPDFont(PDDocument document, String fontName, boolean embedSubset) {
         FontInfo fontInfo = FontMapperImpl.getInstance().getFontInfoByName().get(fontName);
-        if (Objects.nonNull(fontInfo) && fontInfo.getFormat() == FontFormat.OTF) {
-            embedSubset = false;
+        if (Objects.nonNull(fontInfo)) {
+            if (fontInfo.getFormat() == FontFormat.OTF) {
+                embedSubset = false;
+            }
+            return PDType0Font.load(document, (TrueTypeFont) fontInfo.getFont(), embedSubset);
+        } else {
+            log.warn("Not found the font['" + fontName + "'], use default font");
+            return PDType0Font.load(document, this.getDefaultFont(), embedSubset);
         }
-        return PDType0Font.load(document, this.getTrueTypeFont(fontName), embedSubset);
     }
 
     /**
@@ -146,6 +147,16 @@ public class FontHandler {
     public TrueTypeFont getTrueTypeFont(String fontName) {
         FontInfo fontInfo = FontMapperImpl.getInstance().getFontInfoByName().get(fontName);
         return FontMapperImpl.getInstance().getTrueTypeFont(Optional.ofNullable(fontInfo).map(FontInfo::getPostScriptName).orElse(fontName), null).getFont();
+    }
+
+    /**
+     * 获取默认字体
+     *
+     * @return 返回字体
+     */
+    public TrueTypeFont getDefaultFont() {
+        FontInfo fontInfo = FontMapperImpl.getInstance().getFontInfoByName().get(Constants.DEFAULT_FONT_NAME);
+        return (TrueTypeFont) fontInfo.getFont();
     }
 
     /**
@@ -197,7 +208,7 @@ public class FontHandler {
      * @param type        字体类型
      */
     public void addFont(InputStream inputStream, String alias, FontType type) {
-        FontMapperImpl.getInstance().getProvider().addFont(inputStream, alias, type);
+        FontMapperImpl.getInstance().getProvider().addFont(inputStream, alias, type.name().toLowerCase());
     }
 
     /**

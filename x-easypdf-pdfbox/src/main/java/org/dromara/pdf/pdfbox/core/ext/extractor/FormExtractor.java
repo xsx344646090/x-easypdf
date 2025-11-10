@@ -1,8 +1,8 @@
 package org.dromara.pdf.pdfbox.core.ext.extractor;
 
 import lombok.EqualsAndHashCode;
-import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 import org.dromara.pdf.pdfbox.core.base.Document;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.form.PDField;
 
 import java.awt.image.BufferedImage;
 import java.util.Map;

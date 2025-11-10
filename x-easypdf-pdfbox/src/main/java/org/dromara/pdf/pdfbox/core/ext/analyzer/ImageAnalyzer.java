@@ -1,8 +1,8 @@
 package org.dromara.pdf.pdfbox.core.ext.analyzer;
 
 import lombok.SneakyThrows;
-import org.apache.pdfbox.pdmodel.PDPage;
 import org.dromara.pdf.pdfbox.core.base.Document;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDPage;
 
 import java.util.LinkedHashSet;
 import java.util.Objects;

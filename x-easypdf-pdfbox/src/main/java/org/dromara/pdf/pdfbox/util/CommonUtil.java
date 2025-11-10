@@ -2,22 +2,22 @@ package org.dromara.pdf.pdfbox.util;
 
 import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
-import org.apache.pdfbox.cos.COSName;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.PDResources;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.pdmodel.graphics.PDXObject;
-import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
-import org.apache.pdfbox.pdmodel.graphics.image.PDImage;
-import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
-import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
-import org.apache.pdfbox.util.Matrix;
 import org.dromara.pdf.pdfbox.core.base.Context;
 import org.dromara.pdf.pdfbox.core.component.TableRow;
 import org.dromara.pdf.pdfbox.core.enums.ContentMode;
 import org.dromara.pdf.pdfbox.core.enums.FontStyle;
+import org.dromara.pdf.shade.org.apache.pdfbox.cos.COSName;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDDocument;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDPage;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDResources;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.graphics.PDXObject;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.graphics.image.PDImage;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
+import org.dromara.pdf.shade.org.apache.pdfbox.util.Matrix;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -210,28 +210,13 @@ public class CommonUtil {
     /**
      * 创建图像对象
      *
-     * @param context    上下文
-     * @param imageBytes 图像
-     * @return 返回图像对象
-     */
-    public static PDImageXObject createImage(Context context, byte[] imageBytes) {
-        return createImage(context.getTargetDocument(), CacheUtil.getImage(getImageDigest(imageBytes), () -> ImageUtil.resetBytes(imageBytes)));
-    }
-
-    /**
-     * 创建图像对象
-     *
      * @param document   文档
      * @param imageBytes 图像
      * @return 返回图像对象
      */
     @SneakyThrows
     public static PDImageXObject createImage(PDDocument document, byte[] imageBytes) {
-        return PDImageXObject.createFromByteArray(
-                document,
-                ImageUtil.resetBytes(imageBytes),
-                "unknown"
-        );
+        return PDImageXObject.createFromByteArray(document, ImageUtil.resetBytes(imageBytes), "unknown");
     }
 
     /**

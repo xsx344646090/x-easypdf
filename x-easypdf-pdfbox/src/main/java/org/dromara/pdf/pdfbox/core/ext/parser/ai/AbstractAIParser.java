@@ -7,7 +7,6 @@ import lombok.Setter;
 import lombok.SneakyThrows;
 import okhttp3.Headers;
 import okhttp3.OkHttpClient;
-import org.apache.pdfbox.text.PDFTextStripper;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.enums.ImageType;
 import org.dromara.pdf.pdfbox.core.ext.analyzer.DocumentAnalyzer;
@@ -17,6 +16,7 @@ import org.dromara.pdf.pdfbox.core.info.ImageInfo;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.dromara.pdf.pdfbox.util.HttpUtil;
 import org.dromara.pdf.pdfbox.util.ImageUtil;
+import org.dromara.pdf.shade.org.apache.pdfbox.text.PDFTextStripper;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;

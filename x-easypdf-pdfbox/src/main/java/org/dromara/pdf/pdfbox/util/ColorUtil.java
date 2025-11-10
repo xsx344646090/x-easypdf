@@ -1,8 +1,8 @@
 package org.dromara.pdf.pdfbox.util;
 
 import lombok.SneakyThrows;
-import org.apache.pdfbox.pdmodel.graphics.color.PDColor;
-import org.apache.pdfbox.pdmodel.graphics.color.PDDeviceRGB;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.graphics.color.PDColor;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.graphics.color.PDDeviceRGB;
 
 import java.awt.*;
 import java.util.Objects;

@@ -2,11 +2,11 @@ package org.dromara.pdf.pdfbox.core.ext.handler.tokenizer;
 
 import lombok.Setter;
 import lombok.SneakyThrows;
-import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.dromara.pdf.pdfbox.core.base.Context;
 import org.dromara.pdf.pdfbox.core.base.config.FontConfiguration;
 import org.dromara.pdf.pdfbox.core.component.TextLineInfo;
 import org.dromara.pdf.pdfbox.util.TextUtil;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.font.PDFont;
 
 import java.util.List;
 

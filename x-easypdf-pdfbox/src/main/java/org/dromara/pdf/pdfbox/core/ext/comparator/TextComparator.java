@@ -1,9 +1,9 @@
 package org.dromara.pdf.pdfbox.core.ext.comparator;
 
 import lombok.SneakyThrows;
-import org.apache.pdfbox.text.PDFTextStripper;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.info.TextCompareInfo;
+import org.dromara.pdf.shade.org.apache.pdfbox.text.PDFTextStripper;
 
 import java.util.*;
 
