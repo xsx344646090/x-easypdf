@@ -5,11 +5,11 @@
     <parent>
         <groupId>org.dromara</groupId>
         <artifactId>x-easypdf-parent</artifactId>
-        <version>${project.build.version}</version>
+        <version>3.5.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>x-easypdf-fop</artifactId>
-    <version>${project.build.version}</version>
+    <version>3.5.0</version>
     <packaging>jar</packaging>
     <name>x-easypdf-fop</name>
     <url>https://www.x-easypdf.cn</url>
@@ -58,34 +58,18 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>3.2.0</version>
+                        <version>3.1.0</version>
                         <configuration>
                             <encoding>utf8</encoding>
-                            <doclint>none</doclint>
-                            <sourcepath>target/generated-sources/delombok</sourcepath>
+                            <additionalOptions>
+                                <additionalOption>-Xdoclint:none</additionalOption>
+                            </additionalOptions>
                         </configuration>
                         <executions>
                             <execution>
-                                <id>attach-javadocs</id>
                                 <phase>package</phase>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.projectlombok</groupId>
-                        <artifactId>lombok-maven-plugin</artifactId>
-                        <version>1.18.12.0</version>
-                        <configuration>
-                            <encoding>UTF-8</encoding>
-                            <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
-                            <outputDirectory>target/generated-sources/delombok</outputDirectory>
-                            <addOutputDirectory>false</addOutputDirectory>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <phase>generate-sources</phase>
                                 <goals>
-                                    <goal>delombok</goal>
+                                    <goal>jar</goal>
                                 </goals>
                             </execution>
                         </executions>
@@ -181,10 +165,6 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.pdfbox</groupId>
-            <artifactId>fontbox</artifactId>
         </dependency>
         <dependency>
             <groupId>com.google.zxing</groupId>

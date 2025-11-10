@@ -4,17 +4,16 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.dromara</groupId>
     <artifactId>x-easypdf-parent</artifactId>
-    <version>${project.build.version}</version>
+    <version>3.5.0</version>
     <packaging>pom</packaging>
     <name>x-easypdf-parent</name>
     <url>https://www.x-easypdf.cn</url>
     <description>Parent module for x-easypdf</description>
 
     <properties>
-        <project.build.version>3.4.7</project.build.version>
         <java.version>1.8</java.version>
         <lombok.version>1.18.36</lombok.version>
-        <pdfbox.version>3.0.5</pdfbox.version>
+        <shade-pdfbox.version>3.5.3</shade-pdfbox.version>
         <jbig2-imageio.version>3.0.4</jbig2-imageio.version>
         <jai-imageio.version>1.4.0</jai-imageio.version>
         <webp-imageio.version>0.4.1</webp-imageio.version>
@@ -31,7 +30,7 @@
         <enjoy.version>5.2.5</enjoy.version>
         <velocity.version>2.4.1</velocity.version>
         <documents4j.version>1.1.12</documents4j.version>
-        <playwright.version>1.53.0</playwright.version>
+        <playwright.version>1.56.0</playwright.version>
         <okhttp.version>4.12.0</okhttp.version>
         <fastjson.version>2.0.57</fastjson.version>
         <slf4j.version>2.0.16</slf4j.version>
@@ -135,7 +134,6 @@
                 <configuration>
                     <encoding>utf8</encoding>
                     <doclint>none</doclint>
-                    <sourcepath>target/generated-sources/delombok</sourcepath>
                 </configuration>
                 <executions>
                     <execution>
@@ -144,50 +142,6 @@
                         <goals>
                             <goal>javadoc</goal>
                             <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok-maven-plugin</artifactId>
-                <version>1.18.12.0</version>
-                <configuration>
-                    <encoding>UTF-8</encoding>
-                    <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
-                    <outputDirectory>target/generated-sources/delombok</outputDirectory>
-                    <addOutputDirectory>false</addOutputDirectory>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>delombok</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>flatten-maven-plugin</artifactId>
-                <version>1.2.7</version>
-                <configuration>
-                    <updatePomFile>true</updatePomFile>
-                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>flatten</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>flatten</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>flatten.clean</id>
-                        <phase>clean</phase>
-                        <goals>
-                            <goal>clean</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -211,33 +165,9 @@
             </dependency>
 
             <dependency>
-                <groupId>org.apache.pdfbox</groupId>
-                <artifactId>pdfbox</artifactId>
-                <version>${pdfbox.version}</version>
-                <optional>true</optional>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.pdfbox</groupId>
-                <artifactId>fontbox</artifactId>
-                <version>${pdfbox.version}</version>
-                <optional>true</optional>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.pdfbox</groupId>
-                <artifactId>preflight</artifactId>
-                <version>${pdfbox.version}</version>
-                <optional>true</optional>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.pdfbox</groupId>
-                <artifactId>xmpbox</artifactId>
-                <version>${pdfbox.version}</version>
-                <optional>true</optional>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.pdfbox</groupId>
-                <artifactId>pdfbox-tools</artifactId>
-                <version>${pdfbox.version}</version>
+                <groupId>org.dromara</groupId>
+                <artifactId>x-easypdf-shade-pdfbox</artifactId>
+                <version>${shade-pdfbox.version}</version>
                 <optional>true</optional>
             </dependency>
             <dependency>
