@@ -108,13 +108,13 @@ public class FileUtil {
      * @return 返回字体缓存文件
      */
     public static File getFontCacheFile() {
-        String path = Constants.FONT_CACHE_PATH;
+        String path = System.getProperty(Constants.FONT_CACHE_PATH);
         if (path == null || !new File(path).isDirectory() || !new File(path).canWrite()) {
             path = Constants.USER_HOME_PATH;
             if (path == null || !new File(path).isDirectory() || !new File(path).canWrite()) {
                 path = Constants.TEMP_FILE_PATH;
             }
         }
-        return new File(path, Constants.FONT_CACHE_SUFFIX_NAME);
+        return new File(path, Constants.FONT_CACHE_NAME);
     }
 }

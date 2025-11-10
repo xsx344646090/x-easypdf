@@ -2,14 +2,14 @@ package org.dromara.pdf.pdfbox.core.ext.processor;
 
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
-import org.apache.pdfbox.rendering.PDFRenderer;
-import org.apache.pdfbox.tools.imageio.ImageIOUtil;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.enums.ImageType;
 import org.dromara.pdf.pdfbox.core.enums.RenderType;
 import org.dromara.pdf.pdfbox.util.FileUtil;
 import org.dromara.pdf.pdfbox.util.ImageUtil;
 import org.dromara.pdf.pdfbox.util.RenderingHintUtil;
+import org.dromara.pdf.shade.org.apache.pdfbox.rendering.PDFRenderer;
+import org.dromara.pdf.shade.org.apache.pdfbox.tools.imageio.ImageIOUtil;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -404,24 +404,24 @@ public class RenderProcessor extends AbstractProcessor {
      *
      * @return 返回颜色类型
      */
-    protected org.apache.pdfbox.rendering.ImageType getColorType() {
+    protected org.dromara.pdf.shade.org.apache.pdfbox.rendering.ImageType getColorType() {
         // 如果黑白，则返回BINARY类型
         if (this.isBinary) {
             // 返回BINARY类型
-            return org.apache.pdfbox.rendering.ImageType.BINARY;
+            return org.dromara.pdf.shade.org.apache.pdfbox.rendering.ImageType.BINARY;
         }
         // 如果灰度，则返回GRAY类型
         if (this.isGray) {
             // 返回GRAY类型
-            return org.apache.pdfbox.rendering.ImageType.GRAY;
+            return org.dromara.pdf.shade.org.apache.pdfbox.rendering.ImageType.GRAY;
         }
         // 如果透明，则返回ARGB类型
         if (this.isAlpha) {
             // 返回ARGB类型
-            return org.apache.pdfbox.rendering.ImageType.ARGB;
+            return org.dromara.pdf.shade.org.apache.pdfbox.rendering.ImageType.ARGB;
         }
         // 返回RGB类型
-        return org.apache.pdfbox.rendering.ImageType.RGB;
+        return org.dromara.pdf.shade.org.apache.pdfbox.rendering.ImageType.RGB;
     }
 
     /**

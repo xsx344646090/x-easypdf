@@ -1,7 +1,7 @@
 package org.dromara.pdf.pdfbox.core.enums;
 
 import lombok.Getter;
-import org.apache.pdfbox.pdmodel.graphics.state.RenderingMode;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.graphics.state.RenderingMode;
 
 /**
  * 字体样式

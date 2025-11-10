@@ -1,9 +1,9 @@
 package org.dromara.pdf.pdfbox.core.ext.extractor;
 
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.util.CommonUtil;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDPage;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDPageTree;
 
 import java.awt.image.BufferedImage;
 import java.util.*;

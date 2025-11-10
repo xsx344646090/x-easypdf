@@ -1,7 +1,7 @@
 package org.dromara.pdf.pdfbox.core.enums;
 
 import lombok.Getter;
-import org.apache.pdfbox.rendering.RenderDestination;
+import org.dromara.pdf.shade.org.apache.pdfbox.rendering.RenderDestination;
 
 /**
  * 渲染类型

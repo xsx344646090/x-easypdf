@@ -25,9 +25,9 @@ public enum ImageType {
     /**
      * jpeg
      */
-    JPEG("jpeg"),
-    JPE("jpeg"),
-    JPG("jpeg"),
+    JPEG("jpg"),
+    JPE("jpg"),
+    JPG("jpg"),
     /**
      * png
      */

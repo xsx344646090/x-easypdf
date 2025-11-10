@@ -1,7 +1,6 @@
 package org.dromara.pdf.pdfbox.core.ext.processor.sign;
 
 import lombok.SneakyThrows;
-import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.bouncycastle.asn1.*;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
@@ -20,6 +19,7 @@ import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.bouncycastle.util.Store;
 import org.dromara.pdf.pdfbox.support.Constants;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;

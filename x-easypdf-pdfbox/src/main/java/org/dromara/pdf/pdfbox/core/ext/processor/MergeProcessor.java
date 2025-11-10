@@ -2,15 +2,15 @@ package org.dromara.pdf.pdfbox.core.ext.processor;
 
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.base.MemoryPolicy;
 import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.dromara.pdf.pdfbox.support.Constants;
 import org.dromara.pdf.pdfbox.util.IdUtil;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDDocument;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDPage;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDPageTree;
 
 import java.io.File;
 import java.util.ArrayList;

@@ -2,10 +2,10 @@ package org.dromara.pdf.pdfbox.core.ext.analyzer;
 
 import lombok.Getter;
 import lombok.SneakyThrows;
-import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
-import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDDocumentOutline;
-import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 import org.dromara.pdf.pdfbox.core.base.Document;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDDocumentCatalog;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDDocumentOutline;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 
 import java.util.List;
 import java.util.Objects;

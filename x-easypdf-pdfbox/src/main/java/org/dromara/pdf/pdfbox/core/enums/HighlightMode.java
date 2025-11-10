@@ -1,6 +1,6 @@
 package org.dromara.pdf.pdfbox.core.enums;
 
-import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationLink;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationLink;
 
 /**
  * 高亮模式

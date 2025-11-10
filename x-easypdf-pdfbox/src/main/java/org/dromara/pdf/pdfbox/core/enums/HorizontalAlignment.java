@@ -1,7 +1,7 @@
 package org.dromara.pdf.pdfbox.core.enums;
 
 import lombok.Getter;
-import org.apache.pdfbox.pdmodel.interactive.form.PDVariableText;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.form.PDVariableText;
 
 /**
  * 水平对齐

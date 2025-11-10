@@ -151,13 +151,4 @@ public class DocumentProcessor extends AbstractProcessor {
     public AttachmentProcessor getAttachmentProcessor() {
         return new AttachmentProcessor(this.document);
     }
-
-    /**
-     * 获取线性化处理器
-     *
-     * @return 返回线性化处理器
-     */
-    public LinearizationProcessor getLinearizationProcessor() {
-        return new LinearizationProcessor(this.document);
-    }
 }

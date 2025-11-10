@@ -3,10 +3,10 @@ package org.dromara.pdf.pdfbox.core.ext.analyzer;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.info.*;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDPage;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDPageTree;
 
 import java.io.Closeable;
 import java.util.Objects;

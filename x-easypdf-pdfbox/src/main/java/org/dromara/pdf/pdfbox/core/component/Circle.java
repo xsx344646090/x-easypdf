@@ -3,10 +3,10 @@ package org.dromara.pdf.pdfbox.core.component;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.enums.ComponentType;
 import org.dromara.pdf.pdfbox.support.Constants;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDPageContentStream;
 
 import java.awt.*;
 import java.util.Objects;

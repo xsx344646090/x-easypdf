@@ -36,7 +36,7 @@ public class BigDataTest extends BaseTest {
      */
     @Test
     public void bigDataTest1() {
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 6; i++) {
             // 页面数：3465 耗时：2.531s 大小：8.56MB
             this.test(() -> {
                 PdfHandler.disableScanSystemFonts();

@@ -2,11 +2,11 @@ package org.dromara.pdf.pdfbox.core.ext.analyzer;
 
 import lombok.Getter;
 import org.apache.commons.logging.Log;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.text.PDFTextStripper;
-import org.apache.pdfbox.text.TextPosition;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.info.TextInfo;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.dromara.pdf.shade.org.apache.pdfbox.text.PDFTextStripper;
+import org.dromara.pdf.shade.org.apache.pdfbox.text.TextPosition;
 
 import java.util.HashSet;
 import java.util.List;

@@ -4,11 +4,14 @@ import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
+import com.microsoft.playwright.impl.driver.Driver;
 import com.microsoft.playwright.options.Margin;
 import com.microsoft.playwright.options.ScreenshotType;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
 import lombok.SneakyThrows;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.base.PageSize;
 import org.dromara.pdf.pdfbox.core.component.Image;
@@ -16,14 +19,17 @@ import org.dromara.pdf.pdfbox.core.enums.HorizontalAlignment;
 import org.dromara.pdf.pdfbox.core.enums.VerticalAlignment;
 import org.dromara.pdf.pdfbox.core.ext.convertor.AbstractConvertor;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
+import org.dromara.pdf.pdfbox.support.Constants;
+import org.dromara.pdf.pdfbox.util.IdUtil;
 import org.dromara.pdf.pdfbox.util.ImageUtil;
 import org.dromara.pdf.pdfbox.util.UnitUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -32,6 +38,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
+
+import static java.util.Arrays.asList;
 
 /**
  * html转换器
@@ -58,6 +66,10 @@ import java.util.function.Function;
 public class HtmlConvertor extends AbstractConvertor {
 
     /**
+     * 远程地址
+     */
+    protected static final String REMOTE_URL = System.getProperty(Constants.PLAYWRIGHT_URL);
+    /**
      * 本地线程
      */
     protected static final ThreadLocal<Page> THREAD_LOCAL = new ThreadLocal<>();
@@ -69,6 +81,11 @@ public class HtmlConvertor extends AbstractConvertor {
      * 单位
      */
     protected static final String UNIT = "px";
+
+    static {
+        // 初始化驱动
+        initDriver();
+    }
 
     /**
      * dpi
@@ -155,6 +172,24 @@ public class HtmlConvertor extends AbstractConvertor {
     public Document toPdf(String url) {
         this.init();
         return this.convertToPdf(url);
+    }
+
+    /**
+     * 转pdf
+     *
+     * @param htmlContent html内容
+     * @return 返回文档
+     */
+    @SneakyThrows
+    public Document toPdfWithContent(String htmlContent) {
+        this.init();
+        Path path = Paths.get(Constants.TEMP_FILE_PATH, String.join(".", IdUtil.get(), "html"));
+        Files.write(path, htmlContent.getBytes());
+        try {
+            return this.convertToPdf(path.toAbsolutePath().toString());
+        } finally {
+            Files.deleteIfExists(path);
+        }
     }
 
     /**
@@ -361,7 +396,7 @@ public class HtmlConvertor extends AbstractConvertor {
                 new Page.ScreenshotOptions()
                         .setType(ScreenshotType.PNG)
                         .setFullPage(true)
-                        .setOmitBackground(true)
+                        .setOmitBackground(false)
         ));
     }
 
@@ -484,6 +519,7 @@ public class HtmlConvertor extends AbstractConvertor {
      *
      * @return 返回页面
      */
+    @SneakyThrows
     @SuppressWarnings("all")
     protected Page initBrowserPage() {
         // 定义起始时间
@@ -497,8 +533,13 @@ public class HtmlConvertor extends AbstractConvertor {
         }
         // 创建playwright
         Playwright playwright = Playwright.create();
-        // 创建浏览器
-        Browser browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(true));
+        // 初始化浏览器
+        Browser browser;
+        if (Objects.isNull(REMOTE_URL)) {
+            browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setChannel("chromium"));
+        } else {
+            browser = playwright.chromium().connect("ws://" + REMOTE_URL);
+        }
         // 打印日志
         if (log.isInfoEnabled()) {
             end = System.currentTimeMillis();
@@ -515,6 +556,7 @@ public class HtmlConvertor extends AbstractConvertor {
                 new Thread(() -> {
                     browser.close();
                     playwright.close();
+                    THREAD_LOCAL.remove();
                 })
         );
         // 打印日志
@@ -534,9 +576,43 @@ public class HtmlConvertor extends AbstractConvertor {
      */
     protected String getNavigateUrl(String url) {
         try {
-            return Paths.get(url).toUri().toURL().toString();
+            return Paths.get(url).toUri().toString();
         } catch (Exception e) {
             return url;
+        }
+    }
+
+    /**
+     * 初始化驱动
+     */
+    protected static void initDriver() {
+        try {
+            Log log = LogFactory.getLog(HtmlConvertor.class);
+            if (log.isInfoEnabled()) {
+                log.info("Initializing browser driver...");
+            }
+            Driver driver = Driver.ensureDriverInstalled(Collections.emptyMap(), false);
+            if (Objects.isNull(REMOTE_URL)) {
+                if (log.isInfoEnabled()) {
+                    log.info("Checking and install chromium browser...");
+                }
+                ProcessBuilder pb = driver.createProcessBuilder();
+                pb.command().addAll(asList("install", "chromium", "--with-deps", "--no-shell"));
+                String version = Playwright.class.getPackage().getImplementationVersion();
+                if (version != null) {
+                    pb.environment().put("PW_CLI_DISPLAY_VERSION", version);
+                }
+                pb.inheritIO();
+                Process process = pb.start();
+                process.waitFor();
+            } else {
+                if (log.isInfoEnabled()) {
+                    log.info("Skipped chromium browser check because remote playwright is enabled...");
+                }
+            }
+            System.setProperty("PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD", "true");
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
         }
     }
 
@@ -546,16 +622,19 @@ public class HtmlConvertor extends AbstractConvertor {
     protected static class DefaultThreadPool {
 
         /**
-         * CPU密集型任务配置
+         * IO密集型任务配置
          */
         protected static ThreadPoolExecutor createPool() {
-            int count = Runtime.getRuntime().availableProcessors() + 1;
+            String coreSize = System.getProperty(Constants.THREAD_CORE_SIZE, "4");
+            String maxSize = System.getProperty(Constants.THREAD_MAX_SIZE, "40");
+            String keepAliveTime = System.getProperty(Constants.THREAD_KEEP_ALIVE_TIME, "60");
+            String queueSize = System.getProperty(Constants.THREAD_QUEUE_SIZE, "200");
             return new ThreadPoolExecutor(
-                    count,
-                    count,
-                    300L,
+                    Integer.parseInt(coreSize),
+                    Integer.parseInt(maxSize),
+                    Integer.parseInt(keepAliveTime),
                     TimeUnit.SECONDS,
-                    new ArrayBlockingQueue<>(200),
+                    new ArrayBlockingQueue<>(Integer.parseInt(queueSize)),
                     new DefaultThreadFactory(),
                     new ThreadPoolExecutor.CallerRunsPolicy()
             );
@@ -614,7 +693,7 @@ public class HtmlConvertor extends AbstractConvertor {
         /**
          * 有参构造
          */
-        public DefaultThread(@Nullable ThreadGroup group, Runnable target, @NotNull String name, long stackSize) {
+        public DefaultThread(ThreadGroup group, Runnable target, String name, long stackSize) {
             super(group, target, name, stackSize);
         }
     }

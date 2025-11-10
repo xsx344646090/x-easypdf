@@ -1,14 +1,15 @@
 package org.dromara.pdf.pdfbox.other;
 
-import com.itextpdf.io.font.PdfEncodings;
-import com.itextpdf.kernel.font.PdfFont;
-import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.io.image.ImageData;
+import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Image;
 import org.dromara.pdf.pdfbox.base.BaseTest;
 import org.junit.Test;
+
+import java.io.File;
 
 /**
  * @author xsx
@@ -33,16 +34,21 @@ public class ItextTest extends BaseTest {
      */
     @Test
     public void itextTest() {
+        long begin = System.currentTimeMillis();
         for (int k = 0; k < 5; k++) {
             this.test(this::create);
         }
+        long end = System.currentTimeMillis();
+        long diff = end - begin;
+        System.out.println("总耗时：" + diff / 1000D + "s");
     }
 
     public void create() {
+
         try {
-            String fontPath = "E:\\Workspace\\x-easypdf\\gitee\\x-easypdf-pdfbox\\src\\main\\resources\\org\\dromara\\pdf\\pdfbox\\ttf\\HarmonyOS_Sans_SC_Regular.ttf"; // 中文字体文件路径
+            // String fontPath = "E:\\Workspace\\x-easypdf\\gitee\\x-easypdf-pdfbox\\src\\main\\resources\\org\\dromara\\pdf\\pdfbox\\ttf\\HarmonyOS_Sans_SC_Regular.ttf"; // 中文字体文件路径
             // 加载中文字体
-            PdfFont font = PdfFontFactory.createFont(fontPath, PdfEncodings.IDENTITY_H);
+            // PdfFont font = PdfFontFactory.createFont(fontPath, PdfEncodings.IDENTITY_H);
 
             // Creating a PdfDocument object
             String dest = "E:\\PDF\\pdfbox\\document\\bigDataTest1-itext.pdf";
@@ -53,18 +59,26 @@ public class ItextTest extends BaseTest {
 
             // Creating a Document object
             Document doc = new Document(pdf);
-            doc.setMargins(50, 50, 50, 50);
+            // doc.setMargins(50, 50, 50, 50);
 
-            Paragraph paragraph = new Paragraph().setFont(font).setMultipliedLeading(0.6F);
+            // Paragraph paragraph = new Paragraph().setFont(font).setMultipliedLeading(0.6F);
 
-            StringBuilder builder = new StringBuilder();
-            for (int j = 0; j < 500000; j++) {
-                builder.append("测试内容").append(j);
+            // StringBuilder builder = new StringBuilder();
+            // for (int j = 0; j < 500000; j++) {
+            //     builder.append("测试内容").append(j);
+            // }
+            // paragraph.add(builder.toString());
+            //
+            // // Adding Paragraph to document
+            // doc.add(paragraph);
+            File file = new File("E:\\PDF\\pdfbox\\convertor\\image\\png");
+            File[] files = file.listFiles();
+            for (File file1 : files) {
+            //     ImageData imageData = ImageDataFactory.create("E:\\PDF\\pdfbox\\convertor\\image\\png\\0617d1895e15c7b299e13d06cb19e04f.jpeg.png"); // 替换为你的图片路径
+                ImageData imageData = ImageDataFactory.create(file1.getAbsolutePath()); // 替换为你的图片路径
+                Image image = new Image(imageData);
+                doc.add(image);
             }
-            paragraph.add(builder.toString());
-
-            // Adding Paragraph to document
-            doc.add(paragraph);
             // Closing the document
             System.out.println("内存占用：" + Runtime.getRuntime().totalMemory() / 1024 / 1024);
             doc.close();

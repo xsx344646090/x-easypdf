@@ -2,7 +2,7 @@ package org.dromara.pdf.pdfbox.core.info;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.font.PDFont;
 
 import java.util.List;
 import java.util.Objects;

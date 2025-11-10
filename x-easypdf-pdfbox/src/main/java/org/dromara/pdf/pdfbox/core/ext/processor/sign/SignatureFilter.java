@@ -1,6 +1,6 @@
 package org.dromara.pdf.pdfbox.core.ext.processor.sign;
 
-import org.apache.pdfbox.cos.COSName;
+import org.dromara.pdf.shade.org.apache.pdfbox.cos.COSName;
 
 /**
  * 签名过滤器

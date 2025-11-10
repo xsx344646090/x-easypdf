@@ -3,9 +3,6 @@ package org.dromara.pdf.pdfbox.core.component;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.util.Matrix;
 import org.dromara.pdf.pdfbox.core.base.AbstractBase;
 import org.dromara.pdf.pdfbox.core.base.Context;
 import org.dromara.pdf.pdfbox.core.base.Document;
@@ -17,6 +14,9 @@ import org.dromara.pdf.pdfbox.core.ext.handler.AbstractTextHandler;
 import org.dromara.pdf.pdfbox.support.Constants;
 import org.dromara.pdf.pdfbox.util.CommonUtil;
 import org.dromara.pdf.pdfbox.util.TextUtil;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.font.PDFont;
+import org.dromara.pdf.shade.org.apache.pdfbox.util.Matrix;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -100,6 +100,7 @@ public class TextareaWatermark extends AbstractBase implements Watermark {
     public TextareaWatermark(Document document) {
         super.setContext(document.getContext());
         this.fontConfiguration = new FontConfiguration();
+        this.context.addFontCache(this.fontConfiguration.getFontName());
         this.setLeading(100F);
         this.setFontSize(20F);
         this.setFontAlpha(0.5F);

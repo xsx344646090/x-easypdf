@@ -1,8 +1,8 @@
 package org.dromara.pdf.pdfbox.util;
 
 import lombok.SneakyThrows;
-import org.apache.pdfbox.tools.imageio.ImageIOUtil;
 import org.dromara.pdf.pdfbox.core.enums.ImageType;
+import org.dromara.pdf.shade.org.apache.pdfbox.tools.imageio.ImageIOUtil;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -124,7 +124,15 @@ public class ImageUtil {
      */
     @SneakyThrows
     public static void write(BufferedImage image, ImageType imageType, OutputStream outputStream) {
-        ImageIOUtil.writeImage(image, imageType.getType(), outputStream);
+        if (imageType == ImageType.JPEG || imageType == ImageType.JPE || imageType == ImageType.JPG) {
+            BufferedImage im = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
+            Graphics2D graphics = im.createGraphics();
+            graphics.drawImage(image,0,0, Color.white,null);
+            ImageIOUtil.writeImage(im, imageType.getType(), outputStream);
+            graphics.dispose();
+        }else {
+            ImageIOUtil.writeImage(image, imageType.getType(), outputStream);
+        }
     }
 
     /**
@@ -194,16 +202,10 @@ public class ImageUtil {
         }
         // j2k格式或webp
         else if (isJ2kImage(bytes) || isWebpImage(bytes)) {
-            try (
-                    // 定义输入流
-                    InputStream inputStream = new BufferedInputStream(new ByteArrayInputStream(bytes));
-                    // 定义输出流
-                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream(8192)
-            ) {
-                // 转码
-                write(read(inputStream), ImageType.PNG, outputStream);
+            // 定义输入流
+            try (InputStream inputStream = new BufferedInputStream(new ByteArrayInputStream(bytes));) {
                 // 重置字节数组
-                byteArray = outputStream.toByteArray();
+                byteArray = toBytes(read(inputStream), ImageType.PNG.getType());
             }
         }
         // 返回字节数组
@@ -225,8 +227,15 @@ public class ImageUtil {
         Objects.requireNonNull(imageType, "the image type can not be null");
         // 创建字节数组输出流
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream(8192)) {
-            // 写入图片
-            ImageIOUtil.writeImage(sourceImage, imageType, outputStream);
+            if (Objects.equals(imageType, ImageType.JPEG.getType())) {
+                BufferedImage im = new BufferedImage(sourceImage.getWidth(), sourceImage.getHeight(), BufferedImage.TYPE_INT_RGB);
+                Graphics2D graphics = im.createGraphics();
+                graphics.drawImage(sourceImage,0,0, Color.white,null);
+                ImageIOUtil.writeImage(im, ImageType.JPEG.getType(), outputStream);
+                graphics.dispose();
+            }else {
+                ImageIOUtil.writeImage(sourceImage, imageType, outputStream);
+            }
             // 返回字节数组
             return outputStream.toByteArray();
         }
@@ -595,9 +604,9 @@ public class ImageUtil {
         // 定义标记字节
         byte flag = SVG_BYTES1[index];
         // 遍历字节数组
-        for (int idx = 0; idx < bytes.length; idx++) {
+        for (int idx = 0; idx < maxLength; idx++) {
             // 到达指定长度
-            if (index == length || idx == maxLength) {
+            if (index == length) {
                 // 结束
                 break;
             }

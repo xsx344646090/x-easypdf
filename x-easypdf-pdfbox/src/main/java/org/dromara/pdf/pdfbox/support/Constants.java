@@ -55,9 +55,41 @@ public final class Constants {
      */
     public static final String CURRENT_PAGE_PLACEHOLDER = "${CPN}";
     /**
+     * 用户家目录路径
+     */
+    public static final String USER_HOME_PATH = System.getProperty("user.home");
+    /**
+     * 临时文件路径
+     */
+    public static final String TEMP_FILE_PATH = System.getProperty("java.io.tmpdir");
+    /**
+     * 字体缓存文件路径
+     */
+    public static final String FONT_CACHE_PATH = "x-easypdf.font.cache.path";
+    /**
+     * 字体缓存文件后缀名
+     */
+    public static final String FONT_CACHE_NAME = ".x-easypdf.font.cache";
+    /**
      * 字体扫描开关
      */
-    public static final String FONT_SCAN_SWITCH = "org.dromara.pdfbox.scan.font";
+    public static final String FONT_SCAN_SWITCH = "x-easypdf.font.scan";
+    /**
+     * 线程核心大小
+     */
+    public static final String THREAD_CORE_SIZE = "x-easypdf.thread.core.size";
+    /**
+     * 线程最大大小
+     */
+    public static final String THREAD_MAX_SIZE = "x-easypdf.thread.max.size";
+    /**
+     * 线程空闲时间
+     */
+    public static final String THREAD_KEEP_ALIVE_TIME = "x-easypdf.thread.keep.alive.time";
+    /**
+     * 线程队列大小
+     */
+    public static final String THREAD_QUEUE_SIZE = "x-easypdf.thread.queue.size";
     /**
      * 贝塞尔曲线系数
      */
@@ -127,22 +159,6 @@ public final class Constants {
      */
     public static final String DEFAULT_APPEARANCE = String.join("", "/", DEFAULT_FONT_NAME, " 10 Tf 0 g");
     /**
-     * 用户家目录路径
-     */
-    public static final String USER_HOME_PATH = System.getProperty("user.home");
-    /**
-     * 临时文件路径
-     */
-    public static final String TEMP_FILE_PATH = System.getProperty("java.io.tmpdir");
-    /**
-     * 字体缓存文件路径
-     */
-    public static final String FONT_CACHE_PATH = System.getProperty("pdfbox.fontcache");
-    /**
-     * 字体缓存文件后缀名
-     */
-    public static final String FONT_CACHE_SUFFIX_NAME = ".pdfbox.cache";
-    /**
      * 签名提供者
      */
     public static final String SIGN_PROVIDER = "BC";
@@ -150,6 +166,10 @@ public final class Constants {
      * 证书类型
      */
     public static final String CERT_TYPE = "X.509";
+    /**
+     * 浏览器地址
+     */
+    public static final String PLAYWRIGHT_URL = "x-easypdf.playwright.url";
 
     /**
      * 初始化版本

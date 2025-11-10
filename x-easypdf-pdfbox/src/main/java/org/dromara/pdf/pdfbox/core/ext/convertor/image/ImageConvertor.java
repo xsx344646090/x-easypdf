@@ -2,6 +2,7 @@ package org.dromara.pdf.pdfbox.core.ext.convertor.image;
 
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
+import org.apache.commons.io.IOUtils;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.base.PageSize;
@@ -10,6 +11,7 @@ import org.dromara.pdf.pdfbox.core.ext.convertor.AbstractConvertor;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 
 import java.io.File;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +54,17 @@ public class ImageConvertor extends AbstractConvertor {
      * @param files 图像文件
      */
     @SneakyThrows
+    public void toPdf(List<File> files) {
+        Objects.requireNonNull(files, "the files can not be null");
+        this.toPdf(PageSize.A4, files.toArray(new File[0]));
+    }
+
+    /**
+     * 转为pdf
+     *
+     * @param files 图像文件
+     */
+    @SneakyThrows
     public void toPdf(File... files) {
         this.toPdf(PageSize.A4, files);
     }
@@ -65,8 +78,21 @@ public class ImageConvertor extends AbstractConvertor {
     @SneakyThrows
     public void toPdf(PageSize pageSize, File... files) {
         for (File file : files) {
-            this.toPdf(pageSize, Files.readAllBytes(file.toPath()));
+            this.toPdf(pageSize, Files.newInputStream(file.toPath()));
         }
+    }
+
+    /**
+     * 转为pdf
+     *
+     * @param pageSize    页面大小
+     * @param inputStream 图像流
+     */
+    @SneakyThrows
+    public void toPdf(PageSize pageSize, InputStream inputStream) {
+        byte[] bytes = IOUtils.toByteArray(inputStream);
+        this.toPdf(pageSize, bytes);
+        IOUtils.closeQuietly(inputStream);
     }
 
     /**

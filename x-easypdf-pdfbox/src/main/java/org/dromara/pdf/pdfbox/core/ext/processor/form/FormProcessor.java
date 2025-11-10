@@ -3,16 +3,6 @@ package org.dromara.pdf.pdfbox.core.ext.processor.form;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.SneakyThrows;
-import org.apache.pdfbox.cos.COSDictionary;
-import org.apache.pdfbox.cos.COSInteger;
-import org.apache.pdfbox.cos.COSName;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
-import org.apache.pdfbox.pdmodel.fixup.AcroFormDefaultFixup;
-import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
-import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceCharacteristicsDictionary;
-import org.apache.pdfbox.pdmodel.interactive.form.*;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.enums.ImageType;
 import org.dromara.pdf.pdfbox.core.ext.processor.AbstractProcessor;
@@ -21,6 +11,16 @@ import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.dromara.pdf.pdfbox.util.ColorUtil;
 import org.dromara.pdf.pdfbox.util.CommonUtil;
 import org.dromara.pdf.pdfbox.util.ImageUtil;
+import org.dromara.pdf.shade.org.apache.pdfbox.cos.COSDictionary;
+import org.dromara.pdf.shade.org.apache.pdfbox.cos.COSInteger;
+import org.dromara.pdf.shade.org.apache.pdfbox.cos.COSName;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDDocument;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDDocumentCatalog;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.fixup.AcroFormDefaultFixup;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.font.PDFont;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceCharacteristicsDictionary;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.form.*;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -259,7 +259,7 @@ public class FormProcessor extends AbstractProcessor {
                             // 设置图像
                             dictionary.setItem(
                                     COSName.I,
-                                    CommonUtil.createImage(this.getContext(), ImageUtil.toBytes(image, ImageType.PNG.getType())).getCOSObject().getCOSObject()
+                                    CommonUtil.createImage(this.getContext().getTargetDocument(), ImageUtil.toBytes(image, ImageType.PNG.getType())).getCOSObject().getCOSObject()
                             );
                             // 图标位置
                             COSName tp = COSName.getPDFName("TP");

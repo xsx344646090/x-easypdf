@@ -1,7 +1,7 @@
 package org.dromara.pdf.pdfbox.handler;
 
 
-import org.apache.pdfbox.filter.Filter;
+import org.apache.commons.lang3.StringUtils;
 import org.dromara.pdf.pdfbox.core.base.Banner;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.ext.analyzer.DocumentAnalyzer;
@@ -14,6 +14,7 @@ import org.dromara.pdf.pdfbox.core.ext.processor.DocumentProcessor;
 import org.dromara.pdf.pdfbox.core.ext.templater.DocumentTemplater;
 import org.dromara.pdf.pdfbox.support.Constants;
 import org.dromara.pdf.pdfbox.util.FileUtil;
+import org.dromara.pdf.shade.org.apache.pdfbox.filter.Filter;
 
 /**
  * pdf助手
@@ -37,6 +38,28 @@ public class PdfHandler {
 
     static {
         Banner.print();
+    }
+
+    /**
+     * 设置字体缓存路径
+     */
+    public static void setFontCachePath(String path) {
+        System.setProperty(Constants.FONT_CACHE_PATH, path);
+    }
+
+    /**
+     * 设置html转换器线程
+     *
+     * @param coreSize      核心线程数
+     * @param maxSize       最大线程数
+     * @param keepAliveTime 线程空闲时间
+     * @param queueSize     队列大小
+     */
+    public static void setHtmlConvertorThread(int coreSize, int maxSize, int keepAliveTime, int queueSize) {
+        System.setProperty(Constants.THREAD_CORE_SIZE, String.valueOf(coreSize));
+        System.setProperty(Constants.THREAD_MAX_SIZE, String.valueOf(maxSize));
+        System.setProperty(Constants.THREAD_KEEP_ALIVE_TIME, String.valueOf(keepAliveTime));
+        System.setProperty(Constants.THREAD_QUEUE_SIZE, String.valueOf(queueSize));
     }
 
     /**
@@ -155,6 +178,18 @@ public class PdfHandler {
             throw new IllegalArgumentException("the level must be between 0 and 9");
         }
         System.setProperty(Filter.SYSPROP_DEFLATELEVEL, String.valueOf(level));
+    }
+
+    /**
+     * 开启远程playwright
+     *
+     * @param url 远程地址（IP:端口）
+     */
+    public static void enableRemotePlaywright(String url) {
+        if (StringUtils.isEmpty(url)) {
+            throw new IllegalArgumentException("the url must not be empty");
+        }
+        System.setProperty(Constants.PLAYWRIGHT_URL, url);
     }
 
     /**

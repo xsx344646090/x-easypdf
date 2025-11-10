@@ -1,10 +1,10 @@
 package org.dromara.pdf.pdfbox.processor;
 
 import lombok.SneakyThrows;
-import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationFreeText;
-import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
-import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.font.PDFont;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationFreeText;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 import org.dromara.pdf.pdfbox.base.BaseTest;
 import org.dromara.pdf.pdfbox.core.base.*;
 import org.dromara.pdf.pdfbox.core.component.Rectangle;

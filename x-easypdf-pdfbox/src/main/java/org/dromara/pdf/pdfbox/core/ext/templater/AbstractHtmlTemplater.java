@@ -136,6 +136,16 @@ public abstract class AbstractHtmlTemplater extends AbstractTemplater {
     }
 
     /**
+     * 获取html文件
+     *
+     * @return 返回html文件
+     */
+    @SneakyThrows
+    public File getHtmlFile() {
+        return this.processTemplate(this::process).toFile();
+    }
+
+    /**
      * 转换
      *
      * @return 返回文档

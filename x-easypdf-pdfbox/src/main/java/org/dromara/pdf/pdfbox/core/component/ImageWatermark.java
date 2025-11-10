@@ -3,10 +3,7 @@ package org.dromara.pdf.pdfbox.core.component;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
-import org.apache.pdfbox.io.IOUtils;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
-import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
+import org.apache.commons.io.IOUtils;
 import org.dromara.pdf.pdfbox.core.base.AbstractBase;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.base.Page;
@@ -14,6 +11,9 @@ import org.dromara.pdf.pdfbox.core.enums.ComponentType;
 import org.dromara.pdf.pdfbox.core.enums.ImageType;
 import org.dromara.pdf.pdfbox.util.CommonUtil;
 import org.dromara.pdf.pdfbox.util.ImageUtil;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -125,7 +125,7 @@ public class ImageWatermark extends AbstractBase implements Watermark {
     @SneakyThrows
     public void setImage(File file) {
         Objects.requireNonNull(file, "the image file can not be null");
-        this.setImage(Files.readAllBytes(file.toPath()));
+        this.setImage(Files.newInputStream(file.toPath()));
     }
 
     /**
@@ -137,6 +137,7 @@ public class ImageWatermark extends AbstractBase implements Watermark {
     public void setImage(InputStream inputStream) {
         Objects.requireNonNull(inputStream, "the image input stream can not be null");
         this.setImage(IOUtils.toByteArray(inputStream));
+        IOUtils.closeQuietly(inputStream);
     }
 
     /**
@@ -147,7 +148,7 @@ public class ImageWatermark extends AbstractBase implements Watermark {
     @SneakyThrows
     public void setImage(BufferedImage image) {
         Objects.requireNonNull(image, "the image can not be null");
-        this.setImage(ImageUtil.toBytes(image, ImageType.PNG.getType()));
+        this.setImage(ImageUtil.toBytes(image, ImageType.JPEG.getType()));
     }
 
     /**
@@ -158,7 +159,7 @@ public class ImageWatermark extends AbstractBase implements Watermark {
     @SneakyThrows
     public void setImage(byte[] bytes) {
         Objects.requireNonNull(bytes, "the image bytes can not be null");
-        this.image = CommonUtil.createImage(this.getContext(), bytes);
+        this.image = this.getContext().getImageCache().computeIfAbsent(CommonUtil.getImageDigest(bytes), key -> CommonUtil.createImage(this.getContext().getTargetDocument(), bytes));
     }
 
     /**

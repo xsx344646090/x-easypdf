@@ -1,7 +1,7 @@
 package org.dromara.pdf.pdfbox.core.ext.analyzer;
 
-import org.apache.pdfbox.pdmodel.PDPage;
 import org.dromara.pdf.pdfbox.core.base.Document;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDPage;
 
 /**
  * 表单分析器
