@@ -2,18 +2,18 @@ package org.dromara.pdf.pdfbox.core.ext.processor.form;
 
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
-import org.apache.pdfbox.cos.COSDictionary;
-import org.apache.pdfbox.cos.COSInteger;
-import org.apache.pdfbox.cos.COSName;
-import org.apache.pdfbox.cos.COSString;
-import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceCharacteristicsDictionary;
-import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
-import org.apache.pdfbox.pdmodel.interactive.form.PDField;
-import org.apache.pdfbox.pdmodel.interactive.form.PDPushButton;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.base.Size;
 import org.dromara.pdf.pdfbox.core.enums.ImageFieldLayout;
+import org.dromara.pdf.shade.org.apache.pdfbox.cos.COSDictionary;
+import org.dromara.pdf.shade.org.apache.pdfbox.cos.COSInteger;
+import org.dromara.pdf.shade.org.apache.pdfbox.cos.COSName;
+import org.dromara.pdf.shade.org.apache.pdfbox.cos.COSString;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceCharacteristicsDictionary;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.form.PDField;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.form.PDPushButton;
 
 import java.util.Objects;
 import java.util.Optional;

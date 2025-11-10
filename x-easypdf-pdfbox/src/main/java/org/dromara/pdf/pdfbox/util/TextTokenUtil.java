@@ -2,15 +2,15 @@ package org.dromara.pdf.pdfbox.util;
 
 import lombok.SneakyThrows;
 import org.apache.commons.logging.Log;
-import org.apache.pdfbox.contentstream.operator.Operator;
-import org.apache.pdfbox.contentstream.operator.OperatorName;
-import org.apache.pdfbox.cos.*;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDResources;
-import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.dromara.pdf.pdfbox.core.info.ReplaceInfo;
 import org.dromara.pdf.pdfbox.core.info.TextTokenInfo;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
+import org.dromara.pdf.shade.org.apache.pdfbox.contentstream.operator.Operator;
+import org.dromara.pdf.shade.org.apache.pdfbox.contentstream.operator.OperatorName;
+import org.dromara.pdf.shade.org.apache.pdfbox.cos.*;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDDocument;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDResources;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.font.PDFont;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -509,7 +509,7 @@ public class TextTokenUtil {
                         // 添加文本标记信息
                         infoList.add(tokenInfo);
                     }
-                } else if (operator.getName().equals(OperatorName.SET_MATRIX)) {
+                } else if (operator.getName().equals(OperatorName.SET_MATRIX) || operator.getName().equals(OperatorName.MOVE_TEXT) ) {
                     // 重置文本矩阵索引
                     matrixIndex = i;
                     // 重置X轴坐标
@@ -571,7 +571,7 @@ public class TextTokenUtil {
                         // 添加文本标记信息
                         infoList.add(tokenInfo);
                     }
-                } else if (operator.getName().equals(OperatorName.SET_MATRIX)) {
+                } else if (operator.getName().equals(OperatorName.SET_MATRIX) || operator.getName().equals(OperatorName.MOVE_TEXT)) {
                     // 重置文本矩阵索引
                     matrixIndex = i;
                     // 重置X轴坐标

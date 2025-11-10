@@ -3,19 +3,7 @@ package org.dromara.pdf.pdfbox.core.base;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
-import org.apache.pdfbox.Loader;
-import org.apache.pdfbox.io.IOUtils;
-import org.apache.pdfbox.io.RandomAccessReadBuffer;
-import org.apache.pdfbox.pdfwriter.compress.CompressParameters;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPageTree;
-import org.apache.pdfbox.pdmodel.ResourceCache;
-import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
-import org.apache.pdfbox.pdmodel.encryption.PublicKeyProtectionPolicy;
-import org.apache.pdfbox.pdmodel.encryption.PublicKeyRecipient;
-import org.apache.pdfbox.pdmodel.encryption.StandardProtectionPolicy;
-import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.apache.commons.io.IOUtils;
 import org.dromara.pdf.pdfbox.core.base.config.FontConfiguration;
 import org.dromara.pdf.pdfbox.core.base.config.MarginConfiguration;
 import org.dromara.pdf.pdfbox.core.enums.FontStyle;
@@ -30,6 +18,18 @@ import org.dromara.pdf.pdfbox.util.CommonUtil;
 import org.dromara.pdf.pdfbox.util.FileUtil;
 import org.dromara.pdf.pdfbox.util.IdUtil;
 import org.dromara.pdf.pdfbox.util.ImageUtil;
+import org.dromara.pdf.shade.org.apache.pdfbox.Loader;
+import org.dromara.pdf.shade.org.apache.pdfbox.io.RandomAccessReadBuffer;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdfwriter.compress.CompressParameters;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDDocument;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDPageTree;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.ResourceCache;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.encryption.AccessPermission;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.encryption.PublicKeyProtectionPolicy;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.encryption.PublicKeyRecipient;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.encryption.StandardProtectionPolicy;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.font.PDFont;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -494,7 +494,7 @@ public class Document extends AbstractBase implements Closeable {
     @SneakyThrows
     public void setBackgroundImage(File file) {
         if (Objects.nonNull(file)) {
-            this.setBackgroundImage(Files.readAllBytes(file.toPath()));
+            this.setBackgroundImage(Files.newInputStream(file.toPath()));
         } else {
             this.backgroundImage =  null;
         }
@@ -509,6 +509,7 @@ public class Document extends AbstractBase implements Closeable {
     public void setBackgroundImage(InputStream inputStream) {
         if (Objects.nonNull(inputStream)) {
             this.setBackgroundImage(IOUtils.toByteArray(inputStream));
+            IOUtils.closeQuietly(inputStream);
         } else {
             this.backgroundImage =  null;
         }
@@ -536,7 +537,7 @@ public class Document extends AbstractBase implements Closeable {
     @SneakyThrows
     public void setBackgroundImage(byte[] bytes) {
         if (Objects.nonNull(bytes)) {
-            this.backgroundImage = CommonUtil.createImage(this.getContext(), bytes);
+            this.backgroundImage = CommonUtil.createImage(this.getTarget(), bytes);
         } else {
             this.backgroundImage =  null;
         }
@@ -947,7 +948,7 @@ public class Document extends AbstractBase implements Closeable {
      */
     protected void initOtherParams() {
         // 添加字体缓存
-        this.context.addFontCache(this.fontConfiguration.getFontName());
+        // this.context.addFontCache(this.fontConfiguration.getFontName());
         // 初始化文档访问权限
         this.accessPermission = this.target.getCurrentAccessPermission();
         // 初始化文档版本

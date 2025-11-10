@@ -1,8 +1,8 @@
 package org.dromara.pdf.pdfbox.core.ext.extractor;
 
 import lombok.EqualsAndHashCode;
-import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 import org.dromara.pdf.pdfbox.core.base.Document;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 
 import java.util.Map;
 

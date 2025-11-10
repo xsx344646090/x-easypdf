@@ -1,7 +1,7 @@
 package org.dromara.pdf.pdfbox.core.enums;
 
 import lombok.Getter;
-import org.apache.pdfbox.printing.Orientation;
+import org.dromara.pdf.shade.org.apache.pdfbox.printing.Orientation;
 
 /**
  * 打印方向

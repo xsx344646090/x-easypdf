@@ -1,15 +1,16 @@
 package org.dromara.pdf.pdfbox.core.base;
 
 import lombok.Data;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.dromara.pdf.pdfbox.core.component.BorderInfo;
 import org.dromara.pdf.pdfbox.core.enums.ComponentType;
 import org.dromara.pdf.pdfbox.core.ext.handler.AbstractTextHandler;
 import org.dromara.pdf.pdfbox.core.ext.handler.TextHandler;
 import org.dromara.pdf.pdfbox.core.info.CatalogInfo;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDDocument;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDPage;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.font.PDFont;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 
 import java.util.*;
 
@@ -110,6 +111,10 @@ public class Context {
      * 字体字典
      */
     protected Map<String, PDFont> fontMap;
+    /**
+     * 图像缓存
+     */
+    protected Map<String, PDImageXObject> imageCache;
 
     /**
      * 有参构造
@@ -127,6 +132,7 @@ public class Context {
         this.catalogs = new ArrayList<>(16);
         this.customInfo = new HashMap<>(16);
         this.fontMap = new HashMap<>(16);
+        this.imageCache = new HashMap<>(64);
     }
 
     /**
@@ -432,5 +438,7 @@ public class Context {
         this.borderInfo = null;
         // 清理字体
         this.fontMap.clear();
+        // 清理图像
+        this.imageCache.clear();
     }
 }

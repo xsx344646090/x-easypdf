@@ -1,12 +1,12 @@
 package org.dromara.pdf.pdfbox.base;
 
-import org.apache.fontbox.ttf.TrueTypeFont;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.enums.FontType;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
-import org.dromara.pdf.pdfbox.support.fonts.FontInfo;
+import org.dromara.pdf.shade.org.apache.fontbox.ttf.TrueTypeFont;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDDocument;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.font.FontInfo;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.font.PDFont;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -32,7 +32,7 @@ import java.util.Collections;
  * </p>
  */
 public class FontTest extends BaseTest {
-    
+
     /**
      * 测试获取字体名称
      */
@@ -42,7 +42,7 @@ public class FontTest extends BaseTest {
             PdfHandler.getFontHandler().getFontNames().forEach(log::info);
         });
     }
-    
+
     /**
      * 测试获取字体信息
      */
@@ -52,7 +52,7 @@ public class FontTest extends BaseTest {
             PdfHandler.getFontHandler().getFontInfos().stream().map(FontInfo::getFontName).forEach(log::info);
         });
     }
-    
+
     /**
      * 测试获取pdfbox字体
      */
@@ -66,7 +66,7 @@ public class FontTest extends BaseTest {
             }
         });
     }
-    
+
     /**
      * 测试获取trueType字体
      */
@@ -81,7 +81,7 @@ public class FontTest extends BaseTest {
             }
         });
     }
-    
+
     /**
      * 测试添加字体
      */
@@ -92,7 +92,7 @@ public class FontTest extends BaseTest {
             PdfHandler.getFontHandler().getFontNames().forEach(log::info);
         });
     }
-    
+
     /**
      * 测试添加字体
      */
@@ -103,7 +103,7 @@ public class FontTest extends BaseTest {
             PdfHandler.getFontHandler().getFontNames().forEach(log::info);
         });
     }
-    
+
     /**
      * 测试添加字体
      */
@@ -116,7 +116,7 @@ public class FontTest extends BaseTest {
             }
         });
     }
-    
+
     /**
      * 测试嵌入字体
      */

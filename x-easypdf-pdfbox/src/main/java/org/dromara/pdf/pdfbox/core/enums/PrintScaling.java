@@ -1,7 +1,7 @@
 package org.dromara.pdf.pdfbox.core.enums;
 
 import lombok.Getter;
-import org.apache.pdfbox.printing.Scaling;
+import org.dromara.pdf.shade.org.apache.pdfbox.printing.Scaling;
 
 /**
  * 打印缩放

@@ -2,6 +2,8 @@ package org.dromara.pdf.pdfbox.core.base;
 
 import org.dromara.pdf.pdfbox.support.Constants;
 
+import java.util.Objects;
+
 /**
  * 标语
  *
@@ -52,7 +54,7 @@ public class Banner {
      */
     public static void print() {
         String flag = System.getProperty(BANNER_KEY, "true");
-        if ("true".equals(flag)) {
+        if (Objects.equals("true", flag)) {
             System.out.println(TEXT);
         }
     }

@@ -2,25 +2,25 @@ package org.dromara.pdf.pdfbox.core.ext.processor;
 
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
-import org.apache.pdfbox.cos.COSName;
-import org.apache.pdfbox.pdfparser.PDFStreamParser;
-import org.apache.pdfbox.pdfwriter.ContentStreamWriter;
-import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageTree;
-import org.apache.pdfbox.pdmodel.PDResources;
-import org.apache.pdfbox.pdmodel.common.PDStream;
-import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.pdmodel.graphics.image.PDImage;
-import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
-import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
-import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationText;
-import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDDocumentOutline;
-import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.info.ReplaceInfo;
 import org.dromara.pdf.pdfbox.util.CommonUtil;
 import org.dromara.pdf.pdfbox.util.TextTokenUtil;
+import org.dromara.pdf.shade.org.apache.pdfbox.cos.COSName;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdfparser.PDFStreamParser;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdfwriter.ContentStreamWriter;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDDocumentCatalog;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDPage;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDPageTree;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDResources;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.common.PDStream;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.font.PDFont;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.graphics.image.PDImage;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationText;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDDocumentOutline;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 
 import java.io.OutputStream;
 import java.util.*;
@@ -70,7 +70,7 @@ public class ReplaceProcessor extends AbstractProcessor {
         // 获取页面树
         PDPageTree pageTree = this.getDocument().getPages();
         // 页面索引非空
-        if (Objects.nonNull(pageIndexes)) {
+        if (Objects.nonNull(pageIndexes) && pageIndexes.length > 0) {
             // 遍历页面索引
             for (int pageIndex : pageIndexes) {
                 // 替换文本
@@ -96,7 +96,7 @@ public class ReplaceProcessor extends AbstractProcessor {
         // 获取页面树
         PDPageTree pageTree = this.getDocument().getPages();
         // 页面索引非空
-        if (Objects.nonNull(pageIndexes)) {
+        if (Objects.nonNull(pageIndexes) && pageIndexes.length > 0) {
             // 遍历页面索引
             for (int pageIndex : pageIndexes) {
                 // 替换文本
@@ -121,7 +121,7 @@ public class ReplaceProcessor extends AbstractProcessor {
         // 获取页面树
         PDPageTree pageTree = this.getDocument().getPages();
         // 页面索引非空
-        if (Objects.nonNull(pageIndexes)) {
+        if (Objects.nonNull(pageIndexes) && pageIndexes.length > 0) {
             // 遍历页面索引
             for (int pageIndex : pageIndexes) {
                 // 替换评论
@@ -147,7 +147,7 @@ public class ReplaceProcessor extends AbstractProcessor {
         // 获取页面树
         PDPageTree pageTree = this.getDocument().getPages();
         // 页面索引非空
-        if (Objects.nonNull(pageIndexes)) {
+        if (Objects.nonNull(pageIndexes) && imageIndexes.length > 0) {
             // 遍历页面索引
             for (int pageIndex : pageIndexes) {
                 // 替换图像
@@ -314,7 +314,7 @@ public class ReplaceProcessor extends AbstractProcessor {
         // 如果待替换图像不为空，则重置pdf图像
         if (Objects.nonNull(image)) {
             // 重置pdf图像
-            imageObject = CommonUtil.createImage(this.getContext(), image);
+            imageObject = CommonUtil.createImage(this.getContext().getTargetDocument(), image);
         }
         // 获取页面资源
         PDResources resources = page.getResources();

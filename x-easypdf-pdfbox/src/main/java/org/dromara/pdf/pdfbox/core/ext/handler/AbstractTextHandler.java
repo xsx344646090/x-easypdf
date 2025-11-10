@@ -2,14 +2,14 @@ package org.dromara.pdf.pdfbox.core.ext.handler;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.base.config.FontConfiguration;
 import org.dromara.pdf.pdfbox.core.component.TextLineInfo;
 import org.dromara.pdf.pdfbox.core.ext.AbstractExpander;
 import org.dromara.pdf.pdfbox.core.ext.handler.tokenizer.AbstractTokenizer;
 import org.dromara.pdf.pdfbox.util.TextUtil;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.font.PDFont;
 
 import java.util.List;
 

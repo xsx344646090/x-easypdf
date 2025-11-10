@@ -1,9 +1,9 @@
 package org.dromara.pdf.pdfbox.core.ext.analyzer;
 
 import lombok.SneakyThrows;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
 import org.dromara.pdf.pdfbox.core.base.Document;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDPage;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
 
 import java.util.List;
 

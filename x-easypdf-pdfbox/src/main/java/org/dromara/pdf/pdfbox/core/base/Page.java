@@ -3,21 +3,7 @@ package org.dromara.pdf.pdfbox.core.base;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
-import org.apache.pdfbox.contentstream.operator.Operator;
-import org.apache.pdfbox.contentstream.operator.OperatorName;
-import org.apache.pdfbox.cos.COSArray;
-import org.apache.pdfbox.cos.COSFloat;
-import org.apache.pdfbox.cos.COSInteger;
-import org.apache.pdfbox.cos.COSName;
-import org.apache.pdfbox.io.IOUtils;
-import org.apache.pdfbox.pdfparser.PDFStreamParser;
-import org.apache.pdfbox.pdfwriter.ContentStreamWriter;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.pdmodel.common.PDStream;
-import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.apache.commons.io.IOUtils;
 import org.dromara.pdf.pdfbox.core.base.config.FontConfiguration;
 import org.dromara.pdf.pdfbox.core.base.config.MarginConfiguration;
 import org.dromara.pdf.pdfbox.core.enums.*;
@@ -25,6 +11,20 @@ import org.dromara.pdf.pdfbox.support.Constants;
 import org.dromara.pdf.pdfbox.util.CommonUtil;
 import org.dromara.pdf.pdfbox.util.IdUtil;
 import org.dromara.pdf.pdfbox.util.ImageUtil;
+import org.dromara.pdf.shade.org.apache.pdfbox.contentstream.operator.Operator;
+import org.dromara.pdf.shade.org.apache.pdfbox.contentstream.operator.OperatorName;
+import org.dromara.pdf.shade.org.apache.pdfbox.cos.COSArray;
+import org.dromara.pdf.shade.org.apache.pdfbox.cos.COSFloat;
+import org.dromara.pdf.shade.org.apache.pdfbox.cos.COSInteger;
+import org.dromara.pdf.shade.org.apache.pdfbox.cos.COSName;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdfparser.PDFStreamParser;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdfwriter.ContentStreamWriter;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDPage;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.common.PDStream;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.font.PDFont;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -191,7 +191,7 @@ public class Page extends AbstractBase implements Closeable {
     @SneakyThrows
     public void setBackgroundImage(File file) {
         if (Objects.nonNull(file)) {
-            this.setBackgroundImage(Files.readAllBytes(file.toPath()));
+            this.setBackgroundImage(Files.newInputStream(file.toPath()));
         } else {
             this.backgroundImage =  null;
         }
@@ -206,6 +206,7 @@ public class Page extends AbstractBase implements Closeable {
     public void setBackgroundImage(InputStream inputStream) {
         if (Objects.nonNull(inputStream)) {
             this.setBackgroundImage(IOUtils.toByteArray(inputStream));
+            IOUtils.closeQuietly(inputStream);
         } else {
             this.backgroundImage =  null;
         }
@@ -233,7 +234,7 @@ public class Page extends AbstractBase implements Closeable {
     @SneakyThrows
     public void setBackgroundImage(byte[] bytes) {
         if (Objects.nonNull(bytes)) {
-            this.backgroundImage = CommonUtil.createImage(this.getContext(), bytes);
+            this.backgroundImage = CommonUtil.createImage(this.getContext().getTargetDocument(), bytes);
         } else {
             this.backgroundImage =  null;
         }

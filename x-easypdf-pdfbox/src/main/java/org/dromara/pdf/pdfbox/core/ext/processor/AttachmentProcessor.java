@@ -3,13 +3,13 @@ package org.dromara.pdf.pdfbox.core.ext.processor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.SneakyThrows;
-import org.apache.pdfbox.pdmodel.PDDocumentNameDictionary;
-import org.apache.pdfbox.pdmodel.PDEmbeddedFilesNameTreeNode;
-import org.apache.pdfbox.pdmodel.common.PDNameTreeNode;
-import org.apache.pdfbox.pdmodel.common.filespecification.PDComplexFileSpecification;
-import org.apache.pdfbox.pdmodel.common.filespecification.PDEmbeddedFile;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.info.EmbeddedFileInfo;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDDocumentNameDictionary;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDEmbeddedFilesNameTreeNode;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.common.PDNameTreeNode;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.common.filespecification.PDComplexFileSpecification;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.common.filespecification.PDEmbeddedFile;
 
 import java.io.ByteArrayInputStream;
 import java.util.*;

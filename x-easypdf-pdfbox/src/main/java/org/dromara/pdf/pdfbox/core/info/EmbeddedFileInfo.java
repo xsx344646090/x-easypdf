@@ -2,7 +2,7 @@ package org.dromara.pdf.pdfbox.core.info;
 
 import lombok.Data;
 import lombok.SneakyThrows;
-import org.apache.pdfbox.pdmodel.common.filespecification.PDEmbeddedFile;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.common.filespecification.PDEmbeddedFile;
 
 import java.util.Calendar;
 import java.util.Objects;

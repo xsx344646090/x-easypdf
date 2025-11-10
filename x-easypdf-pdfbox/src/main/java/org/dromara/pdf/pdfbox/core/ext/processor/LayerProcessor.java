@@ -2,19 +2,19 @@ package org.dromara.pdf.pdfbox.core.ext.processor;
 
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
-import org.apache.pdfbox.cos.COSName;
-import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
-import org.apache.pdfbox.pdmodel.graphics.optionalcontent.PDOptionalContentGroup;
-import org.apache.pdfbox.pdmodel.graphics.optionalcontent.PDOptionalContentProperties;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.base.Page;
 import org.dromara.pdf.pdfbox.core.enums.ImageType;
 import org.dromara.pdf.pdfbox.util.CommonUtil;
 import org.dromara.pdf.pdfbox.util.ImageUtil;
+import org.dromara.pdf.shade.org.apache.pdfbox.cos.COSName;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDDocumentCatalog;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDPage;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.graphics.optionalcontent.PDOptionalContentGroup;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.graphics.optionalcontent.PDOptionalContentProperties;
 
 import java.awt.image.BufferedImage;
 import java.util.Objects;
@@ -103,7 +103,7 @@ public class LayerProcessor extends AbstractProcessor {
         // 获取页面尺寸
         PDRectangle rectangle = page.getMediaBox();
         // 创建图像
-        PDImageXObject imageXObject = CommonUtil.createImage(this.getContext(), ImageUtil.toBytes(image, ImageType.PNG.getType()));
+        PDImageXObject imageXObject = CommonUtil.createImage(this.getContext().getTargetDocument(), ImageUtil.toBytes(image, ImageType.PNG.getType()));
         // 创建内容流
         PDPageContentStream contentStream = new PDPageContentStream(
                 this.getDocument(),

@@ -1,14 +1,14 @@
 package org.dromara.pdf.pdfbox.support;
 
-import org.apache.pdfbox.cos.COSObject;
-import org.apache.pdfbox.pdmodel.ResourceCache;
-import org.apache.pdfbox.pdmodel.documentinterchange.markedcontent.PDPropertyList;
-import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.pdmodel.graphics.PDXObject;
-import org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace;
-import org.apache.pdfbox.pdmodel.graphics.pattern.PDAbstractPattern;
-import org.apache.pdfbox.pdmodel.graphics.shading.PDShading;
-import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
+import org.dromara.pdf.shade.org.apache.pdfbox.cos.COSObject;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.ResourceCache;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.documentinterchange.markedcontent.PDPropertyList;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.font.PDFont;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.graphics.PDXObject;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.graphics.pattern.PDAbstractPattern;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.graphics.shading.PDShading;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 
 /**
  * 资源缓存

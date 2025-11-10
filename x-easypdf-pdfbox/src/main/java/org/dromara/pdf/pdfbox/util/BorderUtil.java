@@ -1,13 +1,13 @@
 package org.dromara.pdf.pdfbox.util;
 
 import lombok.SneakyThrows;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.dromara.pdf.pdfbox.core.base.BorderData;
 import org.dromara.pdf.pdfbox.core.base.Context;
 import org.dromara.pdf.pdfbox.core.base.Position;
 import org.dromara.pdf.pdfbox.core.enums.LineCapStyle;
 import org.dromara.pdf.pdfbox.support.Constants;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.common.PDRectangle;
 
 import java.awt.*;
 import java.util.ArrayList;

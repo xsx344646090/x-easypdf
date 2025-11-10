@@ -18,11 +18,11 @@ package org.dromara.pdf.pdfbox.core.ext.processor.sign;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.pdfbox.io.IOUtils;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.operator.DefaultDigestAlgorithmIdentifierFinder;
 import org.bouncycastle.operator.DigestAlgorithmIdentifierFinder;
 import org.bouncycastle.tsp.*;
+import org.dromara.pdf.shade.org.apache.pdfbox.io.IOUtils;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -2,9 +2,9 @@ package org.dromara.pdf.pdfbox.core.base;
 
 import lombok.Getter;
 import lombok.ToString;
-import org.apache.fontbox.util.BoundingBox;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.dromara.pdf.pdfbox.support.Constants;
+import org.dromara.pdf.shade.org.apache.fontbox.util.BoundingBox;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.common.PDRectangle;
 
 import java.awt.*;
 

@@ -3,7 +3,6 @@ package org.dromara.pdf.pdfbox.core.component;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.dromara.pdf.pdfbox.core.base.*;
 import org.dromara.pdf.pdfbox.core.base.config.BorderConfiguration;
 import org.dromara.pdf.pdfbox.core.base.config.MarginConfiguration;
@@ -12,6 +11,7 @@ import org.dromara.pdf.pdfbox.core.enums.LineCapStyle;
 import org.dromara.pdf.pdfbox.core.enums.LineStyle;
 import org.dromara.pdf.pdfbox.util.BorderUtil;
 import org.dromara.pdf.pdfbox.util.CommonUtil;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.common.PDRectangle;
 
 import java.awt.*;
 import java.util.*;

@@ -1,7 +1,7 @@
 package org.dromara.pdf.pdfbox.core.base;
 
-import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.dromara.pdf.pdfbox.support.Constants;
+import org.dromara.pdf.shade.org.apache.pdfbox.io.MemoryUsageSetting;
 
 import java.nio.file.Paths;
 

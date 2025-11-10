@@ -1,13 +1,13 @@
 package org.dromara.pdf.pdfbox.core.ext.handler;
 
 import lombok.SneakyThrows;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.base.config.FontConfiguration;
 import org.dromara.pdf.pdfbox.core.component.TextLineInfo;
 import org.dromara.pdf.pdfbox.core.ext.handler.tokenizer.StandardTokenizer;
 import org.dromara.pdf.pdfbox.support.Constants;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.font.PDFont;
 
 import java.util.List;
 import java.util.Objects;

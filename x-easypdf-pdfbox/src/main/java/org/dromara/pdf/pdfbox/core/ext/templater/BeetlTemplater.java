@@ -1,13 +1,13 @@
 package org.dromara.pdf.pdfbox.core.ext.templater;
 
 import lombok.SneakyThrows;
-import org.apache.pdfbox.io.IOUtils;
 import org.beetl.core.Configuration;
 import org.beetl.core.GroupTemplate;
 import org.beetl.core.ResourceLoader;
 import org.beetl.core.Template;
 import org.beetl.core.resource.StringTemplateResourceLoader;
 import org.dromara.pdf.pdfbox.core.base.Document;
+import org.dromara.pdf.shade.org.apache.pdfbox.io.IOUtils;
 
 import java.io.InputStream;
 import java.io.Writer;

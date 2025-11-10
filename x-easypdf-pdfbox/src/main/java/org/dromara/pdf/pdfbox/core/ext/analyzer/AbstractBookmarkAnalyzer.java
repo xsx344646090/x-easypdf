@@ -2,15 +2,15 @@ package org.dromara.pdf.pdfbox.core.ext.analyzer;
 
 import lombok.Getter;
 import lombok.SneakyThrows;
-import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
-import org.apache.pdfbox.pdmodel.PDPageTree;
-import org.apache.pdfbox.pdmodel.interactive.action.PDAction;
-import org.apache.pdfbox.pdmodel.interactive.action.PDActionGoTo;
-import org.apache.pdfbox.pdmodel.interactive.documentnavigation.destination.*;
-import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.info.BookmarkInfo;
 import org.dromara.pdf.pdfbox.util.ColorUtil;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDDocumentCatalog;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDPageTree;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.action.PDAction;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.action.PDActionGoTo;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.documentnavigation.destination.*;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 
 import java.util.*;
 

@@ -8,7 +8,10 @@
         </encoder>
     </appender>
 
-    <logger name="org.dromara.pdf.pdfbox" level="info" additivity="false">
+    <logger name="org.dromara.pdf.shade" level="info" additivity="false">
+        <appender-ref ref="Console" />
+    </logger>
+    <logger name="com.itextpdf.layout.renderer" level="error" additivity="false">
         <appender-ref ref="Console" />
     </logger>
 

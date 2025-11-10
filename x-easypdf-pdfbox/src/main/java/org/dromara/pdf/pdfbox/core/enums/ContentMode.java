@@ -1,6 +1,6 @@
 package org.dromara.pdf.pdfbox.core.enums;
 
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDPageContentStream;
 
 /**
  * 内容模式

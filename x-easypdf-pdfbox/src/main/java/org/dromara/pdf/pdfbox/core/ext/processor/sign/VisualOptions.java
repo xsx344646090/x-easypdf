@@ -3,10 +3,10 @@ package org.dromara.pdf.pdfbox.core.ext.processor.sign;
 import lombok.Builder;
 import lombok.Data;
 import lombok.SneakyThrows;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
-import org.apache.pdfbox.pdmodel.interactive.digitalsignature.visible.PDVisibleSigProperties;
-import org.apache.pdfbox.pdmodel.interactive.digitalsignature.visible.PDVisibleSignDesigner;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDDocument;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.digitalsignature.visible.PDVisibleSigProperties;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.digitalsignature.visible.PDVisibleSignDesigner;
 
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
@@ -95,5 +95,17 @@ public class VisualOptions {
                 .buildSignature();
         // 返回可视化签名
         return signatureProperty.getVisibleSignature();
+    }
+
+    protected int getImageWidth() {
+        int imageWidth = this.image.getWidth();
+        imageWidth += (int) ((imageWidth * this.imageScalePercent) / 100);
+        return imageWidth;
+    }
+
+    protected int getImageHeight() {
+        int imageHeight = this.image.getWidth();
+        imageHeight += (int) ((imageHeight * this.imageScalePercent) / 100);
+        return imageHeight;
     }
 }
