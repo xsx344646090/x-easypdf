@@ -348,7 +348,7 @@ public class TextTokenUtil {
                                         } else {
                                             // 英文
                                             if (isEnglish) {
-                                                tokens.set(textValue.getIndex() - 3, new COSFloat(offsetX - info.getFontSize()));
+                                                tokens.set(textValue.getIndex() - 3, new COSFloat(offsetX - info.getFontSize() * 20));
                                             } else {
                                                 tokens.set(textValue.getIndex() - 3, new COSFloat(offsetX + info.getFontSize() * 10));
                                             }
@@ -358,7 +358,7 @@ public class TextTokenUtil {
                                     } else {
                                         // 当前替换文本为英文字符
                                         if (TextUtil.isEnglishCharacter(chars)) {
-                                            tokens.set(textValue.getIndex() - 3, new COSFloat(offsetX - info.getFontSize() * 10));
+                                            tokens.set(textValue.getIndex() - 3, new COSFloat(offsetX - info.getFontSize() * 20));
                                         } else {
                                             tokens.set(textValue.getIndex() - 3, new COSFloat(offsetX + info.getFontSize() * 10));
                                         }

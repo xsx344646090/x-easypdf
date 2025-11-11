@@ -5,17 +5,18 @@
     <parent>
         <groupId>org.dromara</groupId>
         <artifactId>x-easypdf-parent</artifactId>
-        <version>3.5.0</version>
+        <version>3.5.1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>x-easypdf-pdfbox</artifactId>
-    <version>3.5.0</version>
+    <version>3.5.1</version>
     <packaging>jar</packaging>
     <name>x-easypdf-pdfbox</name>
     <url>https://www.x-easypdf.cn</url>
     <description>A framework based on pdfbox</description>
 
     <properties>
+        <shade-pdfbox.version>3.5.4</shade-pdfbox.version>
         <skipTests>true</skipTests>
     </properties>
 
@@ -151,6 +152,7 @@
         <dependency>
             <groupId>org.dromara</groupId>
             <artifactId>x-easypdf-shade-pdfbox</artifactId>
+            <version>${shade-pdfbox.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.zxing</groupId>

@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.dromara</groupId>
     <artifactId>x-easypdf-parent</artifactId>
-    <version>3.5.0</version>
+    <version>3.5.1</version>
     <packaging>pom</packaging>
     <name>x-easypdf-parent</name>
     <url>https://www.x-easypdf.cn</url>
@@ -13,7 +13,7 @@
     <properties>
         <java.version>1.8</java.version>
         <lombok.version>1.18.36</lombok.version>
-        <shade-pdfbox.version>3.5.3</shade-pdfbox.version>
+        <shade-pdfbox.version>3.5.4</shade-pdfbox.version>
         <jbig2-imageio.version>3.0.4</jbig2-imageio.version>
         <jai-imageio.version>1.4.0</jai-imageio.version>
         <webp-imageio.version>0.4.1</webp-imageio.version>
