@@ -69,7 +69,7 @@ public class FontHandler {
      * @return 返回字体名称列表
      */
     public List<String> getFontNames() {
-        return new ArrayList<>(FontMapperImpl.getInstance().getFontInfoByName().keySet());
+        return new ArrayList<>(FontMappers.getInstance().getFontInfoByName().keySet());
     }
 
     /**
@@ -78,7 +78,7 @@ public class FontHandler {
      * @return 返回字体信息
      */
     public List<? extends FontInfo> getFontInfos() {
-        return FontMapperImpl.getInstance().getProvider().getFontInfo();
+        return FontMappers.getInstance().getProvider().getFontInfo();
     }
 
     /**
@@ -126,7 +126,7 @@ public class FontHandler {
      */
     @SneakyThrows
     public PDFont getPDFont(PDDocument document, String fontName, boolean embedSubset) {
-        FontInfo fontInfo = FontMapperImpl.getInstance().getFontInfoByName().get(fontName);
+        FontInfo fontInfo = FontMappers.getInstance().getFontInfoByName().get(fontName);
         if (Objects.nonNull(fontInfo)) {
             if (fontInfo.getFormat() == FontFormat.OTF) {
                 embedSubset = false;
@@ -145,8 +145,8 @@ public class FontHandler {
      * @return 返回字体
      */
     public TrueTypeFont getTrueTypeFont(String fontName) {
-        FontInfo fontInfo = FontMapperImpl.getInstance().getFontInfoByName().get(fontName);
-        return FontMapperImpl.getInstance().getTrueTypeFont(Optional.ofNullable(fontInfo).map(FontInfo::getPostScriptName).orElse(fontName), null).getFont();
+        FontInfo fontInfo = FontMappers.getInstance().getFontInfoByName().get(fontName);
+        return FontMappers.getInstance().getTrueTypeFont(Optional.ofNullable(fontInfo).map(FontInfo::getPostScriptName).orElse(fontName), null).getFont();
     }
 
     /**
@@ -155,7 +155,7 @@ public class FontHandler {
      * @return 返回字体
      */
     public TrueTypeFont getDefaultFont() {
-        FontInfo fontInfo = FontMapperImpl.getInstance().getFontInfoByName().get(Constants.DEFAULT_FONT_NAME);
+        FontInfo fontInfo = FontMappers.getInstance().getFontInfoByName().get(Constants.DEFAULT_FONT_NAME);
         return (TrueTypeFont) fontInfo.getFont();
     }
 
@@ -168,7 +168,7 @@ public class FontHandler {
      */
     public void addFont(File file, String alias) {
         if (Objects.nonNull(file)) {
-            FontMapperImpl.getInstance().getProvider().addFont(file, alias);
+            FontMappers.getInstance().getProvider().addFont(file, alias);
             if (log.isDebugEnabled()) {
                 log.debug("Added font ['" + alias + "']");
             }
@@ -183,7 +183,7 @@ public class FontHandler {
      */
     public void addFont(File... files) {
         if (Objects.nonNull(files)) {
-            Arrays.stream(files).forEach(file -> FontMapperImpl.getInstance().getProvider().addFont(file));
+            Arrays.stream(files).forEach(file -> FontMappers.getInstance().getProvider().addFont(file));
         }
     }
 
@@ -195,7 +195,7 @@ public class FontHandler {
      */
     public void addFont(Collection<File> files) {
         if (Objects.nonNull(files)) {
-            files.forEach(file -> FontMapperImpl.getInstance().getProvider().addFont(file));
+            files.forEach(file -> FontMappers.getInstance().getProvider().addFont(file));
         }
     }
 
@@ -208,7 +208,7 @@ public class FontHandler {
      * @param type        字体类型
      */
     public void addFont(InputStream inputStream, String alias, FontType type) {
-        FontMapperImpl.getInstance().getProvider().addFont(inputStream, alias, type.name().toLowerCase());
+        FontMappers.getInstance().getProvider().addFont(inputStream, alias, type.name().toLowerCase());
     }
 
     /**
