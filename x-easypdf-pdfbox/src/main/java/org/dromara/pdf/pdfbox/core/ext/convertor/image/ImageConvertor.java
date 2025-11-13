@@ -78,6 +78,7 @@ public class ImageConvertor extends AbstractConvertor {
     @SneakyThrows
     public void toPdf(PageSize pageSize, File... files) {
         for (File file : files) {
+            System.out.println(file.getAbsolutePath());
             this.toPdf(pageSize, Files.newInputStream(file.toPath()));
         }
     }
