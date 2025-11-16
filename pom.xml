@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.dromara</groupId>
     <artifactId>x-easypdf-parent</artifactId>
-    <version>3.5.2</version>
+    <version>3.5.3</version>
     <packaging>pom</packaging>
     <name>x-easypdf-parent</name>
     <url>https://www.x-easypdf.cn</url>
@@ -185,12 +185,6 @@
                 <groupId>com.github.jai-imageio</groupId>
                 <artifactId>jai-imageio-jpeg2000</artifactId>
                 <version>${jai-imageio.version}</version>
-                <optional>true</optional>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.pdfbox</groupId>
-                <artifactId>jbig2-imageio</artifactId>
-                <version>${jbig2-imageio.version}</version>
                 <optional>true</optional>
             </dependency>
             <dependency>

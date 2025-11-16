@@ -5,18 +5,18 @@
     <parent>
         <groupId>org.dromara</groupId>
         <artifactId>x-easypdf-parent</artifactId>
-        <version>3.5.2</version>
+        <version>3.5.3</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>x-easypdf-pdfbox</artifactId>
-    <version>3.5.2</version>
+    <version>3.5.3</version>
     <packaging>jar</packaging>
     <name>x-easypdf-pdfbox</name>
     <url>https://www.x-easypdf.cn</url>
     <description>A framework based on pdfbox</description>
 
     <properties>
-        <shade-pdfbox.version>3.5.5</shade-pdfbox.version>
+        <shade-pdfbox.version>3.5.6</shade-pdfbox.version>
         <skipTests>true</skipTests>
     </properties>
 
@@ -169,11 +169,6 @@
         <dependency>
             <groupId>com.github.jai-imageio</groupId>
             <artifactId>jai-imageio-jpeg2000</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.pdfbox</groupId>
-            <artifactId>jbig2-imageio</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
