@@ -288,7 +288,7 @@ public class Table extends AbstractComponent {
         // 初始化表格行
         this.initRows();
         // 检查换行
-        this.checkWrap(this.getFirstRowHeight());
+        this.checkWrap(this.context.getIsFirstComponent() ? this.getFirstRowHeight() : 0F);
         // 检查分页
         if (this.checkPaging()) {
             this.setIsWrap(true);

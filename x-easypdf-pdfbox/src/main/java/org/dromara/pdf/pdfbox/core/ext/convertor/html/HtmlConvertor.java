@@ -554,10 +554,10 @@ public class HtmlConvertor extends AbstractConvertor {
         // 添加钩子
         Runtime.getRuntime().addShutdownHook(
                 new Thread(() -> {
-                    browser.close();
-                    playwright.close();
                     THREAD_LOCAL.remove();
-                })
+                    playwright.close();
+                    log.info("Close browser successfully");
+                }, "HtmlConvertor-ShutdownHook")
         );
         // 打印日志
         if (log.isInfoEnabled()) {
@@ -625,8 +625,8 @@ public class HtmlConvertor extends AbstractConvertor {
          * IO密集型任务配置
          */
         protected static ThreadPoolExecutor createPool() {
-            String coreSize = System.getProperty(Constants.THREAD_CORE_SIZE, "4");
-            String maxSize = System.getProperty(Constants.THREAD_MAX_SIZE, "40");
+            String coreSize = System.getProperty(Constants.THREAD_CORE_SIZE, "1");
+            String maxSize = System.getProperty(Constants.THREAD_MAX_SIZE, "1");
             String keepAliveTime = System.getProperty(Constants.THREAD_KEEP_ALIVE_TIME, "60");
             String queueSize = System.getProperty(Constants.THREAD_QUEUE_SIZE, "200");
             return new ThreadPoolExecutor(
