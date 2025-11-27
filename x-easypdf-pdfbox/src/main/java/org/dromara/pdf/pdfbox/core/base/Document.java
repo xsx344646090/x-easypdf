@@ -13,7 +13,6 @@ import org.dromara.pdf.pdfbox.core.ext.processor.MetadataProcessor;
 import org.dromara.pdf.pdfbox.core.ext.processor.PageProcessor;
 import org.dromara.pdf.pdfbox.core.info.CatalogInfo;
 import org.dromara.pdf.pdfbox.support.Constants;
-import org.dromara.pdf.pdfbox.support.DefaultResourceCache;
 import org.dromara.pdf.pdfbox.util.CommonUtil;
 import org.dromara.pdf.pdfbox.util.FileUtil;
 import org.dromara.pdf.pdfbox.util.IdUtil;
@@ -841,7 +840,7 @@ public class Document extends AbstractBase implements Closeable {
         // 初始化版本
         this.target.getDocument().setVersion(Constants.DEFAULT_VERSION);
         // 初始化资源缓存
-        this.target.setResourceCache(new DefaultResourceCache());
+        // this.target.setResourceCache(new DefaultResourceCache());
         // 初始化基础参数
         this.initBase();
         // 初始化页面
@@ -919,7 +918,7 @@ public class Document extends AbstractBase implements Closeable {
      */
     protected void initLoad() {
         // 初始化资源缓存
-        this.target.setResourceCache(new DefaultResourceCache());
+        // this.target.setResourceCache(new DefaultResourceCache());
         // 初始化基础参数
         this.initBase();
         // 初始化页面
