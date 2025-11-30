@@ -157,7 +157,7 @@ public class StandardTokenizer extends AbstractTokenizer {
                         // 添加字符串
                         lineList.add(new TextLineInfo(tempText.toString(), lastWidth));
                         // 重置临时文本
-                        tempText = new StringBuilder();
+                        tempText.setLength(0);
                         // 重置宽度
                         width = wordsWidth;
                     } else {
@@ -178,7 +178,7 @@ public class StandardTokenizer extends AbstractTokenizer {
                     // 添加字符串
                     lineList.add(new TextLineInfo(tempText.toString(), lastWidth));
                     // 重置临时文本
-                    tempText = new StringBuilder();
+                    tempText.setLength(0);
                     // 重置宽度
                     width = charWidth;
                 } else {
