@@ -26,6 +26,8 @@ import org.dromara.pdf.pdfbox.util.UnitUtil;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -65,10 +67,11 @@ import static java.util.Arrays.asList;
 @EqualsAndHashCode(callSuper = true)
 public class HtmlConvertor extends AbstractConvertor {
 
-    /**
-     * 远程地址
-     */
-    protected static final String REMOTE_URL = System.getProperty(Constants.PLAYWRIGHT_URL);
+    static {
+        // 初始化驱动
+        initDriver();
+    }
+
     /**
      * 本地线程
      */
@@ -82,10 +85,6 @@ public class HtmlConvertor extends AbstractConvertor {
      */
     protected static final String UNIT = "px";
 
-    static {
-        // 初始化驱动
-        initDriver();
-    }
 
     /**
      * dpi
@@ -531,14 +530,16 @@ public class HtmlConvertor extends AbstractConvertor {
             begin = System.currentTimeMillis();
             log.info("Initializing browser...");
         }
+        // 获取远程地址
+        String remoteUrl = System.getProperty(Constants.PLAYWRIGHT_URL);
         // 创建playwright
         Playwright playwright = Playwright.create();
         // 初始化浏览器
         Browser browser;
-        if (Objects.isNull(REMOTE_URL)) {
+        if (Objects.isNull(remoteUrl)) {
             browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setChannel("chromium"));
         } else {
-            browser = playwright.chromium().connect("ws://" + REMOTE_URL);
+            browser = playwright.chromium().connect("ws://" + remoteUrl);
         }
         // 打印日志
         if (log.isInfoEnabled()) {
@@ -576,9 +577,9 @@ public class HtmlConvertor extends AbstractConvertor {
      */
     protected String getNavigateUrl(String url) {
         try {
+            return new URL(url).toString();
+        } catch (MalformedURLException e) {
             return Paths.get(url).toUri().toString();
-        } catch (Exception e) {
-            return url;
         }
     }
 
@@ -592,7 +593,7 @@ public class HtmlConvertor extends AbstractConvertor {
                 log.info("Initializing browser driver...");
             }
             Driver driver = Driver.ensureDriverInstalled(Collections.emptyMap(), false);
-            if (Objects.isNull(REMOTE_URL)) {
+            if (Objects.isNull(System.getProperty(Constants.PLAYWRIGHT_URL))) {
                 if (log.isInfoEnabled()) {
                     log.info("Checking and install chromium browser...");
                 }
@@ -628,7 +629,7 @@ public class HtmlConvertor extends AbstractConvertor {
             String coreSize = System.getProperty(Constants.THREAD_CORE_SIZE, "1");
             String maxSize = System.getProperty(Constants.THREAD_MAX_SIZE, "1");
             String keepAliveTime = System.getProperty(Constants.THREAD_KEEP_ALIVE_TIME, "60");
-            String queueSize = System.getProperty(Constants.THREAD_QUEUE_SIZE, "200");
+            String queueSize = System.getProperty(Constants.THREAD_QUEUE_SIZE, "2000");
             return new ThreadPoolExecutor(
                     Integer.parseInt(coreSize),
                     Integer.parseInt(maxSize),

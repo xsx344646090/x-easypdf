@@ -50,16 +50,11 @@ public class PdfHandler {
     /**
      * 设置html转换器线程
      *
-     * @param coreSize      核心线程数
-     * @param maxSize       最大线程数
-     * @param keepAliveTime 线程空闲时间
-     * @param queueSize     队列大小
+     * @param size 线程数
      */
-    public static void setHtmlConvertorThread(int coreSize, int maxSize, int keepAliveTime, int queueSize) {
-        System.setProperty(Constants.THREAD_CORE_SIZE, String.valueOf(coreSize));
-        System.setProperty(Constants.THREAD_MAX_SIZE, String.valueOf(maxSize));
-        System.setProperty(Constants.THREAD_KEEP_ALIVE_TIME, String.valueOf(keepAliveTime));
-        System.setProperty(Constants.THREAD_QUEUE_SIZE, String.valueOf(queueSize));
+    public static void setHtmlConvertorThread(int size) {
+        System.setProperty(Constants.THREAD_CORE_SIZE, String.valueOf(size));
+        System.setProperty(Constants.THREAD_MAX_SIZE, String.valueOf(size));
     }
 
     /**
