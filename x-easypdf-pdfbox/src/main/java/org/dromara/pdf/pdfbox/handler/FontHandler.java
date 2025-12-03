@@ -77,7 +77,7 @@ public class FontHandler {
      *
      * @return 返回字体信息
      */
-    public List<? extends FontInfo> getFontInfos() {
+    public Collection<? extends FontInfo> getFontInfos() {
         return FontMappers.getInstance().getProvider().getFontInfo();
     }
 

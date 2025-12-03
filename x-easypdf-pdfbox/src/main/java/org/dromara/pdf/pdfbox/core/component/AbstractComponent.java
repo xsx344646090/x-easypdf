@@ -780,17 +780,52 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
      * @return 返回起始Y轴坐标
      */
     protected float getBeginY(Page page, float beginY) {
-        if (beginY < 0) {
-            Page subPage = page.getSubPage();
-            beginY = beginY + subPage.getBodyHeight();
-            if (beginY >= 0) {
-                this.getContext().setPage(subPage);
+        return getBeginY(page, beginY, 0);
+    }
+
+    /**
+     * 获取起始Y轴坐标
+     *
+     * @param page   页面
+     * @param beginY 起始Y轴坐标
+     * @param depth  递归深度
+     * @return 返回起始Y轴坐标
+     */
+    protected float getBeginY(Page page, float beginY, int depth) {
+        // 检查深度
+        if (this.checkPageDepth(depth)) {
+            // 检查起始Y轴坐标是否小于0
+            if (beginY < 0) {
+                // 获取子页面
+                Page subPage = page.getSubPage();
+                // 重置起始Y轴坐标
+                beginY = beginY + subPage.getBodyHeight();
+                // 检查起始Y轴坐标是否大于等于0
+                if (beginY >= 0) {
+                    // 设置当前页面为子页面并
+                    this.getContext().setPage(subPage);
+                    // 返回起始Y轴坐标
+                    return beginY;
+                }
+                // 递归调用深度加1
+                return getBeginY(subPage, beginY, depth + 1);
+            } else {
+                // 返回起始Y轴坐标
                 return beginY;
             }
-            return getBeginY(subPage, beginY);
-        } else {
-            return beginY;
         }
+        // 如果深度超过20000，直接返回beginY
+        return beginY;
+    }
+
+    /**
+     * 检查页面深度
+     *
+     * @param depth 页面深度
+     * @return 返回是否分页
+     */
+    protected boolean checkPageDepth(int depth) {
+        return depth < 1000;
     }
 
     /**
