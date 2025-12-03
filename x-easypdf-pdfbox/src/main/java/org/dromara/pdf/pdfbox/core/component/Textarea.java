@@ -486,6 +486,15 @@ public class Textarea extends AbstractComponent {
     }
 
     /**
+     * 是否需要换行
+     *
+     * @return 返回布尔值，true为是，false为否
+     */
+    protected boolean isNeedWrap() {
+        return super.isNeedWrap() || Optional.ofNullable(this.getText()).map(v -> v.startsWith("\n") || v.startsWith("\r\n") ).orElse(false);
+    }
+
+    /**
      * 重置
      */
     @Override
@@ -531,7 +540,20 @@ public class Textarea extends AbstractComponent {
             temp = TextUtil.replaceTab(temp, this.getTabSize());
         }
         // 根据换行符拆分
-        return Arrays.asList(temp.split("\n"));
+        String[] split = temp.split("\n");
+        // 创建文本列表
+        List<String> list = new ArrayList<>(split.length);
+        // 获取分割后的第一个字符串
+        String first = split[0];
+        // 不为空则添加
+        if (!first.isEmpty()) {
+            list.add(first);
+        }
+        // 遍历拆分数组
+        for (int i = 1, count = split.length; i < count; i++) {
+            list.add(split[i]);
+        }
+        return list;
     }
 
     /**
@@ -1160,20 +1182,5 @@ public class Textarea extends AbstractComponent {
             // 设置Y轴坐标
             this.getCatalog().setEndY(position.getY());
         }
-    }
-
-    /**
-     * 重置
-     *
-     * @param type 类型
-     * @param x    x轴坐标
-     * @param y    y轴坐标
-     */
-    @SneakyThrows
-    @Override
-    protected void reset(ComponentType type, float x, float y) {
-        super.reset(type, x, y);
-        // this.getPage().getTarget().setAnnotations(this.getAnnotations());
-        // this.annotations = null;
     }
 }
