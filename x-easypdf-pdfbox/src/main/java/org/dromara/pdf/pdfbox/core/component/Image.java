@@ -219,6 +219,17 @@ public class Image extends AbstractComponent {
     }
 
     /**
+     * 检查页面深度
+     *
+     * @param depth 页面深度
+     * @return 返回是否分页
+     */
+    @Override
+    protected boolean checkPageDepth(int depth) {
+        return depth < 2;
+    }
+
+    /**
      * 获取最小宽度
      *
      * @return 返回最小宽度
