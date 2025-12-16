@@ -433,10 +433,10 @@ public class Barcode extends AbstractComponent {
         if (this.isCache) {
             return this.getContext().getImageCache().computeIfAbsent(
                     this.cacheKey(),
-                    key -> CommonUtil.createImage(this.getContext().getTargetDocument(), ImageUtil.toBytes(this.createBarcodeImage(), ImageType.JPEG.getType()))
+                    key -> CommonUtil.createImage(this.getContext().getTargetDocument(), ImageUtil.toBytes(this.createBarcodeImage(), ImageType.PNG.getType()))
             );
         }
-        return CommonUtil.createImage(this.getContext().getTargetDocument(), ImageUtil.toBytes(this.createBarcodeImage(), ImageType.JPEG.getType()));
+        return CommonUtil.createImage(this.getContext().getTargetDocument(), ImageUtil.toBytes(this.createBarcodeImage(), ImageType.PNG.getType()));
     }
 
     /**

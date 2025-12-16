@@ -12,12 +12,14 @@ import org.dromara.pdf.pdfbox.util.ColorUtil;
 import org.dromara.pdf.pdfbox.util.CommonUtil;
 import org.dromara.pdf.pdfbox.util.ImageUtil;
 import org.dromara.pdf.shade.org.apache.pdfbox.cos.COSDictionary;
-import org.dromara.pdf.shade.org.apache.pdfbox.cos.COSInteger;
 import org.dromara.pdf.shade.org.apache.pdfbox.cos.COSName;
 import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDDocument;
 import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDDocumentCatalog;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDResources;
 import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.fixup.AcroFormDefaultFixup;
 import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.font.PDFont;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.graphics.PDXObject;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
 import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceCharacteristicsDictionary;
 import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.form.*;
@@ -250,28 +252,30 @@ public class FormProcessor extends AbstractProcessor {
                         if (Objects.isNull(appearanceCharacteristics)) {
                             appearanceCharacteristics = new PDAppearanceCharacteristicsDictionary(new COSDictionary());
                         }
+                        // 获取图标
+                        PDFormXObject normalIcon = appearanceCharacteristics.getNormalIcon();
+                        // 初始化图标
+                        if (Objects.isNull(normalIcon)) {
+                            normalIcon = new PDFormXObject(this.getContext().getTargetDocument());
+                        }
+                        // 获取资源
+                        PDResources resources = normalIcon.getResources();
+                        // 初始化资源
+                        if (Objects.isNull(resources)) {
+                            resources = new PDResources(new COSDictionary());
+                        }
                         // 获取图像
                         BufferedImage image = entry.getValue();
-                        // 非空
-                        if (Objects.nonNull(image)) {
-                            // 获取字典
-                            COSDictionary dictionary = appearanceCharacteristics.getCOSObject();
-                            // 设置图像
-                            dictionary.setItem(
-                                    COSName.I,
-                                    CommonUtil.createImage(this.getContext().getTargetDocument(), ImageUtil.toBytes(image, ImageType.PNG.getType())).getCOSObject().getCOSObject()
-                            );
-                            // 图标位置
-                            COSName tp = COSName.getPDFName("TP");
-                            // 不包含
-                            if (!dictionary.containsKey(tp)) {
-                                // 设置仅图标
-                                dictionary.setItem(tp, COSInteger.ONE);
-                            }
-                        } else {
+                        // 图像为空
+                        if (Objects.isNull(image)) {
                             // 清空图像
-                            appearanceCharacteristics.getCOSObject().setItem(COSName.I, null);
+                            resources.put(COSName.IMG, (PDXObject) null);
+                        } else {
+                            // 设置图像
+                            resources.put(COSName.IMG, CommonUtil.createImage(this.getContext().getTargetDocument(), ImageUtil.toBytes(image, ImageType.PNG.getType())));
                         }
+                        // 设置资源
+                        normalIcon.setResources(resources);
                         // 设置外观
                         widget.setAppearanceCharacteristics(appearanceCharacteristics);
                     }

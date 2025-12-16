@@ -83,33 +83,35 @@ public class CertificateInfo {
      */
     @SneakyThrows
     protected void init() {
-        // 检查参数
-        Objects.requireNonNull(this.inputStream, "the input stream can not be null");
-        Objects.requireNonNull(this.password, "the password can not be null");
-        Objects.requireNonNull(this.type, "the type can not be null");
-        // 密码转字符数组
-        char[] passwordCharArray = this.password.toCharArray();
-        // 获取密钥库
-        KeyStore keyStore = KeyStore.getInstance(this.type.name(), Constants.SIGN_PROVIDER);
-        // 加载证书
-        keyStore.load(this.inputStream, passwordCharArray);
-        // 初始化别名
-        if (Objects.isNull(this.alias)) {
-            this.alias = keyStore.aliases().nextElement();
+        if (Objects.isNull(this.certificate)) {
+            // 检查参数
+            Objects.requireNonNull(this.inputStream, "the input stream can not be null");
+            Objects.requireNonNull(this.password, "the password can not be null");
+            Objects.requireNonNull(this.type, "the type can not be null");
+            // 密码转字符数组
+            char[] passwordCharArray = this.password.toCharArray();
+            // 获取密钥库
+            KeyStore keyStore = KeyStore.getInstance(this.type.name(), Constants.SIGN_PROVIDER);
+            // 加载证书
+            keyStore.load(this.inputStream, passwordCharArray);
+            // 初始化别名
+            if (Objects.isNull(this.alias)) {
+                this.alias = keyStore.aliases().nextElement();
+            }
+            // 获取证书工厂
+            CertificateFactory cf = CertificateFactory.getInstance(Constants.CERT_TYPE, Constants.SIGN_PROVIDER);
+            // 获取证书
+            Certificate cert = keyStore.getCertificate(this.alias);
+            // 初始化证书
+            try (ByteArrayInputStream stream = new ByteArrayInputStream(cert.getEncoded())) {
+                this.certificate = ((X509Certificate) cf.generateCertificate(stream));
+            }
+            // 检查证书是否过期
+            this.certificate.checkValidity();
+            // 初始化证书链
+            this.chain = keyStore.getCertificateChain(this.alias);
+            // 初始化私钥
+            this.privateKey = (PrivateKey) keyStore.getKey(this.alias, passwordCharArray);
         }
-        // 获取证书工厂
-        CertificateFactory cf = CertificateFactory.getInstance(Constants.CERT_TYPE, Constants.SIGN_PROVIDER);
-        // 获取证书
-        Certificate cert = keyStore.getCertificate(this.alias);
-        // 初始化证书
-        try (ByteArrayInputStream stream = new ByteArrayInputStream(cert.getEncoded())) {
-            this.certificate = ((X509Certificate) cf.generateCertificate(stream));
-        }
-        // 检查证书是否过期
-        this.certificate.checkValidity();
-        // 初始化证书链
-        this.chain = keyStore.getCertificateChain(this.alias);
-        // 初始化私钥
-        this.privateKey = (PrivateKey) keyStore.getKey(this.alias, passwordCharArray);
     }
 }

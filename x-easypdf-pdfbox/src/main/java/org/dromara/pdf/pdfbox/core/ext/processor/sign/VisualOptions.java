@@ -3,12 +3,12 @@ package org.dromara.pdf.pdfbox.core.ext.processor.sign;
 import lombok.Builder;
 import lombok.Data;
 import lombok.SneakyThrows;
+import org.dromara.pdf.pdfbox.util.ImageUtil;
 import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDDocument;
 import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.digitalsignature.visible.PDVisibleSigProperties;
 import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.digitalsignature.visible.PDVisibleSignDesigner;
 
-import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.util.Objects;
 
@@ -36,7 +36,7 @@ public class VisualOptions {
     /**
      * 签名图片
      */
-    private BufferedImage image;
+    private byte[] image;
     /**
      * 签名图片左边距
      */
@@ -71,7 +71,7 @@ public class VisualOptions {
         // 定义可视化签名属性
         PDVisibleSigProperties signatureProperty = new PDVisibleSigProperties();
         // 定义可视化签名者
-        PDVisibleSignDesigner designer = new PDVisibleSignDesigner(document, this.image, pageIndex + 1);
+        PDVisibleSignDesigner designer = new PDVisibleSignDesigner(document, ImageUtil.read(ImageUtil.resetBytes(this.image)), pageIndex + 1);
         // 设置签名图片缩放比例
         designer.zoom(this.imageScalePercent);
         // 设置签名图片偏移
@@ -97,15 +97,15 @@ public class VisualOptions {
         return signatureProperty.getVisibleSignature();
     }
 
-    protected int getImageWidth() {
-        int imageWidth = this.image.getWidth();
-        imageWidth += (int) ((imageWidth * this.imageScalePercent) / 100);
-        return imageWidth;
-    }
+    // protected int getImageWidth() {
+    //     int imageWidth = this.image.getWidth();
+    //     imageWidth += (int) ((imageWidth * this.imageScalePercent) / 100);
+    //     return imageWidth;
+    // }
 
-    protected int getImageHeight() {
-        int imageHeight = this.image.getWidth();
-        imageHeight += (int) ((imageHeight * this.imageScalePercent) / 100);
-        return imageHeight;
-    }
+    // protected int getImageHeight() {
+    //     int imageHeight = this.image.getWidth();
+    //     imageHeight += (int) ((imageHeight * this.imageScalePercent) / 100);
+    //     return imageHeight;
+    // }
 }
