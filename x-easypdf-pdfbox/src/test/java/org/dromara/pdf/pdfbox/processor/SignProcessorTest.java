@@ -1,12 +1,11 @@
 package org.dromara.pdf.pdfbox.processor;
 
-import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.dromara.pdf.pdfbox.base.BaseTest;
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.ext.processor.sign.*;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.dromara.pdf.pdfbox.util.FileUtil;
-import org.dromara.pdf.pdfbox.util.ImageUtil;
+import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -47,7 +46,7 @@ public class SignProcessorTest extends BaseTest {
                     InputStream inputStream = Files.newInputStream(Paths.get("E:\\PDF\\pdfbox\\processor\\x-easypdf.pfx"))
             ) {
                 VisualOptions visualOptions = VisualOptions.builder()
-                        .image(ImageUtil.read(Paths.get("E:\\PDF\\pdfbox\\processor\\sign\\数字签名.png").toFile()))
+                        .image(Files.readAllBytes(Paths.get("E:\\PDF\\pdfbox\\processor\\sign\\test.png")))
                         .build();
                 SignOptions options = SignOptions.builder()
                         .certificate(new CertificateInfo(KeyStoreType.PKCS12, inputStream, "123456", null))
@@ -95,13 +94,17 @@ public class SignProcessorTest extends BaseTest {
             try (
                     Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\processor\\replaceTest.pdf");
                     OutputStream outputStream = Files.newOutputStream(Paths.get("E:\\PDF\\pdfbox\\processor\\sign\\signTest.pdf"));
-                    InputStream inputStream = Files.newInputStream(Paths.get("E:\\PDF\\pdfbox\\processor\\x-easypdf.pfx"))
-            ) {
 
+            ) {
+                InputStream inputStream = Files.newInputStream(Paths.get("E:\\PDF\\pdfbox\\processor\\x-easypdf.pfx"));
+                VisualOptions visualOptions = VisualOptions.builder()
+                        .image(Files.readAllBytes(Paths.get("E:\\PDF\\pdfbox\\processor\\sign\\test.png")))
+                        .build();
                 SignOptions options = SignOptions.builder()
                         .certificate(new CertificateInfo(KeyStoreType.PKCS12, inputStream, "123456", null))
                         .algorithm(EncryptAlgorithm.SHA256withRSA)
-                        .pageIndex(1)
+                        .visualOptions(visualOptions)
+                        .pageIndex(0)
                         .build();
 
                 PDSignature signature = new PDSignature();
@@ -117,6 +120,19 @@ public class SignProcessorTest extends BaseTest {
                 SignProcessor processor = PdfHandler.getDocumentProcessor(document).getSignProcessor();
                 processor.multiSign(signature, options, byteArrayOutputStream);
                 byteArrayOutputStream.close();
+                inputStream.close();
+
+                inputStream = Files.newInputStream(Paths.get("E:\\PDF\\pdfbox\\processor\\x-easypdf.pfx"));
+                visualOptions = VisualOptions.builder()
+                        .image(Files.readAllBytes(Paths.get("E:\\PDF\\pdfbox\\processor\\sign\\test.png")))
+                        .imageMarginTop(100F)
+                        .build();
+                options = SignOptions.builder()
+                        .certificate(new CertificateInfo(KeyStoreType.PKCS12, inputStream, "123456", null))
+                        .algorithm(EncryptAlgorithm.SHA256withRSA)
+                        .visualOptions(visualOptions)
+                        .pageIndex(0)
+                        .build();
 
                 signature = new PDSignature();
                 signature.setName("x-easypdf");
@@ -127,6 +143,7 @@ public class SignProcessorTest extends BaseTest {
                 signature.setSubFilter(PDSignature.SUBFILTER_ADBE_PKCS7_DETACHED);
                 signature.setSignDate(Calendar.getInstance());
                 processor.sign(signature, options, outputStream);
+                inputStream.close();
             }
         });
     }

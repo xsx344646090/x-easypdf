@@ -38,7 +38,7 @@ public class ImageConvertorTest extends BaseTest {
                 convertor.toPdf(files);
                 Document document = convertor.flush();
                 document.saveAndClose("E:\\PDF\\pdfbox\\convertor\\image\\x-easypdf1.pdf");
-                System.out.println("内存占用：" + Runtime.getRuntime().totalMemory() / 1024 / 1024);
+                System.out.println("内存占用：" + (Runtime.getRuntime().totalMemory() -Runtime.getRuntime().freeMemory()) / 1024 / 1024);
             });
 
             this.test(() -> {
@@ -47,7 +47,7 @@ public class ImageConvertorTest extends BaseTest {
                 convertor.toPdf(files);
                 Document document = convertor.flush();
                 document.saveAndClose("E:\\PDF\\pdfbox\\convertor\\image\\x-easypdf2.pdf");
-                System.out.println("内存占用：" + Runtime.getRuntime().totalMemory() / 1024 / 1024);
+                System.out.println("内存占用：" + (Runtime.getRuntime().totalMemory() -Runtime.getRuntime().freeMemory()) / 1024 / 1024);
             });
         }
     }

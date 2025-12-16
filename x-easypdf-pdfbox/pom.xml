@@ -16,7 +16,7 @@
     <description>A framework based on pdfbox</description>
 
     <properties>
-        <shade-pdfbox.version>3.5.8</shade-pdfbox.version>
+        <shade-pdfbox.version>3.5.9</shade-pdfbox.version>
         <skipTests>true</skipTests>
     </properties>
 

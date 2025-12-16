@@ -384,7 +384,7 @@ public class DocumentProcessorTest extends BaseTest {
                     InputStream inputStream = Files.newInputStream(Paths.get("E:\\PDF\\pdfbox\\processor\\x-easypdf.pfx"))
             ) {
                 VisualOptions visualOptions = VisualOptions.builder()
-                        .image(ImageUtil.read(Paths.get("E:\\PDF\\pdfbox\\test.jpg").toFile()))
+                        .image(Files.readAllBytes(Paths.get("E:\\PDF\\pdfbox\\test.jpg")))
                         .build();
                 SignOptions options = SignOptions.builder()
                         .certificate(new CertificateInfo(KeyStoreType.PKCS12, inputStream, "123456", null))

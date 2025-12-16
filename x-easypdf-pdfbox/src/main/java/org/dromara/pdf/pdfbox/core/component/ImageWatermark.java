@@ -148,7 +148,7 @@ public class ImageWatermark extends AbstractBase implements Watermark {
     @SneakyThrows
     public void setImage(BufferedImage image) {
         Objects.requireNonNull(image, "the image can not be null");
-        this.setImage(ImageUtil.toBytes(image, ImageType.JPEG.getType()));
+        this.setImage(ImageUtil.toBytes(image, ImageType.PNG.getType()));
     }
 
     /**

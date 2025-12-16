@@ -1,5 +1,6 @@
 package org.dromara.pdf.pdfbox.processor;
 
+import org.dromara.pdf.pdfbox.core.ext.extractor.DocumentExtractor;
 import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.form.PDField;
 import org.dromara.pdf.pdfbox.base.BaseTest;
 import org.dromara.pdf.pdfbox.core.base.Document;
@@ -105,6 +106,10 @@ public class FormProcessorTest extends BaseTest {
                 Map<String, String> map = new HashMap<>(1);
                 map.put("test2", "其他");
                 processor.fillText(map);
+                Map<String, BufferedImage> map1 = new HashMap<>(1);
+                map1.put("test", ImageUtil.read(new File("E:\\PDF\\pdfbox\\image\\test.png")));
+                processor.fillImage(map1);
+
                 processor.flush();
 
                 document.save("E:\\PDF\\pdfbox\\processor\\form\\fillTextTest.pdf");
@@ -121,11 +126,19 @@ public class FormProcessorTest extends BaseTest {
             try (
                     Document document = PdfHandler.getDocumentHandler().load("E:\\PDF\\pdfbox\\hello-world.pdf")
             ) {
+                DocumentExtractor extractor = PdfHandler.getDocumentExtractor(document);
+                Map<String, BufferedImage> stringBufferedImageMap = extractor.extractFormImage();
                 FormProcessor processor = PdfHandler.getDocumentProcessor(document).getFormProcessor();
 
-                Map<String, BufferedImage> map = new HashMap<>(1);
-                map.put("test", ImageUtil.read(new File("E:\\PDF\\pdfbox\\image\\test.png")));
-                processor.fillImage(map);
+                Map<String, BufferedImage> imageMap = new HashMap<>(1);
+                imageMap.put("test", ImageUtil.read(new File("E:\\PDF\\pdfbox\\image\\test.png")));
+                // map.put("test", null);
+                processor.fillImage(imageMap);
+                Map<String, String> textMap = new HashMap<>(1);
+                textMap.put("test2", "hello x-easypdf");
+                processor.setFont("宋体", 12F, Color.BLACK);
+                processor.fillText(textMap);
+                processor.flatten(true);
                 processor.flush();
 
                 document.save("E:\\PDF\\pdfbox\\processor\\form\\fillImageTest.pdf");
