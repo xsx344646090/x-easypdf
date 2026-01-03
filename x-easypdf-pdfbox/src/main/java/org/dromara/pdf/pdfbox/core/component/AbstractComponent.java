@@ -136,7 +136,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
      * @param x 起始X轴坐标
      */
     public void setBeginX(Float x) {
-        this.setBeginX(x, true);
+        this.setBeginX(x, Objects.nonNull(x));
     }
 
     /**
@@ -145,7 +145,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
      * @param y 起始X轴坐标
      */
     public void setBeginY(Float y) {
-        this.setBeginY(y, true);
+        this.setBeginY(y, Objects.nonNull(y));
     }
 
     /**

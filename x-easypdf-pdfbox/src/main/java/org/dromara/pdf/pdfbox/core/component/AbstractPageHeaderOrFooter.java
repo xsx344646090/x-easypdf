@@ -75,9 +75,17 @@ public abstract class AbstractPageHeaderOrFooter extends AbstractBase {
      */
     protected List<Component> components;
     /**
+     * 组件位置列表
+     */
+    protected List<Position> componentPositions;
+    /**
      * 是否已经绘制
      */
     protected Boolean isAlreadyRendered;
+    /**
+     * 是否已经初始化
+     */
+    protected Boolean isInit;
 
     /**
      * 有参构造
@@ -91,7 +99,9 @@ public abstract class AbstractPageHeaderOrFooter extends AbstractBase {
         this.borderConfiguration = new BorderConfiguration();
         this.pagingEvent = new DefaultPageHeaderFooterPagingEvent();
         this.backgroundColor = page.getBackgroundColor();
+        this.componentPositions = new ArrayList<>();
         this.isAlreadyRendered = Boolean.FALSE;
+        this.isInit = Boolean.FALSE;
     }
 
     /**
@@ -513,6 +523,12 @@ public abstract class AbstractPageHeaderOrFooter extends AbstractBase {
             // 添加背景色
             CommonUtil.addBackgroundColor(this.getContext(), this.getContentMode(), this.getIsResetContentStream(), rectangle, this.getBackgroundColor());
         }
+        if (!this.getIsInit()) {
+            if (Objects.nonNull(this.getComponents())) {
+                this.getComponents().forEach(component -> this.getComponentPositions().add(new Position(component.getBeginX(), component.getBeginY())));
+            }
+            this.setIsInit(true);
+        }
     }
 
     /**
@@ -547,9 +563,16 @@ public abstract class AbstractPageHeaderOrFooter extends AbstractBase {
             // 渲染前
             this.renderBefore();
             // 渲染组件
-            Optional.ofNullable(this.getComponents())
-                    .orElse(Collections.emptyList())
-                    .forEach(this::renderComponent);
+            if (Objects.nonNull(this.getComponents())) {
+                List<Component> components = this.getComponents();
+                for (int i = 0; i < components.size(); i++) {
+                    Component component = components.get(i);
+                    Position position = this.getComponentPositions().get(i);
+                    component.setBeginX(position.getX());
+                    component.setBeginY(position.getY());
+                    this.renderComponent(component);
+                }
+            }
             // 渲染后
             this.renderAfter();
             // 重置
