@@ -10,12 +10,15 @@ import org.dromara.pdf.pdfbox.support.Constants;
 import org.dromara.pdf.pdfbox.util.IdUtil;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 /**
@@ -131,7 +134,15 @@ public abstract class AbstractHtmlTemplater extends AbstractTemplater {
         try {
             return new String(Files.readAllBytes(path), StandardCharsets.UTF_8);
         } finally {
-            Files.deleteIfExists(path);
+            CompletableFuture.runAsync(() -> {
+                try {
+                    if (Files.deleteIfExists(path) && log.isDebugEnabled()) {
+                        log.debug("Deleted temp html file: " +  path);
+                    }
+                } catch (IOException e) {
+                    log.warn("Failed to delete temp html file: " + path, e);
+                }
+            });
         }
     }
 
@@ -157,7 +168,15 @@ public abstract class AbstractHtmlTemplater extends AbstractTemplater {
         try {
             return this.convertor.toPdf(path.toAbsolutePath().toString());
         } finally {
-            Files.deleteIfExists(path);
+            CompletableFuture.runAsync(() -> {
+                try {
+                    if (Files.deleteIfExists(path) && log.isDebugEnabled()) {
+                        log.debug("Deleted temp html file: " +  path);
+                    }
+                } catch (IOException e) {
+                    log.warn("Failed to delete temp html file: " + path, e);
+                }
+            });
         }
     }
 
@@ -170,7 +189,7 @@ public abstract class AbstractHtmlTemplater extends AbstractTemplater {
     protected Path processTemplate(Consumer<Writer> consumer) {
         Objects.requireNonNull(this.templatePath, "the template path can not be null");
         Objects.requireNonNull(this.templateName, "the template name can not be null");
-        Path path = new File(Constants.TEMP_FILE_PATH, IdUtil.get() + ".html").toPath();
+        Path path = Paths.get(Constants.TEMP_FILE_PATH, IdUtil.get() + ".html");
         try (Writer writer = Files.newBufferedWriter(path)) {
             consumer.accept(writer);
             return path;
