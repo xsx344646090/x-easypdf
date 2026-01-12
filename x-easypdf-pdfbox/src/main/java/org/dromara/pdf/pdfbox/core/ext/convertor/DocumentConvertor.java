@@ -2,6 +2,9 @@ package org.dromara.pdf.pdfbox.core.ext.convertor;
 
 import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.core.ext.convertor.html.HtmlConvertor;
+import org.dromara.pdf.pdfbox.core.ext.convertor.html.HtmlConvertorType;
+import org.dromara.pdf.pdfbox.core.ext.convertor.html.JcefConvertor;
+import org.dromara.pdf.pdfbox.core.ext.convertor.html.PlaywrightConvertor;
 import org.dromara.pdf.pdfbox.core.ext.convertor.image.ImageConvertor;
 import org.dromara.pdf.pdfbox.core.ext.convertor.office.OfficeConvertor;
 
@@ -49,7 +52,20 @@ public class DocumentConvertor extends AbstractConvertor {
      * @return 返回html转换器
      */
     public HtmlConvertor getHtmlConvertor() {
-        return new HtmlConvertor(this.document);
+        return new PlaywrightConvertor(this.document);
+    }
+
+    /**
+     * 获取html转换器
+     *
+     * @param type 转换器类型
+     * @return 返回html转换器
+     */
+    public HtmlConvertor getHtmlConvertor(HtmlConvertorType type) {
+        if (type == HtmlConvertorType.JCEF) {
+            return new JcefConvertor(this.document);
+        }
+        return new PlaywrightConvertor(this.document);
     }
 
     /**

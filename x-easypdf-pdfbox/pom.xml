@@ -17,6 +17,7 @@
 
     <properties>
         <shade-pdfbox.version>3.5.9</shade-pdfbox.version>
+        <jcef.version>141.0.10</jcef.version>
         <skipTests>true</skipTests>
     </properties>
 
@@ -202,6 +203,12 @@
             <optional>true</optional>
         </dependency>
         <dependency>
+            <groupId>me.friwi</groupId>
+            <artifactId>jcefmaven</artifactId>
+            <version>${jcef.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
             <groupId>org.freemarker</groupId>
             <artifactId>freemarker</artifactId>
             <optional>true</optional>
@@ -289,6 +296,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <version>2.7.18</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.htmlunit</groupId>
+            <artifactId>htmlunit</artifactId>
+            <version>4.20.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

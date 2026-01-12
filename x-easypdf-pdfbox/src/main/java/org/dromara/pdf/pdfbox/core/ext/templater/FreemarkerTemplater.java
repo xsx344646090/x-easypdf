@@ -13,7 +13,6 @@ import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -100,7 +99,7 @@ public class FreemarkerTemplater extends AbstractHtmlTemplater {
         if (Thread.currentThread().getContextClassLoader().getResource(templatePath) == null) {
             try {
                 // 设置文件目录解析器
-                config.setDirectoryForTemplateLoading(Paths.get(templatePath).toFile());
+                config.setDirectoryForTemplateLoading(new File(templatePath));
             } catch (Exception e) {
                 // 设置远程资源解析器
                 config.setTemplateLoader(new DefaultURLTemplateLoader(templatePath));
