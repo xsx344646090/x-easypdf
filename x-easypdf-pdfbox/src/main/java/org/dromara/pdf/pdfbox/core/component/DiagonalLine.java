@@ -186,6 +186,14 @@ public class DiagonalLine extends AbstractComponent {
     }
 
     /**
+     * 修正起始Y轴坐标
+     */
+    @Override
+    protected void fixBeginY() {
+
+    }
+
+    /**
      * 初始化内容流
      *
      * @return 返回内容流

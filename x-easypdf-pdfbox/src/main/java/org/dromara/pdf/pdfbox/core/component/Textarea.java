@@ -503,6 +503,19 @@ public class Textarea extends AbstractComponent {
     }
 
     /**
+     * 修正起始Y轴坐标
+     */
+    @Override
+    protected void fixBeginY() {
+        if (!this.getIsCustomY() && this.getContext().getExecutingComponentType() != ComponentType.PAGE_HEADER){
+            float maxBeginY = this.getContext().getMaxBeginY();
+            if (this.getBeginY() + this.getFontHeight() > maxBeginY) {
+                this.setBeginY(maxBeginY - this.getFontHeight(), false);
+            }
+        }
+    }
+
+    /**
      * 初始化文本
      */
     protected void initText() {
@@ -574,7 +587,7 @@ public class Textarea extends AbstractComponent {
         // 获取字体
         PDFont font = context.getFont(this.getFontName());
         // 获取首行宽度
-        float firstWidth = context.getWrapWidth() + context.getWrapBeginX() - this.getBeginX();
+        float firstWidth = context.getWrapWidth() - (this.getBeginX() - context.getWrapBeginX());
         // 获取新行宽度
         float newWidth = context.getWrapWidth();
         // 获取首行文本

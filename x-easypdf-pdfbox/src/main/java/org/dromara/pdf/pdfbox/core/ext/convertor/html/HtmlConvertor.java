@@ -106,6 +106,7 @@ public abstract class HtmlConvertor extends AbstractConvertor {
      * 是否包含背景
      */
     protected Boolean isIncludeBackground;
+    protected String header;
 
     /**
      * 有参构造

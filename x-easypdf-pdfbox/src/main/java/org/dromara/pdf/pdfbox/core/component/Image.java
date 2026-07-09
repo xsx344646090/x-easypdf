@@ -277,4 +277,17 @@ public class Image extends AbstractComponent {
         // 重置
         super.reset(this.getType(), x, y);
     }
+
+    /**
+     * 修正起始Y轴坐标
+     */
+    @Override
+    protected void fixBeginY() {
+        if (!this.getIsCustomY() && this.getContext().getExecutingComponentType() != ComponentType.PAGE_HEADER){
+            float maxBeginY = this.getContext().getMaxBeginY();
+            if (this.getBeginY() > maxBeginY) {
+                this.setBeginY(maxBeginY, false);
+            }
+        }
+    }
 }

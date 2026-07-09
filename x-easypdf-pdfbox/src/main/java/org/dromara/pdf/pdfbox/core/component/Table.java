@@ -479,6 +479,19 @@ public class Table extends AbstractComponent {
     }
 
     /**
+     * 修正起始Y轴坐标
+     */
+    @Override
+    protected void fixBeginY() {
+        if (!this.getIsCustomY() && this.getContext().getExecutingComponentType() != ComponentType.PAGE_HEADER){
+            float maxBeginY = this.getContext().getMaxBeginY();
+            if (this.getBeginY() > maxBeginY) {
+                this.setBeginY(maxBeginY, false);
+            }
+        }
+    }
+
+    /**
      * 重置
      *
      * @param x X轴坐标

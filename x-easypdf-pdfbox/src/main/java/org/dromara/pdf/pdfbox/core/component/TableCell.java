@@ -441,6 +441,8 @@ public class TableCell extends BorderData {
                 context.setWrapBeginX(contentBeginX);
                 // 设置换行宽度
                 context.setWrapWidth(contentWidth);
+                // 设置是否自动重置换行宽度
+                context.setIsAutoResetWrapWidth(false);
                 // 设置水平对齐方式
                 component.setHorizontalAlignment(this.getContentHorizontalAlignment());
                 // 设置垂直对齐方式
@@ -457,6 +459,8 @@ public class TableCell extends BorderData {
         }
         // 重置光标位置
         context.resetCursor(beginX + this.getWidth(), tempY);
+        // 设置是否自动重置换行宽度
+        context.setIsAutoResetWrapWidth(true);
     }
 
     /**

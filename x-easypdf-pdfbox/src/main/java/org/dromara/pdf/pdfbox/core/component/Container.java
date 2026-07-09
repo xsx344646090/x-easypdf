@@ -366,6 +366,19 @@ public class Container extends AbstractComponent {
     }
 
     /**
+     * 修正起始Y轴坐标
+     */
+    @Override
+    protected void fixBeginY() {
+        if (!this.getIsCustomY() && this.getContext().getExecutingComponentType() != ComponentType.PAGE_HEADER){
+            float maxBeginY = this.getContext().getMaxBeginY();
+            if (this.getBeginY() + this.getHeight() > maxBeginY) {
+                this.setBeginY(maxBeginY - this.getHeight(), false);
+            }
+        }
+    }
+
+    /**
      * 执行分页
      */
     @Override
