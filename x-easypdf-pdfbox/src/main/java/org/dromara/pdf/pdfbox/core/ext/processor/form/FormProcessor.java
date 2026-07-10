@@ -4,13 +4,10 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.dromara.pdf.pdfbox.core.base.Document;
-import org.dromara.pdf.pdfbox.core.enums.ImageType;
 import org.dromara.pdf.pdfbox.core.ext.processor.AbstractProcessor;
 import org.dromara.pdf.pdfbox.handler.FontHandler;
 import org.dromara.pdf.pdfbox.handler.PdfHandler;
 import org.dromara.pdf.pdfbox.util.ColorUtil;
-import org.dromara.pdf.pdfbox.util.CommonUtil;
-import org.dromara.pdf.pdfbox.util.ImageUtil;
 import org.dromara.pdf.shade.org.apache.pdfbox.cos.COSDictionary;
 import org.dromara.pdf.shade.org.apache.pdfbox.cos.COSName;
 import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDDocument;
@@ -18,7 +15,6 @@ import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.PDResources;
 import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.fixup.AcroFormDefaultFixup;
 import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.font.PDFont;
-import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.graphics.PDXObject;
 import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
 import org.dromara.pdf.shade.org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceCharacteristicsDictionary;
@@ -269,10 +265,10 @@ public class FormProcessor extends AbstractProcessor {
                         // 图像为空
                         if (Objects.isNull(image)) {
                             // 清空图像
-                            resources.put(COSName.IMG, (PDXObject) null);
+                            // resources.put(COSName.IMG, (PDXObject) null);
                         } else {
                             // 设置图像
-                            resources.put(COSName.IMG, CommonUtil.createImage(this.getContext().getTargetDocument(), ImageUtil.toBytes(image, ImageType.PNG.getType())));
+                            // resources.put(COSName.IMG, CommonUtil.createImage(this.getContext().getTargetDocument(), ImageUtil.toBytes(image, ImageType.PNG.getType())));
                         }
                         // 设置资源
                         normalIcon.setResources(resources);

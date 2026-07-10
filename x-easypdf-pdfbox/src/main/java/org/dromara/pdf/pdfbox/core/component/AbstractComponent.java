@@ -131,6 +131,11 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
     protected abstract void reset();
 
     /**
+     * 修正起始Y轴坐标
+     */
+    protected abstract void fixBeginY();
+
+    /**
      * 设置自定义起始X轴坐标
      *
      * @param x 起始X轴坐标
@@ -696,6 +701,7 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
         if (Objects.isNull(this.relativeBeginY)) {
             this.relativeBeginY = 0F;
         }
+        this.context.resetWrapWidth(this.getPage().getWithoutMarginWidth() - this.getMarginLeft() - this.getMarginRight());
     }
 
     /**
@@ -770,6 +776,8 @@ public abstract class AbstractComponent extends AbstractBase implements Componen
         }
         // 设置起始Y轴坐标
         this.setBeginY(this.getBeginY(this.getPage(), this.getBeginY() - offset), this.getIsCustomY());
+        // 修正起始Y轴坐标
+        this.fixBeginY();
     }
 
     /**

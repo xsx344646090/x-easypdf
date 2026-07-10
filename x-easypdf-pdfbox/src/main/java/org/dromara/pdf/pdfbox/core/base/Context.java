@@ -96,6 +96,10 @@ public class Context {
      */
     protected Boolean isManualBreak;
     /**
+     * 是否自动重置换行宽度
+     */
+    protected Boolean isAutoResetWrapWidth;
+    /**
      * 目录列表
      */
     protected List<CatalogInfo> catalogs;
@@ -129,6 +133,7 @@ public class Context {
         this.isFirstComponent = Boolean.TRUE;
         this.isVirtualRender = Boolean.FALSE;
         this.isManualBreak = Boolean.FALSE;
+        this.isAutoResetWrapWidth = Boolean.TRUE;
         this.catalogs = new ArrayList<>(16);
         this.customInfo = new HashMap<>(16);
         this.fontMap = new HashMap<>(16);
@@ -342,7 +347,9 @@ public class Context {
             this.wrapWidth = this.page.getWithoutMarginWidth();
         } else {
             // 重置为指定宽度
-            this.wrapWidth = wrapWidth;
+            if (this.isAutoResetWrapWidth) {
+                this.wrapWidth = wrapWidth;
+            }
         }
     }
 

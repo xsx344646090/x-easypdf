@@ -20,6 +20,8 @@ import org.dromara.pdf.pdfbox.core.base.Document;
 import org.dromara.pdf.pdfbox.support.Constants;
 import org.dromara.pdf.pdfbox.util.IdUtil;
 
+import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.file.Files;
@@ -176,9 +178,21 @@ public class JcefConvertor extends HtmlConvertor {
      */
     protected CefBrowser createBrowser(CefClient client, String url) {
         // 创建浏览器
-        CefBrowser browser = client.createBrowser(this.getNavigateUrl(url), false, true);
+        CefBrowser browser = client.createBrowser(this.getNavigateUrl(url), true, true);
         // 立即创建
         browser.createImmediately();
+        // 创建框架
+        SwingUtilities.invokeLater(() -> {
+            JFrame frame = new JFrame();
+            frame.add(browser.getUIComponent(), BorderLayout.CENTER);
+            frame.setSize(1920, 1080);
+            frame.setLocation(0, 0);
+            frame.setVisible(true);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            GraphicsDevice gd = ge.getDefaultScreenDevice();
+            gd.setFullScreenWindow(frame);
+        });
         // 返回浏览器
         return browser;
     }

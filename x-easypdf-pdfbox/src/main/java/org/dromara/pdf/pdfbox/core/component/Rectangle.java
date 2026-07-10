@@ -177,6 +177,7 @@ public class Rectangle extends AbstractComponent {
     /**
      * 重置
      */
+    @Override
     protected void reset() {
         // 获取X轴坐标
         float x = this.getBeginX() + this.getWidth() + this.getMarginRight();
@@ -184,5 +185,18 @@ public class Rectangle extends AbstractComponent {
         float y = this.getBeginY();
         // 重置
         super.reset(this.getType(), x, y);
+    }
+
+    /**
+     * 修正起始Y轴坐标
+     */
+    @Override
+    protected void fixBeginY() {
+        if (!this.getIsCustomY() && this.getContext().getExecutingComponentType() != ComponentType.PAGE_HEADER){
+            float maxBeginY = this.getContext().getMaxBeginY();
+            if (this.getBeginY() > maxBeginY) {
+                this.setBeginY(maxBeginY, false);
+            }
+        }
     }
 }

@@ -96,6 +96,7 @@ public class PlaywrightConvertor extends HtmlConvertor {
                 .setOutline(true)
                 .setScale(this.scale)
                 .setLandscape(this.isLandscape)
+                .setHeaderTemplate(this.header)
                 .setMargin(
                         new Margin().setLeft(this.marginLeft + UNIT)
                                 .setRight(this.marginRight + UNIT)
@@ -280,6 +281,7 @@ public class PlaywrightConvertor extends HtmlConvertor {
                 }
                 // 创建命令构建器
                 ProcessBuilder pb = driver.createProcessBuilder();
+                pb.environment().put("PLAYWRIGHT_DOWNLOAD_HOST", "https://npmmirror.com/mirrors/playwright");
                 // 添加命令
                 pb.command().addAll(asList("install", "chromium", "--with-deps", "--no-shell"));
                 // 获取版本

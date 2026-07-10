@@ -424,6 +424,19 @@ public class Barcode extends AbstractComponent {
     }
 
     /**
+     * 修正起始Y轴坐标
+     */
+    @Override
+    protected void fixBeginY() {
+        if (!this.getIsCustomY() && this.getContext().getExecutingComponentType() != ComponentType.PAGE_HEADER){
+            float maxBeginY = this.getContext().getMaxBeginY();
+            if (this.getBeginY() > maxBeginY) {
+                this.setBeginY(maxBeginY, false);
+            }
+        }
+    }
+
+    /**
      * 获取图像对象
      *
      * @return 返回图像对象
